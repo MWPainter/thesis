@@ -1,0 +1,193 @@
+% \begin{savequote}[8cm]
+% Alles Gescheite ist schon gedacht worden.\\
+% Man muss nur versuchen, es noch einmal zu denken.
+
+% All intelligent thoughts have already been thought;\\
+% what is necessary is only to try to think them again.
+%   \qauthor{--- Johann Wolfgang von Goethe \cite{von_goethe_wilhelm_1829}}
+% \end{savequote}
+
+\chapter{\label{ch:2-background}Background}
+
+    \minitoc
+
+    \todo{Introduce that going to introduce notation and give the building blocks this thesis builds off}
+
+    \section{Multi-Armed Bandits}
+    \label{sec:2-0-mab}
+    
+        \todo{Introduce tree search using multi-armed bandits? UCB and exploring bandits}
+        \hide{
+        \begin{itemize}
+            \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
+        \end{itemize}
+        }
+
+\section{Reinforcement Learning}
+\label{sec:2-1-rl}
+
+    \todo{list}
+    \begin{itemize}
+        \item MDPs definition
+        \item Basic results and definitions we use
+        \item Talk about entropy and some of that work (probably a subsection)
+    \end{itemize}
+
+    \begin{defn}
+        \label{def:mdp}
+        A \textnormal{Markov Decision Process} is a tuple $M=(S,A,R,p,H)$, where $S$ is a set of states, $A$ is a set 
+        of actions, $R(s,a)$ is a reward function $S\times A\rightarrow \bb{R}$, $p(\cdot | s,a)$ is a next state 
+        probability distribution $S\times A\rightarrow S$ and $H\in\bb{N}$ is a finite-horizon time bound. 
+    \end{defn}
+
+
+\section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
+\label{sec:2-2-thts}
+
+    \todo{list}
+    \begin{itemize}
+        \item Give high level overview of MCTS (why use it etc)
+        \item Outline that I'll present this as here is THTS, and then here's the THTS routines for MCTS
+    \end{itemize}
+
+    In this section we introduce \thtspp\ewe \cite{thtspp}, which is an open-source, parallelised extension of the 
+    Trial-based Heuristic Tree Search schema \cite{thts}. This schema is a generalisation of Monte Carlo Tree Search (MCTS), 
+    as presented in Section \ref{sec:2-2-2}. In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. 
+    Decision nodes output actions that can be taken by the agent, and chance nodes output \textit{outcomes} that may be 
+    random and may depend on the action taken. As such, each decision node has an associated \textit{state} and each chance 
+    node has an associated \textit{state-action pair}. In this work, we are considering fully-observable environments, 
+    but \thtspp\ewe can be generalised to consider \textit{partially-observable} environments. We give \thtspp\ewe 
+    implementations of the standard Upper Confidence Bound applied to Trees (UCT) algorithm and Maximum ENtropy Tree 
+    Search (MENTS) in Sections \ref{sec:2-2-2-mcts} and \ref{sec:2-2-3-ments} respectively.
+
+    In MCTS we run trials, either for some fixed number of trials, or some timelimit, where each trial is split 
+    into four stages: 
+        (1) selection, which samples states and actions for the trial, corresponding to a path down the tree;
+        (2) expansion, which creates any new nodes in the tree; 
+        (3) initialisation, which initialises values in new nodes in the tree;
+        (4) backup, which updates values at all nodes visited on the trial.
+
+    TODO: add MCTS figure here?
+
+    \begin{lstlisting}
+def foo(bar):
+        print("helloworld!")
+    \end{lstlisting}
+
+    \subsection{Trial Based Heuristic Tree Search}
+    \label{sec:2-2-1-thts}
+    
+        \todo{list}
+        \begin{itemize}
+            \item{Copy DENTS MCTS section presentation, make a notation } $\texttt{node}(s_t)$ for the node at state $s_t$
+            \item Present thts++
+            \item Indicate what parts are new versus the original paper (context function, optionally running \mctsmode\ewe and mutli-threading)
+            \hide{\item Small comment about multi-threading and two-phase locking used to avoid deadlock}
+            \hide{\item TODO: probably not necessary to say - but thought of nice/concise way of explaining it (a node can lock children, not parent, if need info from parent, then it has to put a thread safe copy in the context)}
+            \item Define terms precisely and consistently, for example \mctsmode\ewe (say that notation and terminology varies widely in literature, e.g. does uct run in mcts mode or not?)
+        \end{itemize}
+        
+        In \thtspp\ewe we run trials for either some fixed number of trials $n$, or some time limit $T$. Each trial 
+        consists of three steps: 
+        (1) sample a context, which is used to store variables that are associated with a specific trial, and is passed to the following three functions;
+        (2) selection, which samples states, actions and outcomes for the trial, corresponding to a path down the tree;
+        (3) initialisation, which creates any new nodes in the tree and initialises their values;
+        (4) backup, which updates values at all nodes visited on the trial.
+
+        Decision nodes follow the interface:
+        \begin{lstlisting}
+class DNODE:
+    # children : dictionary[$A$] -> DNODE
+    def initialise(state $(s_t)$, depth $(t)$, context)
+    def select_action(context)
+    def backup(trial_return $(R_t)$, context)
+        \end{lstlisting}
+        % TODO: make a figure env for code
+
+        And chance nodes:
+        \begin{lstlisting}
+class CNODE:
+    # children : dictionary[$S$] -> DNODE
+    def initialise(state $(s_t)$, action $(a_t)$, depth $(t)$, context)
+    def sample_outcome(context)
+    def backup(trial_return $(R_t)$, context)
+        \end{lstlisting}
+        % TODO: make a figure env for code
+
+        The \runtrial function can be written as:
+        \begin{lstlisting}
+def run_trial:
+    # root_node : DNODE
+    # mcts_mode : bool
+    t = 0
+    state = root_node.state
+    while (not selection_phase_ended(t,mcts_mode)):
+
+def selection_phase_ended(t,mcts_mode):
+    if 
+        \end{lstlisting}
+
+
+        urgh BRAIN POOP
+
+        TODO - copy the descriptions from DENTS, and adapt and add the psuedocode
+
+
+
+    \subsection{Monte-Carlo Tree Search}
+    \label{sec:2-2-2-mcts}
+
+        \todo{list}
+        \begin{itemize}
+            \item Give overview of MCTS
+            \item Give UCT in terms of THTS schema 
+            \item Define terms precisely and consistently in terms of THTS functions, maybe \mctsmode\ewe should go here
+            \item Define the value initialisation of THTS using a rollout policy for MCTS
+            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
+            \item Should talk about multi-armed bandits here?
+        \end{itemize}
+    
+    \subsection{Maximum Entropy Tree Search}
+    \label{sec:2-2-3-ments}
+    
+        \todo{list}
+        \begin{itemize}
+            \item Define MENTS here
+        \end{itemize}
+
+\section{Multi-Objective Reinforcement Learning}
+\label{sec:2-3-morl}
+    
+    \todo{list}
+    \begin{itemize}
+        \item MOMDP definition
+        \item (Expected) utility
+        \item Define an interface for pareto front and convex hull objects
+        \item Define CHVI
+        \item Should talk about multi-objective and/or contextual multi-armed bandits here?
+        \item I'm planning on aligning this section with the recent MORL survey \cite{morl_survey}
+        \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
+    \end{itemize}
+
+\section{Multi-Objective Monte Carlo Tree Search}
+\label{sec:2-4-momcts}
+
+    \todo{I think this whole section can just go in litrev}
+
+    \todo{list}
+    \begin{itemize}
+        \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
+        \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
+        \hide{\item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic}
+        \item Different flavours copy UCT action selection, but with different variants
+        \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
+    \end{itemize}
+
+\section{Sampling Random Variables}
+\label{sec:2-5-sampling}
+
+    \todo{list}
+    \begin{itemize}
+        \item Talk about the alias method here
+        \item Reference to chapter \ref{ch:4-dents} section where talk about using this with THTS
+    \end{itemize}

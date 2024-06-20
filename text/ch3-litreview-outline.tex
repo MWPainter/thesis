@@ -1,0 +1,80 @@
+% \begin{savequote}[8cm]
+% Alles Gescheite ist schon gedacht worden.\\
+% Man muss nur versuchen, es noch einmal zu denken.
+
+% All intelligent thoughts have already been thought;\\
+% what is necessary is only to try to think them again.
+%   \qauthor{--- Johann Wolfgang von Goethe \cite{von_goethe_wilhelm_1829}}
+% \end{savequote}
+
+\chapter{\label{ch:3-litreview}Literature Review}
+
+    \minitoc
+
+    \todo{currently this is a copy and paste of what I originally wrote for background chapter} \ref{ch:2-background}. Deleted parts which are irrelevant for litreview here (and vice versa for the background section).
+
+    \todo{I'm also going to use this as a space to paste papers I should write about as they come up while writing later chapters}
+
+    \section{Multi-Armed Bandits}
+    \label{sec:3-0-mab}
+    
+        \todo{Just UCT/dont lit review?}
+
+\section{Reinforcement Learning}
+\label{sec:3-1-rl}
+
+    \todo{list}
+    \begin{itemize}
+        \item Talk about entropy and some of that work (probably a subsection)
+    \end{itemize}
+
+\section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
+\label{sec:3-2-thts}
+
+    \subsection{Trial Based Heuristic Tree Search}
+    \label{sec:3-2-1-thts}
+
+    \todo{THTS paper}
+
+    \subsection{Monte-Carlo Tree Search}
+    \label{sec:3-2-2-mcts}
+
+        \todo{list}
+        \begin{itemize}
+            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
+            \item Should talk about multi-armed bandits here?
+        \end{itemize}
+    
+    \subsection{Maximum Entropy Tree Search}
+    \label{sec:3-2-3-ments}
+
+    \todo{MENTS}
+
+\section{Multi-Objective Reinforcement Learning}
+\label{sec:3-3-morl}
+
+    \todo{list}
+    \begin{itemize}
+        \item Should talk about multi-objective and/or contextual multi-armed bandits here?
+        \item Bunch of the work covered in recent MORL survey \cite{morl_survey}
+        \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
+    \end{itemize}
+
+\section{Multi-Objective Monte Carlo Tree Search}
+\label{sec:3-4-momcts}
+
+    \todo{I think this whole section can just go in litrev}
+
+    \todo{list}
+    \begin{itemize}
+        \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
+        \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
+        \item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic
+        \item Different flavours copy UCT action selection, but with different variants
+        \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
+    \end{itemize}
+
+\section{Sampling Random Variables}
+\label{sec:3-5-sampling}
+
+    \todo{Just citing the alias method papers?}

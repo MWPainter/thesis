@@ -1,0 +1,63 @@
+% \begin{savequote}[8cm]
+% \textlatin{Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...}
+
+% There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
+%   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
+% \end{savequote}
+
+\chapter{\label{ch:5-chmcts}Convex Hull Monte Carlo Tree Search} 
+
+    \minitoc
+
+
+\section{Introduction}
+\label{sec:5-1-intro}
+
+    \todo{list}
+    \begin{itemize}
+        \item high level overview of CHMCTS work
+        \item discuss how CHMCTS answers the research questions from introduction chapter
+        \item moving into multi-objective land now
+        \item Comment about CHVI and prior MOMCTS work motivating this
+    \end{itemize}  
+
+\section{Contextual Tree Search}
+\label{sec:5-2-context}
+
+    \todo{list}
+    \begin{itemize}
+        \item Discuss need for context when doing multi-objective tree Search
+        \begin{itemize}
+            \item Use an example env where left gives (1,0) and right gives (0,1), optimal policy picks just left or just right, but hypervolume based methods wont
+            \item Use previous work on these examples and show they dont do well bad
+        \end{itemize}
+        \item Discuss how UCT = running a non-stationary UCB at each node, so given above discussion, there is work in contextual MAB  
+        \item Introduce contextual regret here
+    \end{itemize}
+
+\section{Contextual Zooming for Trees}
+\label{sec:5-3-czt}
+
+    \todo{list}
+    \begin{itemize}
+        \item Give contextual zooming for trees algorithm
+        \item Discussion on the contextual MAB to non-stationary contextual MAB stuff (CZT is to CZ what UCT is to UCB) (and what theory carry over)
+    \end{itemize}
+
+\section{Convex Hull Monte Carlo Tree Search}
+\label{sec:5-4-theory}
+
+    \todo{list}
+    \begin{itemize}
+        \item Give convex hull monte carlo tree search
+        \item Contextual zooming with the convex hull backups
+    \end{itemize}
+
+\section{Results}
+\label{sec:5-5-results}
+
+    \todo{list}
+    \begin{itemize}
+        \item Results from CHMCTS paper
+        \item Get same plots from C++ code, but compare expected utility, rather than the confusing hypervolume ratio stuff
+    \end{itemize}

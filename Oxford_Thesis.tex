@@ -51,31 +51,111 @@
 % If you're already a LaTeX pro and are used to natbib or something, modify as necessary.
 % Either way, you'll have to choose and configure an appropriate bibliography format...
 
-% The science-type option: numerical in-text citation with references in order of appearance.
-\usepackage[style=numeric-comp, sorting=none, backend=biber, doi=false, isbn=false]{biblatex}
-\newcommand*{\bibtitle}{References}
+% % The science-type option: numerical in-text citation with references in order of appearance.
+% \usepackage[style=numeric-comp, sorting=none, backend=biber, doi=false, isbn=false]{biblatex}
+% \newcommand*{\bibtitle}{References}
 
-% The humanities-type option: author-year in-text citation with an alphabetical works cited.
-%\usepackage[style=authoryear, sorting=nyt, backend=biber, maxcitenames=2, useprefix, doi=false, isbn=false]{biblatex}
-%\newcommand*{\bibtitle}{Works Cited}
+% % The humanities-type option: author-year in-text citation with an alphabetical works cited.
+% %\usepackage[style=authoryear, sorting=nyt, backend=biber, maxcitenames=2, useprefix, doi=false, isbn=false]{biblatex}
+% %\newcommand*{\bibtitle}{Works Cited}
 
-% This makes the bibliography left-aligned (not 'justified') and slightly smaller font.
-\renewcommand*{\bibfont}{\raggedright\small}
+% % This makes the bibliography left-aligned (not 'justified') and slightly smaller font.
+% \renewcommand*{\bibfont}{\raggedright\small}
 
-% Change this to the name of your .bib file (usually exported from a citation manager like Zotero or EndNote).
-\addbibresource{references.bib}
+% % Change this to the name of your .bib file (usually exported from a citation manager like Zotero or EndNote).
+% \addbibresource{references.bib}
 
 
-% Uncomment this if you want equation numbers per section (2.3.12), instead of per chapter (2.18):
-%\numberwithin{equation}{subsection}
+% % Uncomment this if you want equation numbers per section (2.3.12), instead of per chapter (2.18):
+% %\numberwithin{equation}{subsection}
+
+
+%%%%% PERSONAL PREAMBLE
+
+% wan a bib
+\usepackage{natbib}
+\bibliographystyle{plain}
+
+% setup python like code listings for psuedocode
+\usepackage{listings}%Setup listings env for when we don't want to use minted
+\lstset{
+  basicstyle=\footnotesize\tt,                                          % the size of the fonts that are used for the code
+  breakatwhitespace=false,                                              % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                                                      % sets automatic line breaking
+  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},     % add arrows to indicate line breaks added
+  framesep = 5px,                                                       % add padding to the top/bottom of listings
+  captionpos=b,                                                          % sets the caption-position to bottom
+  extendedchars=true,                                                   % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                                                             % adds a frame around the code (frame at bot and top)
+  language=Python,                                                        % the language of the code
+  showspaces=false,                                                     % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,                                               % underline spaces within strings only
+  showtabs=false,                                                       % show tabs within strings adding particular underscores
+  tabsize=4,                                                            % sets default tabsize to 4 spaces
+  numbers=left,                                                         % puts numbers on the left side
+  keywordstyle=\color[rgb]{0,0,1}\ttfamily,
+  stringstyle=\color[rgb]{0.627,0.126,0.941}\ttfamily,
+  commentstyle=\color[rgb]{0.133,0.545,0.133}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#},
+  aboveskip=2em,                                                        % spacing above listings
+  belowskip=1.5em,                                                         % spacing below listings
+  mathescape=true,														% maths in code listings
+}
+
+% maffs
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+% Maffs theorems envs
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{defn}{Definition}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newtheorem{remark}[theorem]{Remark}
+
+% Maffs proof env
+\newenvironment{proofoutline}{\proof[Proof outline]}{\endproof}
+
+% Add command \newcustomtheorem to make theorems envs that can set the numbering
+\newtheorem{innercustomgeneric}{\customgenericname}
+\providecommand{\customgenericname}{}
+\newcommand{\newcustomtheorem}[2]{%
+	\newenvironment{#1}[1]
+	{%
+		\renewcommand\customgenericname{#2}%
+		\renewcommand\theinnercustomgeneric{##1}%
+		\innercustomgeneric
+	}
+	{\endinnercustomgeneric}
+}
+
+% Custom theorems envs where can set the numbering 
+\newcustomtheorem{customthm}{Theorem}
+\newcustomtheorem{customcorollary}{Corollary}
+\newcustomtheorem{customcounter}{Counterexample}
+\newcustomtheorem{customremark}{Remark}
+\newcustomtheorem{customprop}{Proposition}
+
+% Maffs shorthands
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+
+% Highlighting (for todos)
+\usepackage{xcolor} 
+\usepackage{soul}
 
 
 
 %%%%% THESIS / TITLE PAGE INFORMATION
 % Everybody needs to complete the following:
-\title{Suitably impressive thesis title}
+\title{On Monte Carlo Tree Search \\With Multiple Objectives}
 \author{Michael Painter}
-\college{Your College}
+\college{Pembroke College}
 
 % Master's candidates who require the alternate title page (with candidate number and word count)
 % must also un-comment and complete the following three lines:
@@ -88,17 +168,40 @@
 % Your full degree name.  (But remember that DPhils aren't "in" anything.  They're just DPhils.)
 \degree{Doctor of Philosophy}
 % Term and year of submission, or date if your board requires (eg most masters)
-\degreedate{Michaelmas 2014}
+\degreedate{Trinity 2024}
 
 
 %%%%% YOUR OWN PERSONAL MACROS
 % This is a good place to dump your own LaTeX macros as they come up.
 
-% To make text superscripts shortcuts
-	\renewcommand{\th}{\textsuperscript{th}} % ex: I won 4\th place
-	\newcommand{\nd}{\textsuperscript{nd}}
-	\renewcommand{\st}{\textsuperscript{st}}
-	\newcommand{\rd}{\textsuperscript{rd}}
+% General - enforcing whitespace exists
+\newcommand{\ewe}{\ }
+
+% General - comments (I use hide if dont want to comment out, but dont want it showing on doc yet)
+% \newcommand{\todo}[1]{TODO: #1}
+\newcommand{\todo}[1]{\hl{TODO: #1}}
+% \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
+% \newcommand{\hide}[1]{}
+\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+
+
+% Sec 1.2 - Contributions (research questions)% Refer to questions
+\newcommand{\exploreq}{\hyperlink{q1}{\textbf{Q1 - Exploration}}}
+\newcommand{\entropyq}{\hyperlink{q2}{\textbf{Q2 - Entropy}}}
+\newcommand{\complexityq}{\hyperlink{q3}{\textbf{Q3 - Complexity}}}
+\newcommand{\scalabilityq}{\hyperlink{q4}{\textbf{Q4 - Scalability}}}
+\newcommand{\dimq}{\hyperlink{q5}{\textbf{Q5 - Dimensionality}}}
+\newcommand{\evalq}{\hyperlink{q6}{\textbf{Q6 - Tree Evaluation}}}
+\newcommand{\morlevalq}{\hyperlink{q7}{\textbf{Q7 - Multi-Objective Evaluation}}}
+
+% Sec 2.2 - THTS++ macros
+\newcommand{\CNODE}{{\texttt{CNODE}}}
+\newcommand{\cnode}{{\texttt{cnode}}}
+\newcommand{\DNODE}{{\texttt{DNODE}}}
+\newcommand{\dnode}{{\texttt{dnode}}}
+\newcommand{\mctsmode}{{\texttt{mcts\_mode}}}
+\newcommand{\runtrial}{{\texttt{run\_trial}}}
+\newcommand{\thtspp}{{\texttt{THTS++}}}
 
 %%%%% THE ACTUAL DOCUMENT STARTS HERE
 \begin{document}
@@ -133,9 +236,9 @@
 %%%%% ABSTRACT SEPARATE
 % This is used to create the separate, one-page abstract that you are required to hand into the Exam
 % Schools.  You can comment it out to generate a PDF for printing or whatnot.
-\begin{abstractseparate}
-	\input{text/abstract} % Create an abstract.tex file in the 'text' folder for your abstract.
-\end{abstractseparate}
+%\begin{abstractseparate}
+%	\input{text/abstract} % Create an abstract.tex file in the 'text' folder for your abstract.
+%\end{abstractseparate}
 
 
 % JEM: Pages are roman numbered from here, though page numbers are invisible until ToC.  This is in
@@ -148,6 +251,19 @@
 
 % Title page is created here
 \maketitle
+
+% % Personal todo list
+\hide{
+\clearpage
+  \todo{list}
+  \begin{enumerate}
+    \item Copy contributions from conformation and write out properly
+    \item THTS section, as it defines notation. Put macros in text/abreviations.tex 
+    \item Copy DENTS and BTS into thesis and copy into common notation
+    \item Define the toy problems, D-Chain and the one with the entropy trap
+    \item Have all outline finsihed
+  \end{enumerate}
+}
 
 %%%%% DEDICATION -- If you'd like one, un-comment the following.
 %\begin{dedication}
@@ -185,8 +301,8 @@
 % \mtcaddchapter is needed when adding a non-chapter (but chapter-like) entity to avoid confusing minitoc
 
 % Uncomment to generate a list of tables:
-%\listoftables
-%	\mtcaddchapter
+\listoftables
+	\mtcaddchapter
 
 %%%%% LIST OF ABBREVIATIONS
 % This example includes a list of abbreviations.  Look at text/abbreviations.tex to see how that file is
@@ -201,8 +317,22 @@
 %%%%% CHAPTERS
 % Add or remove any chapters you'd like here, by file name (excluding '.tex'):
 \flushbottom
+
 \include{text/ch1-intro}
-\include{text/ch2-litreview}
+\input{text/ch2-background}
+\include{text/ch3-litreview}
+\include{text/ch4-dents}
+\include{text/ch5-chmcts}
+\include{text/ch6-simplexmaps}
+\include{text/ch7-conclusion}
+
+% \include{text/ch1-intro-outline}
+% \include{text/ch2-background-outline}
+% \include{text/ch3-litreview-outline}
+% \include{text/ch4-dents-outline}
+% \include{text/ch5-chmcts-outline}
+% \include{text/ch6-simplexmaps-outline}
+% \include{text/ch7-conclusion-outline}
 
 
 %% APPENDICES %% 
@@ -210,21 +340,27 @@
 %    page that just says "Appendices" to signal the end of your main text.
 \startappendices
 % Add or remove any appendices you'd like here:
-\include{text/appendix-1}
+\include{text/appendix}
+\include{text/appendix-p1-chmcts-paper}
+\include{text/appendix-p2-dents-paper}
+\include{text/appendix-p3-simplexmaps-paper}
 
 
 %%%%% REFERENCES
 
-% JEM: Quote for the top of references (just like a chapter quote if you're using them).  Comment to skip.
-\begin{savequote}[8cm]
-The first kind of intellectual and artistic personality belongs to the hedgehogs, the second to the foxes \dots
-  \qauthor{--- Sir Isaiah Berlin \cite{berlin_hedgehog_2013}}
-\end{savequote}
+% % JEM: Quote for the top of references (just like a chapter quote if you're using them).  Comment to skip.
+% \begin{savequote}[8cm]
+% The first kind of intellectual and artistic personality belongs to the hedgehogs, the second to the foxes \dots
+%   \qauthor{--- Sir Isaiah Berlin \cite{berlin_hedgehog_2013}}
+% \end{savequote}
 
-\setlength{\baselineskip}{0pt} % JEM: Single-space References
+% \setlength{\baselineskip}{0pt} % JEM: Single-space References
 
-{\renewcommand*\MakeUppercase[1]{#1}%
-\printbibliography[heading=bibintoc,title={\bibtitle}]}
+% {\renewcommand*\MakeUppercase[1]{#1}%
+% \printbibliography[heading=bibintoc,title={\bibtitle}]}
+
+\clearpage
+\bibliography{references}
 
 
 \end{document}

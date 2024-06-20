@@ -1,0 +1,61 @@
+% \begin{savequote}[8cm]
+% \textlatin{Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...}
+
+% There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
+%   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
+% \end{savequote}
+
+\chapter{\label{ch:6-simplexmaps}Simplex Maps for Multi-Objective Monte Carlo Tree Search} 
+
+    \minitoc
+
+\section{Introduction}
+\label{sec:6-1-intro}
+
+    \todo{list}
+    \begin{itemize}
+        \item high level overview of simplex maps work
+        \item discuss how simplex maps answer the research questions from introduction chapter
+        \item staying in multi-objective land now
+        \item Motivated by CHMCTS being slow
+    \end{itemize}  
+
+\section{Simplex Maps}
+\label{sec:6-2-simplexmaps}
+
+    \todo{list}
+    \begin{itemize}
+        \item Define simplex map interface
+        \item Give details on how to efficiently implement the interface with tree structures
+        \item (Good diagram is everything here I think)
+    \end{itemize}
+
+\section{Simplex Maps in Tree Search}
+\label{sec:6-3-mapsintrees}
+
+    \todo{list}
+    \begin{itemize}
+        \item Come up with better title for section
+        \item Use simplex maps interface to create algorithms from the dents work 
+        \item Give a high level idea of what $\delta$ parameter is (used in theory section)
+    \end{itemize}
+
+\section{Theoretical Results}
+\label{sec:6-4-theory}
+
+    \todo{list}
+    \begin{itemize}
+        \item Convergence can build ontop of DENTS results
+        \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
+        \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
+        \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
+    \end{itemize}
+
+\section{Empirical Results}
+\label{sec:6-5-results}
+
+    \todo{list}
+    \begin{itemize}
+        \item Results from MO-Gymnasium
+        \item Compare algorithms using expected utility
+    \end{itemize}
