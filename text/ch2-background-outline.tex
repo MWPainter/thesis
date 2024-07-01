@@ -13,23 +13,39 @@
 
     \todo{Introduce that going to introduce notation and give the building blocks this thesis builds off}
 
-    \section{Multi-Armed Bandits}
-    \label{sec:2-0-mab}
+    \todo{R.e. presenting RL before tree search (if I forget to mention it when I message), I was hoping to present THTS and MCTS as part of reinforcement learning, and try to forgo the whole planning vs RL conversation. If it's ok, I'll write it as is, keep the below todo, and then revisit it when proof reading.}
     
-        \todo{Introduce tree search using multi-armed bandits?}
-        \hide{
-        \begin{itemize}
-            \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
-        \end{itemize}
-        }
+    \todo{Nicks comment to revisit: Wouldn’t it be better to start with single objective MDPs, then introduce methods of solving them (planning, bandits, rl) and the different assumptions they make?)}
 
-\section{Reinforcement Learning}
+
+\section{Multi-Armed Bandits}
+\label{sec:2-0-mab}
+
+    \todo{Introduce tree search using multi-armed bandits?}
+    \hide{
+    \begin{itemize}
+        \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
+        \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
+    \end{itemize}
+    }
+    \todo{list}
+    \begin{itemize}
+        \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
+        \item Multi-Armed Bandits routines algos
+        \item Exploring Bandits routines and algos
+        \item Contextual Bandits routines and algos
+    \end{itemize}
+
+\section{Markov Decision Processes and Reinforcement Learning}
 \label{sec:2-1-rl}
 
     \todo{list}
     \begin{itemize}
+        \item Typical agent interacting with environment diagram 
+        \item Agent planning with simulator 
         \item MDPs definition
-        \item Basic results and definitions we use
+        \item Value functions (single and multi-objective)
+        \item Basic results and definitions we use (tabular planning algorithms)
         \item Talk about entropy and some of that work (probably a subsection)
     \end{itemize}
 
@@ -50,8 +66,10 @@
             \item Present thts++
             \item Indicate what parts are new versus the original paper (context function, optionally running \mctsmode\ewe and mutli-threading)
             \hide{\item Small comment about multi-threading and two-phase locking used to avoid deadlock}
-            \hide{\item TODO: probably not necessary to say - but thought of nice/concise way of explaining it (a node can lock children, not parent, if need info from parent, then it has to put a thread safe copy in the context)}
-            \item Define terms precisely and consistently, for example \mctsmode\ewe (say that notation and terminology varies widely in literature, e.g. does uct run in mcts mode or not?)
+            \hide{\item \todo{probably not necessary to say - but thought of nice/concise way of explaining it (a node can lock children, not parent, if need info from parent, then it has to put a thread safe copy in the context)}}
+            \item Define terms precisely and consistently, for example \mctsmode\ewe (say that notation and terminology varies widely in literature, e.g. does uct run in \mctsmode\ewe or not?)
+            \item Mention that $\Vinit$ can be implemented as $V_\theta$ to be used with deep RL methods
+            \hide{\item \todo{Find the best place to talk about deep RL? Maybe in the RL section?}}
         \end{itemize}
 
     \subsection{Monte-Carlo Tree Search}

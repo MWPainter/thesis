@@ -141,10 +141,6 @@
 \newcustomtheorem{customremark}{Remark}
 \newcustomtheorem{customprop}{Proposition}
 
-% Maffs shorthands
-\newcommand{\bb}[1]{\mathbb{#1}}
-\newcommand{\cl}[1]{\mathcal{#1}}
-
 % Highlighting (for todos)
 \usepackage{xcolor} 
 \usepackage{soul}
@@ -181,25 +177,36 @@
 % \newcommand{\todo}[1]{TODO: #1}
 \newcommand{\todo}[1]{\hl{TODO: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-% \newcommand{\hide}[1]{}
-\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+\newcommand{\hide}[1]{}
+% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+
+% General - Maffs shorthands
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
 
 
 % Sec 1.2 - Contributions (research questions)% Refer to questions
+% \newcommand{\timelimitedq}{\hyperlink{q1}{\textbf{Q1 - Time-Limited Planning}}}
 \newcommand{\exploreq}{\hyperlink{q1}{\textbf{Q1 - Exploration}}}
-\newcommand{\entropyq}{\hyperlink{q2}{\textbf{Q2 - Entropy}}}
-\newcommand{\complexityq}{\hyperlink{q3}{\textbf{Q3 - Complexity}}}
-\newcommand{\scalabilityq}{\hyperlink{q4}{\textbf{Q4 - Scalability}}}
-\newcommand{\dimq}{\hyperlink{q5}{\textbf{Q5 - Dimensionality}}}
-\newcommand{\evalq}{\hyperlink{q6}{\textbf{Q6 - Tree Evaluation}}}
-\newcommand{\morlevalq}{\hyperlink{q7}{\textbf{Q7 - Multi-Objective Evaluation}}}
+\newcommand{\entropyq}{\hyperlink{q11}{\textbf{Q1.1 - Entropy}}}
+\newcommand{\contextq}{\hyperlink{q11}{\textbf{Q1.2 - Multi-Objective Exploration}}}
+\newcommand{\scalabilityq}{\hyperlink{q2}{\textbf{Q2 - Scalability}}}
+\newcommand{\complexityq}{\hyperlink{q21}{\textbf{Q2.1 - Complexity}}}
+\newcommand{\moscalabilityq}{\hyperlink{q22}{\textbf{Q2.2 - Multi-Objective Scalability}}}
+\newcommand{\dimq}{\hyperlink{q23}{\textbf{Q2.3 - Curse of Dimensionality}}}
+\newcommand{\evalq}{\hyperlink{q3}{\textbf{Q3 - Evaluation}}}
+\newcommand{\treepolicyq}{\hyperlink{q31}{\textbf{Q3.1 - Tree Policies}}}
+\newcommand{\moevalq}{\hyperlink{q32}{\textbf{Q3.2 - Multi-Objective Evaluation}}}
 
 % Sec 2.2 - THTS++ macros
+\newcommand{\Vinit}{V_{\text{init}}}
+
 \newcommand{\CNODE}{{\texttt{CNODE}}}
 \newcommand{\cnode}{{\texttt{cnode}}}
 \newcommand{\DNODE}{{\texttt{DNODE}}}
 \newcommand{\dnode}{{\texttt{dnode}}}
 \newcommand{\mctsmode}{{\texttt{mcts\_mode}}}
+\newcommand{\node}{{\texttt{node}}}
 \newcommand{\runtrial}{{\texttt{run\_trial}}}
 \newcommand{\thtspp}{{\texttt{THTS++}}}
 
@@ -257,11 +264,9 @@
 \clearpage
   \todo{list}
   \begin{enumerate}
-    \item Copy contributions from conformation and write out properly
     \item THTS section, as it defines notation. Put macros in text/abreviations.tex 
     \item Copy DENTS and BTS into thesis and copy into common notation
     \item Define the toy problems, D-Chain and the one with the entropy trap
-    \item Have all outline finsihed
   \end{enumerate}
 }
 
@@ -318,21 +323,21 @@
 % Add or remove any chapters you'd like here, by file name (excluding '.tex'):
 \flushbottom
 
-\include{text/ch1-intro}
-\input{text/ch2-background}
-\include{text/ch3-litreview}
-\include{text/ch4-dents}
-\include{text/ch5-chmcts}
-\include{text/ch6-simplexmaps}
-\include{text/ch7-conclusion}
+% \include{text/ch1-intro}
+% \input{text/ch2-background}
+% \include{text/ch3-litreview}
+% \include{text/ch4-dents}
+% \include{text/ch5-chmcts}
+% \include{text/ch6-simplexmaps}
+% \include{text/ch7-conclusion}
 
-% \include{text/ch1-intro-outline}
-% \include{text/ch2-background-outline}
-% \include{text/ch3-litreview-outline}
-% \include{text/ch4-dents-outline}
-% \include{text/ch5-chmcts-outline}
-% \include{text/ch6-simplexmaps-outline}
-% \include{text/ch7-conclusion-outline}
+\include{text/ch1-intro-outline}
+\include{text/ch2-background-outline}
+\include{text/ch3-litreview-outline}
+\include{text/ch4-dents-outline}
+\include{text/ch5-chmcts-outline}
+\include{text/ch6-simplexmaps-outline}
+\include{text/ch7-conclusion-outline}
 
 
 %% APPENDICES %% 
@@ -341,9 +346,6 @@
 \startappendices
 % Add or remove any appendices you'd like here:
 \include{text/appendix}
-\include{text/appendix-p1-chmcts-paper}
-\include{text/appendix-p2-dents-paper}
-\include{text/appendix-p3-simplexmaps-paper}
 
 
 %%%%% REFERENCES

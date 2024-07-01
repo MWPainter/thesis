@@ -32,33 +32,46 @@
 \section{Contributions}
 \label{sec:1-2-contributions}
 
-    \todo{I'm not too happy with this section, I think most of the questions could be phrased better, but nothing I'm 
-    writing sounds quite right to me at the moment. I also just tried to come up with as many questions as I could with 
-    the idea of I don't need to keep them all}
-
-    \todo{Also inline acronyms used, }
+    \todo{Inline acronyms used, or make sure that they're defined before hand}
 
     Throughout this thesis, we will consider the following questions related to Monte Carlo Tree Search and Multi-Objective Reinforcement Learning:
     \begin{enumerate}[start=1, label={\textbf{Q\arabic* -}}]
-        \item \hypertarget{q1}{\textbf{Exploration:}} When planning in a simulator, how can an algorithm best exploit the time it is given to produce the best recommendation action?
-        \item \hypertarget{q2}{\textbf{Entropy:}} Entropy is often used as an exploration objective in RL, but can it be used soundly in MCTS?
-        \item \hypertarget{q3}{\textbf{Complexity:}} MCTS algorithms typically run in $O(nAH)$, but are there algorithms that can improve upon this?
-        \item \hypertarget{q4}{\textbf{Scalability:}} How can the scalability (with respect to size of environments) of multi-objective MCTS methods be improved?
-        \item \hypertarget{q5}{\textbf{Curse of Dimensionality:}} To what extent do Multi-Objective MCTS methods suffer from the curse of dimensionality? (basically Multi-Objective complexity)
-        \item \hypertarget{q6}{\textbf{Tree Evaluation:}} How can we best evaluate a search tree produced by a Monte Carlo Tree Search algorithm? \todo{add a matching contrib}
-        \item \hypertarget{q7}{\textbf{Multi-Objective Evaluation:}} Can we apply methods from the MORL literature to theoretically and empirically evaluate Multi-Objective MCTS?
+        % \item \hypertarget{q1}{\textbf{Time-Limited Planning:}} How do we ensure that MCTS algorithms make good decisions when limited planning time is available?
+        \item \hypertarget{q1}{\textbf{Exploration:}} When planning in a simulator with limited time, how can MCTS algorithms best explore to make good decisions?
+        
+        \begin{enumerate}[start=1, label={\textbf{Q1.\arabic* -}}]
+            \item \hypertarget{q11}{\textbf{Entropy:}} Entropy is often used as an exploration objective in RL, but can it be used soundly in MCTS?
+            \item \hypertarget{q12}{\textbf{Multi-Objective Exploration:}} How can Multi-Objective MCTS methods explore to find optimal actions for different objectives? 
+        \end{enumerate}
+
+        \item \hypertarget{q2}{\textbf{Scalability:}} How can the scalability of (multi-objective) MCTS methods be improved?
+
+        \begin{enumerate}[start=1, label={\textbf{Q2.\arabic* -}}]
+            \item \hypertarget{q21}{\textbf{Complexity:}} MCTS algorithms typically run in $O(nAH)$, but are there algorithms that can improve upon this?
+            \item \hypertarget{q22}{\textbf{Multi-Objective Scalability:}} With respect to the size of environments, how scalable are Multi-Objective MCTS methods?
+            \item \hypertarget{q23}{\textbf{Curse of Dimensionality:}} With respect to the number of objectives, to what extent do Multi-Objective MCTS methods suffer from the curse of dimensionality?
+        \end{enumerate}
+
+
+        \item \hypertarget{q3}{\textbf{Evaluation:}} How can we best evaluate a search tree produced by a Monte Carlo Tree Search algorithm?
+        
+        \begin{enumerate}[start=1, label={\textbf{Q3.\arabic* -}}]
+            \item \hypertarget{q31}{\textbf{Tree Policies:}} Does it suffice to extract a policy from a single search tree for evaluation? \todo{going to have to run some extra experiments for that, but I probably should do that for completeness anyway}
+            \item \hypertarget{q32}{\textbf{Multi-Objective Evaluation:}} Can we apply methods from the MORL literature to theoretically and empirically evaluate Multi-Objective MCTS?
+        \end{enumerate}
     \end{enumerate}
 
     \todo{some words about how below is the contributions we're making in this thesis and expand these bullets a bit more}
     \begin{itemize}
         \item Max Entropy can be misaligned with reward maximisation (\entropyq)
-        \item Boltzmann Search Policies - BTS and DENTS (\exploreq, \entropyq, and eval \evalq)
+        \item Boltzmann Search Policies - BTS and DENTS (\entropyq, and with extra results \treepolicyq)
         \item Use the alias method to make faster algorithms (\complexityq)
         \item Simple regret (\exploreq)
-        \item Contextual regret introduced in CHMCTS (\scalabilityq, \morlevalq)
-        \item Contextual Zooming and CHMCTS (runtimes cover \dimq, results \evalq)
-        \item Simplex maps (\scalabilityq, \dimq)
-        \item Contextual Simple Regret (\evalq, \morlevalq)
+        \item Use of contexts in THTS to make consistent decisions in each trial (\contextq)
+        \item Contextual regret introduced in CHMCTS (\moscalabilityq, \moevalq)
+        \item Contextual Zooming and CHMCTS (designed for \contextq, runtimes cover \dimq, results \moevalq)
+        \item Simplex maps (\contextq, \moscalabilityq, \dimq)
+        \item Contextual Simple Regret (\moevalq)
     \end{itemize}
 
     \hide{\todo{Would like to do the comparing different types of eval, even if not listing it as a research question 

@@ -1,34 +1,86 @@
 % List of notation
 \begin{mclistof}{List of Notation}{3.2cm}
+
+    % Notes
+    % i = free variable
+    % j = free variable
+    % k = free variable
+    % t = free variable for current timestep
+
+    % General maths
+    \item[$\bb{1}$] The indicator function, where $\bb{1}(A)=1$ when $A$ is true, and $\bb{1}(A)=0$ when $A$ is false.
+    \\
     % 2.1 RL
-    \item[\Large\textbf{Markov Decision Processes}\hfill\hfill]
-    \item[$a_t$]TODO
-    \item[$r_t$]TODO
-    \item[$s_t$]TODO
-    \item[$t$] TODO: free variable for current timestep?
+    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-rl})}\hfill\hfill]
+    \item[$\cl{A}$] 
+        Set of actions in an MDP.
+    \item[$\cl{B}$]
+        \todo{thts backups}.
+    \item[$H$] 
+        The finite-horizon time bound of an MDP. 
+    \item[$p$] 
+        The next-state probability distribution of an MDP.  $p(\cdot | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
+    \item[$\cl{R}$] 
+        The reward function of in an MDP: $\cl{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
+    \item[$\cl{S}$] 
+        Set of states in an MDP. 
+    \item[$t$] 
+        \todo{free variable for current timestep? And generally add a list of free variables?}
     \\
     % 2.2 THTS
-    \item[\Large\textbf{Trial Based Heuristic Tree Search}\hfill\hfill]
-    \item[$n$] Number of trials run
-    \item[$T$] Computation time limit 
+    \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill]
+    \item[$a_t$] 
+        A random variable for the $t$th action sampled in a trial of \thtspp.
+    \item[$n$] 
+        Number of trials run.
+    \item[$\pi$]
+        A search policy, \todo{define, this is a parameter of thts++}. \todo{handle } $\pi^k$
+    \item[$r_t$] 
+        A random variable for the $t$th reward sampled in a trial of \thtspp.
+    \item[$s_t$] 
+        A random variable for the $t$th state sampled in a trial of \thtspp.
+    \item[$\cl{T}$] 
+        A THTS search tree. \todo{With:} $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. \todo{handle } $\cl{T}_k$
+    \item[$T$] 
+        Computation time limit.
+    \item[$\tau$] 
+        A trajectory for a trial of \thtspp. I.e. $\tau=(s_0,a_1,s_1,...,s_{h-1},a_{h-1},s_h)$. \todo{handle } $\tau_k$
+    \item[$\Vinit$]
+        The initialisation function used in \thtspp, used to initialise the value of a new decision node.
 
 \end{mclistof} 
 
 % List of abbreviations
 \begin{mclistof}{List of Abbreviations}{3.2cm}
 
+    % abbrv - 2.1 RL
+    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-rl})}\hfill\hfill]
+    \item[MDP] Markov Decision Process.
+    \\
     % abbrv - 2.2 THTS
-    % 2.1 THTS
-    \item[\Large\textbf{Trial Based Heuristic Tree Search}\hfill\hfill] 
-    \item[\CNODE] The chance node class.
-    \item[\cnode] An instance of \CNODE, i.e. a chance node instance.
-    \item[\DNODE] The decision node class.
-    \item[\dnode] An intance of \DNODE, i.e. a decision node instance.
-    \item[MCTS] Monte Carlo Tree Search
-    \item[\mctsmode] TODO: definition of \mctsmode
-    \item[MENTS] Maximum ENtropy Tree Search
-    \item[\thtspp] TODO: thts++
-    \item[UCT] Upper Confidence Bound applied to Trees
+    \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill] 
+    \item[\CNODE] 
+        The chance node class.
+    \item[\cnode] 
+        An instance of \CNODE, i.e. a chance node instance.
+    \item[\DNODE] 
+        The decision node class.
+    \item[\dnode] 
+        An intance of \DNODE, i.e. a decision node instance.
+    \item[MCTS] 
+        Monte Carlo Tree Search.
+    \item[\mctsmode] 
+        \todo{definition of} \mctsmode
+    \item[MENTS]
+        Maximum ENtropy Tree Search.
+    \item[\node] 
+        A mapping from states and state-action pairs to their corresponding decision and chance nodes respectively.
+    \item[THTS] 
+        Trial-based Heuristic Tree Search.
+    \item[\thtspp] 
+        \todo{thts++}
+    \item[UCT] 
+        Upper Confidence Bound applied to Trees/
     
 
 \end{mclistof} 

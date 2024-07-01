@@ -301,57 +301,7 @@
     
     
     \subsection{Monte-Carlo tree search} \label{sec:mcts}
-    		MCTS methods build a search tree $\cl{T}$ using Monte-Carlo trials. Each trial is split into two phases: starting from the root node, actions are chosen according to a \textit{search policy} and states sampled from the transition distribution until the first state not in $\cl{T}$ is reached. A new node is added to $\cl{T}$ and its value is initialised using some function $V^{\text{init}}$, often using a \textit{rollout policy} to select actions until the time horizon $H$ is reached. In the second phase, the return for the trial is back-propagated up (or `backed up') the tree to update the values of nodes in $\cl{T}$. For a reader unfamiliar with MCTS, we refer to \cite{browne2012survey} for a review of the MCTS literature, as many variants of MCTS exist and may vary from our description. 
-        
-        Two critical choices in designing an MCTS algorithm are the search policy (which needs to balance exploration and exploitation) and the backups (how values are updated). MCTS algorithms are often designed to achieve \textit{consistency} (i.e. convergence to the optimal action in the limit), which implies that running more trials will increase the probability that the optimal action is recommended.
-        % which gives the desirable property that running more trials should improve the policy.
-        
-        To simplify notation we assume that each node in the search tree corresponds to a unique state, so we may represent nodes using states. Our algorithms and results do not make use of this assumption, and generalise to when this assumption does not hold.
-    
-        \paragraph{UCT} 
-            UCT~\cite{kocsis2006uct} applies the upper confidence bound (UCB) in its search policy to balance exploration and exploitation. The $n$th trial of UCT operates as follows: let $\cl{T}$ be the current search tree and let $\tau=(s_0,a_0,...,a_{h-1},s_{h})$ denote the trajectory of the $n$th trial, where $s_h\not\in\cl{T}$ or $h=H$. At each node $s_t$ the UCT search policy $\pi_{\text{UCT}}$ will select a random action that has not previously been selected, otherwise, it will select the action with maximum UCB value:
-            %
-%            \begin{align}
-%                \pi_{\textnormal{UCT}}^n(s_t) &= \max_{a\in\cl{A}} \text{UCB}^n(s_t,a), \\
-%                \text{UCB}^n(s_t, a) &= \bar{Q}^{N(s_t,a)}(s_t, a)+c \sqrt{\frac{\log N(s_t)}{N(s_t, a)}},
-%            \end{align}
-            \begin{align}
-                \pi_{\textnormal{UCT}}(s) &= \max_{a\in\cl{A}} \bar{Q}(s, a)+c \sqrt{\frac{\log N(s)}{N(s, a)}}, \label{eq:uct_distr}
-            \end{align}
-            %
-            \noindent where, $\bar{Q}(s,a)$ is the current empirical Q-value estimate, $N(s)$ (and $N(s,a)$) is how many times $s$ has been visited (and action~$a$ selected) and $c$ is an exploration parameter. Then, $s_h$ is added to the tree: $\cl{T}\leftarrow \{s_h\}\cup\cl{T}$. The backup consists of updating empirical estimates for $t=h-1,...,0$:
-            %
-            \begin{align}
-                \bar{Q}(s_t, a_t) &\leftarrow \bar{Q}(s_t, a_t) + \frac{\bar{R}(t) - \bar{Q}(s_t, a_t)}{N(s_t, a_t) + 1}, \label{eq:uct_qbar}
-            \end{align}
-            %
-            \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and $V^{\text{init}}(s_h)=\sum_{i=h}^{H} R(s_i,a_i)$ if using a rollout policy.
-    
-    
-        \paragraph{MENTS} 
-            MENTS \cite{xiao2019maximum} combines maximum entropy policy optimization \cite{haarnoja2017reinforcement, ziebart2008maximum} with MCTS. Algorithmically, it is similar to UCT. The two differences are: (1) the search policy follows a stochastic Boltzmann policy, and (2) it uses soft values that are updated with dynamic programming backups. The MENTS search policy $\pi_{\textnormal{MENTS}}$ is given by:
-            %
-            \begin{align}
-                \pi_{\textnormal{MENTS}}(a|s) &= (1-\lambda_s)\rho_{\textnormal{MENTS}}(a|s) + \frac{\lambda_s}{|\cl{A}|}, \\
-                \rho_{\textnormal{MENTS}}(a|s) &= \exp\left(\frac{1}{\alpha}\left(\Qst{s}{a}{}-\Vst{s}{}\right)\right) \label{eq:rhosft}
-            \end{align}
-            %
-            \noindent where $\lambda_s=\min(1,\epsilon/\log(e+N(s))),$ $\epsilon \in (0,\infty)$ is an exploration parameter and $\Vst{s}{}$ (and $\Qst{s}{a}{}$) are the current soft (Q-)value estimates. 
-            %after $m_s$ visits to $s$ and $m_a$ visits to $(s,a)$, respectively. 
-            The soft value of the new node is initialised $\Vst{s_h}{}\leftarrow V^{\text{init}}(s_h)$ and the soft values are updated with backups for $t=h-1,...,0$:
-            %
-            \begin{align}
-                \Qst{s_t}{a_t}{} &\leftarrow R(s_t,a_t) + \sum_{s'\in\succc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vst{s'}{} \right), \\ %\label{eq:soft_q_backup} \\
-                \Vst{s_t}{} &\leftarrow \alpha \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alpha}\Qst{s_t}{a}{} \right). \label{eq:soft_v_backup}
-            \end{align}
-            %
-            Each $\Qst{s}{a}{}$ is initialised using another function $Q^{\text{init}}_{\text{sft}}(s,a)$ (but is typically zero).
-%            Q-values can be initialised with an initial value given by $Q^{\text{init}}_{\text{sft}}(s,a)$, which is typically $0$, and $\Vst{s}{}$ is initi
-%            Default soft Q-values (for when $N(s,a)=0$) can be set $\Qst{s}{a}{0}=Q^{\text{init}}_{\text{sft}}(s,a)$, but typically $Q^{\text{init}}_{\text{sft}}(s,a)=0$.
-%            %, but if a policy network $\tilde{\pi}$ is available then $Q^{\text{init}}_{\text{sft}}(s,a)=\log \tilde{\pi}(a|s)$ can be used as suggested by Xiao \etal \cite{xiao2019maximum}. 
-%            Initial values, $\Vst{s_{h+1}}{1}$, are set using an evaluation function or rollout policy.
-%            % The initial value for the new node, $\Vst{s_{h+1}}{1}$, is set either using an evaluation function (e.g. a value network) or using the cumulative return from a rollout policy.% $\sum_{i=h+1}^H R(s_i,a_i)$. 
-    
+
     
     \subsection{Simple regret}
     		UCB \cite{auer2002finite} is frequently used in MCTS methods to minimise \textit{cumulative regret} during the tree search. Cumulative regret is most appropriate in scenarios where the actions taken during tree search have an associated real-world cost. However, MCTS methods often use a simulator during the tree search, where the only significant real-world cost is associated with taking the recommended action after the tree search. In such scenarios, simple regret \cite{simple_regret_short,simple_regret_long} is more appropriate for analysing the performance of algorithms, as it only considers the cost of the actions that are actually executed. Under simple regret, algorithms are not penalised for under-exploiting during the search, thus can explore more, which leads to better recommendations by allowing algorithms to confirm that bad actions are indeed of lower value.
