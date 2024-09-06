@@ -15,23 +15,25 @@
 
     \todo{Nicks comment to revisit: In Sections 2 and 3 you present RL before tree search. This was a surprise to me. Wouldn’t it be better to start with single objective MDPs, then introduce methods of solving them (planning, bandits, rl) and the different assumptions they make? Then move to MO versions. I’d also be open to you presenting MCTS then generalising to MCTS rather than the other way around, but I think the way you present it is probably the most efficient.}
 
-\section{Multi-Armed Bandits}
-\label{sec:2-0-mab}
+    \todo{Add a regret or multi-armed bandit section?}
 
-    \todo{Introduce tree search using multi-armed bandits?}
-    \hide{
-    \begin{itemize}
-        \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
-        \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
-    \end{itemize}
-    }
-    \todo{list}
-    \begin{itemize}
-        \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
-        \item Multi-Armed Bandits routines algos
-        \item Exploring Bandits routines and algos
-        \item Contextual Bandits routines and algos
-    \end{itemize}
+% \section{Multi-Armed Bandits}
+% \label{sec:2-0-mab}
+
+%     \todo{Introduce tree search using multi-armed bandits?}
+%     \hide{
+%     \begin{itemize}
+%         \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
+%         \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
+%     \end{itemize}
+%     }
+%     \todo{list}
+%     \begin{itemize}
+%         \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
+%         \item Multi-Armed Bandits routines algos
+%         \item Exploring Bandits routines and algos
+%         \item Contextual Bandits routines and algos
+%     \end{itemize}
 
 \section{Markov Decision Processes and Reinforcement Learning}
 \label{sec:2-1-rl}
@@ -47,6 +49,8 @@
         \item \st{Talk about entropy and some of that work (probably a subsection)}
     \end{itemize}
 
+    \todo{Split this section into MDPs definition and move RL below monte carlo tree search? Probably if do the multi-armed bandit stuff.}
+
     In this section Markov Decision Processes are introduced, as well as some fundamental concepts in Reinforcement Learning such as \textit{policies} and \textit{value functions} which will be useful in the following. Afterwards, the \textit{maximum entropy objective} is discussed, as it will be relevant to some of the work in this thesis and other closely related work. 
 
     In this thesis we will only consider discrete and finite-horizon Markov Decision Processes, \todo{but we will point to works that make adaptions for non-finite horizons and continuous and partially observable environments, and briefly describe why the ideas could be used in parallel with the concepts in this thesis.}
@@ -55,6 +59,14 @@
         \label{def:mdp}
         A \textnormal{Markov Decision Process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},\cl{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(\cdot | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound. 
     \end{defn}
+
+    Where it is more convenient, we will use the following notation to refer to the set of successor states when discussing MDPs:
+    \begin{defn}
+        \label{def:succ}
+        The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$ is defined as $\suc{s}{a}=\{s'|p(s'|s,a)>0\}$. Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
+    \end{defn}
+
+    \todo{decide if should keep p(cdot|s,a), and just swap out the succ command as shorthand for that?}
 
     Formally, we will consider a policy to be a mapping from a state in $\cl{S}$ to a distribution over actions $\cl{A}$. \todo{For this thesis we will consider policies to be stochastic, so when a policy is used to generate actions to follow, it is done by sampling from the distribution.}
 
@@ -76,7 +88,7 @@
     \begin{defn}
         \label{def:trajectory}
         \label{def:trial}
-        A \textnormal{trial} or \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_1, r_1, s_1, a_2, r_2, ..., s_{H-1}, a_H, r_H, s_H)$, where $a_t \sim \pi(\cdot|s_{t-1})$, $r_t=R(s_{t-1},a_t)$ and $s_t \sim p(\cdot|s_{t-1},a_t)$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
+        A \textnormal{trial} or \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
     \end{defn}
 
     Next the value and Q-value of a policy is defined, which is the expected cumulative reward that a policy will obtain:
@@ -85,12 +97,12 @@
         \label{def:q_value}
         The \textnormal{value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t+1}^H r_t \Bigg| s_t=s \right].
+            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t \Bigg| s_t=s \right].
         \end{align} 
 
         The \textnormal{Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
-            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V^{\pi}(s';t+1)].
+            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^{\pi}(s';t+1)].
         \end{align} 
     \end{defn}
 
@@ -115,19 +127,21 @@
         The objective of (standard) reinfrocement learning can then be stated as finding $\max_{\pi} J(\pi)$.
     \end{defn}
 
-    In tabular reinforcement learning, where a table of values for $V(s;t)$ \todo{havent actually defined V without any superscript} is kept for each $s,t$. It can be shown \todo{refs} that the optimal (Q-)value functions satisfy the \textit{Bellman equations}:
+    It can be shown \todo{refs} that the optimal (Q-)value functions satisfy the \textit{Bellman equations}:
     \begin{align}
-        V^*(s;t) &= \max_{a\in\cl{A}} Q^*(s,a;t),
-        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V^*(s';t+1)].
+        V^*(s;t) &= \max_{a\in\cl{A}} Q^*(s,a;t), \\
+        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^*(s';t+1)].
     \end{align} 
 
-    Given any initial value function $V^{(0)}$ let the \textit{Bellman backup} operations be:
+    In tabular reinforcement learning, a table of values for $V(s;t)$ \todo{havent actually defined V without any superscript} is kept for each $s,t$. Given any initial value function $V^{(0)}$ let the \textit{Bellman backup} operations be:
     \begin{align}
-        V^{k+1}(s;t) &= \max_{a\in\cl{A}} Q^{k+1}(s,a;t),
-        Q^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [R(s,a) + V^k(s';t+1)].
+        V^{k+1}(s;t) &= \max_{a\in\cl{A}} Q^{k+1}(s,a;t), \\
+        Q^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [R(s,a) + V^k(s';t+1)].
     \end{align}
 
-    It can be shown that the Bellman backups are contraction operators \todo{add cite}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$. In the discrete \todo{what the actual conditions are} case we are considering, there will always be some $N<\infty$ such that $V^{N}=V^*$.
+    Using this \textit{dynamic programming} approach is known as \textit{value iteration}. It can be shown that the Bellman backups are contraction operators \todo{add cite}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$. In the discrete \todo{what the actual conditions are} case we are considering, there will always be some $N<\infty$ such that $V^{N}=V^*$.
+
+    \todo{add optimal policy from Q values}
 
     \subsection{Maximum Entropy Reinforcement Learning}
 
@@ -145,7 +159,7 @@
             \label{def:sft_q_value}
             The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
             \begin{align}
-                V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t+1}^H r_t + \cl{H}(\pi(\cdot|s_{i-1})) \Bigg| s_t=s \right].
+                V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right].
             \end{align} 
 
             The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
@@ -153,39 +167,50 @@
                 Q_{\sft}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^{\pi}(s';t+1)].
             \end{align} 
         \end{defn}
-        \todo{add these to abbreviations}
 
         Similarly, optimal soft (Q-)values can be defined:
         \begin{defn}
             \label{def:optimal_sft_value}
             \label{def:optimal_sft_q_value}
-            The \textnormal{Optimal (Q-)Value} of a state(-action pair) is defined as:
+            The \textnormal{Optimal soft (Q-)Value} of a state(-action pair) is defined as:
             \begin{align}
                 V_{\sft}^*(s;t) &= \max_{\pi} V_{\sft}^{\pi}(s;t) \\
                 Q_{\sft}^*(s,a;t) &= \max_{\pi} Q_{\sft}^{\pi}(s,a;t).
             \end{align}
         \end{defn}
-        \todo{add these to abbreviations}
 
         Equations similar to the Bellman equations, aptly named the \textit{Soft Bellman equations} can be defined, which differ to equations \todo{ref} by the replacement of the $\max$ operation with the \textit{softmax} operation (which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts).
 
-        \todo{THIRD Define and add to abbreviations: maximum entropy objective, or soft objective (copy from dents paper)}
+        In maximum entropy reinforcement learning, the objective is to find a policy with maximal soft value:
+        \begin{defn}
+            The \textnormal{maximum entropy (or soft) reinforcement learning objective function} $J_{\sft}(\pi)$ is defined as:
+            \begin{align}
+                J_{\sft}(\pi) = V_{\sft}^{\pi}(s_0;0).
+            \end{align}
 
-        \todo{FOURTH Define and add to abbreviations: optimal soft policy (copy from dents paper)}
+            The objective of maximum entropy (or soft) reinfrocement learning can then be stated as finding $\max_{\pi} J_{\sft}(\pi)$.
+        \end{defn}
 
-        \todo{FIFTH Define and add to abbreviations: soft bellman equations (copy from dents paper)}
+        Similarly to standard reinforcement learning, it can be shown \todo{refs} that the optimal soft (Q-)value functions satisfy the \textit{soft Bellman equations}:
+        \begin{align}
+            V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / alpha \right), \\
+            Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V_{\sft}^*(s';t+1)].
+        \end{align} 
 
-        \todo{SIXTH Define and add to abbreviations: soft bellman backups (copy from dents paper)}
+        Again, similarly to standard reinforcement learning, we can define \textit{soft Bellman backups} that admit an analogous algorithm to value iteration:
+        \begin{align}
+            V_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^{k+1}(s,a;t) / alpha \right), \\
+            Q_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V_{\sft}^k(s';t+1)].
+        \end{align}
+
+        Finally, given the optimal soft value and soft Q-value functions, the optimal soft policy is known \todo{cite}:
+        \begin{align}
+            \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right).
+        \end{align}
 
     \subsection{Remaining todos for this chapter after first draft}
 
-        \todo{FIRST Use Succ definition for successor states}
-
-        \todo{SECOND Update everywhere to make trajectories use } $s_0, a_0, r_0, s_1,...., a_{H-1}, r_{H-1}, s_H$
-
         \todo{Add a comment similar to DENTS paper where we will drop the t in notation. Make it quite bold somehow}
-
-        \todo{Split this into MDPs definition and move RL below monte carlo tree search?}
 
 
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}

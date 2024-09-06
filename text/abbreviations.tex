@@ -9,8 +9,8 @@
 
     % General maths
     \item[$\one$] 
-        The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. \\
-    
+        The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. 
+    \\
     %%%%%
     % 2.1 RL
     %%%%%
@@ -19,20 +19,30 @@
         The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
     \item[$\cl{A}$] 
         Set of actions in an MDP.
-    \item[$\cl{B}$]
-        \todo{thts backups}.
     \item[$H$] 
         The finite-horizon time bound of an MDP. 
     \item[$\cl{H}$]
         Shannon entropy, of a policy.
+    \item[$J(\pi)$] 
+        \todo{objective funciton}
+    \item[$J_{\sft}(\pi)$] 
+        \todo{soft objective funciton}
     \item[$p$] 
         The next-state probability distribution of an MDP.  $p(\cdot | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
     \item[$\pi$]
         A policy, \todo{state that this is just for this chapter, see sect 2.2 defn for rest of thesis}
+    \item[$\pi^*$]
+        The optimal standard policy, that maximises the objective function $J(\pi)$
+    \item[$\pi_{\sft}^*$]
+        The optimal soft policy, that maximises the soft objective function $J_{\sft}(\pi)$
     \item[$Q^{\pi}$]
         The Q-value of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$.
     \item[$Q^*$]
         The optimal value function $Q^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy.
+    \item[$Q_{\sft}^{\pi}$]
+        The Q-value of a policy $\pi$. $Q_{\sft}^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$, \todo{plus the entopy of the policy weighted by the temperature alpha}. \todo{consider just writing max pi over the soft values here instead?}
+    \item[$Q_{\sft}^*$]
+        The optimal value function $Q_{\sft}^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.
     \item[$R$] 
         The reward function of in an MDP: $\cl{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
     \item[$\cl{S}$] 
@@ -43,6 +53,10 @@
         The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$.
     \item[$V^*$]
         The optimal value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy.
+    \item[$V_{\sft}^{\pi}$]
+        The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, \todo{plus the entopy of the policy weighted by the temperature alpha}.
+    \item[$V_{\sft}^*$]
+        The optimal soft value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.\todo{consider just writing max pi over the soft values here instead?}
     \\
     
     %%%%%
