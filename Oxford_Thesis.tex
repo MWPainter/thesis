@@ -107,6 +107,7 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{amsthm}
+\usepackage{bbm} % for indicator function
 
 % Maffs theorems envs
 \theoremstyle{plain}
@@ -141,7 +142,7 @@
 \newcustomtheorem{customremark}{Remark}
 \newcustomtheorem{customprop}{Proposition}
 
-% Highlighting (for todos)
+% Highlighting (for todos  and strikethroughs)
 \usepackage{xcolor} 
 \usepackage{soul}
 
@@ -177,12 +178,18 @@
 % \newcommand{\todo}[1]{TODO: #1}
 \newcommand{\todo}[1]{\hl{TODO: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-\newcommand{\hide}[1]{}
-% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
+\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 
 % General - Maffs shorthands
 \newcommand{\bb}[1]{\mathbb{#1}}
 \newcommand{\cl}[1]{\mathcal{#1}}
+
+% Maffs operators/symbols that aren't default
+\newcommand{\one}{\mathbbm{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\sft}{\textnormal{sft}}
 
 
 % Sec 1.2 - Contributions (research questions)% Refer to questions
@@ -323,21 +330,21 @@
 % Add or remove any chapters you'd like here, by file name (excluding '.tex'):
 \flushbottom
 
-% \include{text/ch1-intro}
-% \input{text/ch2-background}
-% \include{text/ch3-litreview}
-% \include{text/ch4-dents}
-% \include{text/ch5-chmcts}
-% \include{text/ch6-simplexmaps}
-% \include{text/ch7-conclusion}
+\include{text/ch1-intro}
+\input{text/ch2-background}
+\include{text/ch3-litreview}
+\include{text/ch4-dents}
+\include{text/ch5-chmcts}
+\include{text/ch6-simplexmaps}
+\include{text/ch7-conclusion}
 
-\include{text/ch1-intro-outline}
-\include{text/ch2-background-outline}
-\include{text/ch3-litreview-outline}
-\include{text/ch4-dents-outline}
-\include{text/ch5-chmcts-outline}
-\include{text/ch6-simplexmaps-outline}
-\include{text/ch7-conclusion-outline}
+% \include{text/ch1-intro-outline}
+% \include{text/ch2-background-outline}
+% \include{text/ch3-litreview-outline}
+% \include{text/ch4-dents-outline}
+% \include{text/ch5-chmcts-outline}
+% \include{text/ch6-simplexmaps-outline}
+% \include{text/ch7-conclusion-outline}
 
 
 %% APPENDICES %% 

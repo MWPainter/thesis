@@ -8,26 +8,46 @@
     % t = free variable for current timestep
 
     % General maths
-    \item[$\bb{1}$] The indicator function, where $\bb{1}(A)=1$ when $A$ is true, and $\bb{1}(A)=0$ when $A$ is false.
-    \\
+    \item[$\one$] 
+        The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. \\
+    
+    %%%%%
     % 2.1 RL
+    %%%%%
     \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-rl})}\hfill\hfill]
+    \item[$\alpha$] 
+        The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
     \item[$\cl{A}$] 
         Set of actions in an MDP.
     \item[$\cl{B}$]
         \todo{thts backups}.
     \item[$H$] 
         The finite-horizon time bound of an MDP. 
+    \item[$\cl{H}$]
+        Shannon entropy, of a policy.
     \item[$p$] 
         The next-state probability distribution of an MDP.  $p(\cdot | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
-    \item[$\cl{R}$] 
+    \item[$\pi$]
+        A policy, \todo{state that this is just for this chapter, see sect 2.2 defn for rest of thesis}
+    \item[$Q^{\pi}$]
+        The Q-value of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$.
+    \item[$Q^*$]
+        The optimal value function $Q^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy.
+    \item[$R$] 
         The reward function of in an MDP: $\cl{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
     \item[$\cl{S}$] 
         Set of states in an MDP. 
     \item[$t$] 
         \todo{free variable for current timestep? And generally add a list of free variables?}
+    \item[$V^{\pi}$]
+        The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$.
+    \item[$V^*$]
+        The optimal value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy.
     \\
+    
+    %%%%%
     % 2.2 THTS
+    %%%%%
     \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill]
     \item[$a_t$] 
         A random variable for the $t$th action sampled in a trial of \thtspp.
@@ -39,10 +59,10 @@
         A random variable for the $t$th reward sampled in a trial of \thtspp.
     \item[$s_t$] 
         A random variable for the $t$th state sampled in a trial of \thtspp.
-    \item[$\cl{T}$] 
-        A THTS search tree. \todo{With:} $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. \todo{handle } $\cl{T}_k$
     \item[$T$] 
         Computation time limit.
+    \item[$\cl{T}$] 
+        A THTS search tree. \todo{With:} $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. \todo{handle } $\cl{T}_k$
     \item[$\tau$] 
         A trajectory for a trial of \thtspp. I.e. $\tau=(s_0,a_1,s_1,...,s_{h-1},a_{h-1},s_h)$. \todo{handle } $\tau_k$
     \item[$\Vinit$]
@@ -53,8 +73,11 @@
 % List of abbreviations
 \begin{mclistof}{List of Abbreviations}{3.2cm}
 
+    
+    %%%%%
     % abbrv - 2.1 RL
-    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-rl})}\hfill\hfill]
+    %%%%%
+    \item[\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-1-rl})}\hfill\hfill]
     \item[MDP] Markov Decision Process.
     \\
     % abbrv - 2.2 THTS
