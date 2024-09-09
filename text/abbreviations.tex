@@ -47,6 +47,10 @@
         The reward function of in an MDP: $\cl{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
     \item[$\cl{S}$] 
         Set of states in an MDP. 
+    \item[$\tau$] 
+        \todo{trajectory}
+    \item[$\tau_{:h}$] 
+        \todo{trajectory}
     \item[$t$] 
         \todo{free variable for current timestep? And generally add a list of free variables?}
     \item[$V^{\pi}$]
@@ -63,22 +67,34 @@
     % 2.2 THTS
     %%%%%
     \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill]
-    \item[$a_t$] 
-        A random variable for the $t$th action sampled in a trial of \thtspp.
+    \item[$\cl{B}_Q$]
+        \todo{define backup}
+    \item[$\cl{B}_V$]
+        \todo{define backup}
+    \item[$N(s)$]
+        The number of visits at the decision node corresponding to state $s$.
+    \item[\mctsmode] 
+        \todo{definition of} \mctsmode
+    \item[$N(s)$]
+        The number of visits at the decision node corresponding to state $s$.
+    \item[$N(s,a)$]
+        The number of visits at the chance node corresponding to state-action pair $(s,a)$.
     \item[$n$] 
         Number of trials run.
+    \item[\node] 
+        A mapping from states and state-action pairs to their corresponding decision and chance nodes respectively.
+    \item[$\node(s).V$] 
+        \todo{write this}
+    \item[$\node(s,a).Q$] 
+        \todo{write this}
     \item[$\pi$]
         A search policy, \todo{define, this is a parameter of thts++}. \todo{handle } $\pi^k$
-    \item[$r_t$] 
-        A random variable for the $t$th reward sampled in a trial of \thtspp.
-    \item[$s_t$] 
-        A random variable for the $t$th state sampled in a trial of \thtspp.
     \item[$T$] 
         Computation time limit.
     \item[$\cl{T}$] 
-        A THTS search tree. \todo{With:} $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. \todo{handle } $\cl{T}_k$
-    \item[$\tau$] 
-        A trajectory for a trial of \thtspp. I.e. $\tau=(s_0,a_1,s_1,...,s_{h-1},a_{h-1},s_h)$. \todo{handle } $\tau_k$
+        A THTS search tree. \todo{With:} $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. \todo{handle } $\cl{T}^k$
+    \item[$\cl{T}^k$] 
+        \todo{search tree on after k trials}
     \item[$\Vinit$]
         The initialisation function used in \thtspp, used to initialise the value of a new decision node.
 
@@ -106,12 +122,8 @@
         An intance of \DNODE, i.e. a decision node instance.
     \item[MCTS] 
         Monte Carlo Tree Search.
-    \item[\mctsmode] 
-        \todo{definition of} \mctsmode
     \item[MENTS]
         Maximum ENtropy Tree Search.
-    \item[\node] 
-        A mapping from states and state-action pairs to their corresponding decision and chance nodes respectively.
     \item[THTS] 
         Trial-based Heuristic Tree Search.
     \item[\thtspp] 

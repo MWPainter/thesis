@@ -87,8 +87,9 @@
     
     \begin{defn}
         \label{def:trajectory}
-        \label{def:trial}
-        A \textnormal{trial} or \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
+        A \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
+
+        Sometimes it will be necessary to reason about trajectories with a horizon $h<H$, which will be denoted $\tau_{:h} = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{h-1}, a_{h-1}, r_{h-1}, s_h)$.
     \end{defn}
 
     Next the value and Q-value of a policy is defined, which is the expected cumulative reward that a policy will obtain:
@@ -222,6 +223,10 @@
         \item Outline that I'll present this as here is THTS, and then here's the THTS routines for MCTS
     \end{itemize}
 
+    \todo{double check the intro to 2.2, as wrote this a while ago}
+
+    \todo{try to make sure specific about using thts vs mcts}
+
     In this section we introduce \thtspp\ewe \cite{thtspp}, which is an open-source, parallelised extension of the  Trial-based Heuristic Tree Search schema \cite{thts} (THTS). This schema is a generalisation of Monte Carlo Tree Search (MCTS), as presented in Section \ref{sec:2-2-2-mcts}. In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes output actions that can be taken by the agent, and chance nodes output \textit{outcomes} that may be random and may depend on the action taken. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. In this work, we are considering fully-observable environments, but \thtspp\ewe can be generalised to consider \textit{partially-observable} environments. We give \thtspp\ewe implementations of the standard Upper Confidence Bound applied to Trees (UCT) algorithm and Maximum ENtropy Tree Search (MENTS) in Sections \ref{sec:2-2-2-mcts} and \ref{sec:2-2-3-ments} respectively.
 
     In MCTS we run trials, either for some fixed number of trials, or some timelimit, where each trial is split into four stages: 
@@ -251,6 +256,116 @@ def foo(bar):
             \item Mention that $\Vinit$ can be implemented as $V_\theta$ to be used with deep RL methods
             \hide{\item \todo{Find the best place to talk about deep RL? Maybe in the RL section?}}
         \end{itemize}
+
+        \todo{this section relly really needs diagrams}
+
+        \todo{add psuedo code}
+
+        In this section we will present \thtspp schema, which is \todo{adaptation?} of the Trial-Based Heuristic Tree Search (THTS) schema \todo{cite}. After we have presented \thtspp, we will use the schema to define tree search algorithms that are relevant in this thesis, namely Upper Confidence Bound Applied to Trees (UCT) \todo{cite} in subsection \todo{ref} and Maximum ENtropy Tree Search (MENTS) in subsection \todo{Ref}. Finally we will briefly point out the differences between \thtspp and the original THTS schema in subsection \todo{ref}.
+
+        \todo{this is already a subsection, so update above}
+
+        In \thtspp\ewe a search tree $\cl{T}$ is built using Monte Carlo trials. Each trial is split into two phases: the \textit{selection phase} where a trajectory is sampled using a \textit{search policy}; and the \textit{backup phase} where value estimates stored in the tree structure are updated. In \thtspp\ewe the selection phase encumpasses the expansion and initialisation phases \todo{of the common presentation of MCTS}, where new nodes are added to the tree and the values of any new leaf node is initialised. 
+
+        \todo{be more presise about trajectory vs trial, and update for sect 2.1}.
+
+        To simplify notation in the presentation of \thtspp\ewe we will assume that states and state-action pairs have a one to one correspondance with nodes in the search tree $\cl{T}$. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold. Given this assumption, we can state that the search tree is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$. \todo{rephrase last sentance for defn}
+
+        \begin{defn}
+            A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree $s'\in\cl{T}$ and each $s',a'\in\tau{:h}$ is also in the tree $(s',a')\in\cl{T}$.
+        \end{defn}
+
+        \todo{clean above defn up}
+
+        \todo{probably want to explicitly define what it means for s or s,a to be in a trajectory}
+
+        \todo{words about decision and chance nodeS?}
+
+        \begin{defn}
+            A \textnormal{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textnormal{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textnormal{node} is used to refer to any decision or chance node in the tree. When it is not clear from context if an $s$ or $(s,a)$ refers to a state(-action pair), the notation $\node(s)$ and $\node(s,a)$ will be used. \todo{fix node notation here}
+        \end{defn}
+
+        Additionally, each decision and chance node will generally store value estimates that are algorithm dependent. To specify this we will use $\node(s).V$ to denote the set of values stored at node $\node(s)$, and $\node(s,a).Q$ for the set of value stored at node $\node(s,a)$. \todo{make this a defn?}
+
+        \todo{define N(s) and N(s,a)}
+
+        The initial search tree consists of a single root node that corresponds to the initial state of the MDP: $\cl{T}^0=\{s_0\}$. And let $\cl{T}^k$ denote the search tree of \thtspp\ewe after $k$ trials have been run.
+
+        To specify an algorithm in the \thtspp\ewe schema, the following need to be provided:
+        \begin{description}
+            \item[Search policy:]
+                A distribution  $\pi^{k}$ for the $(k+1)$th trial, which can use values in the current search tree $\cl{T}^{k}$;
+            \item[Initialisation function:]
+                A function $\Vinit$ to initialise values for new desicion nodes added to the tree;
+            \item[Backup function:]
+                Two functions $\cl{B}_V$ and $\cl{B}_Q$ which updates values; \todo{Clewan this up, and word better pls}
+            \item[MCTS mode:]
+                A boolean \mctsmode specifying if \thtspp\ewe should operate in MCTS mode.
+        \end{description}
+
+        \todo{actually define the above things properly somewhere}
+
+        The $k+1$th trial of the \thtspp\ewe schema operates as follows: \todo{this is probably better written as psuedocode...}
+        \begin{enumerate}
+            \item sample a trajectory $\tau_{:h}$ using the search policy $\pi^{k}$;
+            \begin{itemize}
+                \item If \mctsmode\ewe is False, then $h=H$;
+                \item If \mctsmode\ewe is True, then $h$ is such that $s_{h-1}\in\cl{T}^k$ and $s_h\not\in\cl{T}^k$, or $h=H$.
+            \end{itemize}
+            \item Any new nodes nodes that need to be added from this trajectory are added to the tree, $\cl{T}^{k+1} = \cl{T}^k \cup \tau_{:h}$;
+            \item If $s_h\not\in\cl{T}^k$ then $\node(s_h).V$ is initialised using $\Vinit$;
+            \item The backup functions are used to update values in the tree:
+            \begin{itemize}
+                \item For $i={h-1,h-2,...,1,0}$:
+                \begin{itemize}
+                    \item $\node(s_i,a_i).Q \leftarrow \cl{B}_Q(\{\node(s').V | s'\in\node(s_i,a_i).\children\})$
+                    \item $\node(s_i).V \leftarrow \cl{B}_V(\{\node(s_i,a').Q | a'\in\node(s_i).\children\})$
+                \end{itemize}
+            \end{itemize}
+        \end{enumerate}
+
+        \todo{define } $\node(s_i).\children$ and $\node(s_i,a_i).\children$.
+
+        \todo{Check how thts deals with using value estimates when children dont exist. There should be some form of using heuristic. Maybe this needs to be added to THTSpp todo list}
+
+
+    
+
+    
+    \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
+    \label{sec:2-2-2-uct}
+    
+        \todo{list}
+        \begin{itemize}
+            \item Define UCT here
+        \end{itemize}
+    
+    \subsection{Monte-Carlo Tree Search}
+    \label{sec:2-2-3-mcts}
+
+        \todo{list}
+        \begin{itemize}
+            \item Give overview of MCTS
+            \item Give UCT in terms of THTS schema 
+            \item Define terms precisely and consistently in terms of THTS functions, maybe \mctsmode\ewe should go here
+            \item Define the value initialisation of THTS using a rollout policy for MCTS
+            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
+            \item Should talk about multi-armed bandits here?
+        \end{itemize}
+    
+    \subsection{Maximum Entropy Tree Search}
+    \label{sec:2-2-4-ments}
+    
+        \todo{list}
+        \begin{itemize}
+            \item Define MENTS here
+        \end{itemize}
+
+\clearpage % below is draft shit
+
+
+
+
         
         \todo{To simplify notation we're going to assume that states and state-action pairs have a one to one correspondance with decision and chance nodes respectively. This is just to make notation clean, results generalse. AND} were going to use \node\ewe as a mapping from $\cl{S}\cup \cl{S}\times\cl{A}$, to \thtspp\ewe decision and chance nodes. So $\node(s_i)$ refers to the decision node associated with $\node(s_i)$ and $\node(s_i,a_{i+1})$ is a chance node.  \todo{Basically want to say that I'll use it without the node bit, unless I want to distinguish between the node, the state and state-action pair}.
 
@@ -399,26 +514,8 @@ def selection_phase_ended(t,mcts_mode):
 
 
 
-    \subsection{Monte-Carlo Tree Search}
-    \label{sec:2-2-2-mcts}
 
-        \todo{list}
-        \begin{itemize}
-            \item Give overview of MCTS
-            \item Give UCT in terms of THTS schema 
-            \item Define terms precisely and consistently in terms of THTS functions, maybe \mctsmode\ewe should go here
-            \item Define the value initialisation of THTS using a rollout policy for MCTS
-            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
-            \item Should talk about multi-armed bandits here?
-        \end{itemize}
-    
-    \subsection{Maximum Entropy Tree Search}
-    \label{sec:2-2-3-ments}
-    
-        \todo{list}
-        \begin{itemize}
-            \item Define MENTS here
-        \end{itemize}
+
 
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-3-morl}
