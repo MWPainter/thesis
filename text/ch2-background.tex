@@ -78,10 +78,16 @@
         \label{def:policy}
         A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow \cl{A} \rightarrow [0,1]$ is a mapping from states to distributions over actions, where for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$. We will use the following notations: $\pi(\cdot|s)$ is used to denote the entire distribution over the set of actions, $\pi(a|s)$ denotes the probability that action $a$ is sampled by the policy at state $s$. 
 
-        Additionally, for \textnormal{deterministic policies} we will use the shorthand notation $\pi(s)$ to denote the action taken by the policy. Formally, that is $\pi(s)=a$ where $a\in\cl{A}$ is such that $\pi(a|s)=1$.
+        Additionally, for \textnormal{deterministic policies} we will use the shorthand notation $\pi(s)$ to denote the action taken by the policy. Formally, we will write $\pi(s)=a'$ where $a'\in\cl{A}$ is such that $\pi(a'|s)=1$.
+
+        \todo{want to add a statement saying something like} $\pi(s)=a'$ is shorthand for $\pi(a|s)=\one[a=a']$.
+
+        \todo{Actually want to say something like:} a deterministic policy is special case of the stochastic, with a delta distribution, such as $\pi(a|s)=\one[a=a']$, and in such cases we will use $\pi(s)=a'$ as a short hand to state $\pi(a|s)=\one[a=a']$ and $\pi(s)$ as a shorthand for $a'$.
     \end{defn}
 
     \todo{Explicitly note that we are using pi as a free variable (is free variable correct word here?) here, and that in section - todo ref - we will use pi to refer to a specific type of policy (search policies) in the rest of the thesis after this section.}
+
+    \todo{clean up policy definition with shorthand stuff}
 
     In reinforcement learning it is common to refer to a sequence of states, actions and rewards as a \textit{trajectory}. In the tree search literature it is more common to refer to this as a \textit{trial} \todo{cite thts?}, so we will use these terms interchangeably.
     
@@ -295,8 +301,8 @@ def foo(bar):
         \begin{description}
             \item[Search policy:]
                 A distribution  $\pi^{k}$ for the $(k+1)$th trial, which can use values in the current search tree $\cl{T}^{k}$;
-            \item[Initialisation function:]
-                A function $\Vinit$ to initialise values for new desicion nodes added to the tree;
+            \item[Heuristic function:]
+                A function $\Vinit$ used as a heuristic to initialise values for new desicion nodes added to the tree;
             \item[Backup function:]
                 Two functions $\cl{B}_V$ and $\cl{B}_Q$ which updates values; \todo{Clewan this up, and word better pls}
             \item[MCTS mode:]
@@ -324,9 +330,42 @@ def foo(bar):
             \end{itemize}
         \end{enumerate}
 
+        \todo{converting the above into some psuedocode. Should probably define children as a property of nodes. Should also just state that } $\node(s_i,a_i).Q$ \todo{and so on are just scalar values for now. We can make them vectors when needed later}. \todo{also make sure define } $N(s)$ and $N(s,a)$
+        \begin{lstlisting}
+def run_trial(search_policy: $\pi$, heuristic_fn: $\Vinit$):
+    $\tau_{:h}$ = sample_trajectory($pi$)
+    if $s_h\not\in\cl{T}$:
+        initialise_values($s_h$, $\Vinit$)
+    for i in $\{$h-1,h-2,...,1,0$\}$:
+        backup_q($s_i$,$a_i$)
+        backup_v($s_i$)
+
+def sample_trajectory(search_policy: $\pi$):
+    pass
+
+def initialise_values($s_h$, $\Vinit$):
+    pass 
+
+def backup_q($s_i$, $a_i$):
+    pass
+    
+def backup_v($s_i$):
+    pass
+        \end{lstlisting}
+        % TODO: make a figure env for code
+
         \todo{define } $\node(s_i).\children$ and $\node(s_i,a_i).\children$.
 
         \todo{Check how thts deals with using value estimates when children dont exist. There should be some form of using heuristic. Maybe this needs to be added to THTSpp todo list}
+
+
+        \todo{make sure neurips paper writing integrated (commented out, and below this comment in the .tex) - read the actual pdf for thesis and neurips papers and compare cover same info?}
+% MCTS methods build a search tree $\cl{T}$ using Monte-Carlo trials. Each trial is split into two phases: starting from the root node, actions are chosen according to a \textit{search policy} and states sampled from the transition distribution until the first state not in $\cl{T}$ is reached. A new node is added to $\cl{T}$ and its value is initialised using some function $V^{\text{init}}$, often using a \textit{rollout policy} to select actions until the time horizon $H$ is reached. In the second phase, the return for the trial is back-propagated up (or `backed up') the tree to update the values of nodes in $\cl{T}$. For a reader unfamiliar with MCTS, we refer to \cite{browne2012survey} for a review of the MCTS literature, as many variants of MCTS exist and may vary from our description. 
+
+%         Two critical choices in designing an MCTS algorithm are the search policy (which needs to balance exploration and exploitation) and the backups (how values are updated). MCTS algorithms are often designed to achieve \textit{consistency} (i.e. convergence to the optimal action in the limit), which implies that running more trials will increase the probability that the optimal action is recommended.
+%         % which gives the desirable property that running more trials should improve the policy.
+        
+%         To simplify notation we assume that each node in the search tree corresponds to a unique state, so we may represent nodes using states. Our algorithms and results do not make use of this assumption, and generalise to when this assumption does not hold.
 
 
     
@@ -339,76 +378,50 @@ def foo(bar):
         \begin{itemize}
             \item Define UCT here
         \end{itemize}
-    
-    \subsection{Monte-Carlo Tree Search}
-    \label{sec:2-2-3-mcts}
 
-        \todo{list}
-        \begin{itemize}
-            \item Give overview of MCTS
-            \item Give UCT in terms of THTS schema 
-            \item Define terms precisely and consistently in terms of THTS functions, maybe \mctsmode\ewe should go here
-            \item Define the value initialisation of THTS using a rollout policy for MCTS
-            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
-            \item Should talk about multi-armed bandits here?
-        \end{itemize}
-    
-    \subsection{Maximum Entropy Tree Search}
-    \label{sec:2-2-4-ments}
-    
-        \todo{list}
-        \begin{itemize}
-            \item Define MENTS here
-        \end{itemize}
+        \todo{I'm feeling ill writing this section, so just going to word vomit this shit out and make it sound not shit later}
 
-\clearpage % below is draft shit
+        \todo{add Quct commands like Qments}
 
+        Upper Confidence Bounds Applied to Trees (UCT) \todo{cite} is a commonly used tree search algorithm, which is based on the Upper Confidence Bounds (UCB) \todo{cite both papers} algorithm for Multi-Armed Bandit problems \todo{cite original MAB and a review}.
 
+        In the literature, UCT and MCTS are often used synonomously, however this leaves some of the specifics of the algorithms used as ambiguous. In this thesis, we will present UCT as it was originally presented in \todo{cite}. And in subsection \todo{ref} we will specify the variant of UCT which is commonly referred to as MCTS.
 
+        UCT can be defined using the THTS schema outlined in section \todo{ref} as follows:
 
-        
-        \todo{To simplify notation we're going to assume that states and state-action pairs have a one to one correspondance with decision and chance nodes respectively. This is just to make notation clean, results generalse. AND} were going to use \node\ewe as a mapping from $\cl{S}\cup \cl{S}\times\cl{A}$, to \thtspp\ewe decision and chance nodes. So $\node(s_i)$ refers to the decision node associated with $\node(s_i)$ and $\node(s_i,a_{i+1})$ is a chance node.  \todo{Basically want to say that I'll use it without the node bit, unless I want to distinguish between the node, the state and state-action pair}.
+        Firstly, UCT as originally presented is run with \mctsmode set to False. As such, all sampled trajectories are sampled until timestep $H$, the finite horizon of the MDP. 
 
-        \todo{Define some node stuff here, } mabye define $\node(s_i).V$ and so on
+        At each node a the sampled averages $\bar{V}_{\uct}$ or $\bar{Q}_{\uct}$ for value estimates.
 
-        \todo{Add parameters of nodes in tables, and define the interfaces somewhere.}
+        The search policy that UCT follows is:
+        \begin{align}
+            \pi_{\uct}(s) = \argmax_{a\in\cl{A}} Q_{\uct}(s,a) + b_{\uct} \sqrt{\frac{\log(N(s))}{N(s,a)}} 
+        \end{align}
+        \todo{add labels for equations}
 
-        \todo{The initial tree is } $\cl{T}_0=\{\node(s_0)\}$.
+        In \todo{ref above eqn}, when $N(s,a)=0$ there is a division by zero, which is taken as $\inf$, and ties are broken randomly, which effectively implements the ``every arm is initialised by pulling it once'' \todo{actually quote the paper, and cite UCT paper}. \todo{define the bias param}
 
-        \todo{Define } the value which could be a convex hull and so on. \todo{Going to have to make below consistent with this}
+        After sampling a trajectory $\tau_{:H}\sim\pi_{\uct}$ are updated as follows:
+        \begin{align}
+            \bar{Q}_{\uct}(s_t,a_t) &\leftarrow 
+                \frac{1}{N(s,a)} \left( (N(s,a)-1) \bar{Q}_{\uct}(s_t,a_t) 
+                    + \sum_{i=t}^{H-1} R(s_i,a_i) \right) \\
+            \bar{V}_{\uct}(s_t) &\leftarrow 
+                \frac{1}{N(s,a)} \left( (N(s,a)-1) \bar{V}_{\uct}(s_t,a_t) 
+                    + \sum_{i=t}^{H-1} R(s_i,a_i) \right) 
+        \end{align}  
+        \todo{add labels for equations}
 
-        An algorithm following the \thtspp\ewe schema needs to define the following functions \todo{clean up this list}:
-        \begin{description}
-            \item[Search policy:]
-                A distribution  $\pi^{k}$ for the $k$th trial, which can use values in the current search tree $\cl{T}_{k-1}$;
-            \item[Initialisation function:]
-                A function $\Vinit$ to initialise values for new desicion nodes added to the tree;
-            \item[Backup function:]
-                Two functions $\cl{B}^V$ and $\cl{B}^Q$ which updates values. \todo{Clewan this up, maybe just accept overloeaded notation?}
+        \todo{Some note about the V values not actually being used in the algorithm}
 
-        \end{description}
+        \todo{some comment about it can be implemented as backups (copy equations from THTS), but typically implemented as above. OR, just define backup functions to take the trajectory too}
 
-        In \thtspp\ewe a search tree $\cl{T}$ is built using random trials. The $k$th trial is split into four phases:
-        
-        \begin{description}
-            \item[Selection:] 
-                A \textit{search policy} is used to sample actions and the transition distribution $p$ is used to sample successor states \todo{until new node not in tree, or some depth D}. From this we get a trajectory for the trial $\tau=(s_0,a_1,s_1,...,s_{h-1},a_h,s_h)$;
-            \item[Expansion:]
-                New nodes corresponding to the sampled trial trajectory are added to the tree: $\cl{T}_k = \cl{T}_{k-1} \cup \node(\tau)$, where $\node(\tau)$ is the set of nodes sampled in the trial (i.e. $\node(\tau) = \{\node(s_i)\}_{i=0}^h \cup \{\node(s_i,a_{i+1})\}_{i=0}^{h-1}$);
-            \item[Initialisation:]
-                If $s_h$ is a new node added to the tree ($\node(s_h)\not\in\cl{T}_{k-1}$), then initialise the value of $\node(s_h)$ using $\Vinit$;
-            \item[Backup:]
-                \todo{clean up value function notation}. $V^{k}(s_t) = \cl{B}^V(\mathbf{Q}^{k}(s_t,\cdot))$ and $Q^{k}(s_t) = \cl{B}^Q(\mathbf{V}^{k}(\cdot))$.
-        \end{description}
+        Because UCT is planning in a finite horizon MDP, the heuristic function will only be called on states that are at the time horizon H. As such, for UCT we can set $\Vinit(s) = 0$.
+
+        \todo{add polynomial UCT here? and or prioritised UCT from alpha go here?}
 
 
-        % MCTS methods build a search tree $\cl{T}$ using Monte-Carlo trials. Each trial is split into two phases: starting from the root node, actions are chosen according to a \textit{search policy} and states sampled from the transition distribution until the first state not in $\cl{T}$ is reached. A new node is added to $\cl{T}$ and its value is initialised using some function $V^{\text{init}}$, often using a \textit{rollout policy} to select actions until the time horizon $H$ is reached. In the second phase, the return for the trial is back-propagated up (or `backed up') the tree to update the values of nodes in $\cl{T}$. For a reader unfamiliar with MCTS, we refer to \cite{browne2012survey} for a review of the MCTS literature, as many variants of MCTS exist and may vary from our description. 
-
-%         Two critical choices in designing an MCTS algorithm are the search policy (which needs to balance exploration and exploitation) and the backups (how values are updated). MCTS algorithms are often designed to achieve \textit{consistency} (i.e. convergence to the optimal action in the limit), which implies that running more trials will increase the probability that the optimal action is recommended.
-%         % which gives the desirable property that running more trials should improve the policy.
-        
-%         To simplify notation we assume that each node in the search tree corresponds to a unique state, so we may represent nodes using states. Our algorithms and results do not make use of this assumption, and generalise to when this assumption does not hold.
-    
+        \todo{make sure neurips paper writing integrated in UCT and MCTS section (commented out, and below this comment in the .tex) - read the actual pdf for thesis and neurips papers and compare cover same info?}
 %         \paragraph{UCT} 
 %             UCT~\cite{kocsis2006uct} applies the upper confidence bound (UCB) in its search policy to balance exploration and exploitation. The $n$th trial of UCT operates as follows: let $\cl{T}$ be the current search tree and let $\tau=(s_0,a_0,...,a_{h-1},s_{h})$ denote the trajectory of the $n$th trial, where $s_h\not\in\cl{T}$ or $h=H$. At each node $s_t$ the UCT search policy $\pi_{\text{UCT}}$ will select a random action that has not previously been selected, otherwise, it will select the action with maximum UCB value:
 %             %
@@ -427,9 +440,104 @@ def foo(bar):
 %             \end{align}
 %             %
 %             \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and $V^{\text{init}}(s_h)=\sum_{i=h}^{H} R(s_i,a_i)$ if using a rollout policy.
+
+
+
     
+    \subsection{Monte-Carlo Tree Search}
+    \label{sec:2-2-3-mcts}
+
+        \todo{list}
+        \begin{itemize}
+            \item Give overview of MCTS
+            \item Give UCT in terms of THTS schema 
+            \item Define terms precisely and consistently in terms of THTS functions, maybe \mctsmode\ewe should go here
+            \item Define the value initialisation of THTS using a rollout policy for MCTS
+            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
+            \item Should talk about multi-armed bandits here?
+        \end{itemize}
+
+        \todo{I'm feeling ill writing this section, so just going to word vomit this shit out and make it sound not shit later}
+
+
+        \todo{add Qmcts commands like Qments}
+
+        In this thesis we will refer to any algorithm that only adds one decision node to the search tree on each trial as an MCTS algorithm. That is any THTS algorithm with \mctsmode set to True is an MCTS algorithm. 
+
+        In this section we will present what is commonly referred to as MCTS in the literature, where the heuristic function is either in the form of a \textit{rollout}, using a \textit{rollout policy} \todo{cite papers that do this, including some that just call it UCT}, or use a function $V_\theta$ that aims to approximate the true optimal value function $V^*$ from Equation \todo{ref} \todo{cite papers that do this}.
+
+        These algorithms follow the same 
+
+        These algorithms use the similar value functions to UCT, $\bar{V}_{\mcts}$ or $\bar{Q}_{\mcts}$. 
+
+        The search policy corresponds to the UCT search policy, using the new $\bar{Q}_{\mcts}$ values:
+        \begin{align}
+            \pi_{\mcts}(s) = \argmax_{a\in\cl{A}} Q_{\mcts}(s,a) + b_{\mcts} \sqrt{\frac{\log(N(s))}{N(s,a)}} 
+        \end{align}
+        \todo{add labels for equations}
+
+        A trajectory $\tau_{:h}$ is sampled until a new decision node not in the tree is reached, as we are now running with \mctsmode set to True.
+
+        If the algorithm uses a function approximation $V_\theta$, then it is used directly for the heuristic function $\Vinit$. If a rollout is used for the heuristic function, then the algorithm needs to define a \textit{rollout policy} $\pi_{\rollout}$, which is used to sample a Monte Carlo estimate of the value function $V^{\pi_{\rollout}}$ as follows. The sampled trajectory $\tau_{:h}\sim\pi_{\mcts}$ is extended with the rollout trajectory $\tau_{h:H}\sim\pi_{\rollout}$ to give the Monte Carlo estimate of the value at $s_h$:
+        \begin{align}
+            V^{\pi_{\rollout}}(s_h) \approx \sum_{i=h}^{H-1} r_i.
+        \end{align}
+        
+        Letting $\tilde{r} = \Vinit(s_h)$, the value estimates (or sample averaqes) are updated as follows:
+
+        \begin{align}
+            \bar{Q}_{\mcts}(s_t,a_t) &\leftarrow 
+                \frac{1}{N(s,a)} \left( (N(s,a)-1) \bar{Q}_{\mcts}(s_t,a_t) 
+                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \\
+            \bar{V}_{\mcts}(s_t) &\leftarrow 
+                \frac{1}{N(s,a)} \left( (N(s,a)-1) \bar{V}_{\mcts}(s_t,a_t) 
+                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) 
+        \end{align}  
+        \todo{add labels for equations}
+
     
-%         \paragraph{MENTS} 
+    \subsection{Maximum Entropy Tree Search}
+    \label{sec:2-2-4-ments}
+    
+        \todo{list}
+        \begin{itemize}
+            \item Define MENTS here
+        \end{itemize}
+
+        \todo{I'm feeling ill writing this section, so just going to word vomit this shit out and make it sound not shit later}
+
+
+        Maximum ENtropy Tree Search (MENTS) \todo{cite}, in contrast to UCT, focuses on the maximum-entropy objective. In its original presentation \mctsmode is set to True, and it uses the soft value estimates $\hat{V}_{\ments}$ and $\hat{Q}_{\ments}$. The MENTS search policy is
+        \begin{align}
+            \piments(a|s) &= 
+                (1-\lambda_s)\exp\left(\frac{1}{\alpha_{\ments}}\left(\Qments(s,a)-\Vments(s)\right)\right) 
+                    + \frac{\lambda_s}{|\cl{A}|},
+        \end{align}
+        \todo{add labels for equations}
+        where $\alpha_{\ments}$ is the temperature paramter used for Equation \todo{ref} in MENTS, and $\lambda_s=\min(1,\epsilon/\log(e+N(s))),$ with $\epsilon \in (0,\infty)$ is an exploration parameter.
+
+        The value estimates are updated using the soft Bellman backups (\todo{ref}) as follows:
+        \begin{align}
+            \Qments(s_t,a_t) &\leftarrow 
+                R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \\
+            \Vments(s_t) &\leftarrow 
+                \alpha \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alpha}\Qments(s_t,a) \right).
+        \end{align}
+        \todo{add labels for equations}
+
+        \todo{talk about initialistations, for Vinit its the same as MCTS, think about how to integrate Qinit properly into the thesis using below stuff (commented out)}
+
+            % Each $\Qst{s}{a}{}$ is initialised using another function $Q^{\text{init}}_{\text{sft}}(s,a)$ (but is typically zero).
+%            Q-values can be initialised with an initial value given by $Q^{\text{init}}_{\text{sft}}(s,a)$, which is typically $0$, and $\Vst{s}{}$ is initi
+%            Default soft Q-values (for when $N(s,a)=0$) can be set $\Qst{s}{a}{0}=Q^{\text{init}}_{\text{sft}}(s,a)$, but typically $Q^{\text{init}}_{\text{sft}}(s,a)=0$.
+%            %, but if a policy network $\tilde{\pi}$ is available then $Q^{\text{init}}_{\text{sft}}(s,a)=\log \tilde{\pi}(a|s)$ can be used as suggested by Xiao \etal \cite{xiao2019maximum}. 
+%            Initial values, $\Vst{s_{h+1}}{1}$, are set using an evaluation function or rollout policy.
+%            % The initial value for the new node, $\Vst{s_{h+1}}{1}$, is set either using an evaluation function (e.g. a value network) or using the cumulative return from a rollout policy.% $\sum_{i=h+1}^H R(s_i,a_i)$. 
+
+
+
+        \todo{make sure neurips paper writing integrated (commented out, and below this comment in the .tex) - read the actual pdf for thesis and neurips papers and compare cover same info?}
+        %         \paragraph{MENTS} 
 %             MENTS \cite{xiao2019maximum} combines maximum entropy policy optimization \cite{haarnoja2017reinforcement, ziebart2008maximum} with MCTS. Algorithmically, it is similar to UCT. The two differences are: (1) the search policy follows a stochastic Boltzmann policy, and (2) it uses soft values that are updated with dynamic programming backups. The MENTS search policy $\pi_{\textnormal{MENTS}}$ is given by:
 %             %
 %             \begin{align}
@@ -452,12 +560,16 @@ def foo(bar):
 % %            %, but if a policy network $\tilde{\pi}$ is available then $Q^{\text{init}}_{\text{sft}}(s,a)=\log \tilde{\pi}(a|s)$ can be used as suggested by Xiao \etal \cite{xiao2019maximum}. 
 % %            Initial values, $\Vst{s_{h+1}}{1}$, are set using an evaluation function or rollout policy.
 % %            % The initial value for the new node, $\Vst{s_{h+1}}{1}$, is set either using an evaluation function (e.g. a value network) or using the cumulative return from a rollout policy.% $\sum_{i=h+1}^H R(s_i,a_i)$. 
+
+
+
+    
     
 
 
 
 \clearpage
-THINGS WROTE before
+THINGS WROTE before for THTS section \todo{read through and see if anything want to keep, otherwise delete}
 \clearpage
 
 
@@ -517,6 +629,8 @@ def selection_phase_ended(t,mcts_mode):
 
 
 
+
+
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-3-morl}
     
@@ -531,6 +645,25 @@ def selection_phase_ended(t,mcts_mode):
         \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
     \end{itemize}
 
+    \todo{Follow CHMCTS and https://arxiv.org/abs/2103.09568}
+
+    In this thesis we will follow a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. In this work we will specifically consider \textit{linear utility} functions and the decision support scenario, which will be defined more precisely below.
+    
+    \todo{MOMDP}
+
+    \todo{utility}
+
+    \todo{linear utility}
+
+    \todo{solution sets and convex hulls}
+
+    \todo{decision support scenario}
+
+    \todo{subsection CHVI}
+
+
+
+
 \section{Multi-Objective Monte Carlo Tree Search}
 \label{sec:2-4-momcts}
 
@@ -544,6 +677,14 @@ def selection_phase_ended(t,mcts_mode):
         \item Different flavours copy UCT action selection, but with different variants
         \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
     \end{itemize}
+
+    \todo{There has been some prior work in multi-objective MCTS which we will outline here}
+
+    \todo{Write out implementations of prior works using THTS}
+
+
+
+
 
 \section{Sampling Random Variables}
 \label{sec:2-5-sampling}
