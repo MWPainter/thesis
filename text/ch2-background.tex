@@ -57,7 +57,7 @@
 
     \begin{defn}
         \label{def:mdp}
-        A \textnormal{Markov Decision Process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},\cl{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(\cdot | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound. 
+        A \textnormal{Markov Decision Process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound. 
     \end{defn}
 
     Where it is more convenient, we will use the following notation to refer to the set of successor states when discussing MDPs:
@@ -88,6 +88,8 @@
     \todo{Explicitly note that we are using pi as a free variable (is free variable correct word here?) here, and that in section - todo ref - we will use pi to refer to a specific type of policy (search policies) in the rest of the thesis after this section.}
 
     \todo{clean up policy definition with shorthand stuff}
+
+    \todo{actually state the the values of a policy need to add to one}
 
     In reinforcement learning it is common to refer to a sequence of states, actions and rewards as a \textit{trajectory}. In the tree search literature it is more common to refer to this as a \textit{trial} \todo{cite thts?}, so we will use these terms interchangeably.
     
@@ -648,18 +650,133 @@ def selection_phase_ended(t,mcts_mode):
     \todo{Follow CHMCTS and https://arxiv.org/abs/2103.09568}
 
     In this thesis we will follow a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. In this work we will specifically consider \textit{linear utility} functions and the decision support scenario, which will be defined more precisely below.
+
+    This section defines the multi-objective conterparts to various definitions found in \todo{ref}.
+
+    To specify problems with multiple objectives, the reward function of an MDP now outputs a vector of rewards, rather than a scalar reward.
+
+    \begin{defn}
+        \label{def:mo_mdp}
+        A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{V}(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^d$, where $d$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+    \end{defn}
+
+    Now multi-objective trajectories are defined. Outside of this section, we may drop the prefix ``multi-objective'' where it should be clear from context, however we will continue to use bold typeface to denote any vector variables or functions.
+
+    \begin{defn}
+        \label{def:mo_trajectory}
+        A \textnormal{multi-objective trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trials/trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\bff{\tau}\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MOMDP is implicit.
+
+        Sometimes it will be necessary to reason about trajectories with a horizon $h<H$, which will be denoted $\bff{\tau}_{:h} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, ..., s_{h-1}, a_{h-1}, \bff{r}_{h-1}, s_h)$.
+    \end{defn}
+
+    Similarly, multi-objective variants of the value of a policy needs to be defined:    
+    \begin{defn}
+        \label{def:mo_value}
+        \label{def:mo_q_value}
+        The \textnormal{value} of a policy $\pi$ from state $s$ at time $t$ is:
+        \begin{align}
+            \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_t \Bigg| s_t=s \right].
+        \end{align} 
+
+        The \textnormal{Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
+        \begin{align}
+            \bff{Q}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [\bff{V}^{\pi}(s';t+1)].
+        \end{align} 
+    \end{defn}
+
+    Now, in the corresponding single-objective section \todo{ref} we have reached the point where we defined the optimal (Q-)value functions and the objective of single-objective reinforcement learning, where the maximum is taken over all possible policies. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalars.
+
+    \begin{defn}
+        \label{def:simplex}
+        \label{def:weight}
+        \label{def:context}
+        The \textnormal{($d$-dimensional) Simplex} consists of the set of $d$-dimensional vectors, whose entries are non-negative and sum to one. We denoted this as $\Delta^d = \{\bff{w}\in\bb{R}^d|w_i > 0, \sum_i w_i = 1\}$.
+
+        The elements of the $d$-dimensional Simplex we will call \textnormal{weight vector} (or sometimes \textnormal{context} in this thesis), as they will be used to specify preferences over the $d$ dimensions of the reward function.
+    \end{defn}
+
+    \begin{defn}
+        \label{def:utility_fn}
+        \label{def:scalarisation_fn}
+        A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^d\times\Delta^d \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^d$ and a weighting over the objectives $\bff{w}\in\Delta^d$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
+    \end{defn}
+
+    % \begin{defn}
+    %     \label{def:utility_fn}
+    %     \label{def:scalarisation_fn}
+    %     A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^d\rightarrow\bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^d$ to a scalar value $u(\bff{v})$. Often a utility function $u_{\bff{w}}$ is parameterised by a weighting over the objectives $\bff{w}\in\Delta^d$.
+    % \end{defn}
+
+    \todo{comment here or in literature review about there being more types of scalariation function that arent necessarily weighted by a weight, and ESR vs SER stuff}
+
+    Of particular interest in this thesis is the \textit{linear utility function} where the scalar value takes the form of a dot-product.
     
-    \todo{MOMDP}
+    \begin{defn}
+        \label{def:linear_utility_fn}
+        \label{def:linear_scalarisation_fn}
+        The \textnormal{linear utility function} $u_{\lin}$ is the utility function defined by:
+        \begin{align}
+            u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}.
+        \end{align}
+    \end{defn}
 
-    \todo{utility}
+    Equiped with a scalarisation function and a weight vector any set of multi-objective values can be ordered. Letting $\Pi$ be the set of all possible policies we can now define solution sets.
 
-    \todo{linear utility}
+    \begin{defn}
+        \label{def:undominated_set}
+        \label{def:convex_hull}
+        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^d$ where the scalarised value is maximised: 
+        \begin{align}
+            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^d. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}.
+        \end{align}
 
-    \todo{solution sets and convex hulls}
+        In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
+    \end{defn}    
 
-    \todo{decision support scenario}
+    \todo{write something here?}
 
-    \todo{subsection CHVI}
+    \todo{change d to D for the dimension, going to use d for a distance function}
+
+    \begin{defn}
+        \label{def:coverage_set}
+        \label{def:convex_coverage_set}
+        A set $CS(\Pi;u)\subseteq\Pi$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^d$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
+        \begin{align}
+            \forall \bff{w}\in\Delta^d. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}).
+        \end{align}
+
+        It can be shown that any $CS(\Pi;u)\subseteq U(\Pi;u)$ \todo{cite?}.
+
+        Again, in particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
+    \end{defn}
+
+    \todo{some comments about undominated sets often being an infite set of policies, but coverage sets often being finite and more feasible to compute}
+
+    \todo{some comment about often computing the value set:}
+
+    \begin{defn}
+        \label{def:mo_value_set}
+        The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defines as:
+        \begin{align}
+            \bfcl{V}(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}.
+        \end{align}
+    \end{defn}
+
+    \todo{Should acknowledge some things. Often we actually compute the value set of a convex coverage set. Often we compute a very specific convex coverage set, which is the extreme points of the convex hull. Also that the term convex hull is typically used to refer to any of the previous three sets (value set, convex coverage set, convex hull). And finally, say that often with methods that compute the value set can often use tagging to compute the policies after the fact, and cite some of the pomdp algorithms from LPK that actually explain the tagging}
+
+    Additionally, this thesis focusses on the decision support scenario as outlined in \todo{cite}, with a linear utility function. In the decision support scenario the true weight vector is unknown, and so the objective is to compute a convex coverage set. When a convex coverage set is produced, it is then provided to a user that picks their most preferred policy or value from the coverage set. After this policy is selected, it can be used as a single solution to the problem that the user was trying to solve. 
+
+    Moreover, in the case of MCTS algorithms, by having the user select a preferred policy, it implicitly forces the user to chose a preference over the objectives, as the policy corresponds to a weight vector that it is optimal for. As MCTS algorithms are often used in an online fashion, where planning is interleaved with execution, this implicitly selected weight can be used for any online execution needed, effectively reducing the multi-objective problem into a single-objective problem. 
+
+    \todo{make the above couple paragraphs not read like poo, maybe chatgpt it} 
+
+
+
+
+    \subsection{Convex Hull Value Iteration}
+        \todo{label for subsection}]
+
+        \todo{write this}
 
 
 
@@ -694,3 +811,48 @@ def selection_phase_ended(t,mcts_mode):
         \item Talk about the alias method here
         \item Reference to chapter \ref{ch:4-dents} section where talk about using this with THTS
     \end{itemize}
+
+    \todo{clean this up generally, wrote it in a rush. Also trying not to use notation that I may want to use later. Would like }
+
+    Much of the work in this thesis will involve sampling from catagorical distributions. Let $f:\{1,...,m\}\rightarrow\bb{R}$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $i\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a value is sampled from $\textnormal{Uniform}(0,1)$ is often used as follows:
+
+    \begin{lstlisting}
+def sample_catagorical($f$):
+    threshold $\sim \textnormal{Uniform}(0,1)$
+    i = 0
+    accumulated_mass = 0
+    while (accumulated_mass < threshold):
+        i += 1
+        accumulated_mass += $f($i$)$
+    return i
+    \end{lstlisting}
+    % TODO: make a figure env for code
+
+    However, the \textit{Alias method} \todo{cite1, cite2} can instead be used, with $O(m)$ preprocessing time to construct an \textit{Alias table}, and can sample from $f$ in $O(1)$ time. In Figure \todo{ref} we provide an example of an alias table. A value can be sampled using the alias table by sampling two random numbers, one from $\textnormal{Uniform}(\{1,...,m\})$ and one from $\textnormal{Uniform}(0,1)$. To sample from the alias table, one of the entries is sampled uniformly randomly using the sample from $\textnormal{Uniform}(\{1,...,m\})$, each entry in the table contains three values, \texttt{threshold}, \texttt{cat\_one} and \texttt{cat\_two}, from which if we let $a\sim\textnormal{Uniform}(0,1)$, we would then return \texttt{cat\_one} if $a<$\texttt{threshold} and \texttt{cat\_two} otherwise. Psuedocode for this is as follows:
+
+    \begin{lstlisting}
+def sample_from_alias_table(alias_table):
+    index $\sim \textnormal{Uniform}(\{1,...,m\})$
+    cat_one, cat_two, threshold = alias_table[index]
+    a $\sim \textnormal{Uniform}(0,1)$
+    if (a < threshold):
+        return cat_one 
+    return cat_two
+    \end{lstlisting}
+    % TODO: make a figure env for code
+
+    In \todo{cite} it is shown \todo{check that it's proven} that an alias table can be constructed from an arbitrary probability mass function for a catagorical distribution, such that the probability of sampling any catagory from the alias table is identical to the probability of sampling it from the original probability mass function. 
+    
+    \todo{verify that the example alias table maintains the correct masses for each category}
+
+    Following \todo{cite}, we can construct an alias table as follows:
+
+    \begin{lstlisting}
+def build_alias_table($f$):
+    pass
+\end{lstlisting}
+% TODO: make a figure env for code
+
+    \todo{write the build alias table psuedocode (use wiki it was good)}
+    
+    

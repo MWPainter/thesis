@@ -14,7 +14,7 @@
     %%%%%
     % 2.1 RL
     %%%%%
-    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-rl})}\hfill\hfill]
+    \item[\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-1-rl})}\hfill\hfill]
     \item[$\alpha$] 
         The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
     \item[$\cl{A}$] 
@@ -61,6 +61,8 @@
         The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, \todo{plus the entopy of the policy weighted by the temperature alpha}.
     \item[$V_{\sft}^*$]
         The optimal soft value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.\todo{consider just writing max pi over the soft values here instead?}
+
+    \item[$\cl{M}$] \todo{define here and move into correct place in the list}
     \\
     
     %%%%%
@@ -114,6 +116,30 @@
     \item[$\alpha_{\ments}$] \todo{define here and move into correct place in the list}
     \item[$\lambda_s$] \todo{define here and move into correct place in the list}
     \item[$\epsilon$] \todo{define here and move into correct place in the list}
+    \\
+
+    %%%%%
+    % 2.3 MORL
+    %%%%%
+    \item[\Large\textbf{Multi-Objective Reinforcement Learning (Section \ref{sec:2-3-morl})}\hfill\hfill]
+    \item[$\bfcl{M}$] \todo{define here and move into correct place in the list}
+    \item[$\bff{\tau}$] \todo{define here and move into correct place in the list}
+    \item[$\bff{\tau}_{:h}$] \todo{define here and move into correct place in the list}
+    \item[$\bff{V}^{\pi}$] \todo{define here and move into correct place in the list}
+    \item[$\bff{Q}^{\pi}$] \todo{define here and move into correct place in the list}
+    \item[$\Delta^d$] \todo{define here and move into correct place in the list}
+    \item[$u$] \todo{define here and move into correct place in the list}
+    \item[$\bff{w}$] \todo{define here and move into correct place in the list}
+    \item[$d$] \todo{define here and move into correct place in the list}
+    \item[$\Pi$] \todo{define here and move into correct place in the list}
+    \item[$U(\Pi;u)$] \todo{define here and move into correct place in the list}
+    \item[$u_{\lin}$] \todo{define here and move into correct place in the list}
+    \item[$CH(\Pi)$] \todo{define here and move into correct place in the list}
+    \item[$CS(\Pi;u)$] \todo{define here and move into correct place in the list}
+    \item[$CCS(\Pi)$] \todo{define here and move into correct place in the list}
+    \item[$ $] \todo{define here and move into correct place in the list}
+    \item[$ $] \todo{define here and move into correct place in the list}
+    \item[$ $] \todo{define here and move into correct place in the list}
 
 \end{mclistof} 
 
@@ -129,14 +155,6 @@
     \\
     % abbrv - 2.2 THTS
     \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill] 
-    \item[\CNODE] 
-        The chance node class.
-    \item[\cnode] 
-        An instance of \CNODE, i.e. a chance node instance.
-    \item[\DNODE] 
-        The decision node class.
-    \item[\dnode] 
-        An intance of \DNODE, i.e. a decision node instance.
     \item[MCTS] 
         Monte Carlo Tree Search.
     \item[MENTS]
@@ -147,6 +165,14 @@
         \todo{thts++}
     \item[UCT] 
         Upper Confidence Bound applied to Trees.
+
+    \item[\node] 
+        \todo{define here and move into correct place in the list}
+    \\
+    % abbrv - 2.3 MORL
+    \item[MOMDP]
+        Multi-Objective Markov Decision Process
+
     
 
 \end{mclistof} 

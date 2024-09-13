@@ -181,14 +181,20 @@
 % \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
 \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 
+% Maffs operators/symbols that aren't default
+\newcommand{\one}{\mathbbm{1}}                    % indicator functions
+\DeclareMathOperator*{\argmax}{arg\,max}          % argmax
+\DeclareMathOperator*{\argmin}{arg\,min}          % argmin
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}   % bold and calligraphic text
+
 % General - Maffs shorthands
 \newcommand{\bb}[1]{\mathbb{#1}}
 \newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\bfcl}[1]{\mathbfcal{#1}}
+\newcommand{\bff}[1]{\mathbf{#1}}
 
-% Maffs operators/symbols that aren't default
-\newcommand{\one}{\mathbbm{1}}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+% Test shorthands
+\newcommand{\bld}[1]{\textbold{#1}}
 
 
 % Sec 1.2 - Contributions (research questions)% Refer to questions
@@ -236,6 +242,16 @@
 \newcommand{\piments}{\pi_{\ments}}
 \newcommand{\Vments}{\hat{V}_{\ments}}
 \newcommand{\Qments}{\hat{Q}_{\ments}}
+
+% Sec 2.3 - MORL macros
+\newcommand{\lin}{\textnormal{lin}}
+
+
+
+
+
+
+
 
 %%%%% THE ACTUAL DOCUMENT STARTS HERE
 \begin{document}
