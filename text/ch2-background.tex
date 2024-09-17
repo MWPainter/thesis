@@ -13,9 +13,76 @@
 
     \todo{Introduce that going to introduce notation and give the building blocks this thesis builds off}
 
-    \todo{Nicks comment to revisit: In Sections 2 and 3 you present RL before tree search. This was a surprise to me. Wouldn’t it be better to start with single objective MDPs, then introduce methods of solving them (planning, bandits, rl) and the different assumptions they make? Then move to MO versions. I’d also be open to you presenting MCTS then generalising to MCTS rather than the other way around, but I think the way you present it is probably the most efficient.}
 
-    \todo{Add a regret or multi-armed bandit section?}
+
+
+
+
+
+    
+
+
+\section{Markov Decision Processes}
+\label{sec:2-1-mdps}
+
+    In this section \textit{Markov Decision Processes} (MDPs) are introduced, along with some related defintions. MDPs give a mathematical framework for problems concerning sequential decision making under uncertainty, and in this thesis will be the framework used to model the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depends on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent recieves an instantaneous reward, according to a reward function that depends on the state and action taken.
+
+    This thesis is concerned with discrete, finite, fully-observable and finite-horizon Markov Decision Processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. \todo{at points we may allude to some designs and ideas that can generalise to more general forms of markov decision processes, but it is not the main focus here.}
+
+    \begin{defn}
+        \label{def:mdp}
+        A \textnormal{Markov Decision Process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound. 
+    \end{defn}
+
+    Notationally, it is convenient to define the set of successor states, that is the set of states that could be reached after taking an action from the current state of the MDP:
+    \begin{defn}
+        \label{def:succ}
+        The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$, with respect to an MDP, is defined as: 
+        \begin{align}
+            \suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}.
+        \end{align}
+        
+        Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
+    \end{defn}
+
+    To define a strategy that an agent will follow in an MDP, and agent defines a \textit{policy}. A policy maps each state in the state space to a probability distribution over the action space. To ``follow'' a policy, actions are sampled from the distribution. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
+
+
+
+
+
+    HERE HERE HERE
+    \todo{want to define policy, and then have a second paragraph, with a list, defining notation that we'll use for policies. Want to say something like, ``we will use xxxx as a shorthand to define deterministic distributions''.}
+
+
+
+
+
+    \begin{defn}
+        \label{def:policy}
+        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow \cl{A} \rightarrow [0,1]$ is a mapping from states to distributions over actions, where for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$. We will use the following notations: $\pi(\cdot|s)$ is used to denote the entire distribution over the set of actions, $\pi(a|s)$ denotes the probability that action $a$ is sampled by the policy at state $s$. 
+
+        Additionally, for \textnormal{deterministic policies} we will use the shorthand notation $\pi(s)$ to denote the action taken by the policy. Formally, we will write $\pi(s)=a'$ where $a'\in\cl{A}$ is such that $\pi(a'|s)=1$.
+
+        \todo{want to add a statement saying something like} $\pi(s)=a'$ is shorthand for $\pi(a|s)=\one[a=a']$.
+
+        \todo{Actually want to say something like:} a deterministic policy is special case of the stochastic, with a delta distribution, such as $\pi(a|s)=\one[a=a']$, and in such cases we will use $\pi(s)=a'$ as a short hand to state $\pi(a|s)=\one[a=a']$ and $\pi(s)$ as a shorthand for $a'$.
+    \end{defn}
+
+    \todo{Explicitly note that we are using pi as a free variable (is free variable correct word here?) here, and that in section - todo ref - we will use pi to refer to a specific type of policy (search policies) in the rest of the thesis after this section.}
+
+    \todo{clean up policy definition with shorthand stuff}
+
+    \todo{actually state the the values of a policy need to add to one}
+
+    In reinforcement learning it is common to refer to a sequence of states, actions and rewards as a \textit{trajectory}. In the tree search literature it is more common to refer to this as a \textit{trial} \todo{cite thts?}, so we will use these terms interchangeably.
+    
+    \begin{defn}
+        \label{def:trajectory}
+        A \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
+
+        Sometimes it will be necessary to reason about trajectories with a horizon $h<H$, which will be denoted $\tau_{:h} = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{h-1}, a_{h-1}, r_{h-1}, s_h)$.
+    \end{defn}
 
 \section{Multi-Armed Bandits}
 \label{sec:2-1-mab}
@@ -147,70 +214,22 @@
 
 
 
-\section{Markov Decision Processes and Reinforcement Learning}
-\label{sec:2-2-rl}
+\section{Reinforcement Learning}
+\label{sec:2-3-rl}
 
-    \todo{list}
-    \begin{itemize}
-        \item Typical agent interacting with environment diagram 
-        \item Agent planning with simulator 
-        \item \st{MDPs definition}
-        \item \st{Policies}
-        \item \st{Value functions (single (and multi-objective?))}
-        \item \st{Basic results and definitions we use (tabular planning algorithms)}
-        \item \st{Talk about entropy and some of that work (probably a subsection)}
-    \end{itemize}
 
-    \todo{Split this section into MDPs definition and move RL below monte carlo tree search? Probably if do the multi-armed bandit stuff.}
 
-    In this section Markov Decision Processes are introduced, as well as some fundamental concepts in Reinforcement Learning such as \textit{policies} and \textit{value functions} which will be useful in the following. Afterwards, the \textit{maximum entropy objective} is discussed, as it will be relevant to some of the work in this thesis and other closely related work. 
+    \begin{figure}
+        \label{fig:rl_overview}
+        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
+        \caption[todo]{\todo{add diagrams of typical agent interacting with environment diagram, AND something with agent acting with a simulator. ALSO, WRITE THE BIT FOR THE CAPTION FOR LIST OF FIGS}}
+    \end{figure}
+
+    
+    
+    This section introduces fundamental concepts in Reinforcement Learning such as \textit{policies} and \textit{value functions} which will be useful in the following. Afterwards, the \textit{maximum entropy objective} is discussed, as it will be relevant to some of the work in this thesis and other closely related work. 
 
     In this thesis we will only consider discrete and finite-horizon Markov Decision Processes, \todo{but we will point to works that make adaptions for non-finite horizons and continuous and partially observable environments, and briefly describe why the ideas could be used in parallel with the concepts in this thesis.}
-
-    \begin{defn}
-        \label{def:mdp}
-        A \textnormal{Markov Decision Process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound. 
-    \end{defn}
-
-    Where it is more convenient, we will use the following notation to refer to the set of successor states when discussing MDPs:
-    \begin{defn}
-        \label{def:succ}
-        The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$ is defined as $\suc{s}{a}=\{s'|p(s'|s,a)>0\}$. Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
-    \end{defn}
-
-    \todo{decide if should keep p(cdot|s,a), and just swap out the succ command as shorthand for that?}
-
-    Formally, we will consider a policy to be a mapping from a state in $\cl{S}$ to a distribution over actions $\cl{A}$. \todo{For this thesis we will consider policies to be stochastic, so when a policy is used to generate actions to follow, it is done by sampling from the distribution.}
-
-    \todo{So im using pi for the definition here. But for rest of thesis it will be used as explicitly the "search policy"}
-
-    In some cases it will be necessary to talk about deterministic policies. \todo{When ambiguous we will state when a policy is deterministic. A deterministic policy is written as a one hot stochastic distribution}
-
-    \begin{defn}
-        \label{def:policy}
-        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow \cl{A} \rightarrow [0,1]$ is a mapping from states to distributions over actions, where for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$. We will use the following notations: $\pi(\cdot|s)$ is used to denote the entire distribution over the set of actions, $\pi(a|s)$ denotes the probability that action $a$ is sampled by the policy at state $s$. 
-
-        Additionally, for \textnormal{deterministic policies} we will use the shorthand notation $\pi(s)$ to denote the action taken by the policy. Formally, we will write $\pi(s)=a'$ where $a'\in\cl{A}$ is such that $\pi(a'|s)=1$.
-
-        \todo{want to add a statement saying something like} $\pi(s)=a'$ is shorthand for $\pi(a|s)=\one[a=a']$.
-
-        \todo{Actually want to say something like:} a deterministic policy is special case of the stochastic, with a delta distribution, such as $\pi(a|s)=\one[a=a']$, and in such cases we will use $\pi(s)=a'$ as a short hand to state $\pi(a|s)=\one[a=a']$ and $\pi(s)$ as a shorthand for $a'$.
-    \end{defn}
-
-    \todo{Explicitly note that we are using pi as a free variable (is free variable correct word here?) here, and that in section - todo ref - we will use pi to refer to a specific type of policy (search policies) in the rest of the thesis after this section.}
-
-    \todo{clean up policy definition with shorthand stuff}
-
-    \todo{actually state the the values of a policy need to add to one}
-
-    In reinforcement learning it is common to refer to a sequence of states, actions and rewards as a \textit{trajectory}. In the tree search literature it is more common to refer to this as a \textit{trial} \todo{cite thts?}, so we will use these terms interchangeably.
-    
-    \begin{defn}
-        \label{def:trajectory}
-        A \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
-
-        Sometimes it will be necessary to reason about trajectories with a horizon $h<H$, which will be denoted $\tau_{:h} = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{h-1}, a_{h-1}, r_{h-1}, s_h)$.
-    \end{defn}
 
     Next the value and Q-value of a policy is defined, which is the expected cumulative reward that a policy will obtain:
     \begin{defn}
@@ -353,6 +372,12 @@
         \item Outline that I'll present this as here is THTS, and then here's the THTS routines for MCTS
     \end{itemize}
 
+    \begin{figure}
+        \label{fig:thts}
+        \centering\includegraphics[width=0.9\textwidth]{figures/ch2/mcts_diagram_draft.pdf} 
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree.}
+    \end{figure}
+
     \todo{double check the intro to 2.2, as wrote this a while ago}
 
     \todo{try to make sure specific about using thts vs mcts}
@@ -459,7 +484,7 @@ def foo(bar):
         \end{enumerate}
 
         \todo{converting the above into some psuedocode. Should probably define children as a property of nodes. Should also just state that } $\node(s_i,a_i).Q$ \todo{and so on are just scalar values for now. We can make them vectors when needed later}. \todo{also make sure define } $N(s)$ and $N(s,a)$
-        \begin{lstlisting}
+        \begin{lstlisting}[caption={Psuedocode for running a trial in \thtspp}, label={lst:thts_trial}]
 def run_trial(search_policy: $\pi$, heuristic_fn: $\Vinit$):
     $\tau_{:h}$ = sample_trajectory($pi$)
     if $s_h\not\in\cl{T}$:

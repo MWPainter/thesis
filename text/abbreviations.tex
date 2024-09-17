@@ -9,8 +9,30 @@
     % t = free variable for current timestep
 
     % General maths
+    \item[\Large\textbf{Global Notation}\hfill\hfill]
     \item[$\one$] 
         The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. 
+    \\
+    %%%%%
+    % 2.1 MDPs
+    %%%%%
+    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-mdps})}\hfill\hfill]
+    \item[$\cl{A}$]
+        A (finite) set of actions.
+    \item[$H$]
+        The finite-horizon time bound of an MDP.
+    \item[$\cl{M}$]
+        A Markov Decision Process, which is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$.
+    \item[$p$] 
+        The next-state transition distribution of an MDP.  $p(s' | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
+    \item[$R$] 
+        The reward function of an MDP: $R(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
+    \item[$\cl{S}$]
+        A (finite) set of states.
+    \item[$\suc(s,a)$]
+        The set of successor states of a state-action pair $(s,a)$, with respect to an MDP: $\suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}$.
+    \item[$s_0$]
+        $s_0\in\cl{S}$ is the initial starting state of an MDP.
     \\
     %%%%%
     % 2.2 RL
@@ -44,7 +66,7 @@
     %%%%%
     % 2.2 RL
     %%%%%
-    \item[\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill]
+    \item[{\parbox[t]{\textwidth}{\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill}}]
     \item[$\alpha$] 
         The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
     \item[$\cl{A}$] 
@@ -57,8 +79,6 @@
         \todo{objective funciton}
     \item[$J_{\sft}(\pi)$] 
         \todo{soft objective funciton}
-    \item[$p$] 
-        The next-state probability distribution of an MDP.  $p(\cdot | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
     \item[$\pi$]
         A policy, \todo{state that this is just for this chapter, see sect 2.2 defn for rest of thesis}
     \item[$\pi^*$]
@@ -73,10 +93,6 @@
         The Q-value of a policy $\pi$. $Q_{\sft}^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$, \todo{plus the entopy of the policy weighted by the temperature alpha}. \todo{consider just writing max pi over the soft values here instead?}
     \item[$Q_{\sft}^*$]
         The optimal value function $Q_{\sft}^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.
-    \item[$R$] 
-        The reward function of in an MDP: $\cl{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
-    \item[$\cl{S}$] 
-        Set of states in an MDP. 
     \item[$\tau$] 
         \todo{trajectory}
     \item[$\tau_{:h}$] 
@@ -98,7 +114,7 @@
     %%%%%
     % 2.3 THTS
     %%%%%
-    \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-2-thts})}\hfill\hfill]
+    \item[\Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-3-thts})}\hfill\hfill]
     \item[$\cl{B}_Q$]
         \todo{define backup}
     \item[$\cl{B}_V$]
@@ -151,7 +167,7 @@
     %%%%%
     % 2.4 MORL
     %%%%%
-    \item[\Large\textbf{Multi-Objective Reinforcement Learning (Section \ref{sec:2-4-morl})}\hfill\hfill]
+    \item[{\parbox[t]{\textwidth}{\Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-4-morl})}\hfill\hfill}}]
     \item[$\bfcl{M}$] \todo{define here and move into correct place in the list}
     \item[$\bff{\tau}$] \todo{define here and move into correct place in the list}
     \item[$\bff{\tau}_{:h}$] \todo{define here and move into correct place in the list}
@@ -178,6 +194,11 @@
 
     
     %%%%%
+    % abbrv - 2.1 MDPs
+    %%%%%
+    \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-mdps})}\hfill\hfill]
+    \item[MDP] Markov Decision Process
+    %%%%%
     % abbrv - 2.1 MABS
     %%%%%
     \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-1-mab})}\hfill\hfill]
@@ -189,7 +210,7 @@
     %%%%%
     % abbrv - 2.2 RL
     %%%%%
-    \item[\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill]
+    \item[{\parbox[t]{\textwidth}{\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill}}]
     \item[MDP] Markov Decision Process.
     \\
     %%%%%
@@ -213,7 +234,7 @@
     %%%%%
     % abbrv - 2.4 MORL
     %%%%%
-    \item[\Large\textbf{Multi-Objective Reinforcement Learning (Section \ref{sec:2-4-morl})}\hfill\hfill]
+    \item[{\parbox[t]{\textwidth}{\Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-4-morl})}\hfill\hfill}}]
     \item[CHVI]
         Convex Hull Value Iteration
     \item[MOMDP]
