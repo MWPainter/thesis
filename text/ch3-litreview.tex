@@ -49,6 +49,10 @@
             \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
             \item Should talk about multi-armed bandits here?
         \end{itemize}
+
+        https://inria.hal.science/inria-00164003/document
+
+        https://pdf.sciencedirectassets.com/271585/1-s2.0-S0004370211X0005X/1-s2.0-S000437021100052X/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQD9RsWMAYu3%2FOp3q84XQxgXZSJu1ro47zi2n0qpNmiCqgIhAI1eHuLsQQl17RAoIFgBtR3%2FPM0H20wp7ZR0JMKY8%2BXvKrMFCBwQBRoMMDU5MDAzNTQ2ODY1IgyvTCG1aOE8jXlA0mUqkAUaXoeXDK%2FuPq2vxhn8b8oJiIs0VWF%2Fz5dXieRnNRSdidyAlHTgTL%2FMk7zzFv3QlVahMdYxel3yR2R6CwKBh70S7%2F%2FqrjycAs1dJnrXzyLXcoQWkGK6cPJRipwbb9e2VSINYFD%2B%2FR9lsgfJeNFwQ34fjU5A6i8GtNlbIxzAPzCjuD917RaI8NwpEKkpITCN5rMCjLDyn1erq8eJLWaRUGzLK6Rw4P4yPqdUuN95GBQzH5v4yTBmHTFEZWV7Qo9DIjtZCWHH94MjRF%2FEJLXCCOVl%2FXZPiJE32TxzWTaPRMKrK%2BfcJKIA7XK5OQmKm6ZnoVHJ%2Bpe%2BeU4yowQ9y94taJg%2BRkmwYxo7hpvM%2Fn%2FOJXWEHoNdmzFGyRrh7c3BcZuC3ks0JvSVysrUCIVYtfYBoWv4lQjkvwowSk85Jt0lDmw8z2v4bue2eMuTBOr2b2qJdwlL%2B8N4cEVW3REQGlzCWgmBC7ejRZrKJf0a45a%2BFYoLB8863CuUVAE5hNI2ejk6VVjx1KzVVwKg%2FFs79Vl%2B9TLOTmp81Sf%2BOz9bWiLWlOg6ODoH471OIIrIjtqwqPyAYDonfWV6e9310cVybw9brOT8RmzyVTcSdn53Z8%2FQ5A9Zipc%2BTQnabVNoTXKWYvwc9Ft58R4jQB6CfElBuYwT9j1oWZJ7lMCtrvu7hLjJhZTDsNOhLMnesZhJgvE0Pwd9TgL47XZ38ywJAevAwYzNepSm4Z7kl4Vr6XnwI%2FQ%2BqcbDvgZvXrjOUM50zL7kP8%2F4s%2BuYFe%2Fm%2BWTN5fIheCTCLjxB7Gu7256ughbuGDx00dfrrMl1PmL7Io30xJcR5mXNZrtbGKZbjCQinEWdqePKQXpT8ocigl4Z6Cl2xSENUnlFXjC78qG3BjqwAfwxXWnpAfKLLT77NLhG9odOj4ATbBB%2By%2Fk8O05cucn5kmfNhHuVUXeykHPF62kzrgyQoHSaUP5%2F2z9%2BatMMSAlsHJ3c2x92dxYCGPznq8sL389fCg0HHjwqGAi87ZcCouF3s0hnAm24Z0JlccwBQVQJtAmw4dK9cga4hX2SI56L2LdTXdG7hZwl4oiebkJzrshvvu58uwgUCeXP4MGTc%2F3H1POY%2FWz8dNW6O6Ezps1y&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240916T191757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY7DGERLEO%2F20240916%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=11d9f9868c6673196775da132a8740868fa2d847ec6360c1aca200f81d5a8377&hash=52c9fb808b53db2de3707a108ac18ed2947a59edd0a196796786c95ccb886590&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S000437021100052X&tid=spdf-15f46672-522e-44ca-acda-a9a267e67be4&sid=e64211ca7bf86246de9b4168365ef85d587egxrqb&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=010259065a53515c5052&rr=8c433317ee01bef3&cc=gb
     
     \subsection{Maximum Entropy Tree Search}
     \label{sec:3-2-3-ments}
@@ -74,12 +78,37 @@
     \begin{itemize}
         \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
         \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
-        \item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic
+        \hide{\item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic}
         \item Different flavours copy UCT action selection, but with different variants
         \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
     \end{itemize}
 
-\section{Sampling Random Variables}
-\label{sec:3-5-sampling}
+    \todo{There has been some prior work in multi-objective MCTS which we will outline here}
 
-    \todo{Just citing the alias method papers?}
+    \todo{Write out implementations of prior works using THTS}
+
+
+
+    \todo{define pareto front}
+
+
+    % perez algorithms
+    \todo{perez algorithms}
+    %\todo{http://www.diego-perez.net/papers/OnlineOfflineMOMCTS_CIG13.pdf}
+    %\todo{http://www.diego-perez.net/papers/MOMCTS_TCIAIG2014.pdf}
+    %\todo{https://repository.essex.ac.uk/19035/}
+
+    % Xu - chebychev
+    \todo{https://ieeexplore.ieee.org/document/8107102}
+    
+    % Chen - Pareto
+    \todo{https://www.roboticsproceedings.org/rss15/p72.pdf}
+    \todo{https://arxiv.org/abs/2111.01825}
+
+    % wang - one of the multi obj mcts
+    \todo{https://proceedings.mlr.press/v25/wang12b/wang12b.pdf}
+
+    % Hayes - distributional MCTS
+    \todo{https://ifmas.csc.liv.ac.uk/Proceedings/aamas2021/pdfs/p1530.pdf}
+    % Hayes - havent read
+    \todo{https://link.springer.com/article/10.1007/s10458-022-09596-0}

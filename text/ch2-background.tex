@@ -17,26 +17,138 @@
 
     \todo{Add a regret or multi-armed bandit section?}
 
-% \section{Multi-Armed Bandits}
-% \label{sec:2-0-mab}
+\section{Multi-Armed Bandits}
+\label{sec:2-1-mab}
 
-%     \todo{Introduce tree search using multi-armed bandits?}
-%     \hide{
-%     \begin{itemize}
-%         \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
-%         \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
-%     \end{itemize}
-%     }
-%     \todo{list}
-%     \begin{itemize}
-%         \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
-%         \item Multi-Armed Bandits routines algos
-%         \item Exploring Bandits routines and algos
-%         \item Contextual Bandits routines and algos
-%     \end{itemize}
+    \todo{Introduce tree search using multi-armed bandits?}
+    \hide{
+    \begin{itemize}
+        \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
+        \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
+    \end{itemize}
+    }
+    \todo{list}
+    \begin{itemize}
+        \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
+        \item Multi-Armed Bandits routines algos
+        \item Exploring Bandits routines and algos
+        \item Contextual Bandits routines and algos
+    \end{itemize}
+
+    \todo{some more waffelly shit about MABs}
+
+    In the $K$-armed bandit problem, an agent is tasked with iteratively selecting one of $K$ arms, originally introduced by \todo{author} \todo{cite MAB orig}. In each iteration, once an arm is selected, say $x\in\{1,...,K\}$, and a reward $y$ is returned according to an unknown probability distribution $f_x$. Let $n$ be the number of rounds of this game that are played, and let $\mu_i=\bb{E}[y|x=i]$ be the expected reward of pulling arm $i$. 
+    
+    When analysing an algorithmic strategy for Multi-Armed Bandits (MABs), a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal reward that could be obtained with full knowledge of $\{f_i\}$.
+
+    \todo{work out how to deal with the issue of not having policies defined yet. thinhk this needs to be moved to after ch2.1}
+
+    \todo{some sentence}, the process of a MAB is as follows:
+    \begin{itemize}
+        \item for $m$ in $\{1,...,n\}$:
+        \item agent selects arm $x^m$ according to policy $\pi$
+        \item agent recieves reward $y^m \sim f_{x^i}$
+    \end{itemize}
+
+    \begin{defn}
+        The \textnormal{(cumulative) regret} of the agent in the above process is defined as:
+        \begin{align}
+            \creg_{\mab}(\pi,n) = n\mu^* - \sum_{i=1}^n y^i,
+        \end{align}
+        where $\mu^* = max_i \mu_i$.
+    \end{defn}
+
+    To theoretically analyse algorithms for MAB problems, the quantity of expected regret, $\bb{E}[\creg_{\mab}]$ is considered. In \todo{cite} it is shown using information theory that there is a lower bound on the expected regret that an agent can achieve of $\Sigma(\log N)$, and in \todo{cite ucb} the Upper Confidence Bound (UCB) algorithm is introduced, achieving a matching upper bound of $O(\log N)$. 
+
+    Let $N^m(j)$ be the number of times that arm $i$ has been pulled after $m$ rounds, $\bar{y}_i^m$ is the sample average of rewards recieved when pulling arm $i$: 
+    \begin{align}
+        \bar{y}_i^m=\frac{1}{m}\sum_{j=1}^m y^j \one[x^j=i].
+    \end{align} 
+    
+    Then the arm selected by the UCB algorithm on the $m$th round is given by:
+    \begin{align}
+        \pi_{\ucb}(m) = \argmax_{j\in\{1,..,K\}} \bar{y}_j^m + b_{\ucb} \sqrt{\frac{\log(m)}{N(j)}} 
+    \end{align}
+
+    \todo{define $b_{\ucb}$}
+
+    \todo{talk about explortaiton-exploitation trade off -- see Edwin thesis too because said it nicely}
+
+
+
+
+    \subsection{Exploring Bandits}
+    \label{sec:2-1-1-exploring-mab}
+
+        In the pure exploration $K$-armed bandit problem \todo{cite},
+        %https://link.springer.com/chapter/10.1007/978-3-642-04414-4_7#preview, 
+        the game is changed slighly. The agent still gets to pull an arm each round, but after it recieves a reward each round it is given the opportunity to output a \textit{recommendation}. In exploring multi-armbed bandits (EMABs), the emphasis is now on the algorithm being able to provide the best recommendations possible, rather than trying to exploit pulling the best arm each round. In essence, this change seperates the needs to explore and exploit, the agent needs to explore with its arm pulls, and output an exploiting recommendation at the end of each round.
+
+        \todo{some sentence}, the process of a EMAB is as follows:
+        \begin{itemize}
+            \item for $m$ in $\{1,...,n\}$:
+            \item agent selects arm $x^m$ according to policy $\pi^m$
+            \item agent recieves reward $y^m \sim f_{x^m}$
+            \item agent outputs a recommendation policy $\psi^m$
+        \end{itemize}
+
+        Under this regime, the performance of an algorithm can be analysed by considering the quantity of \textit{simple regret} of the recommendation policy. The simple regret is the expected value of an \textit{instantaneous regret}, \todo{define instantaneous regret} which would come from following the recommendation policy.
+
+        \begin{defn}
+            The \textnormal{simple regret} of following the recommendation policy $\psi^m$ on the $m$th round is:
+            \begin{align}
+                \sreg_{\emab}(m) = \bb{E}_{i\sim\psi^m}[\mu^* - \mu_i].
+            \end{align}
+        \end{defn}
+
+        \todo{talk about the bounds they show in their work}
+
+        \todo{describe the algorithm which is pulling arms 1,2,...,K,1,2,...,K,1,..., and so on, and then recommending the arm that has the best empirical average}.
+
+    
+    \subsection{Contextual Bandits}
+    \label{sec:2-1-2-contextual-mab}
+
+        \todo{sleepy and rushed this section a bit}
+
+        In the contextual $K$-armed bandit problem \todo{cite}, on each round the algorithm is given a context $w\in \cl{W}$, which the algorithm does not choose. If contextual multi-armed bandit problems (CMABs), the distribution that the rewards are drawn from now depend on $w$, written $f_{w,i}$ for context $w$ for arm $i$. 
+
+        \todo{some more words around when this is useful and why, and define CMABs}
+
+        \todo{some sentence}, the process of a MAB is as follows:
+        \begin{itemize}
+            \item for $m$ in $\{1,...,n\}$:
+            \item agent recieves context $w^m$
+            \item agent selects arm $x^m$ according to policy $\pi$
+            \item agent recieves reward $y^m \sim f_{w^m,x^m}$
+        \end{itemize}
+
+        Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \todo{ref}, while taking into account the contexts drawn.
+
+        \begin{defn}
+            The \textnormal{(cumulative) contextual regret} of the agent in the above process is defined as:
+            \begin{align}
+                \ctxreg_{\cmab}(\pi,n) = \sum_{i=1}^n \mu_{w^i}^* - y^i,
+            \end{align}
+            where $\mu_{w}^* = \max_i \mu_{w,i}$.
+        \end{defn}
+
+        \todo{add definitions for $\mu_{w,i}$}
+
+        \todo{Talk about contextual zooming precursor (need to read and add to litrev)}
+
+        \todo{Write about contextual zooming, using CHMCTS paper, and use opportunity to add to litrev}
+
+
+
+
+
+
+
+
 
 \section{Markov Decision Processes and Reinforcement Learning}
-\label{sec:2-1-rl}
+\label{sec:2-2-rl}
 
     \todo{list}
     \begin{itemize}
@@ -150,9 +262,12 @@
 
     Using this \textit{dynamic programming} approach is known as \textit{value iteration}. It can be shown that the Bellman backups are contraction operators \todo{add cite}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$. In the discrete \todo{what the actual conditions are} case we are considering, there will always be some $N<\infty$ such that $V^{N}=V^*$.
 
+    \todo{cite [Bellman 1957] Bellman, R. 1957. Dynamic Programming. Princeton, NJ, USA: Princeton University Press, 1 edition.}
+
     \todo{add optimal policy from Q values}
 
     \subsection{Maximum Entropy Reinforcement Learning}
+    \label{sec:2-2-merl}
 
         In \textit{Maximum Entropy Reinforcement Learning}, the objective function is altered to include the addition of an entropy term. Let $\cl{H}$ denote the (Shannon) entropy function \todo{cite}:
         \begin{align}
@@ -222,8 +337,15 @@
         \todo{Add a comment similar to DENTS paper where we will drop the t in notation. Make it quite bold somehow}
 
 
+
+
+
+
+
+
+
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
-\label{sec:2-2-thts}
+\label{sec:2-3-thts}
 
     \todo{list}
     \begin{itemize}
@@ -236,6 +358,8 @@
     \todo{try to make sure specific about using thts vs mcts}
 
     In this section we introduce \thtspp\ewe \cite{thtspp}, which is an open-source, parallelised extension of the  Trial-based Heuristic Tree Search schema \cite{thts} (THTS). This schema is a generalisation of Monte Carlo Tree Search (MCTS), as presented in Section \ref{sec:2-2-2-mcts}. In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes output actions that can be taken by the agent, and chance nodes output \textit{outcomes} that may be random and may depend on the action taken. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. In this work, we are considering fully-observable environments, but \thtspp\ewe can be generalised to consider \textit{partially-observable} environments. We give \thtspp\ewe implementations of the standard Upper Confidence Bound applied to Trees (UCT) algorithm and Maximum ENtropy Tree Search (MENTS) in Sections \ref{sec:2-2-2-mcts} and \ref{sec:2-2-3-ments} respectively.
+
+    \todo{comments about how most MCTS algorithms are using a multi-armed bandit algorithm at each node}
 
     In MCTS we run trials, either for some fixed number of trials, or some timelimit, where each trial is split into four stages: 
         (1) selection, which samples states and actions for the trial, corresponding to a path down the tree;
@@ -251,7 +375,7 @@ def foo(bar):
     \end{lstlisting}
 
     \subsection{Trial Based Heuristic Tree Search}
-    \label{sec:2-2-1-thts}
+    \label{sec:2-3-1-thts}
     
         \todo{list}
         \begin{itemize}
@@ -268,6 +392,8 @@ def foo(bar):
         \todo{this section relly really needs diagrams}
 
         \todo{add psuedo code}
+
+        \todo{need to talk about contexts here again...}
 
         In this section we will present \thtspp schema, which is \todo{adaptation?} of the Trial-Based Heuristic Tree Search (THTS) schema \todo{cite}. After we have presented \thtspp, we will use the schema to define tree search algorithms that are relevant in this thesis, namely Upper Confidence Bound Applied to Trees (UCT) \todo{cite} in subsection \todo{ref} and Maximum ENtropy Tree Search (MENTS) in subsection \todo{Ref}. Finally we will briefly point out the differences between \thtspp and the original THTS schema in subsection \todo{ref}.
 
@@ -360,8 +486,13 @@ def backup_v($s_i$):
 
         \todo{Check how thts deals with using value estimates when children dont exist. There should be some form of using heuristic. Maybe this needs to be added to THTSpp todo list}
 
+        \todo{Basically want to say that the 0th version of any estimate is filled using the Vinit and Qinit functions where necessary. So for example if a chance node doesnt exist yet then use Qinit.}
+
+        \todo{should also be more clear that bottom node is initialised } $s_h$ \todo{using Vinit in the backup phase, and the rest use the backups}
 
         \todo{make sure neurips paper writing integrated (commented out, and below this comment in the .tex) - read the actual pdf for thesis and neurips papers and compare cover same info?}
+
+        \todo{talk about the differences between thtspp and thts}
 % MCTS methods build a search tree $\cl{T}$ using Monte-Carlo trials. Each trial is split into two phases: starting from the root node, actions are chosen according to a \textit{search policy} and states sampled from the transition distribution until the first state not in $\cl{T}$ is reached. A new node is added to $\cl{T}$ and its value is initialised using some function $V^{\text{init}}$, often using a \textit{rollout policy} to select actions until the time horizon $H$ is reached. In the second phase, the return for the trial is back-propagated up (or `backed up') the tree to update the values of nodes in $\cl{T}$. For a reader unfamiliar with MCTS, we refer to \cite{browne2012survey} for a review of the MCTS literature, as many variants of MCTS exist and may vary from our description. 
 
 %         Two critical choices in designing an MCTS algorithm are the search policy (which needs to balance exploration and exploitation) and the backups (how values are updated). MCTS algorithms are often designed to achieve \textit{consistency} (i.e. convergence to the optimal action in the limit), which implies that running more trials will increase the probability that the optimal action is recommended.
@@ -374,7 +505,7 @@ def backup_v($s_i$):
 
     
     \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
-    \label{sec:2-2-2-uct}
+    \label{sec:2-3-2-uct}
     
         \todo{list}
         \begin{itemize}
@@ -422,8 +553,9 @@ def backup_v($s_i$):
 
         \todo{add polynomial UCT here? and or prioritised UCT from alpha go here?}
 
-
         \todo{make sure neurips paper writing integrated in UCT and MCTS section (commented out, and below this comment in the .tex) - read the actual pdf for thesis and neurips papers and compare cover same info?}
+
+        \todo{add stuff about regret here}
 %         \paragraph{UCT} 
 %             UCT~\cite{kocsis2006uct} applies the upper confidence bound (UCB) in its search policy to balance exploration and exploitation. The $n$th trial of UCT operates as follows: let $\cl{T}$ be the current search tree and let $\tau=(s_0,a_0,...,a_{h-1},s_{h})$ denote the trajectory of the $n$th trial, where $s_h\not\in\cl{T}$ or $h=H$. At each node $s_t$ the UCT search policy $\pi_{\text{UCT}}$ will select a random action that has not previously been selected, otherwise, it will select the action with maximum UCB value:
 %             %
@@ -447,7 +579,7 @@ def backup_v($s_i$):
 
     
     \subsection{Monte-Carlo Tree Search}
-    \label{sec:2-2-3-mcts}
+    \label{sec:2-3-3-mcts}
 
         \todo{list}
         \begin{itemize}
@@ -499,7 +631,7 @@ def backup_v($s_i$):
 
     
     \subsection{Maximum Entropy Tree Search}
-    \label{sec:2-2-4-ments}
+    \label{sec:2-3-4-ments}
     
         \todo{list}
         \begin{itemize}
@@ -634,7 +766,7 @@ def selection_phase_ended(t,mcts_mode):
 
 
 \section{Multi-Objective Reinforcement Learning}
-\label{sec:2-3-morl}
+\label{sec:2-4-morl}
     
     \todo{list}
     \begin{itemize}
@@ -657,7 +789,7 @@ def selection_phase_ended(t,mcts_mode):
 
     \begin{defn}
         \label{def:mo_mdp}
-        A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{V}(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^d$, where $d$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+        A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{V}(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
     \end{defn}
 
     Now multi-objective trajectories are defined. Outside of this section, we may drop the prefix ``multi-objective'' where it should be clear from context, however we will continue to use bold typeface to denote any vector variables or functions.
@@ -690,15 +822,15 @@ def selection_phase_ended(t,mcts_mode):
         \label{def:simplex}
         \label{def:weight}
         \label{def:context}
-        The \textnormal{($d$-dimensional) Simplex} consists of the set of $d$-dimensional vectors, whose entries are non-negative and sum to one. We denoted this as $\Delta^d = \{\bff{w}\in\bb{R}^d|w_i > 0, \sum_i w_i = 1\}$.
+        The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. We denoted this as $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}$.
 
-        The elements of the $d$-dimensional Simplex we will call \textnormal{weight vector} (or sometimes \textnormal{context} in this thesis), as they will be used to specify preferences over the $d$ dimensions of the reward function.
+        The elements of the $D$-dimensional Simplex we will call \textnormal{weight vectors} (or sometimes \textnormal{context} in this thesis), as they will be used to specify preferences over the $D$ dimensions of the reward function.
     \end{defn}
 
     \begin{defn}
         \label{def:utility_fn}
         \label{def:scalarisation_fn}
-        A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^d\times\Delta^d \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^d$ and a weighting over the objectives $\bff{w}\in\Delta^d$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
+        A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
     \end{defn}
 
     % \begin{defn}
@@ -725,9 +857,9 @@ def selection_phase_ended(t,mcts_mode):
     \begin{defn}
         \label{def:undominated_set}
         \label{def:convex_hull}
-        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^d$ where the scalarised value is maximised: 
+        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^D$ where the scalarised value is maximised: 
         \begin{align}
-            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^d. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}.
+            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}.
         \end{align}
 
         In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
@@ -740,9 +872,9 @@ def selection_phase_ended(t,mcts_mode):
     \begin{defn}
         \label{def:coverage_set}
         \label{def:convex_coverage_set}
-        A set $CS(\Pi;u)\subseteq\Pi$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^d$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
+        A set $CS(\Pi;u)\subseteq\Pi$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
         \begin{align}
-            \forall \bff{w}\in\Delta^d. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}).
+            \forall \bff{w}\in\Delta^D. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}).
         \end{align}
 
         It can be shown that any $CS(\Pi;u)\subseteq U(\Pi;u)$ \todo{cite?}.
@@ -774,30 +906,46 @@ def selection_phase_ended(t,mcts_mode):
 
 
     \subsection{Convex Hull Value Iteration}
-        \todo{label for subsection}]
+    \label{sec:2-4-1-chvi}
 
-        \todo{write this}
+        \todo{label for subsection}
+
+        Convex Hull Value Iteration (CHVI) \todo{cite} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}. In CHVI the value functions of value iterations are replaced by sets of vectors, which represent convex hulls (really they are the value set of a convex coverage set). 
+
+        CHVI maintains estimates of convex hulls (actually convex coverage sets) at each state $\hat{\bfcl{V}}_{\chvi}(s)$.
+
+        One important operation for CHVI is \cprune, which returns that undominated set of vectors from a given set of vectors $\bfcl{V}$:
+        \begin{align}
+            \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}.
+        \end{align}
+
+        \todo{handle overloading of caligraphic V}
+
+        Additionally, to be able to define a multi-objective version of value iteration, we need to define an arithmetic over sets of vectors. Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$ we define multiplication by a scalar $s$ and addition as follows:
+        \begin{align}
+            s\bfcl{V} &= \{s\bff{v} | \bff{v}\in\bfcl{V} \} \\
+            \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}.
+        \end{align}
+
+        Now to define the multi-objective Bellman backups used in CHVI, let $\hat{\bfcl{V}}^0(s) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
+        \begin{align}
+            \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \\
+            \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [\bff{R}(s,a) + \Vchvi^k(s';t+1)].
+        \end{align}
+        
+        This again parallels the Bellman backups use in single-objective value iteration \todo{ref}, where the max operation is replaced by the \cprune operation over all possible Q-value vectors. \todo{write this sentence better} 
+
+        \todo{talk about the POMDP action tagging things}
+
+        \todo{Talk about the better way of doing CHVI? https://www.jmlr.org/papers/volume13/lizotte12a/lizotte12a.pdf and Efficient reinforcement learning with multiple reward functions for randomized controlled trial analysis. Also by Lizotte}
 
 
 
 
-\section{Multi-Objective Monte Carlo Tree Search}
-\label{sec:2-4-momcts}
 
-    \todo{I think this whole section can just go in litrev}
 
-    \todo{list}
-    \begin{itemize}
-        \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
-        \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
-        \hide{\item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic}
-        \item Different flavours copy UCT action selection, but with different variants
-        \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
-    \end{itemize}
 
-    \todo{There has been some prior work in multi-objective MCTS which we will outline here}
 
-    \todo{Write out implementations of prior works using THTS}
 
 
 
@@ -854,5 +1002,31 @@ def build_alias_table($f$):
 % TODO: make a figure env for code
 
     \todo{write the build alias table psuedocode (use wiki it was good)}
+
+
+
+
+
+
+
+
+
+
     
     
+
+
+
+
+
+
+
+
+
+\todo{after finished chapter, make sure no errors from latex}
+
+\todo{after finished chapter, make sure all equations labelled}
+
+\todo{after finished chapter, make sure all sections correctly referenced, changed sec:2-5-sampling to sec:2-4-sampling, removed the sec:2-4-momcts, added sec:2-5-mabs}
+
+\todo{after finished chapter, make sure all abbreviations and accronyms added and correct}

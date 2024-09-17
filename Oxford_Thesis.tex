@@ -177,6 +177,7 @@
 % General - comments (I use hide if dont want to comment out, but dont want it showing on doc yet)
 % \newcommand{\todo}[1]{TODO: #1}
 \newcommand{\todo}[1]{\hl{TODO: #1}}
+\newcommand{\quest}[1]{\hl{Question: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
 % \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
 \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
@@ -210,11 +211,20 @@
 \newcommand{\treepolicyq}{\hyperlink{q31}{\textbf{Q3.1 - Tree Policies}}}
 \newcommand{\moevalq}{\hyperlink{q32}{\textbf{Q3.2 - Multi-Objective Evaluation}}}
 
-% Sec 2.1 - MDPs + RL macros
-\newcommand{\sft}{\textnormal{sft}}
-\newcommand{\suc}[2]{\textnormal{Succ}(#1,#2)}
+% Sec 2.1 - MABs
+\newcommand{\creg}{{\textnormal{\texttt{cum\_regr}}}}
+\newcommand{\mab}{{\textnormal{MAB}}}
+\newcommand{\ucb}{{\textnormal{UCB}}}
+\newcommand{\sreg}{{\textnormal{\texttt{sim\_regr}}}}
+\newcommand{\emab}{{\textnormal{EMAB}}}
+\newcommand{\ctxreg}{{\textnormal{\texttt{ctx\_regr}}}}
+\newcommand{\cmab}{{\textnormal{CMAB}}}
 
-% Sec 2.2 - THTS++ macros
+% Sec 2.2 - MDPs + RL macros
+\newcommand{\sft}{{\textnormal{sft}}}
+\newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
+
+% Sec 2.3 - THTS++ macros
 \newcommand{\children}{{\textnormal{\texttt{children}}}}
 \newcommand{\CNODE}{{\textnormal{\texttt{CNODE}}}}
 \newcommand{\cnode}{{\textnormal{\texttt{cnode}}}}
@@ -224,27 +234,31 @@
 \newcommand{\node}{{\textnormal{\texttt{node}}}}
 \newcommand{\runtrial}{{\textnormal{\texttt{run\_trial}}}}
 \newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
-\newcommand{\Vinit}{V_{\textnormal{init}}}
+\newcommand{\Vinit}{{V_{\textnormal{init}}}}
 
-% Sec 2.2.X - UCT/MCTS/MENTS macros
-\newcommand{\uct}{\textnormal{UCT}}
-\newcommand{\piuct}{\pi_{\uct}}
-\newcommand{\Vuct}{\bar{V}_{\uct}}
-\newcommand{\Quct}{\bar{Q}_{\uct}}
+% Sec 2.3.X - UCT/MCTS/MENTS macros
+\newcommand{\uct}{{\textnormal{UCT}}}
+\newcommand{\piuct}{{\pi_{\uct}}}
+\newcommand{\Vuct}{{\bar{V}_{\uct}}}
+\newcommand{\Quct}{{\bar{Q}_{\uct}}}
 
-\newcommand{\mcts}{\textnormal{MCTS}}
-\newcommand{\pimcts}{\pi_{\mcts}}
-\newcommand{\Vmcts}{\bar{V}_{\mcts}}
-\newcommand{\Qmcts}{\bar{Q}_{\mcts}}
-\newcommand{\rollout}{\textnormal{rollout}}
+\newcommand{\mcts}{{\textnormal{MCTS}}}
+\newcommand{\pimcts}{{\pi_{\mcts}}}
+\newcommand{\Vmcts}{{\bar{V}_{\mcts}}}
+\newcommand{\Qmcts}{{\bar{Q}_{\mcts}}}
+\newcommand{\rollout}{{\textnormal{rollout}}}
 
-\newcommand{\ments}{\textnormal{MENTS}}
-\newcommand{\piments}{\pi_{\ments}}
-\newcommand{\Vments}{\hat{V}_{\ments}}
-\newcommand{\Qments}{\hat{Q}_{\ments}}
+\newcommand{\ments}{{\textnormal{MENTS}}}
+\newcommand{\piments}{{\pi_{\ments}}}
+\newcommand{\Vments}{{\hat{V}_{\ments}}}
+\newcommand{\Qments}{{\hat{Q}_{\ments}}}
 
-% Sec 2.3 - MORL macros
-\newcommand{\lin}{\textnormal{lin}}
+% Sec 2.4 - MORL macros
+\newcommand{\lin}{{\textnormal{lin}}}
+\newcommand{\cprune}{{\textnormal{\texttt{cvx\_prune}}}}
+\newcommand{\chvi}{{\textnormal{CHVI}}}
+\newcommand{\Vchvi}{{\hat{\bfcl{V}}_{\chvi}}}
+\newcommand{\Qchvi}{{\hat{\bfcl{Q}}_{\chvi}}}
 
 
 
