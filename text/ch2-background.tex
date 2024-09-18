@@ -13,6 +13,8 @@
 
     \todo{Introduce that going to introduce notation and give the building blocks this thesis builds off}
 
+    \todo{comment about notation like charlies, $\one$ for example}
+
 
 
 
@@ -25,7 +27,9 @@
 \section{Markov Decision Processes}
 \label{sec:2-1-mdps}
 
-    In this section \textit{Markov Decision Processes} (MDPs) are introduced, along with some related defintions. MDPs give a mathematical framework for problems concerning sequential decision making under uncertainty, and in this thesis will be the framework used to model the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depends on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent recieves an instantaneous reward, according to a reward function that depends on the state and action taken.
+    \todo{chatgpt the intro stuff}
+
+    In this section \textit{Markov Decision Processes} (MDPs) are introduced, along with related defintions of \textit{policies} and \textit{trajectories}. MDPs give a mathematical framework for problems concerning sequential decision making under uncertainty, and in this thesis will be the framework used to model the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depends on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent recieves an instantaneous reward, according to a reward function that depends on the state and action taken.
 
     This thesis is concerned with discrete, finite, fully-observable and finite-horizon Markov Decision Processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. \todo{at points we may allude to some designs and ideas that can generalise to more general forms of markov decision processes, but it is not the main focus here.}
 
@@ -39,7 +43,7 @@
         \label{def:succ}
         The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$, with respect to an MDP, is defined as: 
         \begin{align}
-            \suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}.
+            \suc{s}{a}:=\{s'\in\cl{S}|p(s'|s,a)>0\}.
         \end{align}
         
         Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
@@ -47,166 +51,35 @@
 
     To define a strategy that an agent will follow in an MDP, and agent defines a \textit{policy}. A policy maps each state in the state space to a probability distribution over the action space. To ``follow'' a policy, actions are sampled from the distribution. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
 
-
-
-
-
-    HERE HERE HERE
-    \todo{want to define policy, and then have a second paragraph, with a list, defining notation that we'll use for policies. Want to say something like, ``we will use xxxx as a shorthand to define deterministic distributions''.}
-
-
-
-
-
     \begin{defn}
         \label{def:policy}
-        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow \cl{A} \rightarrow [0,1]$ is a mapping from states to distributions over actions, where for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$. We will use the following notations: $\pi(\cdot|s)$ is used to denote the entire distribution over the set of actions, $\pi(a|s)$ denotes the probability that action $a$ is sampled by the policy at state $s$. 
+        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distributions over actions and $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy the conditions: for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and for all $a\in\cl{A}. \pi(a|s)\geq 0$ . 
+        
+        Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic iff it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
 
-        Additionally, for \textnormal{deterministic policies} we will use the shorthand notation $\pi(s)$ to denote the action taken by the policy. Formally, we will write $\pi(s)=a'$ where $a'\in\cl{A}$ is such that $\pi(a'|s)=1$.
-
-        \todo{want to add a statement saying something like} $\pi(s)=a'$ is shorthand for $\pi(a|s)=\one[a=a']$.
-
-        \todo{Actually want to say something like:} a deterministic policy is special case of the stochastic, with a delta distribution, such as $\pi(a|s)=\one[a=a']$, and in such cases we will use $\pi(s)=a'$ as a short hand to state $\pi(a|s)=\one[a=a']$ and $\pi(s)$ as a shorthand for $a'$.
+        Moreover, the following notations are used for policies:
+        \begin{itemize}
+            \item $a\sim\pi(\cdot|s)$ denotes sampling an action $a$ from the distribution $\pi(\cdot|s)$;
+            \item $\pi(s)=a'$ is used as a shorthand to define the deterministic policy $\pi(a|s)=\one[a=a']$; 
+            \item $\pi(s)$ is used as a shorthand for the action $a'\sim\pi(\cdot|s)$ in the case of a deterministic policy.
+        \end{itemize}
     \end{defn}
-
-    \todo{Explicitly note that we are using pi as a free variable (is free variable correct word here?) here, and that in section - todo ref - we will use pi to refer to a specific type of policy (search policies) in the rest of the thesis after this section.}
-
-    \todo{clean up policy definition with shorthand stuff}
-
-    \todo{actually state the the values of a policy need to add to one}
-
-    In reinforcement learning it is common to refer to a sequence of states, actions and rewards as a \textit{trajectory}. In the tree search literature it is more common to refer to this as a \textit{trial} \todo{cite thts?}, so we will use these terms interchangeably.
+    
+    Given an MDP $\cl{M}$ and a policy $\pi$ it is then possible to sample a sequence of states, actions and rewards, known as a \textit{trajectory}. A trajectory \textit{simulates} one possible sequence that could occur if an agent follows policy $\pi$ in $\cl{M}$, and in Section \todo{ref} these simulations are used to incrementally build a search tree.
     
     \begin{defn}
         \label{def:trajectory}
-        A \textnormal{trajectory}, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trials/trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. Notationally, we will write $\tau\sim\pi$ to denote a sampled trial/trajectory with respect to a policy, where the MDP is implicit.
-
-        Sometimes it will be necessary to reason about trajectories with a horizon $h<H$, which will be denoted $\tau_{:h} = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{h-1}, a_{h-1}, r_{h-1}, s_h)$.
+        A \textnormal{trajectory} $\tau$, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. 
+        
+        The following notations will also be used for trajectories:
+        \begin{itemize}
+            \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
+            \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
+            \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is trunacted on only one end.
+        \end{itemize}
     \end{defn}
 
-\section{Multi-Armed Bandits}
-\label{sec:2-1-mab}
-
-    \todo{Introduce tree search using multi-armed bandits?}
-    \hide{
-    \begin{itemize}
-        \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
-        \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
-    \end{itemize}
-    }
-    \todo{list}
-    \begin{itemize}
-        \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
-        \item Multi-Armed Bandits routines algos
-        \item Exploring Bandits routines and algos
-        \item Contextual Bandits routines and algos
-    \end{itemize}
-
-    \todo{some more waffelly shit about MABs}
-
-    In the $K$-armed bandit problem, an agent is tasked with iteratively selecting one of $K$ arms, originally introduced by \todo{author} \todo{cite MAB orig}. In each iteration, once an arm is selected, say $x\in\{1,...,K\}$, and a reward $y$ is returned according to an unknown probability distribution $f_x$. Let $n$ be the number of rounds of this game that are played, and let $\mu_i=\bb{E}[y|x=i]$ be the expected reward of pulling arm $i$. 
-    
-    When analysing an algorithmic strategy for Multi-Armed Bandits (MABs), a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal reward that could be obtained with full knowledge of $\{f_i\}$.
-
-    \todo{work out how to deal with the issue of not having policies defined yet. thinhk this needs to be moved to after ch2.1}
-
-    \todo{some sentence}, the process of a MAB is as follows:
-    \begin{itemize}
-        \item for $m$ in $\{1,...,n\}$:
-        \item agent selects arm $x^m$ according to policy $\pi$
-        \item agent recieves reward $y^m \sim f_{x^i}$
-    \end{itemize}
-
-    \begin{defn}
-        The \textnormal{(cumulative) regret} of the agent in the above process is defined as:
-        \begin{align}
-            \creg_{\mab}(\pi,n) = n\mu^* - \sum_{i=1}^n y^i,
-        \end{align}
-        where $\mu^* = max_i \mu_i$.
-    \end{defn}
-
-    To theoretically analyse algorithms for MAB problems, the quantity of expected regret, $\bb{E}[\creg_{\mab}]$ is considered. In \todo{cite} it is shown using information theory that there is a lower bound on the expected regret that an agent can achieve of $\Sigma(\log N)$, and in \todo{cite ucb} the Upper Confidence Bound (UCB) algorithm is introduced, achieving a matching upper bound of $O(\log N)$. 
-
-    Let $N^m(j)$ be the number of times that arm $i$ has been pulled after $m$ rounds, $\bar{y}_i^m$ is the sample average of rewards recieved when pulling arm $i$: 
-    \begin{align}
-        \bar{y}_i^m=\frac{1}{m}\sum_{j=1}^m y^j \one[x^j=i].
-    \end{align} 
-    
-    Then the arm selected by the UCB algorithm on the $m$th round is given by:
-    \begin{align}
-        \pi_{\ucb}(m) = \argmax_{j\in\{1,..,K\}} \bar{y}_j^m + b_{\ucb} \sqrt{\frac{\log(m)}{N(j)}} 
-    \end{align}
-
-    \todo{define $b_{\ucb}$}
-
-    \todo{talk about explortaiton-exploitation trade off -- see Edwin thesis too because said it nicely}
-
-
-
-
-    \subsection{Exploring Bandits}
-    \label{sec:2-1-1-exploring-mab}
-
-        In the pure exploration $K$-armed bandit problem \todo{cite},
-        %https://link.springer.com/chapter/10.1007/978-3-642-04414-4_7#preview, 
-        the game is changed slighly. The agent still gets to pull an arm each round, but after it recieves a reward each round it is given the opportunity to output a \textit{recommendation}. In exploring multi-armbed bandits (EMABs), the emphasis is now on the algorithm being able to provide the best recommendations possible, rather than trying to exploit pulling the best arm each round. In essence, this change seperates the needs to explore and exploit, the agent needs to explore with its arm pulls, and output an exploiting recommendation at the end of each round.
-
-        \todo{some sentence}, the process of a EMAB is as follows:
-        \begin{itemize}
-            \item for $m$ in $\{1,...,n\}$:
-            \item agent selects arm $x^m$ according to policy $\pi^m$
-            \item agent recieves reward $y^m \sim f_{x^m}$
-            \item agent outputs a recommendation policy $\psi^m$
-        \end{itemize}
-
-        Under this regime, the performance of an algorithm can be analysed by considering the quantity of \textit{simple regret} of the recommendation policy. The simple regret is the expected value of an \textit{instantaneous regret}, \todo{define instantaneous regret} which would come from following the recommendation policy.
-
-        \begin{defn}
-            The \textnormal{simple regret} of following the recommendation policy $\psi^m$ on the $m$th round is:
-            \begin{align}
-                \sreg_{\emab}(m) = \bb{E}_{i\sim\psi^m}[\mu^* - \mu_i].
-            \end{align}
-        \end{defn}
-
-        \todo{talk about the bounds they show in their work}
-
-        \todo{describe the algorithm which is pulling arms 1,2,...,K,1,2,...,K,1,..., and so on, and then recommending the arm that has the best empirical average}.
-
-    
-    \subsection{Contextual Bandits}
-    \label{sec:2-1-2-contextual-mab}
-
-        \todo{sleepy and rushed this section a bit}
-
-        In the contextual $K$-armed bandit problem \todo{cite}, on each round the algorithm is given a context $w\in \cl{W}$, which the algorithm does not choose. If contextual multi-armed bandit problems (CMABs), the distribution that the rewards are drawn from now depend on $w$, written $f_{w,i}$ for context $w$ for arm $i$. 
-
-        \todo{some more words around when this is useful and why, and define CMABs}
-
-        \todo{some sentence}, the process of a MAB is as follows:
-        \begin{itemize}
-            \item for $m$ in $\{1,...,n\}$:
-            \item agent recieves context $w^m$
-            \item agent selects arm $x^m$ according to policy $\pi$
-            \item agent recieves reward $y^m \sim f_{w^m,x^m}$
-        \end{itemize}
-
-        Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \todo{ref}, while taking into account the contexts drawn.
-
-        \begin{defn}
-            The \textnormal{(cumulative) contextual regret} of the agent in the above process is defined as:
-            \begin{align}
-                \ctxreg_{\cmab}(\pi,n) = \sum_{i=1}^n \mu_{w^i}^* - y^i,
-            \end{align}
-            where $\mu_{w}^* = \max_i \mu_{w,i}$.
-        \end{defn}
-
-        \todo{add definitions for $\mu_{w,i}$}
-
-        \todo{Talk about contextual zooming precursor (need to read and add to litrev)}
-
-        \todo{Write about contextual zooming, using CHMCTS paper, and use opportunity to add to litrev}
-
-
+    \todo{citations in this section? Puttman?}
 
 
 
@@ -215,23 +88,29 @@
 
 
 \section{Reinforcement Learning}
-\label{sec:2-3-rl}
+\label{sec:2-2-rl}
 
 
 
     \begin{figure}
-        \label{fig:rl_overview}
         \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
         \caption[todo]{\todo{add diagrams of typical agent interacting with environment diagram, AND something with agent acting with a simulator. ALSO, WRITE THE BIT FOR THE CAPTION FOR LIST OF FIGS}}
+        \label{fig:rl_overview}
     \end{figure}
 
-    
-    
-    This section introduces fundamental concepts in Reinforcement Learning such as \textit{policies} and \textit{value functions} which will be useful in the following. Afterwards, the \textit{maximum entropy objective} is discussed, as it will be relevant to some of the work in this thesis and other closely related work. 
+    \todo{chatgpt the intro stuff}
 
-    In this thesis we will only consider discrete and finite-horizon Markov Decision Processes, \todo{but we will point to works that make adaptions for non-finite horizons and continuous and partially observable environments, and briefly describe why the ideas could be used in parallel with the concepts in this thesis.}
+    This section serves as a brief introduction to fundamental concepts in Reinforcement Learning, and motivates . The field of Reinforcement Learning considers an agent that has to learn how to make decisions by interacting with its environment (Figure \ref{fig:rl_overview}). The agent can take actions in the environment, recieving in return \textit{observations} and \textit{rewards}, which can be used to update internal state and used to make further decisions, and the goal of the agent is to maximise the rewards that it recieves.
 
-    Next the value and Q-value of a policy is defined, which is the expected cumulative reward that a policy will obtain:
+    Classically the agent is considered to interact with its environment directly \todo{cite sutton and barto?}, and thus must make a trade-off between exploring new strategies and exploiting learned strategies, commonly known as the \textit{exploration-exploitation trade-off}. If an agent were to try to only exploit, then it may not discover better strategies, and if an agent only explores, then it may miss out on the opportunity to exploit the best known strategy and obtain greater rewards.
+
+    Also depicted in Figure \ref{fig:rl_overview} is a scenario where the agent is equiped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occassionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. 
+
+    In this thesis, the environment will always take the form of an MDP (Defintion \ref{def:mdp}), and observations will always be \textit{fully-observable}, meaning that the agent is provided with full access to the states of the MDP. \todo{comment about partially observable? and cite?}. Moreover, a lot of the work in this thesis concerns the simulation scenario from Figure \ref{fig:rl_overview}, and motivates our research questions around exploration: \exploreq.
+
+    Following on from Section \ref{sec:2-1-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning, covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning, and finally Subsection \ref{sec:2-2-merl} covers \textit{Maximum Entropy Reinforcement Learning}.
+    
+    The value of a policy $\pi$ is the expected cumulative reward that will be obtained by following the policy:
     \begin{defn}
         \label{def:value}
         \label{def:q_value}
@@ -245,6 +124,17 @@
             Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^{\pi}(s';t+1)].
         \end{align} 
     \end{defn}
+
+
+
+
+
+    HERE HERE HERE HERE
+
+
+
+
+    
 
     From the definition of the values functions the optimal value functions can be defined:
     \begin{defn}
@@ -264,7 +154,7 @@
             J(\pi) = V^{\pi}(s_0;0).
         \end{align}
 
-        The objective of (standard) reinfrocement learning can then be stated as finding $\max_{\pi} J(\pi)$.
+        The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$.
     \end{defn}
 
     It can be shown \todo{refs} that the optimal (Q-)value functions satisfy the \textit{Bellman equations}:
@@ -363,6 +253,159 @@
 
 
 
+
+
+
+
+
+\section{Multi-Armed Bandits}
+\label{sec:2-2-mab}
+
+    \todo{This section has the most work left, going to handle it last to get to mostly complete ch faster}
+
+    \todo{Introduce tree search using multi-armed bandits?}
+    \hide{
+    \begin{itemize}
+        \item Would like to think a bit about some of the bandits work that sample actions (from adversarial I think), because they were similar to boltzmann search but I hadn't seen details about those works when writing dents
+        \item Also the gradient based MAB stuff in sutton and barto book? Looks relevant? Maybe consider that as update to DENTS paper? Either way, another idea for getting good Go results.
+    \end{itemize}
+    }
+    \todo{list}
+    \begin{itemize}
+        \item $R(s,a)$ is a random variable in MAB literature, but we're assuming it's a fixed value in RL
+        \item Multi-Armed Bandits routines algos
+        \item Exploring Bandits routines and algos
+        \item Contextual Bandits routines and algos
+    \end{itemize}
+
+    \todo{Some waffel intro about this being used for decision making under uncertainty, but doesnt encorporate the sequential part of it. However, necessary for foundations, because much of sequential work builds ontop of this work}
+
+    \todo{Also say that this can be viewed as a single state MDP with $\cl{S}=\{\bot\}$ and $\cl{A}=\{1,...,K\}$}
+
+    \todo{some more waffelly shit about MABs}
+
+    In the $K$-armed bandit problem, an agent is tasked with iteratively selecting one of $K$ arms, originally introduced by \todo{author} \todo{cite MAB orig}. In each iteration, once an arm is selected, say $x\in\{1,...,K\}$, and a reward $y$ is returned according to an unknown probability distribution $f_x$. Let $n$ be the number of rounds of this game that are played, and let $\mu_i=\bb{E}[y|x=i]$ be the expected reward of pulling arm $i$. 
+    
+    When analysing an algorithmic strategy for Multi-Armed Bandits (MABs), a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal reward that could be obtained with full knowledge of $\{f_i\}$.
+
+    \todo{work out how to deal with the issue of not having policies defined yet. thinhk this needs to be moved to after ch2.1}
+
+    \todo{some sentence}, the process of a MAB is as follows:
+    \begin{itemize}
+        \item for $m$ in $\{1,...,n\}$:
+        \item agent selects arm $x^m$ according to policy $\pi$
+        \item agent recieves reward $y^m \sim f_{x^i}$
+    \end{itemize}
+
+    \begin{defn}
+        The \textnormal{(cumulative) regret} of the agent in the above process is defined as:
+        \begin{align}
+            \creg_{\mab}(\pi,n) = n\mu^* - \sum_{i=1}^n y^i,
+        \end{align}
+        where $\mu^* = max_i \mu_i$.
+    \end{defn}
+
+    To theoretically analyse algorithms for MAB problems, the quantity of expected regret, $\bb{E}[\creg_{\mab}]$ is considered. In \todo{cite} it is shown using information theory that there is a lower bound on the expected regret that an agent can achieve of $\Sigma(\log N)$, and in \todo{cite ucb} the Upper Confidence Bound (UCB) algorithm is introduced, achieving a matching upper bound of $O(\log N)$. 
+
+    Let $N^m(j)$ be the number of times that arm $i$ has been pulled after $m$ rounds, $\bar{y}_i^m$ is the sample average of rewards recieved when pulling arm $i$: 
+    \begin{align}
+        \bar{y}_i^m=\frac{1}{m}\sum_{j=1}^m y^j \one[x^j=i].
+    \end{align} 
+    
+    Then the arm selected by the UCB algorithm on the $m$th round is given by:
+    \begin{align}
+        \pi_{\ucb}(m) = \argmax_{j\in\{1,..,K\}} \bar{y}_j^m + b_{\ucb} \sqrt{\frac{\log(m)}{N(j)}} 
+    \end{align}
+
+    \todo{define $b_{\ucb}$}
+
+    \todo{talk about explortaiton-exploitation trade off -- see Edwin thesis too because said it nicely}
+
+
+
+
+    \subsection{Exploring Bandits}
+    \label{sec:2-2-1-exploring-mab}
+
+        In the pure exploration $K$-armed bandit problem \todo{cite},
+        %https://link.springer.com/chapter/10.1007/978-3-642-04414-4_7#preview, 
+        the game is changed slighly. The agent still gets to pull an arm each round, but after it recieves a reward each round it is given the opportunity to output a \textit{recommendation}. In exploring multi-armbed bandits (EMABs), the emphasis is now on the algorithm being able to provide the best recommendations possible, rather than trying to exploit pulling the best arm each round. In essence, this change seperates the needs to explore and exploit, the agent needs to explore with its arm pulls, and output an exploiting recommendation at the end of each round.
+
+        \todo{some sentence}, the process of a EMAB is as follows:
+        \begin{itemize}
+            \item for $m$ in $\{1,...,n\}$:
+            \item agent selects arm $x^m$ according to policy $\pi^m$
+            \item agent recieves reward $y^m \sim f_{x^m}$
+            \item agent outputs a recommendation policy $\psi^m$
+        \end{itemize}
+
+        Under this regime, the performance of an algorithm can be analysed by considering the quantity of \textit{simple regret} of the recommendation policy. The simple regret is the expected value of an \textit{instantaneous regret}, \todo{define instantaneous regret} which would come from following the recommendation policy.
+
+        \begin{defn}
+            The \textnormal{simple regret} of following the recommendation policy $\psi^m$ on the $m$th round is:
+            \begin{align}
+                \sreg_{\emab}(m) = \bb{E}_{i\sim\psi^m}[\mu^* - \mu_i].
+            \end{align}
+        \end{defn}
+
+        \todo{talk about the bounds they show in their work}
+
+        \todo{describe the algorithm which is pulling arms 1,2,...,K,1,2,...,K,1,..., and so on, and then recommending the arm that has the best empirical average}.
+
+
+
+    
+    \subsection{Contextual Bandits}
+    \label{sec:2-2-2-contextual-mab}
+
+        \todo{sleepy and rushed this section a bit}
+
+        In the contextual $K$-armed bandit problem \todo{cite}, on each round the algorithm is given a context $w\in \cl{W}$, which the algorithm does not choose. If contextual multi-armed bandit problems (CMABs), the distribution that the rewards are drawn from now depend on $w$, written $f_{w,i}$ for context $w$ for arm $i$. 
+
+        \todo{some more words around when this is useful and why, and define CMABs}
+
+        \todo{some sentence}, the process of a MAB is as follows:
+        \begin{itemize}
+            \item for $m$ in $\{1,...,n\}$:
+            \item agent recieves context $w^m$
+            \item agent selects arm $x^m$ according to policy $\pi$
+            \item agent recieves reward $y^m \sim f_{w^m,x^m}$
+        \end{itemize}
+
+        Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \todo{ref}, while taking into account the contexts drawn.
+
+        \begin{defn}
+            The \textnormal{(cumulative) contextual regret} of the agent in the above process is defined as:
+            \begin{align}
+                \ctxreg_{\cmab}(\pi,n) = \sum_{i=1}^n \mu_{w^i}^* - y^i,
+            \end{align}
+            where $\mu_{w}^* = \max_i \mu_{w,i}$.
+        \end{defn}
+
+        \todo{add definitions for $\mu_{w,i}$}
+
+        \todo{Talk about contextual zooming precursor (need to read and add to litrev)}
+
+        \todo{Write about contextual zooming, using CHMCTS paper, and use opportunity to add to litrev}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
 \label{sec:2-3-thts}
 
@@ -375,7 +418,7 @@
     \begin{figure}
         \label{fig:thts}
         \centering\includegraphics[width=0.9\textwidth]{figures/ch2/mcts_diagram_draft.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree.}
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree. \todo{fix the sligt noise in the dual blue and orange nodes}}
     \end{figure}
 
     \todo{double check the intro to 2.2, as wrote this a while ago}
@@ -790,6 +833,10 @@ def selection_phase_ended(t,mcts_mode):
 
 
 
+
+
+
+
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-4-morl}
     
@@ -805,6 +852,8 @@ def selection_phase_ended(t,mcts_mode):
     \end{itemize}
 
     \todo{Follow CHMCTS and https://arxiv.org/abs/2103.09568}
+
+    \todo{Link back to some of the multi objective questions}
 
     In this thesis we will follow a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. In this work we will specifically consider \textit{linear utility} functions and the decision support scenario, which will be defined more precisely below.
 

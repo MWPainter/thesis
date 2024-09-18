@@ -25,6 +25,8 @@
         A Markov Decision Process, which is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$.
     \item[$p$] 
         The next-state transition distribution of an MDP.  $p(s' | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
+    \item[$\pi$]:
+        A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$.
     \item[$R$] 
         The reward function of an MDP: $R(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
     \item[$\cl{S}$]
@@ -33,11 +35,63 @@
         The set of successor states of a state-action pair $(s,a)$, with respect to an MDP: $\suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}$.
     \item[$s_0$]
         $s_0\in\cl{S}$ is the initial starting state of an MDP.
+    \item[$\tau$]
+        $\tau = (s_0, a_0, r_0, s_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$. A trajectory, or sequence, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$.
     \\
     %%%%%
     % 2.2 RL
     %%%%%
-    \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-1-mab})}\hfill\hfill]
+    \item[\Large\textbf{Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill]
+    \item[$Q^{\pi}$]
+        The Q-value of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$.
+    \item[$V^{\pi}$]
+        The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$.
+    
+
+
+
+
+    \item[$\alpha$] 
+        The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
+    \item[$\cl{A}$] 
+        Set of actions in an MDP.
+    \item[$H$] 
+        The finite-horizon time bound of an MDP. 
+    \item[$\cl{H}$]
+        Shannon entropy, of a policy.
+    \item[$J(\pi)$] 
+        \todo{objective funciton}
+    \item[$J_{\sft}(\pi)$] 
+        \todo{soft objective funciton}
+    \item[$\pi$]
+        A policy, \todo{state that this is just for this chapter, see sect 2.2 defn for rest of thesis}
+    \item[$\pi^*$]
+        The optimal standard policy, that maximises the objective function $J(\pi)$
+    \item[$\pi_{\sft}^*$]
+        The optimal soft policy, that maximises the soft objective function $J_{\sft}(\pi)$
+    \item[$Q^*$]
+        The optimal value function $Q^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy.
+    \item[$Q_{\sft}^{\pi}$]
+        The Q-value of a policy $\pi$. $Q_{\sft}^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$, \todo{plus the entopy of the policy weighted by the temperature alpha}. \todo{consider just writing max pi over the soft values here instead?}
+    \item[$Q_{\sft}^*$]
+        The optimal value function $Q_{\sft}^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.
+    \item[$\tau$] 
+        \todo{trajectory}
+    \item[$\tau_{:h}$] 
+        \todo{trajectory}
+    \item[$t$] 
+        \todo{free variable for current timestep? And generally add a list of free variables?}
+    \item[$V^*$]
+        The optimal value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy.
+    \item[$V_{\sft}^{\pi}$]
+        The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, \todo{plus the entopy of the policy weighted by the temperature alpha}.
+    \item[$V_{\sft}^*$]
+        The optimal soft value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.\todo{consider just writing max pi over the soft values here instead?}
+    \\
+    %%%%%
+    % 2.2 MABs
+    %%%%%
+    \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-2-mab})}\hfill\hfill]
     \item[$x$] \todo{define here and move into correct place in the list}
     \item[$y$] \todo{define here and move into correct place in the list}
     \item[$f_i$] \todo{define here and move into correct place in the list}
@@ -62,53 +116,6 @@
     \item[$ $] \todo{define here and move into correct place in the list}
     \item[$ $] \todo{define here and move into correct place in the list}
     \item[$ $] \todo{define here and move into correct place in the list}
-    \\
-    %%%%%
-    % 2.2 RL
-    %%%%%
-    \item[{\parbox[t]{\textwidth}{\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill}}]
-    \item[$\alpha$] 
-        The temperature parameter. (The coefficient of the entropy term in the maximum entropy (soft) objective).
-    \item[$\cl{A}$] 
-        Set of actions in an MDP.
-    \item[$H$] 
-        The finite-horizon time bound of an MDP. 
-    \item[$\cl{H}$]
-        Shannon entropy, of a policy.
-    \item[$J(\pi)$] 
-        \todo{objective funciton}
-    \item[$J_{\sft}(\pi)$] 
-        \todo{soft objective funciton}
-    \item[$\pi$]
-        A policy, \todo{state that this is just for this chapter, see sect 2.2 defn for rest of thesis}
-    \item[$\pi^*$]
-        The optimal standard policy, that maximises the objective function $J(\pi)$
-    \item[$\pi_{\sft}^*$]
-        The optimal soft policy, that maximises the soft objective function $J_{\sft}(\pi)$
-    \item[$Q^{\pi}$]
-        The Q-value of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$.
-    \item[$Q^*$]
-        The optimal value function $Q^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy.
-    \item[$Q_{\sft}^{\pi}$]
-        The Q-value of a policy $\pi$. $Q_{\sft}^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, starting by taking action $a_{t+1}=a$, \todo{plus the entopy of the policy weighted by the temperature alpha}. \todo{consider just writing max pi over the soft values here instead?}
-    \item[$Q_{\sft}^*$]
-        The optimal value function $Q_{\sft}^*(s,a;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$, starting with action $a_{t+1}=a$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.
-    \item[$\tau$] 
-        \todo{trajectory}
-    \item[$\tau_{:h}$] 
-        \todo{trajectory}
-    \item[$t$] 
-        \todo{free variable for current timestep? And generally add a list of free variables?}
-    \item[$V^{\pi}$]
-        The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$.
-    \item[$V^*$]
-        The optimal value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy.
-    \item[$V_{\sft}^{\pi}$]
-        The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will achieve, starting from state $s_t=s$, \todo{plus the entopy of the policy weighted by the temperature alpha}.
-    \item[$V_{\sft}^*$]
-        The optimal soft value function $V^*(s;t)$ denotes the expected maximal value that can be achieved from state $s_t=s$ by any policy, \todo{plus the entopy of the (optimal soft) policy weighted by the temperature alpha}.\todo{consider just writing max pi over the soft values here instead?}
-
-    \item[$\cl{M}$] \todo{define here and move into correct place in the list}
     \\
     
     %%%%%
@@ -199,6 +206,12 @@
     \item[\Large\textbf{Markov Decision Processes (Section \ref{sec:2-1-mdps})}\hfill\hfill]
     \item[MDP] Markov Decision Process
     %%%%%
+    % abbrv - 2.2 RL
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{\Large\textbf{Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill}}]
+    \item[MDP] Markov Decision Process.
+    \\
+    %%%%%
     % abbrv - 2.1 MABS
     %%%%%
     \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-1-mab})}\hfill\hfill]
@@ -206,12 +219,6 @@
     \item[UCB] \todo{define here and move into correct place in the list}
     \item[EMAB] \todo{define here and move into correct place in the list}
     \item[CMAB] \todo{define here and move into correct place in the list}
-    \\
-    %%%%%
-    % abbrv - 2.2 RL
-    %%%%%
-    \item[{\parbox[t]{\textwidth}{\Large\textbf{Markov Decision Processes and Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill}}]
-    \item[MDP] Markov Decision Process.
     \\
     %%%%%
     % abbrv - 2.3 THTS
