@@ -43,7 +43,7 @@
         \label{def:succ}
         The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$, with respect to an MDP, is defined as: 
         \begin{align}
-            \suc{s}{a}:=\{s'\in\cl{S}|p(s'|s,a)>0\}.
+            \suc{s}{a}:=\{s'\in\cl{S}|p(s'|s,a)>0\}. \label{eq:succ_def}
         \end{align}
         
         Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
@@ -116,103 +116,113 @@
         \label{def:q_value}
         The \textnormal{value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t \Bigg| s_t=s \right].
+            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t \Bigg| s_t=s \right]. \label{eq:value_fn_def}
         \end{align} 
 
         The \textnormal{Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
-            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^{\pi}(s';t+1)].
+            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^{\pi}(s';t+1)]. \label{eq:q_value_fn_def}
         \end{align} 
     \end{defn}
 
-
-
-
-
-    HERE HERE HERE HERE
-
-
-
-
-    
-
-    From the definition of the values functions the optimal value functions can be defined:
+    From the definition of the values functions the optimal value functions can be defined by taking the maximum value over all policies:
     \begin{defn}
         \label{def:optimal_value}
         \label{def:optimal_q_value}
         The \textnormal{Optimal (Q-)Value} of a state(-action pair) is defined as:
         \begin{align}
-            V^*(s;t) &= \max_{\pi} V^{\pi}(s;t) \\
-            Q^*(s,a;t) &= \max_{\pi} Q^{\pi}(s,a;t).
+            V^*(s;t) &= \max_{\pi} V^{\pi}(s;t) \label{eq:opt_value_fn_def} \\
+            Q^*(s,a;t) &= \max_{\pi} Q^{\pi}(s,a;t). \label{eq:opt_q_value_fn_def}
         \end{align}
     \end{defn}
 
-    In reinforcement learning, the objective is to find a policy with maximal value:
+    Value functions can also be used to define an objective function:
     \begin{defn}
         The \textnormal{(standard) reinforcement learning objective function} $J(\pi)$ is defined as:
         \begin{align}
-            J(\pi) = V^{\pi}(s_0;0).
+            J(\pi) = V^{\pi}(s_0;0). \label{eq:rl_obj_fn_def}
         \end{align}
 
         The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$.
     \end{defn}
 
-    It can be shown \todo{refs} that the optimal (Q-)value functions satisfy the \textit{Bellman equations}:
+    \todo{all refs below I think can be Sutton and Barto, or [Bellman 1957] Bellman, R. 1957. Dynamic Programming. Princeton, NJ, USA: Princeton University Press, 1 edition.}
+
+    It can be shown that the optimal (Q-)value functions satisfy the \textit{Bellman equations} \todo{refs} :
     \begin{align}
-        V^*(s;t) &= \max_{a\in\cl{A}} Q^*(s,a;t), \\
-        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^*(s';t+1)].
+        V^*(s;t) &= \max_{a\in\cl{A}} Q^*(s,a;t), \label{eq:bellman_opt_v} \\
+        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^*(s';t+1)]. \label{eq:bellman_opt_q}
     \end{align} 
 
-    In tabular reinforcement learning, a table of values for $V(s;t)$ \todo{havent actually defined V without any superscript} is kept for each $s,t$. Given any initial value function $V^{(0)}$ let the \textit{Bellman backup} operations be:
+    The Bellman equations admit a \textit{dynamic programming} approach which can be used to computer the optimal value functions, known as \textit{Value Iteration} \todo{ref}. In Value iteration, a table of value estimates $\hat{V}(s;t)$ are kept for each $s,t$. Given any initial estimate of the value function $\hat{V}^{0}$, the \textit{Bellman backup} operations are:
     \begin{align}
-        V^{k+1}(s;t) &= \max_{a\in\cl{A}} Q^{k+1}(s,a;t), \\
-        Q^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [R(s,a) + V^k(s';t+1)].
+        \hat{V}^{k+1}(s;t) &= \max_{a\in\cl{A}} \hat{Q}^{k+1}(s,a;t), \label{eq:value_iter_v_backup} \\
+        \hat{Q}^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [R(s,a) + \hat{V}^k(s';t+1)]. \label{eq:value_iter_q_backup}
     \end{align}
 
-    Using this \textit{dynamic programming} approach is known as \textit{value iteration}. It can be shown that the Bellman backups are contraction operators \todo{add cite}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$. In the discrete \todo{what the actual conditions are} case we are considering, there will always be some $N<\infty$ such that $V^{N}=V^*$.
+    In each iteration of Value Iteration, these values are computed for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,1,...,H\}$. The Bellman equations can be shown to be \textit{contraction operators} \todo{refs}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$, and when the state and action spaces are discrete, they will converge in a finite number of iterations. \todo{refs}
 
-    \todo{cite [Bellman 1957] Bellman, R. 1957. Dynamic Programming. Princeton, NJ, USA: Princeton University Press, 1 edition.}
+    The \textit{optimal policy} is the policy that maximises the objective function $J$, can be shown to be deterministic \todo{conditions, finite?} \todo{cite}:
+    \begin{defn}
+        \label{def:optimal_policy}
+        The \textnormal{optimal (standard) policy} $\pi^*$ is the policy maximising the standard objective function:
+        \begin{align}
+            \pi^* = \argmax_\pi J(\pi) \label{eq:opt_policy_def}
+        \end{align}
+        or equivalently, the optimal standard policy can be found from the optimal Q-value function:
+        \begin{align}
+            \pi^*(s) = \argmax_a Q^*(s,a). \label{eq:opt_policy_from_opt_q_value}
+        \end{align}
+    \end{defn}
 
-    \todo{add optimal policy from Q values}
+
+
+
 
     \subsection{Maximum Entropy Reinforcement Learning}
     \label{sec:2-2-merl}
 
-        In \textit{Maximum Entropy Reinforcement Learning}, the objective function is altered to include the addition of an entropy term. Let $\cl{H}$ denote the (Shannon) entropy function \todo{cite}:
+        In \textit{Maximum Entropy Reinforcement Learning}, the objective function is altered to include the addition of an entropy term, \todo{which is used to encourage the agent to explore} \todo{double check with max entropy paper their motivation for adding entropy and cite}. 
+        
+        Let $\cl{H}$ denote the (Shannon) entropy function \todo{cite}:
         \begin{align}
-            \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)].
+            \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)] = \sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:shannon_entropy_def}
         \end{align}
 
-        Note that there are other forms of entropy, such as relative and Tsallis entropy, which can be used in place of Shannon entropy \todo{cite}. For the work considered in this thesis, the other forms of entropy can be used by replacing the definition of $\cl{H}$ by the relevant definition.
+        In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}.
 
-        In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, which is called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}.
-
+        Soft values are defined as follows:
         \begin{defn}
             \label{def:sft_value}
             \label{def:sft_q_value}
             The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
             \begin{align}
-                V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right].
+                V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:sft_value_fn_def}
             \end{align} 
 
             The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
             \begin{align}
-                Q_{\sft}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^{\pi}(s';t+1)].
+                Q_{\sft}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^{\pi}(s';t+1)]. \label{eq:sft_q_value_fn_def}
             \end{align} 
         \end{defn}
 
-        Similarly, optimal soft (Q-)values can be defined:
+        Similarly, optimal soft (Q-)values can be defined by taking the maximum over policies again:
         \begin{defn}
             \label{def:optimal_sft_value}
             \label{def:optimal_sft_q_value}
             The \textnormal{Optimal soft (Q-)Value} of a state(-action pair) is defined as:
             \begin{align}
-                V_{\sft}^*(s;t) &= \max_{\pi} V_{\sft}^{\pi}(s;t) \\
-                Q_{\sft}^*(s,a;t) &= \max_{\pi} Q_{\sft}^{\pi}(s,a;t).
+                V_{\sft}^*(s;t) &= \max_{\pi} V_{\sft}^{\pi}(s;t), \label{eq:opt_soft_value_fn_def} \\
+                Q_{\sft}^*(s,a;t) &= \max_{\pi} Q_{\sft}^{\pi}(s,a;t). \label{eq:opt_soft_q_value_fn_def}
             \end{align}
         \end{defn}
 
-        Equations similar to the Bellman equations, aptly named the \textit{Soft Bellman equations} can be defined, which differ to equations \todo{ref} by the replacement of the $\max$ operation with the \textit{softmax} operation (which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts).
+
+
+        HERE HERE HERE
+
+
+
 
         In maximum entropy reinforcement learning, the objective is to find a policy with maximal soft value:
         \begin{defn}
@@ -224,11 +234,17 @@
             The objective of maximum entropy (or soft) reinfrocement learning can then be stated as finding $\max_{\pi} J_{\sft}(\pi)$.
         \end{defn}
 
+
+
+        Equations similar to the Bellman equations, aptly named the \textit{Soft Bellman equations} can be defined \todo{cite levine}, which differ to equations (\ref{eq:bellman_opt_v}) and (\ref{eq:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation (which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts).
+
         Similarly to standard reinforcement learning, it can be shown \todo{refs} that the optimal soft (Q-)value functions satisfy the \textit{soft Bellman equations}:
         \begin{align}
             V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / alpha \right), \\
             Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V_{\sft}^*(s';t+1)].
         \end{align} 
+
+
 
         Again, similarly to standard reinforcement learning, we can define \textit{soft Bellman backups} that admit an analogous algorithm to value iteration:
         \begin{align}
