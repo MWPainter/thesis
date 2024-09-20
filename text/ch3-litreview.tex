@@ -15,36 +15,42 @@
 
     \todo{I'm also going to use this as a space to paste papers I should write about as they come up while writing later chapters}
 
+\section{Reinforcement Learning}
+    \label{sec:3-1-rl}
+    
+        \todo{Intro should say that look at Sutton and Barto and something else for deep RL, for a more complete overview. 
+        Here we will just discuss papers that consider entropy in their work, as thats the most relevant part for this 
+        thesis.}
+    
+    
+        \todo{list}
+        \begin{itemize}
+            \item Talk about entropy and some of that work (probably a subsection)
+        \end{itemize}
+    
+        \todo{In the entropy bit talk add this, removed from ch2: Note that there are other forms of entropy, such as relative and Tsallis entropy, which can be used in place of Shannon entropy (TODO cite). For the work considered in this thesis, the other forms of entropy can be used by replacing the definition of $\cl{H}$ by the relevant definition.}
+
+        \todo{talk about some deep learning methods here}
+
 \section{Multi-Armed Bandits}
-\label{sec:3-0-mab}
+\label{sec:3-2-mab}
 
     \todo{Maybe dont need to cover this in litrev, but should talk about exploring bandits, UCT and contextual bandits either in background or in litrev}
 
-\section{Reinforcement Learning}
-\label{sec:3-1-rl}
-
-    \todo{Intro should say that look at Sutton and Barto and something else for deep RL, for a more complete overview. 
-    Here we will just discuss papers that consider entropy in their work, as thats the most relevant part for this 
-    thesis.}
-
-
-    \todo{list}
-    \begin{itemize}
-        \item Talk about entropy and some of that work (probably a subsection)
-    \end{itemize}
-
-    \todo{In the entropy bit talk add this, removed from ch2: Note that there are other forms of entropy, such as relative and Tsallis entropy, which can be used in place of Shannon entropy (TODO cite). For the work considered in this thesis, the other forms of entropy can be used by replacing the definition of $\cl{H}$ by the relevant definition.}
-
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
-\label{sec:3-2-thts}
+\label{sec:3-3-thts}
 
     \subsection{Trial Based Heuristic Tree Search}
-    \label{sec:3-2-1-thts}
+    \label{sec:3-3-1-thts}
 
-    \todo{THTS paper}
+    \todo{THTS paper, talk about the differences that the paper has to our presentation of \thtspp}
+
+    \todo{cut from ch2: Finally we will briefly point out the differences between \thtspp and the original THTS schema in subsection}
+
+    \todo{talk about how these methods are still relevant with deep learning because of algorithms that use both, such as alpha zero}
 
     \subsection{Monte-Carlo Tree Search}
-    \label{sec:3-2-2-mcts}
+    \label{sec:3-3-2-mcts}
 
         \todo{list}
         \begin{itemize}
@@ -55,14 +61,18 @@
         https://inria.hal.science/inria-00164003/document
 
         https://pdf.sciencedirectassets.com/271585/1-s2.0-S0004370211X0005X/1-s2.0-S000437021100052X/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQD9RsWMAYu3%2FOp3q84XQxgXZSJu1ro47zi2n0qpNmiCqgIhAI1eHuLsQQl17RAoIFgBtR3%2FPM0H20wp7ZR0JMKY8%2BXvKrMFCBwQBRoMMDU5MDAzNTQ2ODY1IgyvTCG1aOE8jXlA0mUqkAUaXoeXDK%2FuPq2vxhn8b8oJiIs0VWF%2Fz5dXieRnNRSdidyAlHTgTL%2FMk7zzFv3QlVahMdYxel3yR2R6CwKBh70S7%2F%2FqrjycAs1dJnrXzyLXcoQWkGK6cPJRipwbb9e2VSINYFD%2B%2FR9lsgfJeNFwQ34fjU5A6i8GtNlbIxzAPzCjuD917RaI8NwpEKkpITCN5rMCjLDyn1erq8eJLWaRUGzLK6Rw4P4yPqdUuN95GBQzH5v4yTBmHTFEZWV7Qo9DIjtZCWHH94MjRF%2FEJLXCCOVl%2FXZPiJE32TxzWTaPRMKrK%2BfcJKIA7XK5OQmKm6ZnoVHJ%2Bpe%2BeU4yowQ9y94taJg%2BRkmwYxo7hpvM%2Fn%2FOJXWEHoNdmzFGyRrh7c3BcZuC3ks0JvSVysrUCIVYtfYBoWv4lQjkvwowSk85Jt0lDmw8z2v4bue2eMuTBOr2b2qJdwlL%2B8N4cEVW3REQGlzCWgmBC7ejRZrKJf0a45a%2BFYoLB8863CuUVAE5hNI2ejk6VVjx1KzVVwKg%2FFs79Vl%2B9TLOTmp81Sf%2BOz9bWiLWlOg6ODoH471OIIrIjtqwqPyAYDonfWV6e9310cVybw9brOT8RmzyVTcSdn53Z8%2FQ5A9Zipc%2BTQnabVNoTXKWYvwc9Ft58R4jQB6CfElBuYwT9j1oWZJ7lMCtrvu7hLjJhZTDsNOhLMnesZhJgvE0Pwd9TgL47XZ38ywJAevAwYzNepSm4Z7kl4Vr6XnwI%2FQ%2BqcbDvgZvXrjOUM50zL7kP8%2F4s%2BuYFe%2Fm%2BWTN5fIheCTCLjxB7Gu7256ughbuGDx00dfrrMl1PmL7Io30xJcR5mXNZrtbGKZbjCQinEWdqePKQXpT8ocigl4Z6Cl2xSENUnlFXjC78qG3BjqwAfwxXWnpAfKLLT77NLhG9odOj4ATbBB%2By%2Fk8O05cucn5kmfNhHuVUXeykHPF62kzrgyQoHSaUP5%2F2z9%2BatMMSAlsHJ3c2x92dxYCGPznq8sL389fCg0HHjwqGAi87ZcCouF3s0hnAm24Z0JlccwBQVQJtAmw4dK9cga4hX2SI56L2LdTXdG7hZwl4oiebkJzrshvvu58uwgUCeXP4MGTc%2F3H1POY%2FWz8dNW6O6Ezps1y&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240916T191757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY7DGERLEO%2F20240916%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=11d9f9868c6673196775da132a8740868fa2d847ec6360c1aca200f81d5a8377&hash=52c9fb808b53db2de3707a108ac18ed2947a59edd0a196796786c95ccb886590&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S000437021100052X&tid=spdf-15f46672-522e-44ca-acda-a9a267e67be4&sid=e64211ca7bf86246de9b4168365ef85d587egxrqb&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=010259065a53515c5052&rr=8c433317ee01bef3&cc=gb
+
+        \todo{removed from ch2, this can be litrev: add polynomial UCT here? and or prioritised UCT from alpha go here?}
+
+        \todo{removed from ch2: add stuff about regret here, give the O(logn) bound for UCT, and also talk about the papers that }
     
     \subsection{Maximum Entropy Tree Search}
-    \label{sec:3-2-3-ments}
+    \label{sec:3-3-3-ments}
 
-    \todo{MENTS}
+    \todo{MENTS, RENTS and TENTS}
 
 \section{Multi-Objective Reinforcement Learning}
-\label{sec:3-3-morl}
+\label{sec:3-4-morl}
 
     \todo{list}
     \begin{itemize}
@@ -71,8 +81,16 @@
         \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
     \end{itemize}
 
+
+    \todo{removed from ch2: comment here or in literature review about there being more types of scalariation function that arent necessarily weighted by a weight, and ESR vs SER stuff}
+
+    \todo{talk about more of the MORL survey, including some of the other motivating scenarios}
+
+
+    \todo{Talk about the better way of doing CHVI? https://www.jmlr.org/papers/volume13/lizotte12a/lizotte12a.pdf and Efficient reinforcement learning with multiple reward functions for randomized controlled trial analysis. Also by Lizotte. But also say that its approximate for $D>2$ and so we stick with the slower one? But the CHVS operations can be computed more efficiently in $D=2$ using this stuff. Did it for the python implementation.}
+
 \section{Multi-Objective Monte Carlo Tree Search}
-\label{sec:3-4-momcts}
+\label{sec:3-5-momcts}
 
     \todo{I think this whole section can just go in litrev}
 

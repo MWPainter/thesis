@@ -212,13 +212,13 @@
 \newcommand{\moevalq}{\hyperlink{q32}{\textbf{Q3.2 - Multi-Objective Evaluation}}}
 
 % Sec 2.1 - MDPs
-% None
+\newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
 
 % Sec 2.2 - RL macros
 \newcommand{\sft}{{\textnormal{sft}}}
-\newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
 
-% Sec 2.2 - MABs
+% Sec 2.3 - MABs
+% TODO: clean up
 \newcommand{\cmab}{{\textnormal{CMAB}}}
 \newcommand{\creg}{{\textnormal{\texttt{cum\_regr}}}}
 \newcommand{\ctxreg}{{\textnormal{\texttt{ctx\_regr}}}}
@@ -227,19 +227,23 @@
 \newcommand{\sreg}{{\textnormal{\texttt{sim\_regr}}}}
 \newcommand{\ucb}{{\textnormal{UCB}}}
 
-% Sec 2.3 - THTS++ macros
-\newcommand{\children}{{\textnormal{\texttt{children}}}}
-\newcommand{\CNODE}{{\textnormal{\texttt{CNODE}}}}
-\newcommand{\cnode}{{\textnormal{\texttt{cnode}}}}
-\newcommand{\DNODE}{{\textnormal{\texttt{DNODE}}}}
-\newcommand{\dnode}{{\textnormal{\texttt{dnode}}}}
-\newcommand{\mctsmode}{{\textnormal{\texttt{mcts\_mode}}}}
+% Sec 2.4 - THTS++ macros
 \newcommand{\node}{{\textnormal{\texttt{node}}}}
-\newcommand{\runtrial}{{\textnormal{\texttt{run\_trial}}}}
-\newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
-\newcommand{\Vinit}{{V_{\textnormal{init}}}}
 
-% Sec 2.3.X - UCT/MCTS/MENTS macros
+\newcommand{\backupq}{{\textnormal{\texttt{backup\_q}}}}
+\newcommand{\backupv}{{\textnormal{\texttt{backup\_v}}}}
+\newcommand{\cnodedata}[1]{{\node(#1)\textnormal{\texttt{.Q}}}}
+\newcommand{\dnodedata}[1]{{\node(#1)\textnormal{\texttt{.V}}}}
+\newcommand{\dotchildren}{{\textnormal{\texttt{.children}}}}
+\newcommand{\mctsmode}{{\textnormal{\texttt{mcts\_mode}}}}
+\newcommand{\pisearch}{{\pi_{\textnormal{search}}}}
+\newcommand{\Qinit}{{\hat{Q}_{\textnormal{init}}}}
+\newcommand{\samplecontext}{{\textnormal{\texttt{sample\_context}}}}
+\newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
+\newcommand{\Vinit}{{\hat{V}_{\textnormal{init}}}}
+
+% Sec 2.4.X - UCT/MCTS/MENTS macros
+% TODO: clean up
 \newcommand{\uct}{{\textnormal{UCT}}}
 \newcommand{\piuct}{{\pi_{\uct}}}
 \newcommand{\Vuct}{{\bar{V}_{\uct}}}
@@ -250,18 +254,24 @@
 \newcommand{\Vmcts}{{\bar{V}_{\mcts}}}
 \newcommand{\Qmcts}{{\bar{Q}_{\mcts}}}
 \newcommand{\rollout}{{\textnormal{rollout}}}
+\newcommand{\pirollout}{{\pi_{\rollout}}}
 
 \newcommand{\ments}{{\textnormal{MENTS}}}
 \newcommand{\piments}{{\pi_{\ments}}}
 \newcommand{\Vments}{{\hat{V}_{\ments}}}
 \newcommand{\Qments}{{\hat{Q}_{\ments}}}
 
-% Sec 2.4 - MORL macros
+% Sec 2.5 - MORL macros
+% TODO: clean up
 \newcommand{\lin}{{\textnormal{lin}}}
 \newcommand{\cprune}{{\textnormal{\texttt{cvx\_prune}}}}
 \newcommand{\chvi}{{\textnormal{CHVI}}}
 \newcommand{\Vchvi}{{\hat{\bfcl{V}}_{\chvi}}}
 \newcommand{\Qchvi}{{\hat{\bfcl{Q}}_{\chvi}}}
+\newcommand{\valset}{{\bfcl{V}\bff{als}}}
+
+% Sec 2.6 - Sampling macros
+% TODO: clean up
 
 
 
