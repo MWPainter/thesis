@@ -831,7 +831,7 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
 
         Convex Hull Value Iteration (CHVI) \todo{cite} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}. In CHVI the value functions of value iterations are replaced by sets of vectors, which are estimates of the convex hull value set.
 
-        CHVI maintains estimates of CHVS's at each state $\hat{\bfcl{V}}_{\chvi}(s)$.
+        CHVI maintains estimates of CHVS's at each state $\Vchvi(s;t)$.
 
         One important operation for CHVI is \cprune, which returns that undominated set of vectors from a given set of vectors $\bfcl{V}$:
         \begin{align}
@@ -846,16 +846,16 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
             \label{fig:convex_prune}
         \end{figure}
 
-        Additionally, to define a multi-objective version of value iteration, an arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmatic} Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$ and addition as follows:
+        Additionally, to define a multi-objective version of value iteration, an arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmatic} Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
         \begin{align}
-            s\bfcl{V} &= \{s\bff{v} | \bff{v}\in\bfcl{V} \} \\
+            \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \\
             \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}.
         \end{align}
 
         \begin{figure}
-            \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-            \caption[An example of arithmetic over sets of vectors.]{An example of arithmetic over sets of vectors, where \todo{describe specifics more specifically}.}
-            \label{fig:vectorset_arithmatic}
+            \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_arithmetic.pdf} 
+            \caption[An example of arithmetic over sets of vectors.]{An example of arithmetic over sets of vectors, where \todo{describe specifics more specifically, and note that addition by a vector is not shown here, but is similar. Also something looks a bit off about the purple vectors, maybe want to add a light grid behind the graphs? Just to give perspective. Reference that this demonstrates the scalar multiplication from equation (xxx) and addition between sets in equation (xxx). And yes, want the grid, but do later}.}
+            \label{fig:vectorset_arithmetic}
         \end{figure}
 
         Now to define the multi-objective Bellman backups used in CHVI, let $\hat{\bfcl{V}}^0(s) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
