@@ -39,7 +39,7 @@
     \end{defn}
 
     \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
+        \centering\includegraphics[width=0.8\textwidth]{figures/ch2/example_mdp.pdf} 
         \caption[An example MDP $\cl{M}$.]{An example MDP $\cl{M}$, where \todo{description of MDP drawn}}
         \label{fig:mdp_eg}
     \end{figure}
@@ -98,8 +98,8 @@
 \label{sec:2-2-rl}
 
     \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. Left: depicts the typical scenario where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. Right: shows a similar scenario where the agent instead plans using a simulated environment and is then queried for recommendations about how to act in the real environment.}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/rl_overview.pdf} 
+        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. Left: depicts the typical scenario where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. Right: shows a similar scenario where the agent instead plans using a simulated environment and is then queried for recommendations about how to act in the real environment. \todo{would like to make this a bit clearer. And more vertical? And less whitespace on right?}}
         \label{fig:rl_overview}
     \end{figure}
 
@@ -469,7 +469,7 @@
         In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes output actions that can be taken by the agent, and chance nodes output \textit{outcomes} that may be random and may depend on the action taken. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. Figure \ref{fig:tree_notation} shows how decision and chance nodes will be depicted in diagrams.
 
         \begin{figure}
-            \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
+            \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
             \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
             \label{fig:tree_notation}
         \end{figure}
@@ -516,7 +516,7 @@
         At the beginning of runnning a \thtspp\ewe algorithm, the search tree is initialised to $\cl{T}=\{s_0\}$. When the components detailed above are provided, the operation of a trial in \thtspp\ewe is as follows. Firstly, a context is sampled using the $\samplecontext$ function, which is available to be used by any other function in the trial. A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy, which may use $\Qinit$ as necessary. If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,...,h-1$ and $s_h\not\in\cl{T}$, or $h=H$. If not running in \mctsmode, then $h=H$. The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$. The heuristic value function is used to initialise the value of the new leaf node $\dnodedata{s_h}\leftarrow \Vinit(s_h)$. Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,...,0$. Figure \ref{fig:thts} depicts this process, and psuedocode is given in Listing \ref{lst:thts_trial}.
 
         \begin{figure}
-            \centering\includegraphics[width=0.9\textwidth]{figures/ch2/mcts_diagram_draft.pdf} 
+            \centering\includegraphics[width=1.0\textwidth]{figures/ch2/mcts_diagram_draft.pdf} 
             \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree. \todo{fix the slight noise in the dual blue and orange nodes} \todo{change blue to add a new chance node too, to highlight that }}
             \label{fig:thts}
         \end{figure}
@@ -803,7 +803,7 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
 
     Because this thesis considers the decision support scenario, the objective of an multi-objective algorithm will be to compute a $\valset(CCS(\Pi))$, however, coverage sets are not unique. In the case of the linear utility function, multi-objective values that obtain the same scalarised value will lie on a hyperplane (see Figure \todo{ref}). As a result, the vectors in $\valset(CCS(\Pi))$ will geometrically form a \textit{(parital) convex hull} (also see Figure \ref{fig:convex_hull_geometry}). Given this, it is most common to compute the multi-objective values that lie at the vertices of the geometric convex hull (also see Figure \ref{fig:convex_hull_geometry}). 
 
-    For the remainder of this thesis, the primary objective of multi-objective algorithms will be to compute the value set $\valset(CCS(\Pi))$ that lies at the vertices of the geometric convex hull, which will be referred to as the \textit{Convex Hull Value Set} (CHVS).
+    For the remainder of this thesis, the primary objective of multi-objective algorithms will be to compute the value set $\valset(CCS(\Pi))$ that lies at the vertices of the geometric convex hull, which will be referred to as the \textit{Convex Hull Value Set} (CHVS). \todo{make this a defn, going to use the acronym a lot}
 
     \begin{figure}
         \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
