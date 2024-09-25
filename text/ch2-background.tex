@@ -99,7 +99,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/rl_overview.pdf} 
-        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. Left: depicts the typical scenario where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. Right: shows a similar scenario where the agent instead plans using a simulated environment and is then queried for recommendations about how to act in the real environment. \todo{would like to make this a bit clearer. And more vertical? And less whitespace on right?}}
+        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. Left: depicts the typical scenario where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. Right: shows a similar scenario where the agent instead plans using a simulated environment and is then queried for recommendations about how to act in the real environment. \todo{update scale and caption for updated fig}}
         \label{fig:rl_overview}
     \end{figure}
 
@@ -188,9 +188,9 @@
     \subsection{Maximum Entropy Reinforcement Learning}
     \label{sec:2-2-1-merl}
 
-        In \textit{Maximum Entropy Reinforcement Learning}, the objective function is altered to include the addition of an entropy term. The addition of an entropy term is motivated by wanting to learn stochastic behaviours, that better explore large state spaces, and learn more robust behaviours under uncertainty by potentially learning multiple solutions rather than a single deterministic solution. \todo{cite rl with deep energy-based policies}. 
+        In \textit{Maximum Entropy Reinforcement Learning}, the objective function is altered to include the addition of an entropy term. The addition of an entropy term is motivated by wanting to learn stochastic behaviours, that better explore large state spaces, and learn more robust behaviours under uncertainty by potentially learning multiple solutions rather than a single deterministic solution. \cite{deep_energy_policies}. 
         
-        Let $\cl{H}$ denote the (Shannon) entropy function \todo{cite}:
+        Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
         \begin{align}
             \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)] = \sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:shannon_entropy_def}
         \end{align}
@@ -241,21 +241,21 @@
             \begin{align}
                 \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:opt_sft_policy_def}
             \end{align}
-            Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft police is known to take the form \todo{cite}:
+            Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft police is known to take the form \cite{deep_energy_policies}:
             \begin{align}
                 \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:opt_sft_policy_from_opt_value_fns}
             \end{align}
         \end{defn}
 
-        Equations similar to the Bellman equations, aptly named the \textit{Soft Bellman equations}, can be defined for maximum entropy reinforcement learning \todo{cite levine}. These equations differ to equations (\ref{eq:bellman_opt_v}) and (\ref{eq:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts.
+        Equations similar to the Bellman equations, aptly named the \textit{Soft Bellman equations}, can be defined for maximum entropy reinforcement learning \cite{deep_energy_policies}. These equations differ to equations (\ref{eq:bellman_opt_v}) and (\ref{eq:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts.
 
-        Similarly to standard reinforcement learning, it can be shown that the optimal soft (Q-)value functions satisfy the \textit{soft Bellman equations} \todo{cite}:
+        Similarly to standard reinforcement learning, it can be shown that the optimal soft (Q-)value functions satisfy the \textit{soft Bellman equations} \cite{deep_energy_policies}:
         \begin{align}
             V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / alpha \right), \label{eq:sft_bellman_opt_v} \\
             Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V_{\sft}^*(s';t+1)]. \label{eq:sft_bellman_opt_q}
         \end{align} 
 
-        Again, similarly to standard reinforcement learning, \textit{soft Bellman backups} can be defined that admit an analogous algorithm \textit{Soft Value Iteration} \todo{cite}:
+        Again, similarly to standard reinforcement learning, \textit{soft Bellman backups} can be defined that admit an analogous algorithm \textit{Soft Value Iteration} \cite{deep_energy_policies}:
         \begin{align}
             \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \hat{Q}_{\sft}^{k+1}(s,a;t) / alpha \right), \\
             \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [\hat{V}_{\sft}^k(s';t+1)].
@@ -829,7 +829,7 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
     \subsection{Convex Hull Value Iteration}
     \label{sec:2-5-1-chvi}
 
-        Convex Hull Value Iteration (CHVI) \todo{cite} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}. In CHVI the value functions of value iterations are replaced by sets of vectors, which are estimates of the convex hull value set.
+        Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}. In CHVI the value functions of value iterations are replaced by sets of vectors, which are estimates of the convex hull value set.
 
         CHVI maintains estimates of CHVS's at each state $\Vchvi(s;t)$.
 
@@ -846,7 +846,7 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
             \label{fig:convex_prune}
         \end{figure}
 
-        Additionally, to define a multi-objective version of value iteration, an arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmatic} Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
+        Additionally, to define a multi-objective version of value iteration, an arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmetic} Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
         \begin{align}
             \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \\
             \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}.
@@ -866,7 +866,14 @@ def sample_trajectory(search_tree: $\cl{T}$, search_policy: $\pisearch$, context
         
         This again parallels the Bellman backups use in single-objective value iteration \todo{ref}, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$: $\bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t)$.
 
-        To read out policies from the computed convex hull value sets, vectors can be \textit{tagged} with actions, similar to work in partially observable MDPs \todo{cite lpk paper}. For an example of this, see Figure \ref{fig:chvs_tagging}.
+        Extracting actions and policies from the computed CHVSs is not explicitly discussed in \cite{chvi}. However, vectors can be \textit{tagged} with actions which allows for a policy to be read out after selecting a value in a CHVS. Consider \todo{having a CHVS for V and Q, set Qtagged to Q with the action in the Q function, and then say that V is computed same as equation XXX, and for convex prune, if there is (v,a) and (v,a'), then break ties randomly. An example of using this tagging to read out policies is given in Figure} \ref{fig:chvs_tagging}.
+        
+        \todo{some hidden stuff here to consider?}
+        \hide{
+            However,CHVI is very similar to the \textit{witness algorithm} for Partially Observable MDPs \todo{cite lpk paper}, where it is 
+            
+            To read out policies from the computed convex hull value sets, vectors can be \textit{tagged} with actions, similar to work in partially observable MDPs \todo{cite lpk paper}. For an example of this, see Figure \ref{fig:chvs_tagging}.
+        }
 
         \begin{figure}
             \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
