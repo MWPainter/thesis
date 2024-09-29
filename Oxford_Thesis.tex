@@ -79,28 +79,32 @@
 % setup python like code listings for psuedocode
 \usepackage{listings}%Setup listings env for when we don't want to use minted
 \lstset{
-  basicstyle=\footnotesize\tt,                                          % the size of the fonts that are used for the code
-  breakatwhitespace=false,                                              % sets if automatic breaks should only happen at whitespace
-  breaklines=true,                                                      % sets automatic line breaking
-  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},     % add arrows to indicate line breaks added
-  framesep = 5px,                                                       % add padding to the top/bottom of listings
-  captionpos=b,                                                          % sets the caption-position to bottom
-  extendedchars=true,                                                   % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
-  frame=single,                                                             % adds a frame around the code (frame at bot and top)
-  language=Python,                                                        % the language of the code
-  showspaces=false,                                                     % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-  showstringspaces=false,                                               % underline spaces within strings only
-  showtabs=false,                                                       % show tabs within strings adding particular underscores
-  tabsize=4,                                                            % sets default tabsize to 4 spaces
-  numbers=left,                                                         % puts numbers on the left side
+  basicstyle=\footnotesize\tt, % the size of the fonts that are used for the code
+  breakatwhitespace=false, % sets if automatic breaks should only happen at whitespace
+  breaklines=true, % sets automatic line breaking
+  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}}, % add arrows to indicate line breaks added
+  framesep = 5px, % add padding to the top/bottom of listings
+  captionpos=b, % sets the caption-position to bottom
+  extendedchars=true, % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,  % adds a frame around the code (frame at bot and top)
+  language=Python, % the language of the code
+  showspaces=false, % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false, % underline spaces within strings only
+  showtabs=false, % show tabs within strings adding particular underscores
+  tabsize=4, % sets default tabsize to 4 spaces
+  numbers=left, % puts numbers on the left side
   keywordstyle=\color[rgb]{0,0,1}\ttfamily,
   stringstyle=\color[rgb]{0.627,0.126,0.941}\ttfamily,
   commentstyle=\color[rgb]{0.133,0.545,0.133}\ttfamily,
   morecomment=[l][\color{magenta}]{\#},
-  aboveskip=2em,                                                        % spacing above listings
-  belowskip=1.5em,                                                         % spacing below listings
-  mathescape=true,														% maths in code listings
+  aboveskip=0em, % spacing above listings
+  belowskip=0em, % spacing below listings
+  mathescape=true, % maths in code listings
 }
+
+% For coding floats
+\usepackage{float}
+\newfloat{Listing}{tp}{loe}[chapter]
 
 % maffs
 \usepackage{amsmath}
@@ -179,8 +183,8 @@
 \newcommand{\todo}[1]{\hl{TODO: #1}}
 \newcommand{\quest}[1]{\hl{Question: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-\newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
-% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
+\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 
 % Maffs operators/symbols that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
@@ -236,9 +240,11 @@
 \newcommand{\dnodedata}[1]{{\node(#1)\textnormal{\texttt{.V}}}}
 \newcommand{\dotchildren}{{\textnormal{\texttt{.children}}}}
 \newcommand{\mctsmode}{{\textnormal{\texttt{mcts\_mode}}}}
+\newcommand{\mctsone}{{\textnormal{MCTS-1}}}
 \newcommand{\pisearch}{{\pi_{\textnormal{search}}}}
 \newcommand{\Qinit}{{\hat{Q}_{\textnormal{init}}}}
 \newcommand{\samplecontext}{{\textnormal{\texttt{sample\_context}}}}
+\newcommand{\sampleoutcome}{{\textnormal{\texttt{sample\_outcome}}}}
 \newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
 \newcommand{\Vinit}{{\hat{V}_{\textnormal{init}}}}
 
@@ -329,17 +335,6 @@
 % Title page is created here
 \maketitle
 
-% % Personal todo list
-\hide{
-\clearpage
-  \todo{list}
-  \begin{enumerate}
-    \item THTS section, as it defines notation. Put macros in text/abreviations.tex 
-    \item Copy DENTS and BTS into thesis and copy into common notation
-    \item Define the toy problems, D-Chain and the one with the entropy trap
-  \end{enumerate}
-}
-
 %%%%% DEDICATION -- If you'd like one, un-comment the following.
 %\begin{dedication}
 %This thesis is dedicated to\\
@@ -377,6 +372,9 @@
 
 % Uncomment to generate a list of tables:
 \listoftables
+	\mtcaddchapter
+
+\listof{Listing}{List of Psuedocode Listing}
 	\mtcaddchapter
 
 %%%%% LIST OF ABBREVIATIONS

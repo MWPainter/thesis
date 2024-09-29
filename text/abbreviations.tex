@@ -112,10 +112,16 @@
     % 2.4 THTS
     %%%%%
     \item[{\parbox[t]{\textwidth}{\Large\textbf{Trial Based Heuristic Tree Search and Monte Carlo Tree Search (Section \ref{sec:2-4-thts})}\hfill\hfill}}]
+    \item[$\alpha_{\ments}$] 
+        The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
     \item[$\backupv$]
         Updates the values at a decision node in the backup phase of a trial \thtspp, using the decision node's children, the trajectory sampled for the trial and the heuristic value function.
     \item[$\backupq$] 
         Updates the values at a chance node in the backup phase of a trial \thtspp, using the chance node's children, the trajectory sampled for the trial and the heuristic value function.
+    \item[$\epsilon$]
+        An exploration parameter used in MENTS.
+    \item[$\lambda_s$] 
+        An exploration parameter used in MENTS.
     \item[\mctsmode] 
         Specifies if \thtspp\ewe will sample a trajectory such that only one decision node is added to the search tree per trial. If not running in \mctsmode\ewe the \thtspp\ewe will sample a trajectory to the MDPs time horizon $H$.
     \item[$N(s)$]
@@ -134,45 +140,42 @@
         The set of decision nodes that are children of $\node(s)$.
     \item[$\cnodedata{s,a}$] 
         The set of variables stored at decision node $\node(s,a)$, typically used for estimating Q-values.
+    \item[$\tilde{\pi}$] 
+        A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
+    \item[$\piments$] 
+        The search policy used in MENTS.
+    \item[$\pirollout$] 
+        A policy used to sample a trajectory that is used to estimate the value of a state being added to a search tree.
     \item[$\pisearch$]
         The search policy used in \thtspp\ewe to sample a trajectory in the selection phase.
+    \item[$\piuct$] 
+        The search policy used in UCT.
     \item[$\Qinit$]
         The heuristic action function used in \thtspp, used to provide a Q-value estimate for any state-action pairs that aren't in the search tree.
+    \item[$\Qments(s,a)$] 
+        A soft Q-value estimate at the chance node $(s,a)$ in MENTS.
+    \item[$\Quct(s,a)$] 
+        The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.   
     \item[$\samplecontext$]
         A function used in \thtspp\ewe that creates a context, or key-value story, and samples any initial values to be stored in the context.
+    \item[$\sampleoutcome$]
+        A function used in \thtspp\ewe to sample outcomes (successor states) from the environment (MDP).
     \item[$\cl{T}$] 
         The \thtspp\ewe search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. 
-    \item[$\cl{T}^k$] 
-        The \thtspp\ewe search tree after $k$ trials have been run.
+    \item[$\tilde{V}$] 
+        A function approximation to $V^*$.
+    \item[$\hat{V}^{\pirollout}(s)$] 
+        An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialised the value of a state being added to the search tree.
     \item[$\Vinit$]
         The heuristic value function used in \thtspp, used to initialise the value of a new decision node.
+    \item[$\Vments(s)$] 
+        A soft value estimate at the decision node $s$ in MENTS.
+    \item[$\Vuct(s)$] 
+        The sample-average value estimate used to estimate the value at a decision node $s$ in UCT.    
 
-    \item[] \todo{Below is stuff from Section 2.4.X, which need to write up and sort into the list}
-    
-    \item[$n$] 
-        Number of trials run.
-    \item[$T$] 
-        Computation time limit.
+        
 
-    \item[$\Vuct$] \todo{define here and move into correct place in the list}
-    \item[$\Quct$] \todo{define here and move into correct place in the list}
-    \item[$\piuct$] \todo{define here and move into correct place in the list}
-    \item[$b_{\uct}$] \todo{define here and move into correct place in the list}
 
-    \item[$\Vmcts$] \todo{define here and move into correct place in the list}
-    \item[$\Qmcts$] \todo{define here and move into correct place in the list}
-    \item[$\pimcts$] \todo{define here and move into correct place in the list}
-    \item[$b_{\mcts}$] \todo{define here and move into correct place in the list}
-    \item[$\tilde{V}_\theta$] \todo{define here and move into correct place in the list}
-    \item[$\hat{V}^{\pirollout}$] \todo{define here and move into correct place in the list}
-    \item[$\pirollout$] \todo{define here and move into correct place in the list}
-
-    \item[$\Vments$] \todo{define here and move into correct place in the list}
-    \item[$\Qments$] \todo{define here and move into correct place in the list}
-    \item[$\piments$] \todo{define here and move into correct place in the list}
-    \item[$\alpha_{\ments}$] \todo{define here and move into correct place in the list}
-    \item[$\lambda_s$] \todo{define here and move into correct place in the list}
-    \item[$\epsilon$] \todo{define here and move into correct place in the list}
     \\
     %%%%%
     % 2.5 MORL
@@ -239,6 +242,8 @@
     \item[{\parbox[t]{\textwidth}{\Large\textbf{Trial Based Heuristic Tree Search and Monte Carlo Tree Search (Section \ref{sec:2-4-thts})}\hfill\hfill}}] 
     \item[MCTS] 
         Monte Carlo Tree Search.
+    \item[\mctsone]
+        A specific and common presentation of Monte Carlo Tree Search, presented in Section \ref{sec:2-4-thts}.
     \item[MENTS] 
         Maximum ENtropy Tree Search.
     \item[THTS] 
@@ -247,8 +252,6 @@
         An extension of THTS used in this thesis.
     \item[UCT] 
         Upper Confidence Bound applied to Trees.
-    \item[UCT-MCTS] 
-        An MCTS variant of Upper Confidence Bound applied to Trees.
     \\
     %%%%%
     % abbrv - 2.5 MORL

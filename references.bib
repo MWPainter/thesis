@@ -21,6 +21,55 @@
 }
 
 %%%%%
+% MCTS stuff
+%%%%%
+
+% browne2012survey
+% survey on mcts
+@article{mcts_survey,
+  title={A survey of monte carlo tree search methods},
+  author={Browne, Cameron B and Powley, Edward and Whitehouse, Daniel and Lucas, Simon M and Cowling, Peter I and Rohlfshagen, Philipp and Tavener, Stephen and Perez, Diego and Samothrakis, Spyridon and Colton, Simon},
+  journal={IEEE Transactions on Computational Intelligence and AI in games},
+  volume={4},
+  number={1},
+  pages={1--43},
+  year={2012},
+  publisher={IEEE}
+}
+
+% kocsis2006bandit
+% uct - original
+@inproceedings{uct,
+  title={Bandit based monte-carlo planning},
+  author={Kocsis, Levente and Szepesv{\'a}ri, Csaba},
+  booktitle={European conference on machine learning},
+  pages={282--293},
+  year={2006},
+  organization={Springer}
+}
+
+% kocsis2006improved
+% uct - long - with proofs
+@article{uct_long,
+  title={Improved monte-carlo search},
+  author={Kocsis, Levente and Szepesv{\'a}ri, Csaba and Willemson, Jan},
+  journal={Univ. Tartu, Estonia, Tech. Rep},
+  volume={1},
+  pages={1--22},
+  year={2006}
+}
+
+% xiao2019maximum
+% METNS
+@article{ments,
+  title={Maximum entropy monte-carlo planning},
+  author={Xiao, Chenjun and Huang, Ruitong and Mei, Jincheng and Schuurmans, Dale and M{\"u}ller, Martin},
+  journal={Advances in Neural Information Processing Systems},
+  volume={32},
+  year={2019}
+}
+
+%%%%%
 % MORL stuff
 %%%%%
 
@@ -62,10 +111,25 @@
 }
 
 %%%%%
-% Misc
+% POMDPs
+%%%%%
+
+%silver2010monte
+%pomcp
+@article{pomcp,
+  title={Monte-Carlo planning in large POMDPs},
+  author={Silver, David and Veness, Joel},
+  journal={Advances in neural information processing systems},
+  volume={23},
+  year={2010}
+}
+
+%%%%%
+% Misc - usually used in a passing comment, things that aren't super critical to thesis
 %%%%%
 
 %shannon1948mathematical
+% shannon entropy
 @article{entropy,
   title={A mathematical theory of communication},
   author={Shannon, Claude Elwood},
@@ -75,4 +139,30 @@
   pages={379--423},
   year={1948},
   publisher={Nokia Bell Labs}
+}
+
+% barto1995learning
+% rtdp
+@article{rtdp,
+  title={Learning to act using real-time dynamic programming},
+  author={Barto, Andrew G and Bradtke, Steven J and Singh, Satinder P},
+  journal={Artificial intelligence},
+  volume={72},
+  number={1-2},
+  pages={81--138},
+  year={1995},
+  publisher={Elsevier}
+}
+
+%hansen2001lao
+%LAO*
+@article{lao_star,
+  title={LAO∗: A heuristic search algorithm that finds solutions with loops},
+  author={Hansen, Eric A and Zilberstein, Shlomo},
+  journal={Artificial Intelligence},
+  volume={129},
+  number={1-2},
+  pages={35--62},
+  year={2001},
+  publisher={Elsevier}
 }
