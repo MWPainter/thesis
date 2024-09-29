@@ -441,7 +441,7 @@
 \label{sec:2-4-thts}
 
     \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/mcts_trial.pdf} 
         \caption[Overview of one trial of MCTS.]{Overview of one trial of MCTS, where \todo{re-describe the four stages similarly to how described inline.}}
         \label{fig:mcts}
     \end{figure}
@@ -510,7 +510,7 @@
 
         \begin{figure}
             \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-            \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree.}
+            \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree. \todo{update for data going back up the tree}}
             \label{fig:thts}
         \end{figure}
 
@@ -693,11 +693,11 @@ def sample_outcome($s$, $a$, cntxt):
 
     \todo{Link back to some of the multi objective questions}
 
-    This thesis follows a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} (Figure \ref{fig:mo_decision_support}), which will be defined more precisely below.
+    This thesis follows a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} (Figure \ref{fig:mo_decision_support}), which will be defined more precisely below. \todo{define right away cos of fig}
 
     \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-        \caption{The decision-support scenario for Multi-Objective Reinforcement Learning.]{The decision-support scenario for Multi-Objective Reinforcement Learning.}}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf} 
+        \caption{The decision-support scenario for Multi-Objective Reinforcement Learning.]{The decision-support scenario for Multi-Objective Reinforcement Learning. \todo{cite survey paper}}}
         \label{fig:mo_decision_support}
     \end{figure}
 
