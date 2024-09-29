@@ -442,7 +442,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-        \caption[Overview of one trial of MCTS.]{Overview of one trial of UCT-MCTS, where \todo{re-describe the four stages similarly to how described inline.}}
+        \caption[Overview of one trial of MCTS.]{Overview of one trial of MCTS, where \todo{re-describe the four stages similarly to how described inline.}}
         \label{fig:mcts}
     \end{figure}
 
@@ -620,14 +620,14 @@ def sample_outcome($s$, $a$, cntxt):
         
         There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \todo{cite some papers doing this, rave?}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \todo{cite some papers doing this}. When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$.
 
-        Let $\tau_{:h}\sim\pimcts$, be the trajectory sampled in the selection phase of UCT, meaning that a decision node for $s_h$ is added to the search tree, and needs to be initialised with $\Vinit$. When using a rollout policy, the truncated trial is completed using the rollout policy $\tau_{h:H}\sim\pirollout$ to provide the Monte Carlo estimate at $s_h$:
+        Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, meaning that a decision node for $s_h$ is added to the search tree, and needs to be initialised with $\Vinit$. When using a rollout policy, the truncated trial is completed using the rollout policy $\tau_{h:H}\sim\pirollout$ to provide the Monte Carlo estimate at $s_h$:
         \begin{align}
             \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{H-1} r_i. \label{eq:rollout_value_estimate}
         \end{align}
 
         If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \todo{cite}.
 
-        In UCT-MCTS the backups $\backupv$ and $\backupq$ update the (sample average) value estimates. Letting heuristic value for the leaf node be $\tilde{r} = \Vinit(s_h)$, they are computed as follows:
+        In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates. Letting heuristic value for the leaf node be $\tilde{r} = \Vinit(s_h)$, they are computed as follows:
         \begin{align}
             \Quct(s_t,a_t) &\leftarrow 
                 \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
@@ -649,9 +649,6 @@ def sample_outcome($s$, $a$, cntxt):
     \subsection{Maximum Entropy Tree Search}
     \label{sec:2-4-3-ments}
 
-        \hide{\todo{Rushing through the todo's here so probably needs another round for 2nd pass, not doing any adding labels to defs and equations, not making any diagrams}}
-
-
         Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups (Equations \todo{ref}) to update its value estimates. In its original presentation \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
         \begin{align}
             \piments(a|s) &= 
@@ -660,7 +657,7 @@ def sample_outcome($s$, $a$, cntxt):
         \end{align}
         where $\lambda_s=\min(1,\epsilon/\log(e+N(s))),$ with $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alpha_{\ments}$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\todo{ref})).
 
-        The value estimates are updated using the soft Bellman backups (\todo{ref}) as follows:
+        In MENTS the backups $\backupv$ and $\backupq$ update the soft value estimates and are updated using soft Bellman backups as follows:
         \begin{align}
             \Qments(s_t,a_t) &\leftarrow 
                 R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:ments_backup_q} \\
