@@ -238,7 +238,7 @@
 \newcommand{\backupv}{{\textnormal{\texttt{backup\_v}}}}
 \newcommand{\cnodedata}[1]{{\node(#1)\textnormal{\texttt{.Q}}}}
 \newcommand{\dnodedata}[1]{{\node(#1)\textnormal{\texttt{.V}}}}
-\newcommand{\dotchildren}{{\textnormal{\texttt{.children}}}}
+\newcommand{\dotchildren}{{\textnormal{\texttt{.chldrn}}}}
 \newcommand{\mctsmode}{{\textnormal{\texttt{mcts\_mode}}}}
 \newcommand{\mctsone}{{\textnormal{MCTS-1}}}
 \newcommand{\pisearch}{{\pi_{\textnormal{search}}}}
@@ -249,30 +249,33 @@
 \newcommand{\Vinit}{{\hat{V}_{\textnormal{init}}}}
 
 % Sec 2.4.X - UCT/MCTS/MENTS macros
-% TODO: clean up
-\newcommand{\uct}{{\textnormal{UCT}}}
-\newcommand{\piuct}{{\pi_{\uct}}}
-\newcommand{\Vuct}{{\bar{V}_{\uct}}}
-\newcommand{\Quct}{{\bar{Q}_{\uct}}}
 \newcommand{\rollout}{{\textnormal{rollout}}}
+
 \newcommand{\pirollout}{{\pi_{\rollout}}}
+\newcommand{\piuct}{{\pi_{\uct}}}
+\newcommand{\Quct}{{\bar{Q}_{\uct}}}
+\newcommand{\uct}{{\textnormal{UCT}}}
+\newcommand{\Vuct}{{\bar{V}_{\uct}}}
 
 \newcommand{\ments}{{\textnormal{MENTS}}}
 \newcommand{\piments}{{\pi_{\ments}}}
-\newcommand{\Vments}{{\hat{V}_{\ments}}}
 \newcommand{\Qments}{{\hat{Q}_{\ments}}}
+\newcommand{\Vments}{{\hat{V}_{\ments}}}
 
 % Sec 2.5 - MORL macros
-% TODO: clean up
-\newcommand{\lin}{{\textnormal{lin}}}
-\newcommand{\cprune}{{\textnormal{\texttt{cvx\_prune}}}}
 \newcommand{\chvi}{{\textnormal{CHVI}}}
-\newcommand{\Vchvi}{{\hat{\bfcl{V}}_{\chvi}}}
-\newcommand{\Qchvi}{{\hat{\bfcl{Q}}_{\chvi}}}
+\newcommand{\cprune}{{\textnormal{\texttt{cvx\_prune}}}}
+\newcommand{\lin}{{\textnormal{lin}}}
+\newcommand{\pichvi}{{\pi_{\chvi}}}
 \newcommand{\valset}{{\bfcl{V}\bff{als}}}
+\newcommand{\tagg}{{\textnormal{tag}}}
+\newcommand{\Vchvi}{{\hat{\bfcl{V}}_{\chvi}}}
+\newcommand{\Vtag}{{\hat{\bfcl{V}}_{\tagg}}}
+\newcommand{\Qchvi}{{\hat{\bfcl{Q}}_{\chvi}}}
+\newcommand{\Qtag}{{\hat{\bfcl{Q}}_{\tagg}}}
 
 % Sec 2.6 - Sampling macros
-% TODO: clean up
+\newcommand{\thresh}{{\texttt{threshold}}}
 
 
 
@@ -369,8 +372,8 @@
 \listoftables
 	\mtcaddchapter
 
-\listof{Listing}{List of Psuedocode Listing}
-	\mtcaddchapter
+\listof{Listing}{List of Code Listings}
+	% \mtcaddchapter
 
 %%%%% LIST OF ABBREVIATIONS
 % This example includes a list of abbreviations.  Look at text/abbreviations.tex to see how that file is

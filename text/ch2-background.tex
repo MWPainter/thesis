@@ -51,8 +51,6 @@
         \begin{align}
             \suc{s}{a}:=\{s'\in\cl{S}|p(s'|s,a)>0\}. \label{eq:succ_def}
         \end{align}
-        
-        Additionally, let $s'\sim \suc{s}{a}$ be a shorthand for $s'\sim p(\cdot|s,a)$.
     \end{defn}
 
     To define a strategy that an agent will follow in an MDP, and agent defines a \textit{policy}. A policy maps each state in the state space to a probability distribution over the action space. To ``follow'' a policy, actions are sampled from the distribution. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
@@ -75,7 +73,7 @@
     
     \begin{defn}
         \label{def:trajectory}
-        A \textnormal{trajectory} $\tau$, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. 
+        A \textnormal{trajectory} $\tau$, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The following notations will also be used for trajectories:
         \begin{itemize}
@@ -128,7 +126,7 @@
 
         The \textnormal{Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
-            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^{\pi}(s';t+1)]. \label{eq:q_value_fn_def}
+            Q^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V^{\pi}(s';t+1)]. \label{eq:q_value_fn_def}
         \end{align} 
     \end{defn}
 
@@ -172,13 +170,13 @@
     It can be shown that the optimal (Q-)value functions satisfy the \textit{Bellman equations} \todo{refs} :
     \begin{align}
         V^*(s;t) &= \max_{a\in\cl{A}} Q^*(s,a;t), \label{eq:bellman_opt_v} \\
-        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V^*(s';t+1)]. \label{eq:bellman_opt_q}
+        Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V^*(s';t+1)]. \label{eq:bellman_opt_q}
     \end{align} 
 
     The Bellman equations admit a \textit{dynamic programming} approach which can be used to computer the optimal value functions, known as \textit{Value Iteration} \todo{ref}. In Value iteration, a table of value estimates $\hat{V}(s;t)$ are kept for each $s,t$. Given any initial estimate of the value function $\hat{V}^{0}$, the \textit{Bellman backup} operations are:
     \begin{align}
         \hat{V}^{k+1}(s;t) &= \max_{a\in\cl{A}} \hat{Q}^{k+1}(s,a;t), \label{eq:value_iter_v_backup} \\
-        \hat{Q}^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [R(s,a) + \hat{V}^k(s';t+1)]. \label{eq:value_iter_q_backup}
+        \hat{Q}^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [R(s,a) + \hat{V}^k(s';t+1)]. \label{eq:value_iter_q_backup}
     \end{align}
 
     In each iteration of Value Iteration, these values are computed for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,1,...,H\}$. The Bellman equations can be shown to be \textit{contraction operators} \todo{refs}, which can be used to show that $V^{k}\rightarrow V^*$ as $k\rightarrow \infty$, and when the state and action spaces are discrete, they will converge in a finite number of iterations. \todo{refs}
@@ -258,13 +256,13 @@
         Similarly to standard reinforcement learning, it can be shown that the optimal soft (Q-)value functions satisfy the \textit{soft Bellman equations} \cite{deep_energy_policies}:
         \begin{align}
             V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / alpha \right), \label{eq:sft_bellman_opt_v} \\
-            Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [V_{\sft}^*(s';t+1)]. \label{eq:sft_bellman_opt_q}
+            Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^*(s';t+1)]. \label{eq:sft_bellman_opt_q}
         \end{align} 
 
         Again, similarly to standard reinforcement learning, \textit{soft Bellman backups} can be defined that admit an analogous algorithm \textit{Soft Value Iteration} \cite{deep_energy_policies}:
         \begin{align}
             \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \hat{Q}_{\sft}^{k+1}(s,a;t) / alpha \right), \label{eq:soft_value_iter_v_backup} \\
-            \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:soft_value_iter_v_backup}
+            \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:soft_value_iter_v_backup}
         \end{align}
 
 
@@ -568,8 +566,8 @@
         \begin{Listing}
             \begin{lstlisting}
 def run_trial(search_tree: $\cl{T}$, 
-            search_policy: $\pisearch$, 
-            heuristic_fn: $\Vinit$):
+              search_policy: $\pisearch$, 
+              heuristic_fn: $\Vinit$):
     # context sampling
     cntxt = sample_context()
     # simulation phase
@@ -579,12 +577,12 @@ def run_trial(search_tree: $\cl{T}$,
     node$(s_h)$.V $\leftarrow \Vinit(s_h$, cntxt$)$
     # backup phase
     for i in $\{h-1,h-2,...,1,0\}$:
-        node$(s_i,a_i)$.backup_q(node$(s_i,a_i)$.children, $\tau_{:h}$, $\Vinit(s_h)$, cntxt)
-        node$(s_i)$.backup_v(node$(s_i)$.children, $\tau_{:h}$, $\Vinit(s_h)$, cntxt)
+        node$(s_i,a_i)$.backup_q(node$(s_i,a_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, cntxt)
+        node$(s_i)$.backup_v(node$(s_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, cntxt)
 
 def sample_trajectory(search_tree: $\cl{T}$, 
-                    search_policy: $\pisearch$, 
-                    cntxt):
+                      search_policy: $\pisearch$, 
+                      cntxt):
     i = 0
     while (not mcts_mode or $s_{\texttt{i}}\in\cl{T}$) and i < H:
         $a_{\texttt{i}} \sim \pisearch(\cdot | s_{\texttt{i}},$ cntxt$)$ 
@@ -597,7 +595,7 @@ def sample_outcome($s$, $a$, cntxt):
     $s' \sim p(\cdot | s, a)$
     return $s'$
             \end{lstlisting}
-            \caption[Psuedocode for running a trial in \thtspp.]{Psuedocode for running a trial in \thtspp.}
+            \caption{Psuedocode for running a trial in \thtspp.}
             \label{lst:thts_trial}
         \end{Listing}
 
@@ -634,7 +632,7 @@ def sample_outcome($s$, $a$, cntxt):
                     + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:uct_backup_q} \\
             \Vuct(s_t) &\leftarrow 
                 \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t,a_t) 
-                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:uct_backup_v}
+                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:uct_backup_v} 
         \end{align}  
 
         \todo{Make a comment about how when use a random rollout, that using mctsmode OFF is identical?}
@@ -684,24 +682,15 @@ def sample_outcome($s$, $a$, cntxt):
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-5-morl}
 
-    \hide{\todo{Rushing through the todo's here so probably needs another round for 2nd pass, not doing any adding labels to defs and equations, not making any diagrams}}
-
-    \hide{\todo{This section defo want a fair bit more work. First read through the MORL survey paper, add to index, and then go through and rewrite a bunch of things}}
-
-    \hide{\todo{Define an interface for pareto front and convex hull objects}}
-    \hide{\todo{Follow https://arxiv.org/abs/2103.09568 more closely, and write a bit more waffel in this section}}
-
-    \todo{Link back to some of the multi objective questions}
-
-    This thesis follows a utility based approach to Multi-Objective Reinforcement learning similar to \todo{cite}. For a full review of Multi-Objective Reinforcement Learning see \todo{cite}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} (Figure \ref{fig:mo_decision_support}), which will be defined more precisely below. \todo{define right away cos of fig}
+    This thesis follows a utility based approach to Multi-Objective Reinforcement learning similar to the review of \cite{morl_survey} \todo{change this to an et al citation, and work out how to do that (google natbib cite methods)}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} which is depicted in Figure \ref{fig:mo_decision_support}. In the decision support scenario, an algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions, from which a user then picks their most preferred option to be used. This scenario is useful when a user's preferences over the multiple objectives is unknown or difficult to specify in advance. 
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf} 
-        \caption{The decision-support scenario for Multi-Objective Reinforcement Learning.]{The decision-support scenario for Multi-Objective Reinforcement Learning. \todo{cite survey paper}}}
+        \caption{The decision-support scenario for Multi-Objective Reinforcement Learning. \cite{morl_survey}}
         \label{fig:mo_decision_support}
     \end{figure}
 
-    This section defines the multi-objective conterparts to various definitions in Section \ref{sec:2-1-mdps} and \ref{sec:2-2-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context, however bold typeface will consistently be used to denote any vector variables or functions.
+    This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-1-mdps} and \ref{sec:2-2-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context, however bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-5-1-chvi}, a multi-objective extension of Value Iteration \todo{ref?} is given.
 
     To specify problems with multiple objectives, the reward function of an MDP changed to give a vector of rewards, rather than a scalar reward:
     \begin{defn}
@@ -709,10 +698,16 @@ def sample_outcome($s$, $a$, cntxt):
         A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{R}(s,a)$ is a vector reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
     \end{defn}
 
+    \begin{figure}
+        \centering\includegraphics[width=0.8\textwidth]{figures/ch2/example_momdp.pdf} 
+        \caption[An example MDP $\cl{M}$.]{An example MOMDP $\bfcl{M}$, where \todo{description of MDP drawn}}
+        \label{fig:momdp_eg}
+    \end{figure}
+
     Now multi-objective trajectories are defined:
     \begin{defn}
         \label{def:mo_trajectory}
-        A \textnormal{multi-objective trajectory} $\tau$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim \suc{s_t}{a_t}$. 
+        A \textnormal{multi-objective trajectory} $\tau$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The notations used for single-objective trajectories (Definition \ref{def:trajectory}) will also be used for multi-objective trajectories too. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
     \end{defn}
@@ -723,24 +718,27 @@ def sample_outcome($s$, $a$, cntxt):
         \label{def:mo_q_value}
         The \textnormal{multi-objective value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_t \Bigg| s_t=s \right].
+            \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_t \Bigg| s_t=s \right]. \label{eq:mo_value_fn_def}
         \end{align} 
 
         The \textnormal{multi-objective Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
-            \bff{Q}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim \suc{s}{a}} [\bff{V}^{\pi}(s';t+1)].
+            \bff{Q}^{\pi}(s,a;t) = \bff{R}(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{V}^{\pi}(s';t+1)]. \label{eq:mo_q_value_fn_def}
         \end{align} 
     \end{defn}
 
-    In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-2-rl}), the the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalars.
+    In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-2-rl}), the the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
 
     \begin{defn}
         \label{def:simplex}
         \label{def:weight}
         \label{def:context}
-        The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. More formally, the $D$ dimensional simplex is $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}$.
+        The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. More formally, the $D$ dimensional simplex is 
+        \begin{align}
+            \Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}. \label{eq:simplex_def}
+        \end{align}
 
-        The elements of the $D$-dimensional Simplex will be referred to as \textnormal{weight vectors} in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
+        The elements of the $D$-dimensional Simplex will be referred to as \textnormal{weight vectors} (or just \textnormal{weights}) in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
     \end{defn}
 
     \begin{defn}
@@ -755,21 +753,29 @@ def sample_outcome($s$, $a$, cntxt):
         \label{def:linear_scalarisation_fn}
         The \textnormal{linear utility function} $u_{\lin}$ is the utility function defined by:
         \begin{align}
-            u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}.
+            u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}. \label{eq:linear_utility_fn_def}
         \end{align}
     \end{defn}
 
-    Equiped with a scalarisation function and a weight vector any set of multi-objective values can be ordered, which allows sets of \textit{possibly optimal} policies to be defined. Letting $\Pi$ be the set of all possible policies, sets of solution policies can be defined:
+    Equipped with a utility function and a weight vector any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $w\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
+    
+    Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructing a solution set, a subset of $\Pi$, it makes sense that it should not contain any dominated policies. This leads to the first notion of a solution set, called an \textit{undominated set}, consisting of all undominated policies:
     \begin{defn}
         \label{def:undominated_set}
         \label{def:convex_hull}
-        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^D$ where the scalarised value is maximised: 
+        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^D$ where the utility (scalarised value) is maximised: 
         \begin{align}
-            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}.
+            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}. \label{eq:undominated_set_def}
         \end{align}
 
         In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
     \end{defn}    
+    
+    When computing solutions sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy. This thesis will refer to the set of values obtained by a set of policies as a \textit{value set}:
+    \begin{defn}
+        \label{def:mo_value_set}
+        The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
+    \end{defn}
 
     Undominated sets often have an infinite cardinality, and as such are infeasibil to compute. However, in undominated sets there are often many reduntant policies that obtain the same scalarised values. Instead of computing an undominated set, it is more feasible to compute a \textit{coverage sets} which contain at least one policy that maximises the scalarised value given any weight vector $\bff{w}$:
     \begin{defn}
@@ -777,43 +783,37 @@ def sample_outcome($s$, $a$, cntxt):
         \label{def:convex_coverage_set}
         A set $CS(\Pi;u)\subseteq U(\Pi)$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
         \begin{align}
-            \forall \bff{w}\in\Delta^D. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}).
+            \forall \bff{w}\in\Delta^D. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:coverage_set}
         \end{align}
 
         Again, in particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
     \end{defn}
 
-    To compute a coverage set, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy. 
-
+    Note that it is still possible for there to be multiple coverage sets. Algorithms that compute convex coverage sets typically compute a unique minimal convex coverage set that contains no redundant policies, that is, each policy has some weight for which it uniquely gives an optimal solution in the set.
     \begin{defn}
-        \label{def:mo_value_set}
-        The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as:
+        \label{def:min_convex_coverage_set}
+        A set $CCS_{\min}(\Pi)\subseteq CH(\Pi)$ is minimal if the following holds
         \begin{align}
-            \valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}.
+         \forall \pi\in CCS_{\min}(\Pi). \exists \bff{w}\in\Delta^D. \forall \pi'\in CCS_{\min}(\Pi)-\{\pi\}. u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}).
         \end{align}
-    \end{defn}
+    \end{defn} 
 
-    Because this thesis considers the decision support scenario, the objective of an multi-objective algorithm will be to compute a $\valset(CCS(\Pi))$, however, coverage sets are not unique. In the case of the linear utility function, multi-objective values that obtain the same scalarised value will lie on a hyperplane (see Figure \todo{ref}). As a result, the vectors in $\valset(CCS(\Pi))$ will geometrically form a \textit{(parital) convex hull} (also see Figure \ref{fig:convex_hull_geometry}). Given this, it is most common to compute the multi-objective values that lie at the vertices of the geometric convex hull (also see Figure \ref{fig:convex_hull_geometry}). 
+    Now the geometry of convex coverage sets is considered, to see how something like $\valset(CCS_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(CH(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:convex_hull_geometry}). Moreover, any points in $\valset(CH(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:convex_hull_geometry}).
 
-    For the remainder of this thesis, the primary objective of multi-objective algorithms will be to compute the value set $\valset(CCS(\Pi))$ that lies at the vertices of the geometric convex hull, which will be referred to as the \textit{Convex Hull Value Set} (CHVS). \todo{make this a defn, going to use the acronym a lot}
+    Because of the ambiguity between the convex hull of policies, and the geometric convex hulls of values, this thesis will refer to any value set that forms a geometric convex hull as a \textit{convex hull value set} (CHVS) and will refer to the set $\valset(CCS_{\min}(\Pi))$ as the \textit{optimal convex hull value set}.
 
     \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-        \caption[The geometry of Convex Coverage Sets.]{The geometry of Convex Coverage Sets, shown with $D=2$. In all images, the points depicted correspond to a value set $\valset(\Pi)$. Left: demonstrates that values obtaining the same scalarised value, for a linear utility function with weight vector $\bff{w}$, lie on a hyperplane with a normal vector of $\bff{w}$. Right: depicts a (geometric) partial convex hull. Any set of vectors $\bfcl{V}\subseteq\valset(\Pi)$ that contains a point touching each edge of the geometric convex hull is a valid (value set of a) convex coverage set, and the points that are filled denotes one of such sets. Finally, the circles, which are at  the extreme points of the geometric convex hull mark the (value set of the) convex coverage set that is typically computed.}
-        \label{fig:convex_hull_geometry}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
+        \caption{The geometry of convex coverage sets, shown with $D=2$. In each images the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) circles correspond to values that are on the convex hull, so form the set $\valset(CH(\Pi'))$, the blue circles form the minimal convex coverage set, $\valset(CCS_{\min}(\Pi'))$, and triangles are not part of the convex hull. All of the unfilled shapes would be pruned by \cprune (Equation (\ref{eq:cprune_def})); (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, is shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$}
+        \label{fig:convex_hull_geometry} 
     \end{figure}
 
-    \hide{
-        \todo{
-            Here are some things that wrote at the end when icky and ill. Also editing this section tired, so maybe consider adding them into the above on another pass, or moving into ch3, or maybe we covered them and just delete:
+    Given a value set, the \cprune\ewe operation removes any vectors that are dominated or redundant. That is, for every vector that remains after the pruning operation, there is some weight for which it \textit{uniquely} gives the maximal utility for. Given set of vectors $\bfcl{V}$ it is defined as:
+    \begin{align}
+        \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:cprune_def}
+    \end{align}
 
-            Should acknowledge some things. Often we actually compute the value set of a convex coverage set. Often we compute a very specific convex coverage set, which is the extreme points of the convex hull. Also that the term convex hull is typically used to refer to any of the previous three sets (value set, convex coverage set, convex hull). And finally, say that often with methods that compute the value set can often use tagging to compute the policies after the fact, and cite some of the pomdp algorithms from LPK that actually explain the tagging
-
-            Additionally, this thesis focusses on the decision support scenario as outlined in (TODO: cite), with a linear utility function. In the decision support scenario the true weight vector is unknown, and so the objective is to compute a convex coverage set. When a convex coverage set is produced, it is then provided to a user that picks their most preferred policy or value from the coverage set. After this policy is selected, it can be used as a single solution to the problem that the user was trying to solve. 
-        
-            Moreover, in the case of MCTS algorithms, by having the user select a preferred policy, it implicitly forces the user to chose a preference over the objectives, as the policy corresponds to a weight vector that it is optimal for. As MCTS algorithms are often used in an online fashion, where planning is interleaved with execution, this implicitly selected weight can be used for any online execution needed, effectively reducing the multi-objective problem into a single-objective problem. 
-        }
-    }
+    \cprune\ewe can be implemented using \textit{linear programming} \todo{cite}, and an example of its operation on a set of vectors can be seen in (b) of Figure \ref{fig:convex_hull_geometry}, where \cprune\ewe would prune all points but the blue circles.
 
 
 
@@ -821,60 +821,51 @@ def sample_outcome($s$, $a$, cntxt):
     \subsection{Convex Hull Value Iteration}
     \label{sec:2-5-1-chvi}
 
-        Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}. In CHVI the value functions of value iterations are replaced by sets of vectors, which are estimates of the convex hull value set.
+        Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration \todo{ref}, that will compute optimal convex hull value sets. In CHVI the value estimates of value iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates will be denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
-        CHVI maintains estimates of CHVS's at each state $\Vchvi(s;t)$.
-
-        One important operation for CHVI is \cprune, which returns that undominated set of vectors from a given set of vectors $\bfcl{V}$:
+        Firstly, to define a multi-objective version of value iteration, an arithmetic over vector sets needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmetic} Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
         \begin{align}
-            \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}.
-        \end{align}
-
-        The \cprune\ewe operation can be implemented using \textit{linear programming} \todo{cite}, and an example of its operation on a set of vectors is given in Figure \ref{fig:convex_prune}.
-
-        \begin{figure}
-            \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-            \caption[An example of the \cprune\ewe operation.]{An example of the \cprune\ewe operation. The circles and triangles form a vector set $\bfcl{V}$, and the circles denote the set $\cprune(\bfcl{V})$.}
-            \label{fig:convex_prune}
-        \end{figure}
-
-        Additionally, to define a multi-objective version of value iteration, an arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:vectorset_arithmetic} Given the sets of vectors $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
-        \begin{align}
-            \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \\
-            \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}.
+            \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \label{eq:vector_set_arithmetic_one} \\
+            \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}. \label{eq:vector_set_arithmetic_two} 
         \end{align}
 
         \begin{figure}
             \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_arithmetic.pdf} 
-            \caption[An example of arithmetic over sets of vectors.]{An example of arithmetic over sets of vectors, where \todo{describe specifics more specifically, and note that addition by a vector is not shown here, but is similar. Also something looks a bit off about the purple vectors, maybe want to add a light grid behind the graphs? Just to give perspective. Reference that this demonstrates the scalar multiplication from equation (xxx) and addition between sets in equation (xxx). And yes, want the grid, but do later}.}
+            \caption{An example of arithmetic over vector sets. Two vector sets are shown in red and blue, which are multiplied by $\frac{1}{2}$ using Equation (\ref{eq:vector_set_arithmetic_one}), and then added using Equation (\ref{eq:vector_set_arithmetic_two}). On the right the resulting vector set is shown in purple, which are the sum of appropriately scaled red and blue vectors.}
             \label{fig:vectorset_arithmetic}
         \end{figure}
 
-        Now to define the multi-objective Bellman backups used in CHVI, let $\hat{\bfcl{V}}^0(s) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
+        Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
         \begin{align}
-            \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \\
-            \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim \suc{s}{a}} [\bff{R}(s,a) + \Vchvi^k(s';t+1)].
+            \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \label{eq:chvi_v_backup} \\
+            \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:chvi_q_backup}
         \end{align}
         
         This again parallels the Bellman backups use in single-objective value iteration \todo{ref}, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$: $\bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t)$.
-
-        Extracting actions and policies from the computed CHVSs is not explicitly discussed in \cite{chvi}. However, vectors can be \textit{tagged} with actions which allows for a policy to be read out after selecting a value in a CHVS. Consider \todo{having a CHVS for V and Q, set Qtagged to Q with the action in the Q function, and then say that V is computed same as equation XXX, and for convex prune, if there is (v,a) and (v,a'), then break ties randomly. An example of using this tagging to read out policies is given in Figure} \ref{fig:chvs_tagging}.
         
-        \todo{some hidden stuff here to consider?}
-        \hide{
-            However,CHVI is very similar to the \textit{witness algorithm} for Partially Observable MDPs \todo{cite lpk paper}, where it is 
-            
-            To read out policies from the computed convex hull value sets, vectors can be \textit{tagged} with actions, similar to work in partially observable MDPs \todo{cite lpk paper}. For an example of this, see Figure \ref{fig:chvs_tagging}.
-        }
+        Once the algorithm has terminated, and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
+        \begin{align}
+            Q_{\bff{w}}(s,a;t) = \max_{\bff{q}\in\Qchvi(s,a;t)} \bff{w}^\top \bff{q}, \label{eq:chvi_scalar_q_fn} \\
+            \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q_{\bff{w}}(s,a;t). \label{eq:chvi_policy}
+        \end{align}
 
+        If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, one can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
+        \begin{align}
+            (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:chvi_ref_point}
+        \end{align} 
+
+        The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as is demonstrated in Figure \ref{fig:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
+        \begin{align}
+            \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{||\bff{v}-\bff{v}_\bot||_2}, \label{eq:chvi_extract_value_weight}
+        \end{align}
+
+        and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:chvi_policy}).
+        
         \begin{figure}
-            \centering\includegraphics[width=0.5\textwidth]{figures/todo.jpg} 
-            \caption[An example of using tagging with convex hull value sets.]{An example of using tagging with convex hull value sets. An MOMDP is shown, with its associated CHVS's. \todo{colour code the tagging and use arrows to show two different policies being read out from the initial state, and write the corresponding description here}.}
-            \label{fig:chvs_tagging}
+            \centering\includegraphics[width=0.4\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
+            \caption{A visualisation, reusing the convex hull from Figure \ref{fig:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set. The hyperplane running through $\bff{v}_i$ with normal $\bff{w}_i=\frac{\bff{v}_i-\bff{v}_\bot}{||\bff{v}_i-\bff{v}_\bot||}$ is tangential to the geometric convex hull. Hence $\bff{v}_i$ is the optimal value for the weight $\bff{w}_i$ and following the CHVI policy in Equation (\ref{eq:chvi_policy}) will give the desired value $\bff{v}_i$. \todo{add the $||_2$ bit and add the $\bff{w}_i$ bit into diagram}}
+            \label{fig:convex_hull_extract_policy_weight} 
         \end{figure}
-
-        \todo{talk about the POMDP action tagging things}
-
 
 
 
@@ -888,20 +879,13 @@ def sample_outcome($s$, $a$, cntxt):
 
 \section{Sampling From Catagorical Distributions}
 \label{sec:2-6-sampling}
+    
+    \todo{Reference to chapter (TODO: ref ch:4-dents) section where talk about using this with THTS}
 
-    \hide{\todo{Rushing through the todo's here so probably needs another round for 2nd pass, not doing any adding labels to defs and equations, not making any diagrams}}
+    some of the work in this thesis will involve sampling from catagorical distributions. Let $f:\{C_1,...,C_m\}\rightarrow[0,1]$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $c\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a uniform random value is sampled, $u\sim\textnormal{Uniform}(0,1)$, and $f$ is linearly scanned until a probability mass of $u$ has been passed. See Listing \ref{lst:naive_sample} for psuedocode of the naive method.
 
-    \hide{\todo{Reference to chapter (TODO: ref ch:4-dents) section where talk about using this with THTS}}
-
-    \hide{\todo{clean this up generally, wrote it in a rush. Also trying not to use notation that I may want to use later. Would like }}
-
-    \todo{still need to do another pass through this}
-
-    \todo{this section needs figs still}
-
-    Much of the work in this thesis will involve sampling from catagorical distributions. Let $f:\{1,...,m\}\rightarrow\bb{R}$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $i\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a value is sampled from $\textnormal{Uniform}(0,1)$ is often used as follows:
-
-    \begin{lstlisting}
+    \begin{Listing}
+        \begin{lstlisting}
 def sample_catagorical($f$):
     threshold $\sim \textnormal{Uniform}(0,1)$
     i = 0
@@ -910,62 +894,79 @@ def sample_catagorical($f$):
         i += 1
         accumulated_mass += $f($i$)$
     return i
-    \end{lstlisting}
-    \todo{add label and caption for listing}
-    % TODO: make a figure env for code
+        \end{lstlisting}
+        \caption{Psuedocode for sampling from a catagorical distribution.}
+        \label{lst:naive_sample}
+    \end{Listing}
 
-    However, the \textit{Alias method} \todo{cite1, cite2} can instead be used, with $O(m)$ preprocessing time to construct an \textit{Alias table}, and can sample from $f$ in $O(1)$ time. In Figure \todo{ref} we provide an example of an alias table. A value can be sampled using the alias table by sampling two random numbers, one from $\textnormal{Uniform}(\{1,...,m\})$ and one from $\textnormal{Uniform}(0,1)$. To sample from the alias table, one of the entries is sampled uniformly randomly using the sample from $\textnormal{Uniform}(\{1,...,m\})$, each entry in the table contains three values, \texttt{threshold}, \texttt{cat\_one} and \texttt{cat\_two}, from which if we let $a\sim\textnormal{Uniform}(0,1)$, we would then return \texttt{cat\_one} if $a<$\texttt{threshold} and \texttt{cat\_two} otherwise. Psuedocode for this is as follows:
+    However, the \textit{alias method} \todo{cite1, cite2} can instead be used to sample from a catagorical distribution. The alias method uses $O(m)$ preprocessing time to construct an \textit{alias table}, and after can sample from $f$, using the table, in $O(1)$ time. An alias table consists of $m$ entries, accounting for an $m$th of the probability mass of $f$. Each entry takes the form $(c_0,c_1,\thresh)$, where $c_0,c_1\in\{C_1,...,C_m\}$ are categories and $\thresh\in[0,1]$ gives the ratio of the $\frac{1}{m}$ probability mass to assign to $c_0$ and $c_1$. Sampling from the alias table can be performed by sampling two random numbers, one to index into the table and one to compare against $\thresh$, from which $c\sim f$ can be returned by looking it up in the table. Listing \ref{lst:alias_table_sample} gives psuedocode for sampling from an alias table, and Figure \ref{fig:alias_table_eg} visualises the construction and sampling of an alias table.
 
-    \begin{lstlisting}
+    \begin{Listing}
+        \begin{lstlisting}
 def sample_from_alias_table(alias_table):
     index $\sim \textnormal{Uniform}(\{1,...,m\})$
-    cat_one, cat_two, threshold = alias_table[index]
-    a $\sim \textnormal{Uniform}(0,1)$
-    if (a < threshold):
-        return cat_one 
-    return cat_two
-    \end{lstlisting}
-    \todo{add label and caption for listing}
+    $(c_0,c_1,\thresh)$ = alias_table[index]
+    $u \sim \textnormal{Uniform}(0,1)$
+    if ($u <= \thresh$):
+        return $c_0$ 
+    return $c_1$
+        \end{lstlisting}
+        \caption{Psuedocode for sampling from an alias table.}
+        \label{lst:alias_table_sample}
+    \end{Listing}
 
-    In \todo{cite} it is shown \todo{double check that it's proven} that an alias table can be constructed from an arbitrary probability mass function for a catagorical distribution, such that the probability of sampling any catagory from the alias table is identical to the probability of sampling it from the original probability mass function. 
-    
-    \todo{add fig, and in caption verify that the example alias table maintains the correct masses for each category}
+        
+    \begin{figure}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/alias_table.pdf} 
+        \caption{\todo{write caption} \todo{shorten threshold, maybe to a symbol? So can clearly read what is says. Maybe also get rid of sampling bits, maybe make arrows bigger too}}
+        \label{fig:alias_table_eg} 
+    \end{figure}
 
-    Following \todo{cite}, we can construct an alias table as follows:
+    In \todo{cite} it is shown \todo{double check that it's proven} that an alias table can always be constructed from an arbitrary catagorical distribution, such that the probability of sampling any catagory from the alias table is identical to the probability of sampling it from the original probability mass function. 
 
-    \begin{lstlisting}
+    Psuedocode for constructing an alias table is given in Listing \ref{lst:alias_table_construct}, following \todo{cite}. An alias table can be constructed by keeping two sets of categories, one set for ``big'' categories that currently have more than $\frac{1}{m}$ mass to be added to the table, and one for ``small'' catagories that have at most $\frac{1}{m}$ mass left to be added to the table. To create a new entry in the table, take one category from the small set, and take a category from the big set to complete the remainder of the $\frac{1}{m}$ mass that the small set didn't fill. After creating a new entry, move the big category to the little set if it no longer has more than $\frac{1}{m}$ mass to be added. 
+
+    \begin{Listing}
+        \begin{lstlisting}
 def build_alias_table($f$):
-    pass
-    \end{lstlisting}
-    \todo{add label and caption for listing}
-
-    \todo{write the build alias table psuedocode (use wiki it was good)}
-
-
-
-
-
-
-
-
-
-
+    # lists of categories and mass remaining
+    small = []
+    big = []
     
-    
+    # fill big and small lists
+    for $c$ in $f$:
+        if $f(c) > \frac{1}{m}$:
+            big.append($(c,f(c))$)
+        else:
+            small.append($(c,f(c))$)
+
+    # construct alias table
+    alias_table = []
+    while len(small) > 0:
+        # create entry
+        $c_0$, c0_mass_remaining = small.pop()
+        if mass_remaining == $\frac{1}{m}$:
+            alias_table.append($(c_0,\text{None},1.0)$)
+            continue
+        $c_1$, c1_mass_remaining = big.pop()
+
+        # add entry to table
+        alias_table.append($(c_0,c_1,$c0_mass_remaining$)$)
+
+        # put c1 back in lists appropriately
+        c1_mass_remaining -= c0_mass_remaining
+        if c1_mass_remaining > $\frac{1}{m}$:
+            big.append($(c_1,$c1_mass_remaining$)$)
+        else:
+            small.append($(c_1,$c1_mass_remaining$)$)
+        
+    return alias_table
+        \end{lstlisting}
+        \caption{Psuedocode for constructing an alias table.}
+        \label{lst:alias_table_sample}
+    \end{Listing}
 
 
 
 
 
-
-
-
-\hide{
-    \todo{after finished chapter, make sure no errors from latex}
-
-    \todo{after finished chapter, make sure all equations labelled}
-
-    \todo{after finished chapter, make sure all sections correctly referenced, changed sec:2-5-sampling to sec:2-4-sampling, removed the sec:2-4-momcts, added sec:2-5-mabs}
-
-    \todo{after finished chapter, make sure all abbreviations and accronyms added and correct}
-}

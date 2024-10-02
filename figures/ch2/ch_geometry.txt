@@ -1,0 +1,31 @@
+$\mathbf{u}_1$
+
+$\mathbf{u}_2$
+
+$\mathbf{u}_3$
+
+$\mathbf{u}_4$
+
+$\mathbf{u}_5$
+
+$\mathbf{v}_1$
+
+$\mathbf{v}_2$
+
+$\mathbf{v}_3$
+
+$\mathbf{w}_1$
+
+$\mathbf{w}_2$
+
+$\mathbf{w}_3$
+
+$\mathbf{w}_4$
+
+$\mathbf{w}_1^\top\mathbf{u}_1 < \mathbf{w}_1^\top\mathbf{u}_2 = \mathbf{w}_1^\top\mathbf{u}_3 = \mathbf{w}_1^\top\mathbf{u}_4 < \mathbf{w}_1^\top\mathbf{u}_5$
+
+$\mathbf{w}_2^\top\mathbf{v}_2 < \mathbf{w}_2^\top\mathbf{v}_1$
+
+$\mathbf{w}_3^\top\mathbf{v}_2 = \mathbf{w}_3^\top\mathbf{v}_1 = \mathbf{w}_3^\top\mathbf{v}_3$
+
+$\mathbf{w}_4^\top\mathbf{v}_2 < \mathbf{w}_4^\top\mathbf{v}_3$

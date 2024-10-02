@@ -89,6 +89,17 @@
 
     \todo{Talk about the better way of doing CHVI? https://www.jmlr.org/papers/volume13/lizotte12a/lizotte12a.pdf and Efficient reinforcement learning with multiple reward functions for randomized controlled trial analysis. Also by Lizotte. But also say that its approximate for $D>2$ and so we stick with the slower one? But the CHVS operations can be computed more efficiently in $D=2$ using this stuff. Did it for the python implementation.}
 
+    \todo{also need to talk about the MO sequential decision survey. Define Pareto Front. Say that the Pareto Front "Definition 3 If the utility function u is any monotonically increasing function, then the Pareto Front (PF) is the undominated set [Roijers et al., 2013]:"}
+
+    \todo{need to talk about this because some prior/related work uses PF rather than CH}
+
+    \todo{cover some inner loop and outer loop things? Roijers computing CCS work? See what MORL survey says about it}
+
+    \todo{Maybe talk about the \textit{witness algorithm} for Partially Observable MDPs as its very similar to CHVI stuff}
+
+
+
+
 \section{Multi-Objective Monte Carlo Tree Search}
 \label{sec:3-5-momcts}
 
@@ -132,3 +143,11 @@
     \todo{https://ifmas.csc.liv.ac.uk/Proceedings/aamas2021/pdfs/p1530.pdf}
     % Hayes - havent read
     \todo{https://link.springer.com/article/10.1007/s10458-022-09596-0}
+
+
+    \todo{
+        Some stuff we wrote that didnt use in ch2. Might want to talk about it with eval:
+                
+        Moreover, in the case of MCTS algorithms, by having the user select a preferred policy, it implicitly forces the user to chose a preference over the objectives, as the policy corresponds to a weight vector that it is optimal for. As MCTS algorithms are often used in an online fashion, where planning is interleaved with execution, this implicitly selected weight can be used for any online execution needed, effectively reducing the multi-objective problem into a single-objective problem. 
+        
+    }

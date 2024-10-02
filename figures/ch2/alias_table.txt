@@ -1,0 +1,48 @@
+$C_1$
+$0.25$
+
+$C_2$
+$0.1$
+
+$C_3$
+$0.3$
+
+$C_4$
+$0.35$
+
+$0$
+
+$1$
+
+$2$
+
+$3$
+
+\begin{align*}
+c_0&: C_1 \\
+c_1&: \texttt{None} \\
+\texttt{threshold}&: 0.25
+\end{align*}
+
+\begin{align*}
+c_0&: C_2 \\
+c_1&: C_3 \\
+\texttt{threshold}&: 0.1
+\end{align*}
+
+\begin{align*}
+c_0&: C_3 \\
+c_1&: C_4 \\
+\texttt{threshold}&: 0.15
+\end{align*}
+
+\begin{align*}
+c_0&: C_4 \\
+c_1&: \texttt{None} \\
+\texttt{threshold}&: 0.25
+\end{align*}
+
+
+Sample $i\sim\text{Uniform}(\{0,1,2,3\})$
+
+Sample $u\sim\text{Uniform}(0,1)$
