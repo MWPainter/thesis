@@ -29,6 +29,8 @@
 
     \hide{\todo{chatgpt the intro stuff}}
 
+    \todo{talk about seq decision making under uncertainty at points}
+
     In this section \textit{Markov Decision Processes} (MDPs) are introduced, along with related defintions of \textit{policies} and \textit{trajectories}. MDPs give a mathematical framework for problems concerning sequential decision making under uncertainty, and in this thesis will be the framework used to model the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depends on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent recieves an instantaneous reward, according to a reward function that depends on the state and action taken.
 
     This thesis is concerned with discrete, finite, fully-observable and finite-horizon Markov Decision Processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. 
@@ -104,6 +106,8 @@
     \end{figure}
 
     \hide{\todo{chatgpt the intro stuff}}
+
+    \todo{talk about seq decision making under uncertainty at points}
 
     This section serves as a brief introduction to fundamental concepts in Reinforcement Learning, and motivates . The field of Reinforcement Learning considers an agent that has to learn how to make decisions by interacting with its environment (Figure \ref{fig:rl_overview}). The agent can take actions in the environment, recieving in return \textit{observations} and \textit{rewards}, which can be used to update internal state and used to make further decisions, and the goal of the agent is to maximise the rewards that it recieves.
 
@@ -261,7 +265,7 @@
 
         Again, similarly to standard reinforcement learning, \textit{soft Bellman backups} can be defined that admit an analogous algorithm \textit{Soft Value Iteration} \cite{deep_energy_policies}:
         \begin{align}
-            \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \hat{Q}_{\sft}^{k+1}(s,a;t) / alpha \right), \label{eq:soft_value_iter_v_backup} \\
+            \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \frac{1}{\alpha} \hat{Q}_{\sft}^{k+1}(s,a;t) \right), \label{eq:soft_value_iter_v_backup} \\
             \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:soft_value_iter_v_backup}
         \end{align}
 
@@ -315,33 +319,47 @@
 
     \todo{Talk about relevance to sequential decision making, and tree search things, becasue they usually extend MAB algorithms}
 
-    In the $K$-armed bandit problem, an agent is tasked with iteratively selecting one of $K$ arms, originally introduced by \todo{author} \todo{cite MAB orig}. In each iteration, once an arm is selected, say $x\in\{1,...,K\}$, and a reward $y$ is returned according to an unknown probability distribution $f_x$. Let $n$ be the number of rounds of this game that are played, and let $\mu_i=\bb{E}[y|x=i]$ be the expected reward of pulling arm $i$. 
+    This section introduces the $K$-armed bandit problem \todo{cite MAB orig}, which is a foundational problem considered in decision theory. In the multi-armed bandit (MAB) problem, an agent is tasked with deciding to pull one of $K$ arms, and the decision typically needs to be made multiple times. For example, the MAB problem was introduced in the context of clinical trials, where each ``arm'' corresponds to a treatment option \todo{cite}. As such, the MAB problem is presented in rounds, where an arm is selected each round. In each round an random outcome is observed in form of a reward.
+
+    The distribution of rewards is unknown ahead of time, and so an agent needs to explore to gather information about what rewards can be obtained by pulling each arm, and if an agent does not explore then it may miss out on discovering the best strategy. Conversely, the agent should want to exploit, using the information that it has obtained, so that it makes good decisions. In the clinical trials example, exploitation is desirable so that patients receive the best treatment. The problem of balancing these two aspects is known as the \textit{exploration-exploitation trade off}.
     
-    When analysing an algorithmic strategy for Multi-Armed Bandits (MABs), a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal reward that could be obtained with full knowledge of $\{f_i\}$.
+    The remainder of this section will formalise the MAB problem, and give details of the widely used Upper Confidence Bound algorithm \todo{cite}. Sections \ref{sec:2-3-1-exploring-mab} and \ref{sec:2-3-2-contextual-mab} considers two variations on the MAB problem that will be relevant in this thesis.
 
-    \hide{\todo{work out how to deal with the issue of not having policies defined yet. thinhk this needs to be moved to after ch2.1}}
+    Figure \ref{fig:mab_prob} shows how the operation of a $K$-armed bandit problem proceeds. Formally, let $f_1,...,f_K$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu_1,...,\mu_K$ respectively. On the $m$th round, if the arm $x^m\in\{1,...,K\}$ is pulled, then a reward $y^m\sim f_{x^m}$ is received. A \textit{}
 
-    \todo{some sentence}, the process of a MAB is as follows:
-    \begin{itemize}
-        \item for $m$ in $\{1,...,n\}$:
-        \item agent selects arm $x^m$ according to policy $\pi$
-        \item agent recieves reward $y^m \sim f_{x^i}$
-    \end{itemize}
+    \begin{figure}
+        \begin{tcolorbox}
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
+                \begin{itemize}
+                    \item the agent selects an arm $x^m=\sigma(m)\in\{1,...,K\}$ to pull;
+                    \item the agent receives a reward $y^m \sim f_{x^m}$.
+                \end{itemize} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption{The multi-armed bandit problem, following a strategy.}
+        \label{fig:mab_prob}
+    \end{figure}
+    
+    To assess algorithmic strategies for MAB problems, a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal expected reward that could be obtained with full knowledge of $\{f_i\}$.
 
     \begin{defn}
-        The \textnormal{(cumulative) regret} of the agent in the above process is defined as:
+        The \textnormal{(cumulative) regret} of the agent after $n$ rounds in the above process is defined as:
         \begin{align}
-            \creg_{\mab}(\pi,n) = n\mu^* - \sum_{i=1}^n y^i,
+            \creg_{\mab}(n) = n\mu^* - \sum_{m=1}^n y^m,
         \end{align}
         where $\mu^* = max_i \mu_i$.
     \end{defn}
 
     To theoretically analyse algorithms for MAB problems, the quantity of expected regret, $\bb{E}[\creg_{\mab}]$ is considered. In \todo{cite} it is shown using information theory that there is a lower bound on the expected regret that an agent can achieve of $\Sigma(\log N)$, and in \todo{cite ucb} the Upper Confidence Bound (UCB) algorithm is introduced, achieving a matching upper bound of $O(\log N)$. 
 
-    Let $N^m(j)$ be the number of times that arm $i$ has been pulled after $m$ rounds, $\bar{y}_i^m$ is the sample average of rewards recieved when pulling arm $i$: 
+    To define the UCB strategy for pulling the arms, a few quantities need to be defined first. Let $N^m_x$ be the number of times that arm $x$ has been pulled after $m$ rounds. And let $\bar{y}^m_x$ be the average reward that has been received as a result of pulling arm $x$ after $m$ rounds. Mathematically:
     \begin{align}
-        \bar{y}_i^m=\frac{1}{m}\sum_{j=1}^m y^j \one[x^j=i].
-    \end{align} 
+        N^m_x &= \sum_{i=1}^m \one[x^i = x], \label{eq:mab_num_arm_pulls_def} \\
+        \bar{y}^m_x &= \frac{1}{N^m_x} \sum_{i=1}^m y^i \one[x^i = x]. \label{eq:mab_arm_sample_avg} 
+    \end{align}
+    
+
     
     Then the arm selected by the UCB algorithm on the $m$th round is given by:
     \begin{align}
@@ -608,7 +626,7 @@ def sample_outcome($s$, $a$, cntxt):
     \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
     \label{sec:2-4-2-uct}
 
-        Upper Confidence Bounds Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bounds (UCB) \todo{cite} algorithm covered in Section \todo{ref}. UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children nodes made. The remainder of this subsection will outline how UCT can be defined using the the \thtspp schema given in Section \ref{sec:2-4-1-thts}.
+        Upper Confidence Bounds Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bounds (UCB) \todo{cite} algorithm covered in Section \todo{ref}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children nodes made. The remainder of this subsection will outline how UCT can be defined using the the \thtspp schema given in Section \ref{sec:2-4-1-thts}.
 
         In UCT \mctsmode\ewe is set to True. And at each decision and node of UCT a sample average $\Vuct$ and $\Quct$ is used for a value estimate. The search policy that UCT then follows is given by:
         \begin{align}
