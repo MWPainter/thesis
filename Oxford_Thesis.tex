@@ -73,8 +73,8 @@
 %%%%% PERSONAL PREAMBLE
 
 % wan a bib
-\usepackage{natbib}
-\bibliographystyle{plain}
+\usepackage[numbers]{natbib}
+\bibliographystyle{plainnat}
 
 % boxes for defining MABs and such
 \usepackage{tcolorbox}
@@ -186,8 +186,8 @@
 \newcommand{\todo}[1]{\hl{TODO: #1}}
 \newcommand{\quest}[1]{\hl{Question: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
-\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+\newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
+% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 
 % Maffs operators/symbols that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
@@ -218,21 +218,30 @@
 \newcommand{\treepolicyq}{\hyperlink{q31}{\textbf{Q3.1 - Tree Policies}}}
 \newcommand{\moevalq}{\hyperlink{q32}{\textbf{Q3.2 - Multi-Objective Evaluation}}}
 
-% Sec 2.1 - MDPs
-\newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
 
-% Sec 2.2 - RL macros
-\newcommand{\sft}{{\textnormal{sft}}}
-
-% Sec 2.3 - MABs
-% TODO: clean up
+% Sec 2.1 - MABs
 \newcommand{\cmab}{{\textnormal{CMAB}}}
+\newcommand{\conf}{{\textnormal{\texttt{conf}}}}
 \newcommand{\creg}{{\textnormal{\texttt{cum\_regr}}}}
 \newcommand{\ctxreg}{{\textnormal{\texttt{ctx\_regr}}}}
+\newcommand{\cz}{{\textnormal{CZ}}}
+\newcommand{\dom}{{\textnormal{\texttt{dom}}}}
+\newcommand{\eba}{{\textnormal{EBA}}}
 \newcommand{\emab}{{\textnormal{EMAB}}}
+\newcommand{\ireg}{{\textnormal{\texttt{inst\_regr}}}}
 \newcommand{\mab}{{\textnormal{MAB}}}
+\newcommand{\mpa}{{\textnormal{MPA}}}
+\newcommand{\relevant}{{\textnormal{\texttt{relevant}}}}
 \newcommand{\sreg}{{\textnormal{\texttt{sim\_regr}}}}
 \newcommand{\ucb}{{\textnormal{UCB}}}
+\newcommand{\uniform}{{\textnormal{uniform}}}
+
+% Sec 2.2 - MDPs
+\newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
+\newcommand{\terminal}{{\textnormal{\texttt{terminal}}}}
+
+% Sec 2.3 - RL macros
+\newcommand{\sft}{{\textnormal{sft}}}
 
 % Sec 2.4 - THTS++ macros
 \newcommand{\node}{{\textnormal{\texttt{node}}}}
@@ -278,7 +287,7 @@
 \newcommand{\Qtag}{{\hat{\bfcl{Q}}_{\tagg}}}
 
 % Sec 2.6 - Sampling macros
-\newcommand{\thresh}{{\texttt{threshold}}}
+\newcommand{\thresh}{{\texttt{thrsh}}}
 
 
 

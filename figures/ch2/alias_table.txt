@@ -21,25 +21,25 @@ $3$
 \begin{align*}
 c_0&: C_1 \\
 c_1&: \texttt{None} \\
-\texttt{threshold}&: 0.25
+\texttt{thrsh}&: 1.0
 \end{align*}
 
 \begin{align*}
 c_0&: C_2 \\
 c_1&: C_3 \\
-\texttt{threshold}&: 0.1
+\texttt{thrsh}&: 0.4
 \end{align*}
 
 \begin{align*}
 c_0&: C_3 \\
 c_1&: C_4 \\
-\texttt{threshold}&: 0.15
+\texttt{thrsh}&: 0.6
 \end{align*}
 
 \begin{align*}
 c_0&: C_4 \\
 c_1&: \texttt{None} \\
-\texttt{threshold}&: 0.25
+\texttt{thrsh}&: 1.0
 \end{align*}
 
 

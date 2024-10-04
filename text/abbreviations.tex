@@ -2,6 +2,9 @@
 \begin{mclistof}{List of Abbreviations}{3.2cm}
     \item[CHVI] Convex Hull Value Iteration.
     \item[CHVS] Convex Hull Value Set.
+    \item[CMAB] Contextual Multi-Armed Bandit (problem).
+    \item[CZ] Contextual Zooming. 
+    \item[EMAB] Exploring Multi-Armed Bandit (problem).
     \item[MAB] Multi-Armed Bandit (problem). 
     \item[MCTS] Monte Carlo Tree Search.
     \item[\mctsone] A specific and common presentation of Monte Carlo Tree Search, presented in Section \ref{sec:2-4-thts}.
@@ -12,13 +15,6 @@
     \item[\thtspp] An extension of THTS used in this thesis.
     \item[UCB] Upper Confidence Bound (algorithm).
     \item[UCT] Upper Confidence Bound applied to Trees.
-    \\
-    %%%%%
-    % abbrv - 2.3 MABS
-    %%%%%
-    \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
-    \item[EMAB] \todo{define here and move into correct place in the list}
-    \item[CMAB] \todo{define here and move into correct place in the list}
 \end{mclistof} 
 
 
@@ -27,22 +23,38 @@
     %%%%%
     % General Maths
     %%%%%
-    \item[\Large\textbf{Global Notation \todo{probability?}}\hfill\hfill]
+    \item[\Large\textbf{General Notation}\hfill\hfill]
     \item[$\one$] 
         The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. 
+    \item[$\hat{A}$] 
+        The hat notation is used to denote an estimate, i.e. $\hat{A}$ is an estimate for some optimal value $A^*$
+    \item[$\bar{A}$] 
+        The bar notation is used to denote sample averages, i.e. $\bar{A}$ is a sample average of a number of samples $A_1,...,A_k$, or $\bar{A}=\frac{1}{n}\sum_{i=1}^k A_i$.
+    \item[$\tilde{A}$] 
+        The tilde notation is used to denote a function approximator, such as a neural network.
+    \item[$\cl{A}$] 
+        Calligraphic font is used to denote variables that are sets or tuples (ordered sets).
+    \item[$\bff{A}$] 
+        Bolt font is used to denote vectors, and $A_i$ is used to denote the $i$th component of the vector $\bff{A}$.
+    \item[$\texttt{A}$]
+        Typewriter text is used to refer to variables relating to an algorithm (or the analysis of an algorithm).
+    \item[$\bfcl{A}$] 
+        The notations above will also be combined at times, so $\bfcl{A}$ is used to denote a set that contains vectors.
     \item[$\bb{E}$] 
-        \todo{Expectation?}
-    \item[\todo{}]
-        \todo{Trends of notation? From Ch2 intro: "Also trends of notation that we use: $\tilde{V}$ is (neural net) function approx, $\bar{V}$ is sample average, $\hat{V}$ is estimating something, $\bff{V}$ is a vector, $\cl{V}$ is a set, and these notations can be combined, $\bfcl{V}$ is a set of vectors, typeface text $\texttt{V}$ typically refers to things that are more implementation details"}
+        The expectation operator. $\bb{E}[f]$ denotes the expectation of a distribution $f$, and $\bb{E}_{x\sim f}[g(x)]$ denotes the expected value of $g(x)$ under the distribution $f$.
+    \item[$x\sim f$] 
+        If $f:X\rightarrow[0,1]$ specifies a probability distribution, then $x\sim f$ denotes that the variable $x$ is sampled the distribution $f$.
     \\
     %%%%%
     % (MO)MDPs
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-            \Large\textbf{(Multi-Objective) Markov Decision Processes \\(Defined in Sections \ref{sec:2-1-mdps} and \ref{sec:2-5-morl})}\hfill\hfill
+            \Large\textbf{(Multi-Objective) Markov Decision Processes \\(Defined in Sections \ref{sec:2-2-mdps} and \ref{sec:2-5-morl})}\hfill\hfill
           }}]
     \item[$\cl{A}$]
         A (finite) set of actions.
+    \item[$a_t$]
+        The action at the $t$th timestep of a trajectory.
     \item[$D$]:
         The dimension of rewards in a MOMDP.
     \item[$H$]
@@ -55,22 +67,29 @@
         The next-state transition distribution of an MDP.  $p(s' | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
     \item[$\pi$]:
         A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$.
-        \todo{probably dont need this, not going to use non-locally}
+        % \todo{probably dont need this, not going to use non-locally}
     \item[$R$] 
         The reward function of an MDP: $R(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
     \item[$\bff{R}$] 
         The $D$ dimensional reward function of a MOMDP: $\bff{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}^D$.
+    \item[$r_t$]
+        The reward at the $t$th timestep of a trajectory.
     \item[$\cl{S}$]
         A (finite) set of states.
     \item[$\suc{s}{a}$]
         The set of successor states of a state-action pair $(s,a)$, with respect to an MDP: $\suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}$.
     \item[$s_0$]
         $s_0\in\cl{S}$ is the initial starting state of an MDP.
+    \item[$s_t$]
+        The state at the $t$th timestep of a trajectory.
+    \item[$\terminal(s)$]
+        Denotes if a state $s$ is terminal or not. That is, if the transition distribution and reward function of the MDP is such that once reached, the state will never be left and no more reward will be received.
     \item[$\tau$]
         A trajectory, or sequence, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$: $\tau = (s_0, a_0, r_0, s_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$.
     \item[$\bff{\tau}$]
         A multi-objective trajectory, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$: $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$.
-    \item[$s,(s,a)\in\tau$] \todo{define this here?} 
+    % \item[$s,(s,a)\in\tau$] 
+    %     \todo{define this here?} 
     \item[$\tau_{i:j}$]
         A truncated trajectory, starting at timestep $i$, and ending at timestep $j$: $\tau_{i:j} = (s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$. 
     \item[$\bff{\tau}_{i:j}$] 
@@ -80,7 +99,7 @@
     % RL
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-            \Large\textbf{Reinforcement Learning (Section \ref{sec:2-2-rl})}\hfill\hfill
+            \Large\textbf{Reinforcement Learning (Section \ref{sec:2-3-rl})}\hfill\hfill
           }}]
     \item[$J(\pi)$] 
         The objective function for (standard) reinforcement learning: $J(\pi) = V^{\pi}(s_0;0)$.
@@ -88,16 +107,16 @@
         The optimal standard policy, that maximises the objective function $J(\pi)$.
     \item[$Q^*$]
         The optimal Q-value function. $Q^*(s,a;t)$ denotes the maximal expected value that can be achieved by any policy, starting from state $s_t=s$, with action $a_t=a$.
-    \item[$\hat{Q}^k$]
-        The estimate of the optimal value function after $k$ iterations of Value Iteration. 
-        \todo{probably dont need this, not going to use non-locally}
+    % \item[$\hat{Q}^k$]
+    %     The estimate of the optimal value function after $k$ iterations of Value Iteration. 
+    %     \todo{probably dont need this, not going to use non-locally}
     \item[$Q^{\pi}$]
         The Q-value function of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
     \item[$V^*$]
         The optimal value function. $V^*(s;t)$ denotes the maximal expected value that can be achieved by any policy, starting from state $s_t=s$.
-    \item[$\hat{V}^k$]
-        The estimate of the optimal value function after $k$ iterations of Value Iteration.
-        \todo{probably dont need this, not going to use non-locally}
+    % \item[$\hat{V}^k$]
+    %     The estimate of the optimal value function after $k$ iterations of Value Iteration.
+    %     \todo{probably dont need this, not going to use non-locally}
     \item[$V^{\pi}$]
         The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
     \\
@@ -105,7 +124,7 @@
     % MERL
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-        \Large\textbf{Maximum Entropy Reinforcement Learning \\(Section \ref{sec:2-2-1-merl})}\hfill\hfill
+        \Large\textbf{Maximum Entropy Reinforcement Learning \\(Section \ref{sec:2-3-1-merl})}\hfill\hfill
       }}]
     \item[$\alpha$] 
         The temperature parameter, or, the coefficient of the entropy term in the maximum entropy (soft) objective.
@@ -123,14 +142,23 @@
         The optimal soft value function. $V^*(s;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$. 
     \item[$V_{\sft}^{\pi}$]
         The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ is the expected value of the policy from $s_t=s$, with an addition of the entropy of the policy weighted by the temperature $\alpha$.
+    \\
     %%%%%
     % MORL
     %%%%%
     \item[{\parbox[t]{\textwidth}{
         \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-5-morl})}\hfill\hfill
       }}]
+    \item[$CCS(\Pi)$] 
+        A convex coverage set of policies, which contains at least one policy that maximises the linear utility $u_{\lin}(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
+    \item[$CCS_{\min}(\Pi)$]
+        The minimal convex coverage set of policies, which has no redundant policies and for each policy in $CCS_{\min}(\Pi)$ there is some weight that it uniquely (with respect to $CCS_{\min}(\Pi)$) obtains the optimal linear utility.
     \item[$CH(\Pi)$] 
         The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the linear utility function $u_{\lin}$. $CH(\Pi)=U(\Pi;u_{\lin})$.
+    \item[$CS(\Pi;u)$] 
+        A coverage set of policies, which contains at least one policy that maximises the utility $u(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
+    \item[$\cprune$] 
+        An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
     \item[$\Delta^D$] 
         The $D$ dimensional simplex, or, the set of possible weightings over the $D$ objectives of a MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}$.
     \item[$\Pi$] 
@@ -145,64 +173,25 @@
         The linear utility function: $u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}$.
     \item[$\bff{V}^{\pi}$]
         The multi-objective value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
+    \item[$\valset(\Pi')$] 
+        The set of multi-objective values obtained by a set of policies $\Pi'$.
     \item[$\bff{w}$] 
         A weighting over objectives that quantifies preferences over the multiple objectives, to be used in a utility function.
-    \item[$CS(\Pi;u)$] \todo{define here and move into correct place in the list}
-    \item[$CCS(\Pi)$] \todo{define here and move into correct place in the list}
-    \item[$CCS_{\min}(\Pi)$] \todo{define here and move into correct place in the list}
-    \item[$\valset(\Pi)$] \todo{define here and move into correct place in the list}
-    \item[$\cprune$] \todo{define here and move into correct place in the list}
-    \\
-    \\
-    \\
-    \\
-    \\
-    \item[\todo{}] \todo{Sort below into more reasonable things to look up}
-    %%%%%
-    % 2.3 MABs
-    %%%%%
-    \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
-    \item[$x$] \todo{define here and move into correct place in the list}
-    \item[$y$] \todo{define here and move into correct place in the list}
-    \item[$f_i$] \todo{define here and move into correct place in the list}
-    \item[$x^m$] \todo{define here and move into correct place in the list}
-    \item[$y^m$] \todo{define here and move into correct place in the list}
-    \item[$\bar{y}_i^m$] \todo{define here and move into correct place in the list}
-    \item[$N$] \todo{define here and move into correct place in the list}
-    \item[$\mu_i$] \todo{define here and move into correct place in the list}
-    \item[$\mu^*$] \todo{define here and move into correct place in the list}
-    \item[$\creg_{\mab}$] \todo{define here and move into correct place in the list}
-    \item[$\pi(m)$] \todo{define here and move into correct place in the list. Maybe keep it as this and ask question}
-    \item[$m$] \todo{define here and move into correct place in the list}
-    \item[$\pi_{\ucb}(m)$] \todo{define here and move into correct place in the list}
-    \item[$\pi^m$] \todo{define here and move into correct place in the list}
-    \item[$\psi^m$] \todo{define here and move into correct place in the list}
-    \item[$w$] \todo{define here and move into correct place in the list}
-    \item[$w^m$] \todo{define here and move into correct place in the list}
-    \item[$\mu_{w,i}$] \todo{define here and move into correct place in the list}
-    \item[$\mu_{w}^*$] \todo{define here and move into correct place in the list}
-    \item[$W$] \todo{define here and move into correct place in the list}
-    \item[$ $] \todo{define here and move into correct place in the list}
-    \item[$ $] \todo{define here and move into correct place in the list}
-    \item[$ $] \todo{define here and move into correct place in the list}
-    \item[$ $] \todo{define here and move into correct place in the list}
     \\
     %%%%%
-    % 2.4 THTS
+    % THTS
     %%%%%
-    \item[{\parbox[t]{\textwidth}{\Large\textbf{Trial Based Heuristic Tree Search and Monte Carlo Tree Search (Section \ref{sec:2-4-thts})}\hfill\hfill}}]
-    \item[$\alpha_{\ments}$] 
-        The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-4-thts})}\hfill\hfill
+      }}]
     \item[$\backupv$]
         Updates the values at a decision node in the backup phase of a trial \thtspp, using the decision node's children, the trajectory sampled for the trial and the heuristic value function.
     \item[$\backupq$] 
         Updates the values at a chance node in the backup phase of a trial \thtspp, using the chance node's children, the trajectory sampled for the trial and the heuristic value function.
-    \item[$\epsilon$]
-        An exploration parameter used in MENTS.
-    \item[$\lambda_s$] 
-        An exploration parameter used in MENTS.
+    \item[$H_{\thtspp}$]
+        The planning horizon used in \thtspp, with $H_{\thtspp}\leq H$.
     \item[\mctsmode] 
-        Specifies if \thtspp\ewe will sample a trajectory such that only one decision node is added to the search tree per trial. If not running in \mctsmode\ewe the \thtspp\ewe will sample a trajectory to the MDPs time horizon $H$.
+        Specifies if \thtspp\ewe will sample a trajectory such that only one decision node is added to the search tree per trial. If not running in \mctsmode\ewe the \thtspp\ewe will sample a trajectory until the planning horizon $H_{\thtspp}$.
     \item[$N(s)$]
         The number of visits at the decision node corresponding to state $s$.
     \item[$N(s,a)$]
@@ -215,50 +204,98 @@
         The set of variables stored at decision node $\node(s)$, typically used for estimating values.
     \item[$\node(s,a)$] 
         The chance node corresponding to the state-action pair $(s,a)$.
-    \item[$\node(s)\dotchildren$]
-        The set of decision nodes that are children of $\node(s)$.
+    \item[$\node(s,a)\dotchildren$]
+        The set of decision nodes that are children of $\node(s,a)$.
     \item[$\cnodedata{s,a}$] 
         The set of variables stored at decision node $\node(s,a)$, typically used for estimating Q-values.
-    \item[$\tilde{\pi}$] 
-        A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
-    \item[$\piments$] 
-        The search policy used in MENTS.
-    \item[$\pirollout$] 
-        A policy used to sample a trajectory that is used to estimate the value of a state being added to a search tree.
     \item[$\pisearch$]
         The search policy used in \thtspp\ewe to sample a trajectory in the selection phase.
-    \item[$\piuct$] 
-        The search policy used in UCT.
     \item[$\Qinit$]
         The heuristic action function used in \thtspp, used to provide a Q-value estimate for any state-action pairs that aren't in the search tree.
-    \item[$\Qments(s,a)$] 
-        A soft Q-value estimate at the chance node $(s,a)$ in MENTS.
-    \item[$\Quct(s,a)$] 
-        The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.   
     \item[$\samplecontext$]
         A function used in \thtspp\ewe that creates a context, or key-value story, and samples any initial values to be stored in the context.
     \item[$\sampleoutcome$]
         A function used in \thtspp\ewe to sample outcomes (successor states) from the environment (MDP).
     \item[$\cl{T}$] 
         The \thtspp\ewe search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. 
-    \item[$\tilde{V}$] 
-        A function approximation to $V^*$.
-    \item[$\hat{V}^{\pirollout}(s)$] 
-        An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialised the value of a state being added to the search tree.
     \item[$\Vinit$]
-        The heuristic value function used in \thtspp, used to initialise the value of a new decision node.
-    \item[$\Vments(s)$] 
-        A soft value estimate at the decision node $s$ in MENTS.
-    \item[$\Vuct(s)$] 
-        The sample-average value estimate used to estimate the value at a decision node $s$ in UCT.   
-    \\
-    %%%%%
-    % 2.6 Sampling
-    %%%%%
-    \item[{\parbox[t]{\textwidth}{\Large\textbf{Sampling From Catagorical Distributions \ref{sec:2-6-sampling})}\hfill\hfill}}]
-    \item[] \todo{define here and move into correct place in the list}
-    \item[] \todo{define here and move into correct place in the list}
-    \item[] \todo{define here and move into correct place in the list}
-    \item[] \todo{define here and move into correct place in the list}
-
+        The heuristic value function used in \thtspp, used to initialise the value of a new decision node. 
+    %
+    %
+    %
+    % \\
+    % %%%%%
+    % % MABs
+    % %%%%%
+    % \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
+    % \item[$x$] \todo{define here and move into correct place in the list}
+    % \item[$y$] \todo{define here and move into correct place in the list}
+    % \item[$f_i$] \todo{define here and move into correct place in the list}
+    % \item[$x^m$] \todo{define here and move into correct place in the list}
+    % \item[$y^m$] \todo{define here and move into correct place in the list}
+    % \item[$\bar{y}_i^m$] \todo{define here and move into correct place in the list}
+    % \item[$N$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_i$] \todo{define here and move into correct place in the list}
+    % \item[$\mu^*$] \todo{define here and move into correct place in the list}
+    % \item[$\creg_{\mab}$] \todo{define here and move into correct place in the list}
+    % \item[$\pi(m)$] \todo{define here and move into correct place in the list. Maybe keep it as this and ask question}
+    % \item[$m$] \todo{define here and move into correct place in the list}
+    % \item[$\pi_{\ucb}(m)$] \todo{define here and move into correct place in the list}
+    % \item[$\pi^m$] \todo{define here and move into correct place in the list}
+    % \item[$\psi^m$] \todo{define here and move into correct place in the list}
+    % \item[$w$] \todo{define here and move into correct place in the list}
+    % \item[$w^m$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_{w,i}$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_{w}^*$] \todo{define here and move into correct place in the list}
+    % \item[$W$] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    %
+    %
+    %
+    % \\
+    % %%%%%
+    % % UCT
+    % %%%%%
+    % \item[{\parbox[t]{\textwidth}{
+    %     \Large\textbf{Upper Confidence Bound applied to Trees (Section \ref{sec:2-4-2-uct})}\hfill\hfill
+    % }}]
+    % \item[$\pirollout$] 
+    %     A policy used to sample a trajectory that is used to estimate the value of a state being added to a search tree.
+    % \item[$\piuct$] 
+    %     The search policy used in UCT.
+    % \item[$\Quct(s,a)$] 
+    %     The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.
+    % \item[$\hat{V}^{\pirollout}(s)$] 
+    %     An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialised the value of a state being added to the search tree.
+    % \item[$\Vuct(s)$] 
+    %     The sample-average value estimate used to estimate the value at a decision node $s$ in UCT. 
+    %
+    %
+    %
+    % \\
+    % %%%%%
+    % % MENTS
+    % %%%%%
+    % \item[{\parbox[t]{\textwidth}{
+    %     \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-3-ments})}\hfill\hfill
+    % }}]
+    % \item[$\alpha_{\ments}$] 
+    %     The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
+    % \item[$\epsilon$]
+    %     An exploration parameter used in MENTS.
+    % \item[$\lambda_s$] 
+    %     An exploration parameter used in MENTS.
+    % \item[$\tilde{\pi}$] 
+    %     A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
+    % \item[$\piments$] 
+    %     The search policy used in MENTS.
+    % \item[$\Qments(s,a)$] 
+    %     A soft Q-value estimate at the chance node $(s,a)$ in MENTS.
+    % \item[$\tilde{V}$] 
+    %     A function approximation to $V^*$.
+    % \item[$\Vments(s)$] 
+    %     A soft value estimate at the decision node $s$ in MENTS.
 \end{mclistof} 

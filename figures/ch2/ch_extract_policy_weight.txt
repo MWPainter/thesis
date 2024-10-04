@@ -1,0 +1,3 @@
+$\mathbf{w}_1 = \frac{\mathbf{v}_1-\mathbf{v}_\bot}{\Vert\mathbf{v}_1-\mathbf{v}_\bot\Vert_2}$
+
+$\mathbf{w}_2 = \frac{\mathbf{v}_2-\mathbf{v}_\bot}{\Vert\mathbf{v}_2-\mathbf{v}_\bot\Vert_2}$

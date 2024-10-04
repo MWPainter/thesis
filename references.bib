@@ -23,6 +23,39 @@
 }
 
 %%%%%
+% RL
+%%%%%
+%sutton2018reinforcement
+% rl book
+@article{sutton,
+  title={Reinforcement learning: An introduction},
+  author={Sutton, Richard S},
+  journal={A Bradford Book},
+  year={2018}
+}
+
+%natarajan2022planning
+%planning with mdps
+@book{kolobov,
+  title={Planning with Markov decision processes: An AI perspective},
+  author={Natarajan, Mausam and Kolobov, Andrey},
+  year={2022},
+  publisher={Springer Nature}
+}
+
+% Bellman:DynamicProgramming
+% value iteration
+@book{dp,
+  author = {Bellman, Richard},
+  isbn = {9780486428093},
+  keywords = {book dynamic programming},
+  publisher = {Dover Publications},
+  timestamp = {2011-08-18T09:10:27.000+0200},
+  title = {{Dynamic Programming}},
+  year = 1957
+}
+
+%%%%%
 % MCTS stuff
 %%%%%
 
@@ -71,6 +104,51 @@
   year={2019}
 }
 
+%silver2017mastering
+%alpha go zero
+@article{alpha_go_zero,
+  title={Mastering the game of go without human knowledge},
+  author={Silver, David and Schrittwieser, Julian and Simonyan, Karen and Antonoglou, Ioannis and Huang, Aja and Guez, Arthur and Hubert, Thomas and Baker, Lucas and Lai, Matthew and Bolton, Adrian and others},
+  journal={nature},
+  volume={550},
+  number={7676},
+  pages={354--359},
+  year={2017},
+  publisher={Nature Publishing Group}
+}
+
+%silver2018general
+%alpha zero
+@article{alpha_zero,
+  title={A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play},
+  author={Silver, David and Hubert, Thomas and Schrittwieser, Julian and Antonoglou, Ioannis and Lai, Matthew and Guez, Arthur and Lanctot, Marc and Sifre, Laurent and Kumaran, Dharshan and Graepel, Thore and others},
+  journal={Science},
+  volume={362},
+  number={6419},
+  pages={1140--1144},
+  year={2018},
+  publisher={American Association for the Advancement of Science}
+}
+
+%moerland2018a0c
+%a0c
+@article{a0c,
+  title={A0c: Alpha zero in continuous action space},
+  author={Moerland, Thomas M and Broekens, Joost and Plaat, Aske and Jonker, Catholijn M},
+  journal={arXiv preprint arXiv:1805.09613},
+  year={2018}
+}
+
+%gelly2007combining
+% Go - rave
+@inproceedings{rave,
+  title={Combining online and offline knowledge in UCT},
+  author={Gelly, Sylvain and Silver, David},
+  booktitle={Proceedings of the 24th international conference on Machine learning},
+  pages={273--280},
+  year={2007}
+}
+
 %%%%%
 % MORL stuff
 %%%%%
@@ -95,6 +173,17 @@
   booktitle={Proceedings of the 25th international conference on Machine learning},
   pages={41--47},
   year={2008}
+}
+
+% roijers2015computing
+% linear prog for convex prune
+@article{cccs,
+  title={Computing convex coverage sets for faster multi-objective coordination},
+  author={Roijers, Diederik Marijn and Whiteson, Shimon and Oliehoek, Frans A},
+  journal={Journal of Artificial Intelligence Research},
+  volume={52},
+  pages={399--443},
+  year={2015}
 }
 
 %%%%%
@@ -124,6 +213,71 @@
   journal={Advances in neural information processing systems},
   volume={23},
   year={2010}
+}
+
+%%%%%
+% MABs
+%%%%%
+%robbins1952some
+%mab original
+@article{mab_og,
+  title={Some aspects of the sequential design of experiments},
+  author={Robbins, Herbert},
+  year={1952}
+}
+
+%lai1985asymptotically
+% mab lower bound
+@article{mab_lower_bound,
+  title={Asymptotically efficient adaptive allocation rules},
+  author={Lai, Tze Leung and Robbins, Herbert},
+  journal={Advances in applied mathematics},
+  volume={6},
+  number={1},
+  pages={4--22},
+  year={1985},
+  publisher={Academic Press}
+}
+
+%auer2002finite
+$ucb
+@misc{ucb,
+  title={Finite-time Analysis of the Multiarmed Bandit Problem},
+  author={Auer, P},
+  year={2002},
+  publisher={Kluwer Academic Publishers}
+}
+
+%bubeck2009pure
+% exploring bandits
+@inproceedings{exploring_bandit,
+  title={Pure exploration in multi-armed bandits problems},
+  author={Bubeck, S{\'e}bastien and Munos, R{\'e}mi and Stoltz, Gilles},
+  booktitle={Algorithmic Learning Theory: 20th International Conference, ALT 2009, Porto, Portugal, October 3-5, 2009. Proceedings 20},
+  pages={23--37},
+  year={2009},
+  organization={Springer}
+}
+
+%kleinberg2008multi
+%zooming short
+@inproceedings{cz,
+  title={Multi-armed bandits in metric spaces},
+  author={Kleinberg, Robert and Slivkins, Aleksandrs and Upfal, Eli},
+  booktitle={Proceedings of the fortieth annual ACM symposium on Theory of computing},
+  pages={681--690},
+  year={2008}
+}
+
+%slivkins2011contextual
+%zooming long
+@inproceedings{cz_long,
+  title={Contextual bandits with similarity information},
+  author={Slivkins, Aleksandrs},
+  booktitle={Proceedings of the 24th annual Conference On Learning Theory},
+  pages={679--702},
+  year={2011},
+  organization={JMLR Workshop and Conference Proceedings}
 }
 
 %%%%%
@@ -167,4 +321,64 @@
   pages={35--62},
   year={2001},
   publisher={Elsevier}
+}
+
+%cazenave2009monte
+% example of using a rollout policy - bus planning
+@inproceedings{bus,
+  title={Monte-Carlo bus regulation},
+  author={Cazenave, Tristan and Balbo, Flavien and Pinson, Suzanne and others},
+  booktitle={12th international IEEE conference on intelligent transportation systems},
+  volume={340345},
+  year={2009}
+}
+
+% keller2012prost
+% prost planner - eg of using rollout
+@inproceedings{prost,
+  title={PROST: Probabilistic planning based on UCT},
+  author={Keller, Thomas and Eyerich, Patrick},
+  booktitle={Proceedings of the International Conference on Automated Planning and Scheduling},
+  volume={22},
+  pages={119--127},
+  year={2012}
+}
+
+%abramson1990expected
+% og notion of using a MC estimate from random policy to eval states
+@article{rand_mc_est_orig,
+  title={Expected-outcome: A general model of static evaluation},
+  author={Abramson, Bruce},
+  journal={IEEE transactions on pattern analysis and machine intelligence},
+  volume={12},
+  number={2},
+  pages={182--193},
+  year={1990},
+  publisher={IEEE}
+}
+
+%walker1977efficient
+%alias original
+@article{alias_method_one,
+  title={An efficient method for generating discrete random variables with general distributions},
+  author={Walker, Alastair J},
+  journal={ACM Transactions on Mathematical Software (TOMS)},
+  volume={3},
+  number={3},
+  pages={253--256},
+  year={1977},
+  publisher={ACM New York, NY, USA}
+}
+
+%vose1991linear
+%alias correctness
+@article{alias_method_two,
+  title={A linear algorithm for generating random numbers with a given distribution},
+  author={Vose, Michael D},
+  journal={IEEE Transactions on software engineering},
+  volume={17},
+  number={9},
+  pages={972--975},
+  year={1991},
+  publisher={Citeseer}
 }
