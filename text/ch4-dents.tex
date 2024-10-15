@@ -9,7 +9,11 @@
 
     \minitoc
 
-\section{Introduction}
+    This chapter discusses MCTS algorithms for planning in single-objective environments, while using entropy as an auxilary secondary objective for exploration. Notably, MENTS (Section \ref{sec:2-4-3-ments}), and RENTS and TENTS (Section \todo{ref litrev}) are already MCTS algorithms in the maximum entropy setting (Section \ref{sec:2-3-1-merl}), using entropy as an exploration bonus.
+
+    In Section \ref{sec:4-1-intro} the motivation of the work 
+
+\section{Introduction and Motivation}
 \label{sec:4-1-intro}
 
     \todo{list}
@@ -19,6 +23,38 @@
         \item state clearly that we're in single objective land here
         \item Comment about work exploring multi-armed bandits motivating this work
     \end{itemize}
+
+    \todo{motivate stuff with the simulation stuff}
+
+    This section highlights 
+
+    \todo{Introduce DChain environments}
+
+    \todo{Plots with all of the algorithms}
+
+    \todo{Plot with MENTS temperature on x axis (need to run)}
+    
+    In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
+     
+    Above the threshold, an agent can gain more ``reward'' by acting randomly and optimising for maximum-entropy, largely ignoring the rewards of the MDP. This example demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
+
+    This issue can be exasurbated further by editing the D-chain environment to contain an entropy trap. In the entropy trap environment \todo{ref fig}, an additional trap for maximum-entropy agents is added to the D-chain environment. In this environment, when the end of the chain is reached, there are two choices, to either collect the immediate reward of $1$, or to follow another path where high entropy can be obtained, but no reward can be obtained. The maximum entropy that can be obtained from following the chain is $\alpha K \log(2)$, and as such will mislead any maximum-entropy agents that have a temperature parameter of $\alpha > \frac{1}{k\log(2)}$. Setting \todo{k=what}, sets this threshold at \todo{todo say $\alpha > C$ for now}. However, for $\alpha \leq C$, the temperature parameter is low enough that not much benefit is gained from the entropy objective.
+
+    Figure \todo{ref} shows the performance of ments on the entropy trap environment, highlighting that it doesn't perform well for any setting of $\alpha$. In contrast, the algorithms defined in this chapter are able to overcome these issues.
+    
+    As such, this chapter will consider how entropy can be used as an additional secondary objective, while still focusing on performing well in the standard objective.
+
+
+    \todo{define simple regret}
+
+    \todo{define consistency, use exploring bandits to say that consistent in regret implies consistent in simple regret?}
+
+
+
+
+
+
+
 
 \section{Boltzmann Search}
 \label{sec:4-2-boltzmannsearch}
@@ -30,6 +66,45 @@
         \item Define DENTS using THTS functions
         \item Discuss alias method variant (and complexity analysis) in a subsection?
     \end{itemize}
+
+    \todo{would like to read more about the exp3 stuff before submitting this ch}
+    \todo{https://tor-lattimore.com/downloads/book/book.pdf - bandits book}
+    \todo{exp3 paper: http://rob.schapire.net/papers/AuerCeFrSc01.pdf}
+    \todo{add to future work ideas to adapt BTS to use exp3 type stuff, and the thing gradient update covered in the Sutton and Barto book (todo get link and page ref to RL book where talk about that)}
+    \todo{moved already}
+
+    This section defines two algorithms Boltzmann Tree Search and Decaying ENtropy Tree Search in the \thtspp\ewe schema. 
+    
+    \subsection{Boltzmann Tree Search}
+
+        \todo{add label}
+        \todo{define BTS in thtspp}
+
+        Define with variable alpha, change proofs to say for fixed alpha get regret bound. And add theorem that 
+    
+    \subsection{Decaying ENtropy Tree Search}
+
+        \todo{add label}
+        \todo{define DENTS in thtspp}
+
+    \subsection{Advantages of Stochastic Search Policies}
+
+        \todo{add label}
+        \todo{write about alias sampling}
+
+    \subsection{Encorporating Prior Knowledge}
+
+        \todo{add label}
+        \todo{write about using $\tilde{\pi}$, $\tilde{Q}$, $\tilde{V}$.}
+        \todo{talk about grid world and how Qinit need to be able to handle costs}
+
+        MENTS suggests using $\tilde{\pi}$ as \todo{their description}
+
+        However, this may still lead to issues in for example in grid world problems. \todo{talk about }
+
+
+
+
 
 \section{Toy Environments}
 \label{sec:4-3-toyenvs}
@@ -48,6 +123,8 @@
     \begin{itemize}
         \item add theoretical results
     \end{itemize}
+
+    Should we try to add a result about most visited? Where will be concentration bounds around the number of visits being proportional to the values. So think can bootstrap those proofs.
 
 \section{Empirical Results}
 \label{sec:4-5-results}
