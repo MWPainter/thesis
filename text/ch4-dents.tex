@@ -49,6 +49,34 @@
 
     \todo{define consistency, use exploring bandits to say that consistent in regret implies consistent in simple regret?}
 
+    \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered}
+
+    \begin{figure}
+        \begin{tcolorbox}
+            Parameters: An MDP $\cl{M}$.
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
+                \begin{enumerate}
+                    \item the agent produces a search policy $\pi^m$ to follow;
+                    \item the environment samples a trajectory $\tau\sim\pi^m$ (including rewards $r_t=R(s_t,a_t)$ for each $s_t,a_t$ pair in $\tau$);
+                    \item the agent produces a recommendation policy $\psi^m$;
+                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
+                \end{enumerate} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption{The procedure of an exploring planning problem for MDPs. \todo{Make this sound better.} \todo{Also make ch2 MAB figs use enumerate?}}
+        \label{fig:3:planning_problem}
+    \end{figure}
+
+    \todo{make this a proper def}
+    Simple regret of a policy $\psi$ is then defined as
+    \begin{align}
+        \sreg(s,\psi) = V^*(s)-V^{\psi}(s).
+    \end{align}
+
+    \todo{make this a proper def}
+    An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textit{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
+
 
 
 
@@ -80,7 +108,67 @@
         \todo{add label}
         \todo{define BTS in thtspp}
 
-        Define with variable alpha, change proofs to say for fixed alpha get regret bound. And add theorem that 
+        \todo{Define with variable alpha, change proofs to say for fixed alpha get regret bound. And add theorem that }
+
+
+        Our first approach, put simply, replaces the use of soft values in MENTS with 
+        % \textit{dynamic programming} (DP) 
+        \textit{Bellman} 
+        values. We call this algorithm \textit{Boltzmann Tree Search} (BTS).  The search policy $\pi_{\textnormal{BTS}}$ and backups for the $n$th trial are given by:
+        %
+
+
+        This section introduces the \textit{Boltzmann Tree Search} (BTS) algorithm, presented in terms of the \thtspp\ewe schema \todo{ref}. BTS promotes exploration through the stochastic Boltzmann search policy, like MENTS \todo{ref}, while using backups that optimise for the standard objective, like UCT \todo{ref}. BTS uses Bellman value estimates at each node $\Vbts$ and $\Qbts$. The search policy is defined by:
+        %
+        \begin{align}
+            \pibts(a|s) &= (1-\lambda_s)\rhobts(a|s) + \frac{\lambda_s}{|\cl{A}|}, 
+                        \label{eq:bts_search_policy} \\ 
+            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alpha}\left(\Qbts(s,a)\right)\right).
+                        \label{eq:bts_value_policy}
+        \end{align}
+
+        And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
+        \begin{align}
+            \Qbts(s_t,a_t) &\leftarrow 
+                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s) \right), 
+                        \label{eq:bts_q_backup} \\ 
+            \Vbts(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a), 
+                        \label{eq:bts_v_backup} 
+        \end{align}
+        %
+        where $\lambda_s=\min(1,\epsilon/\log(e+N(s)))$, $\epsilon \in (0,\infty)$ is an exploration parameter and $\alpha$ is a search temperature (unrelated to entropy). \todo{$\alpha \rightarrow \alpha(t)$}.
+
+        \todo{Go through below to make work in thesis, just got it compiling because sleepy}
+
+        \todo{talk about value initialisation}
+        %Each $\hat{V}(s)$ and $\hat{Q}(s,a)$ are initialised using $V^{\text{init}}$ and $Q^{\text{init}}$ functions similarly to MENTS. 
+        
+        When BTS needs to recommend a policy, it can use it's Q-value estimates:
+        %
+        \begin{align}
+            \psibts(s)=\argmax_{a\in\cl{A}}\Qbts(s,a).
+        \end{align}
+
+        \todo{add comments to make latex directly read a bit nicer, but also not having spacing between paragraphs etc. Also make equations nicer in ch2}
+
+        %
+        By using 
+        % DP 
+        Bellman
+        backups, we can guarantee that the BTS recommendation policy converges to the optimal standard policy for any temperature $\alpha$, given enough time. In other words, BTS is consistent.
+        %
+        \begin{theorem} 
+            \label{thrm:bts}
+            For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$, and also $\Vbts(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
+        \end{theorem}
+
+        \todo{update for $\alpha$ being const etc. Add the more theorems about BTS here.}
+        % \begin{proofoutline}
+        % 		This result is a special case of Theorem \ref{thrm:dents} by setting $\beta(m)=0$.
+        % \end{proofoutline}
+        % \begin{proof}
+        %     Proofs for Theorem \ref{thrm:bts} and Theorem \ref{thrm:dents} provided in Appendix \ref{app:proofs}.
+        % \end{proof}
     
     \subsection{Decaying ENtropy Tree Search}
 

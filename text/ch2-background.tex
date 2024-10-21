@@ -277,6 +277,7 @@
         Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic iff it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
 
         Moreover, the following notations are used for policies:
+        %
         \begin{itemize}
             \item $a\sim\pi(\cdot|s)$ denotes sampling an action $a$ from the distribution $\pi(\cdot|s)$;
             \item $\pi(s)=a'$ is used as a shorthand to define the deterministic policy $\pi(a|s)=\one[a=a']$; 
@@ -291,6 +292,7 @@
         A \textnormal{trajectory} $\tau$, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The following notations will also be used for trajectories:
+        %
         \begin{itemize}
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
             \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
@@ -327,6 +329,7 @@
     Following on from Section \ref{sec:2-2-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning and covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning. Finally Section \ref{sec:2-3-1-merl} covers \textit{maximum-entropy reinforcement learning}.
     
     The value of a policy $\pi$ is the expected cumulative reward that will be obtained by following the policy:
+    %
     \begin{defn}
         \label{def:2:value}
         \label{def:2:q_value}
@@ -892,11 +895,37 @@ def sample_outcome($s$, $a$, ctx):
 
     Note that the \cprune\ewe operator computes the values of a minimal convex coverage set, that is, for some set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(CCS_{\min}(\Pi'))$. \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}, and an example of its operation on a set of vectors can be seen in (b) of Figure \ref{fig:2:convex_hull_geometry}, where \cprune\ewe would prune all points but the blue circles.
 
+    \todo{Not sure where to put this PF stuff, cant see where to put it in to make it flow well. Also proof read}
+    \begin{mccorrection}
+        Another commonly used solution set is the \textit{Pareto front}, which is defined using a \textit{strict partial ordering} over vectors, known as \textit{Pareto domination}, as opposed to using utility. An example is shown in Figure \ref{fig:2:pareto_front}.
+        \begin{defn}
+            \label{def:2:pareto_front}
+            The \textnormal{Pareto front} $PF(\Pi)\subseteq\Pi$ is defined as:
+            \begin{align}
+                PF(\Pi) = \{\pi\in\Pi | \not\exists \pi'\in\Pi. \bff{V}^{\pi'}(s_0;0) \succ_P \bff{V}^{\pi}(s_0;0) \},
+            \end{align}
+            where the \textnormal{Pareto domination} relation is defined as:
+            \begin{align}
+                \bff{v} \succ_P \bff{v'} \iff (\forall i. v_i \geq v'_i) \land (\exists j. v_j > v'_j).
+            \end{align}
+        \end{defn}
+
+        The Pareto front can be related to the previously defined solution sets if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
+    \end{mccorrection}
+
+    \begin{figure}
+        \centering\includegraphics[width=0.4\textwidth]{figures/ch2/pf_geometry.pdf} 
+        \caption[An example Pareto front.]{An example Pareto front, where the circles correspond to a convex coverage set, and the filled blue points denote the Pareto front. Two points are marked with their corresponding policies $\pi$ and $\pi'$, and a mixture policy is shown, denoted $\{\frac{1}{2}:\pi, \frac{1}{2}:\pi'\}$ that follows each of $\pi$ and $\pi'$ with probability $\frac{1}{2}$.}
+        \label{fig:2:pareto_front} 
+    \end{figure}
+
 
 
 
     \subsection{Convex Hull Value Iteration}
     \label{sec:2-5-1-chvi}
+
+        \todo{Should we also be defining undominated set/coverage sets for a given $(s;t)$? As in just add them as a param? As kind of using them in this sect as if we did}
 
         Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that will compute optimal convex hull value sets. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates will be denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 

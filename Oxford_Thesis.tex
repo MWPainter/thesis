@@ -189,11 +189,14 @@
 % \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
 \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 
-% Maffs operators/symbols that aren't default
+% Maffs operators that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
 \DeclareMathOperator*{\argmax}{arg\,max}          % argmax
 \DeclareMathOperator*{\argmin}{arg\,min}          % argmin
-\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}   % bold and calligraphic text
+\newcommand{\rap}{\overset{p}{\to}}               % converge in prob
+
+% Add bold + calligraphic text
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n} 
 
 % General - Maffs shorthands
 \newcommand{\bb}[1]{\mathbb{#1}}
@@ -288,6 +291,14 @@
 
 % Sec 2.6 - Sampling macros
 \newcommand{\thresh}{{\texttt{thrsh}}}
+
+% Sec 4.2.1 - BTS
+\newcommand{\bts}{{\textnormal{BTS}}}
+\newcommand{\pibts}{{\pi_{\bts}}}
+\newcommand{\rhobts}{{\rho_{\bts}}}
+\newcommand{\Qbts}{{\hat{Q}_{\bts}}}
+\newcommand{\Vbts}{{\hat{V}_{\bts}}}
+\newcommand{\psibts}{{\psi_{\bts}}}
 
 
 
