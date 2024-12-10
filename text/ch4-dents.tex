@@ -34,7 +34,11 @@
 
     \todo{Plot with MENTS temperature on x axis (need to run)}
     
-    In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
+    In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). \todo{add quote}. 
+    %
+    \todo{Although this is theoretically true (TODO ref the result about MENTS), in practise it is desirable to use the largest temperature that doesn't lead to undesirable (random) behaviour. In other words, extermely small temperatures do not utilise entropy for exploration effectively, while extremely large temperatures encourage agents to act randomly rather (reword: optimise for the standard objective). MENTS is used in (TODO) to demonstrate this issue with the maximum-entropy objective empirically, and (TODO) provides a corresponding theoretical result around MENTS.}
+    %
+    Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
      
     Above the threshold, an agent can gain more ``reward'' by acting randomly and optimising for maximum-entropy, largely ignoring the rewards of the MDP. This example demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
 
@@ -175,12 +179,38 @@
         \todo{add label}
         \todo{define DENTS in thtspp}
 
+        The \textit{entropy values} are weighted by a bounded non-negative function $\beta(N(s))$ in the DENTS search policy $\pidents$:
+        %
+        \begin{align}
+            \pidents(a|s) &= (1-\lambda_s)\rhodents(a|s) + \frac{\lambda_s}{|\cl{A}|}, 
+                        \label{eq:dents_search_policy} \\ 
+            \rhodents(a|s) &\propto \exp\left(\frac{1}{\alpha}\left(\Qdents(s,a)+\beta(N(s))\HQdents(s,a)\right)\right).
+                        \label{eq:dents_value_policy}
+        \end{align}
+
+        And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
+        \begin{align}
+            \Qdents(s_t,a_t) &\leftarrow 
+                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s) \right), 
+                        \label{eq:dents_q_backup} \\ 
+            \Vdents(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a), 
+                        \label{eq:dents_v_backup} 
+        \end{align}
+        % 
+        and the \textit{entropy values} $\HVdents(s)$ and $\HQdents(s,a)$ (which are monte-carlo estimates of the entropy of the search policy rooted at $s$ and $(s,a)$ respectively) are updated given $\tau$ as follows:
+        \begin{align}
+            \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), \label{eq:dents_entropy_v_backup} \\
+            \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s').  \label{eq:dents_entropy_q_backup}
+        \end{align}
+
+
+
     \subsection{Advantages of Stochastic Search Policies}
 
         \todo{add label}
         \todo{write about alias sampling}
 
-    \subsection{Encorporating Prior Knowledge}
+    % \subsection{Encorporating Prior Knowledge}
 
         \todo{add label}
         \todo{write about using $\tilde{\pi}$, $\tilde{Q}$, $\tilde{V}$.}
