@@ -464,7 +464,7 @@
 
         Equations similar to the Bellman equations, aptly named the \textit{soft Bellman equations}, can be defined for maximum entropy reinforcement learning. These equations differ to equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
         \begin{align}
-            V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / alpha \right), \label{eq:2:sft_bellman_opt_v} \\
+            V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / \alpha \right), \label{eq:2:sft_bellman_opt_v} \\
             Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^*(s';t+1)]. \label{eq:2:sft_bellman_opt_q}
         \end{align} 
 

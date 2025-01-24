@@ -9,12 +9,95 @@
 
     \minitoc
 
-    This chapter discusses MCTS algorithms for planning in single-objective environments, while using entropy as an auxilary secondary objective for exploration. Notably, MENTS (Section \ref{sec:2-4-3-ments}), and RENTS and TENTS (Section \todo{ref litrev}) are already MCTS algorithms in the maximum entropy setting (Section \ref{sec:2-3-1-merl}), using entropy as an exploration bonus.
+    This chapter discusses MCTS algorithms for planning in single-objective environments whose search policies take the form of Boltzmann distributions. Primarily, this chapter aims to answer question \entropyq, while laying the foundation to answer \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    
+    \begin{figure}
+        \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
+        \caption[Exploration setting in reinforcement learning.]{\todo{update fig to just be the blue version.} Exploration setting in reinforcement learning (\todo{reproduced and edited from fig 2.5}), \bd{where the agent aims to discover the optimal policy and has a larger emphasis on exploration to find better solutions rather than exploiting.}}
+        \label{fig:4:rl_overview}
+    \end{figure}
 
-    In Section \ref{sec:4-1-intro} the motivation of the work 
+    Figure \ref{fig:4:rl_overview} gives the exploration setting for reinforcement learning, where the agent is only assessed on the recommendations that it provides, and is not penalised for considering poor actions in the simulator. 
+
+    This chapter will also consider how entropuy can be used as an auxilary secondary objective to encourage exploration. Entropy is already used widely in the reinforcement literature \todo{cites, ppo, sac etc, ref ch3}, and is often cited for its \bd{exploration, and robustness to uncertainty, and robustness to simulator/environment differences, and robustness to noise.} 
+
+    When considering the maximum entropy reinforcement learning objective (\todo{ref}), the optimal policy (equation (\todo{ref})) naturally takes the form of a Boltzmann policy. Notably, MENTS (Section \ref{sec:2-4-3-ments}), and RENTS and TENTS (Section \todo{ref litrev}) are existing MCTS algorithms for the maximum entropy setting (Section \ref{sec:2-3-1-merl}), so will be discussed further in this chapter, along with UCT (Section \todo{ref}), and used as baseline algorithms.
+
+    Section \ref{sec:4-1-intro} discusses limitations of existing MCTS algorithms in this exploration setting, motivating the work covered in the remainder of the chapter. Additionally, the planning framework is defined so that the algorithms can be theoretically analysed using \textit{simple regret}.
+    
+    In Section \ref{sec:4-2-boltzmannsearch} the \textit{Boltzmann Tree Search} and \textit{Decaying ENtropy Tree Search} algorithms are defined.
+
+    Section \ref{sec:4-3-toyenvs} considers some theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms, and are used for constructive proofs of some theorems. 
+
+    Results on grid world and the game of Go are given in section \ref{sec:4-4-results}. 
+
+    Finally, in Section \ref{sec:4-5-theory} the main theoretical analysis and proofs are given.
+
+    \todo{add sect 4.6 if actually use that.}
+
+    \todo{one paragraph for ch overview? Or make other descriptions longer? Or make it bullet points?}
+
+    \todo{After finished writing, do another pass through neurips paper and check no results/writing missing from thesis that really should be included. (Thinking about some of the frozen lake plots in the appendix when writing this.)}
+    
+
+
+
+
+
+
 
 \section{Introduction and Motivation}
 \label{sec:4-1-intro}
+
+    UCT \todo{ref} \bd{is designed in the traditional reinforcement learning setting (todo ref Fig 2.5), minimising the cumulative regret (todo ref)}, and so UCT makes a trade off between exploration and exploitation. As such, UCT will frequently choose the same action to exploit, which results in it getting stuck in local optima when \bd{rewards are sparse or not informative.}
+
+    To see this consider two grid world MDPs which differ only in the reward function. \todo{state space is (x,y,time), actions are cardinal directions etc}. The first reward function is to use a constant cost of $R_1(s,a)=-1$, and the second is a sparse version where the time cost is only revealed at the end $R_2((x,y,t),(x_a,y_a)) = -(t+1)\one[(x,y)+(x_a,y_a)==G]$. \todo{clean and actually define goal state, and name bettwer than R1 and R2}
+
+    \todo{make diagram}
+
+    \todo{something that says although this example can be solved by using the more sensible reward, it's just to highlight the issue of exploration}.
+    
+    \todo{would like to have figs showing the best path found by UCT in both cases AND showing the number of trials (one step of branches) where it explored.}
+
+    Although the issues in the above toy problem can be resolved by using the simpler constant reward $R_1$, the example serves to highlight that UCT performs best when provided with a dense and informative reward. 
+    
+    As we are considering the exploration setting given in Figure \ref{fig:4:rl_overview}, this example shows in the sparse reward setting that UCT will use most of its available computation time exploiting the same sub-optimal solution that it has already found. As the objective is to provide the best recommendations to the user, it would be desirable to better utilise this computation time exploring alternative solutions. \todo{reword this sect, not super hapy with it }
+
+    \todo{some comment somewhere that although it does seem a little unfair to compare UCT in a scenario for which it was not designed, in practise it is used in these cases}
+
+    This example is extended upon in Section \todo{ref} where the performance of algorithms discussed in this chapter are compared on mixtures of these two rewards.
+
+    \todo{NEXT: integrade the stuff below (first attempt at writing) and this (second attempt at writing). Think the first attempt mostly talked about ments, and also started doing the simple regret. So basically just need to clean this section up next time, then get on with the algorithms and theorems and results.}
+    
+    \todo{NEXT: write the below up properly, and decide on which example to show. Probably just the D-chain env, and leave the more complex one to later}
+    MENTS (and RENTS and TENTS). 
+    Are MCTS algorithms that use the maximum entropy objective.
+    Hence they provide a greater emphasis on exploration.
+    Give example D-chain environment
+    Show that with it's sensitive to alpha param (issue one), that is, if alpha is large enough the maximum entropy objective is missaligned
+    Often it is cited that the original objective can be restored by setting alpha to 0, or rather set it to a small value as often the temperature needs to be $>$ 0. 
+    However, it is possible to construct an environment with some threshold tau, such that is alpha more than tau then the objectives are missaligned, and if alpha less than tau then the benefits of exploration are lost 
+    In reality, an more common problems, this typically involves making alpha as large as it can be (to get as much exploration as possible), but small enough to not have allignment problems 
+
+    % \todo{old writing about ments, 2nd paragraph isnt covered above, but think first is}
+    % MENTS places greater emphasis on epxloration as it considers the maximum entropy objective
+    % However, the maximum entropy objective can be misaligned with standard objective
+    % MENTS is sensitive to the temperature parameter
+
+    % R.e. DChain environment, can think of it like a gauntlet. The agent starts with a reward of $D-1/D$ and incurs a cost of $1/D$ for each step they stay on the path. UCT learns that it is generally better to get off the path as quickly as possible. However, this exploitation leads to it missing out on the sparse reward of 
+
+    \todo{next next: define the simple regret framework, and define consistancy.}
+
+    From the discussion in this section, the following properties are desired from the MCTS algorithms:
+    \begin{itemize}
+        \item define algorithms that are as simple to implement as UCT and MENTS
+        \item able to utilise dense and informative rewards 
+        \item effectively explore when rewards are sparse (or have sparse components)
+        \item are consistent 
+    \end{itemize}
+
+
+
 
     \todo{list}
     \begin{itemize}
@@ -110,6 +193,7 @@
     This section defines two algorithms Boltzmann Tree Search and Decaying ENtropy Tree Search in the \thtspp\ewe schema. 
     
     \subsection{Boltzmann Tree Search}
+    \label{sec:4-2-1-bts}
 
         \todo{add label}
         \todo{define BTS in thtspp}
@@ -177,6 +261,7 @@
         % \end{proof}
     
     \subsection{Decaying ENtropy Tree Search}
+    \label{sec:4-2-2-dents}
 
         \todo{add label}
         \todo{define DENTS in thtspp}
@@ -208,6 +293,27 @@
 
 
     \subsection{Advantages of Stochastic Search Policies}
+    \label{sec:4-2-3-stoch_search_policies}
+
+        Using a stochastic search policy in MCTS (or \thtspp) provides more benefits than just encouraging exploration through randomly sampled actions. In particular, the Alias Method (Section \ref{sec:2-6-sampling}) can be used to trade off using the most up to date policy for computational speed. Moreover, when prior knowledge (in the form of a policy prior) is available \todo{cite alphago etc}, it can naturally be integrated into the search using a \textit{mixture policy}.
+
+        \todo{add ref to} \complexityq
+
+        \todo{some titeling for alias method to say we're talking about that now}
+
+        When using the Alias Method in \thtspp\ewe an alias table \todo{capitalise?} is constructed at every decision node. This table can be updated every $\lambda|\cl{A}|$ visits to the node, for an arbitrary $\lambda\in\bb{R}_{>0}$, giving an amortised complexity of $O(1)$. \todo{just say constant amortised complexity?} $O(O(1)+\frac{|\cl{A}}{\lambda|\cl{A}|}) = O(O(1)+\frac{1}{\lambda}) = O(1)$. \todo{probably dont need to do that maths.} In \thtspp the value of the $\lambda$ can be varied to adjust the trade off between The value of lambda can be varied to adjust the trade off between up-to-dateness and sampling speed. For the remainder \todo{find a better way of saying this}, $\lambda=1$ will be considered \todo{but all of the results still hold}. Note that when a new decision node is constructed and added to the tree, there will still be a cost of $O(|\cl{A}|)$ to construct the new alias table.
+        
+        Although this will always lead to quite a significant computational speedup, in the case where \mctsmode, the computational speedup is also asymptotic. \todo{where this paragraph go?}
+
+        In the following, the computational complexity to run $n$ trials is considered.
+        
+        First consider the computational complexity of running UCT: at each decision node visited on a trial, the maximum over $|\cl{A}|$ values is computed \todo{this is worded poorly}, on each trial at most $H_{\thtspp}$ decision nodes will be visited. Hence, the computational complexity of running $n$ trials of UCT is $O(nH_{\thtspp}|\cl{A}|)$.
+
+        \todo{copy out appendix C stuff, cleaning up above and below as needed}
+
+        Finally, considering the case when \thtspp\ewe is not running in \mctsmode, the asymptotic complexity is still $O(nH_{\thtspp}|\cl{A}|)$, as each trial is sampled until the planning horizon $H_{\thtspp}$ 
+
+        \todo{Talk about co}
 
         \todo{add label}
         \todo{write about alias sampling}
@@ -236,8 +342,24 @@
         \item Front load some results still
     \end{itemize}
 
+\section{Empirical Results}
+\label{sec:4-4-results}
+
+    \todo{list}
+    \begin{itemize}
+        \item DChain
+        \item GridWorlds
+        \item Go
+    \end{itemize}
+
+    - Get some better results using hyperparam optimise
+    - want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot
+    - want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)
+
+    \todo{ TWO: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
+
 \section{Theoretical Results}
-\label{sec:4-4-theory}
+\label{sec:4-5-theory}
 
     \todo{list}
     \begin{itemize}
@@ -246,15 +368,8 @@
 
     Should we try to add a result about most visited? Where will be concentration bounds around the number of visits being proportional to the values. So think can bootstrap those proofs.
 
-\section{Empirical Results}
-\label{sec:4-5-results}
-
-    \todo{list}
-    \begin{itemize}
-        \item DChain
-        \item GridWorlds
-        \item Go
-    \end{itemize}
+    - Generalise the AR proof to say that for decaying search functions still work (as long as they are bounded)
+    - Have a result that using most visited is theoretically sound
 
 \section{Full Results}
 \label{sec:4-6-fullresults}
