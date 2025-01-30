@@ -67,74 +67,29 @@
 
     This example is extended upon in Section \todo{ref} where the performance of algorithms discussed in this chapter are compared on mixtures of these two rewards.
 
-    \todo{NEXT: integrade the stuff below (first attempt at writing) and this (second attempt at writing). Think the first attempt mostly talked about ments, and also started doing the simple regret. So basically just need to clean this section up next time, then get on with the algorithms and theorems and results.}
-    
-    \todo{NEXT: write the below up properly, and decide on which example to show. Probably just the D-chain env, and leave the more complex one to later}
-    MENTS (and RENTS and TENTS). 
-    Are MCTS algorithms that use the maximum entropy objective.
-    Hence they provide a greater emphasis on exploration.
-    Give example D-chain environment
-    Show that with it's sensitive to alpha param (issue one), that is, if alpha is large enough the maximum entropy objective is missaligned
-    Often it is cited that the original objective can be restored by setting alpha to 0, or rather set it to a small value as often the temperature needs to be $>$ 0. 
-    However, it is possible to construct an environment with some threshold tau, such that is alpha more than tau then the objectives are missaligned, and if alpha less than tau then the benefits of exploration are lost 
-    In reality, an more common problems, this typically involves making alpha as large as it can be (to get as much exploration as possible), but small enough to not have allignment problems 
-
-    % \todo{old writing about ments, 2nd paragraph isnt covered above, but think first is}
-    % MENTS places greater emphasis on epxloration as it considers the maximum entropy objective
-    % However, the maximum entropy objective can be misaligned with standard objective
-    % MENTS is sensitive to the temperature parameter
-
-    % R.e. DChain environment, can think of it like a gauntlet. The agent starts with a reward of $D-1/D$ and incurs a cost of $1/D$ for each step they stay on the path. UCT learns that it is generally better to get off the path as quickly as possible. However, this exploitation leads to it missing out on the sparse reward of 
-
-    \todo{next next: define the simple regret framework, and define consistancy.}
-
-    From the discussion in this section, the following properties are desired from the MCTS algorithms:
-    \begin{itemize}
-        \item define algorithms that are as simple to implement as UCT and MENTS
-        \item able to utilise dense and informative rewards 
-        \item effectively explore when rewards are sparse (or have sparse components)
-        \item are consistent 
-    \end{itemize}
 
 
 
 
-    \todo{list}
-    \begin{itemize}
-        \item high level overview of DENTS work
-        \item discuss how DENTS answers the research questions from introduction chapter
-        \item state clearly that we're in single objective land here
-        \item Comment about work exploring multi-armed bandits motivating this work
-    \end{itemize}
+    Now that some limitations of UCT have been discussed, lets now consider the maximum entropy objective. When using the maximum entropy objective it is often argued that the standard objective can be recovered by setting $\alpha=0$, or setting $\alpha$ to an infitesimally small values ($0<\alpha<<1$). \todo{add refs} \todo{add the words ``temperature'' somewhere}
 
-    \todo{motivate stuff with the simulation stuff}
+    However, in practise setting $\alpha$ to some tiny value will nullify any advantages that can be obtained from using entropy to promote exploration. Considering the other extreme, if we allowed a very large value of $\alpha$ (or let $\alpha\rightarrow\infty$), then maximising entropy becomes the dominant objective and the `optimal' policy will be a uniformly random one. Thus there is some tradeoff that needs to be made. When using a maximum entropy method the temperature parameter needs to be tuned: which intuitively should be made as large as possible, so as to obtain as much benefit from entropy exploration; while keeping it small enough such that policy acts as desired (i.e. it maximises the standard objective).
 
-    This section highlights 
+    \todo{supp expr on gridworld shortest path problem, where vary alpha value}
 
-    \todo{Introduce DChain environments}
+    In Figure \todo{ref}, the performance of MENTS (\todo{ref}) on the above gridworld problem with sparse reward is considered (Figure \todo{ref}). As the value of $\alpha$ is increased from zero, it can be seen the shortest path is found with fewer and fewer trials initially. Then, above a threshold value of \todo{quote value}, MENTS can gain more ``reward'' by acting randomly and optimising for entropy, largely ignoring the rewards from the MDP. This example empirically demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
 
-    \todo{Plots with all of the algorithms}
+    More concretely, consider the policy $\pi_{\text{eval}}(s) = \argmax_{a'} \pi^*_{\sft}(a'|s)$ that would be followed at test time with the maximum entropy objective. In the following, the maximum entropy objective will be said to be \textit{misalligned} with the standard objective when $\pi_{\text{eval}}(s) \neq \pi^*(s)$.
 
-    \todo{Plot with MENTS temperature on x axis (need to run)}
-    
-    In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). \todo{add quote}. 
-    %
-    \todo{Although this is theoretically true (TODO ref the result about MENTS), in practise it is desirable to use the largest temperature that doesn't lead to undesirable (random) behaviour. In other words, extermely small temperatures do not utilise entropy for exploration effectively, while extremely large temperatures encourage agents to act randomly rather (reword: optimise for the standard objective). MENTS is used in (TODO) to demonstrate this issue with the maximum-entropy objective empirically, and (TODO) provides a corresponding theoretical result around MENTS.}
-    %
-    Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
-     
-    Above the threshold, an agent can gain more ``reward'' by acting randomly and optimising for maximum-entropy, largely ignoring the rewards of the MDP. This example demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
+    Building off this intuition, in Section \todo{ref}, an MDP is constructed such that the temperature parameter needs to be made prohibitively small (i.e. little to no benefit is gained from the entropy rewards) to avoid the maximum entropy objective from being missaligned.
 
-    This issue can be exasurbated further by editing the D-chain environment to contain an entropy trap. In the entropy trap environment \todo{ref fig}, an additional trap for maximum-entropy agents is added to the D-chain environment. In this environment, when the end of the chain is reached, there are two choices, to either collect the immediate reward of $1$, or to follow another path where high entropy can be obtained, but no reward can be obtained. The maximum entropy that can be obtained from following the chain is $\alpha K \log(2)$, and as such will mislead any maximum-entropy agents that have a temperature parameter of $\alpha > \frac{1}{k\log(2)}$. Setting \todo{k=what}, sets this threshold at \todo{todo say $\alpha > C$ for now}. However, for $\alpha \leq C$, the temperature parameter is low enough that not much benefit is gained from the entropy objective.
-
-    Figure \todo{ref} shows the performance of ments on the entropy trap environment, highlighting that it doesn't perform well for any setting of $\alpha$. In contrast, the algorithms defined in this chapter are able to overcome these issues.
-    
-    As such, this chapter will consider how entropy can be used as an additional secondary objective, while still focusing on performing well in the standard objective.
+    While only MENTS has been discussed, the issue lies predominantly from mixing entropy into the scalar objective, and as such similar issues arise no matter the form of entropy considered. \todo{basically saying RENTS and TENTS dont fix this problem}
 
 
-    \todo{define simple regret}
 
-    \todo{define consistency, use exploring bandits to say that consistent in regret implies consistent in simple regret?}
+
+
+    Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (\todo{ref the equation below}). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
 
     \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered}
 
@@ -164,7 +119,22 @@
     \todo{make this a proper def}
     An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textit{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
 
-    \todo{Want some plots of MENTS temperature (x axis) vs performance, on gridworld and theory envs? Basically want something showing that optimal temp is in middle}
+    Returning to the discussion around UCT and MENTS now that simple regret and consistency has been defined. It can be shown the UCT is always consistent \todo{ref?}, although MDPs can be constructed where it requires a hyperexpontial amount of time to find the optimal policy. Whereas, the consistancy of MENTS depends on if the temperature parameter is sufficiently small for the optimal soft policy to not be misaligned with the standard optimal policy. Moreover, the threshold for the temperature parameter is dependent on the MDP, and so needs to be tuned on every MDP instance seperately.
+    
+
+
+
+
+    From the discussion in this section, the following properties are desired from the MCTS algorithms:
+    \begin{itemize}
+        \item define algorithms that are as simple to implement as UCT and MENTS;
+        \item able to utilise dense and informative rewards (UCT \tick, MENTS \tick);
+        \item effectively explore when rewards are sparse, or have sparse components (UCT \cross, MENTS \tick);
+        \item are consistent, for parameters independent of the environment (UCT \tick, MENTS \cross). \todo{something like can get a reasonable result without haveing to tune params on each env. Maybe ``doesnt require parameter tuning on every environment''}
+    \end{itemize}
+
+    As such, this chapter will consider how entropy can be used as an additional secondary objective, while still focusing on performing well in the standard objective. \todo{place this better. Want it to say, that because the issue lies in the maximum entropy objective, we're going to start by stipping MENTS of the maximum entropy objective and then consider how it can be reintroduced in a consistent way.}
+
 
 
 
@@ -329,6 +299,14 @@
         However, this may still lead to issues in for example in grid world problems. \todo{talk about }
 
 
+    \subsection{Things still missing in this section}
+        Defining the average reward versions of the algorithms
+
+        Talking about the OG DENTS algorithm and why that didn't work?
+
+
+
+
 
 
 
@@ -341,6 +319,20 @@
         \item Define the D-chain with entropy trap
         \item Front load some results still
     \end{itemize}
+
+    \todo{(commented out below this), original writing in the motivation section, which talked about the d-chain environment.}
+
+    % In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). \todo{add quote}. 
+    % %
+    % \todo{Although this is theoretically true (TODO ref the result about MENTS), in practise it is desirable to use the largest temperature that doesn't lead to undesirable (random) behaviour. In other words, extermely small temperatures do not utilise entropy for exploration effectively, while extremely large temperatures encourage agents to act randomly rather (reword: optimise for the standard objective). MENTS is used in (TODO) to demonstrate this issue with the maximum-entropy objective empirically, and (TODO) provides a corresponding theoretical result around MENTS.}
+    % %
+    % Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
+     
+    % Above the threshold, an agent can gain more ``reward'' by acting randomly and optimising for maximum-entropy, largely ignoring the rewards of the MDP. This example demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
+
+    % This issue can be exasurbated further by editing the D-chain environment to contain an entropy trap. In the entropy trap environment \todo{ref fig}, an additional trap for maximum-entropy agents is added to the D-chain environment. In this environment, when the end of the chain is reached, there are two choices, to either collect the immediate reward of $1$, or to follow another path where high entropy can be obtained, but no reward can be obtained. The maximum entropy that can be obtained from following the chain is $\alpha K \log(2)$, and as such will mislead any maximum-entropy agents that have a temperature parameter of $\alpha > \frac{1}{k\log(2)}$. Setting \todo{k=what}, sets this threshold at \todo{todo say $\alpha > C$ for now}. However, for $\alpha \leq C$, the temperature parameter is low enough that not much benefit is gained from the entropy objective.
+
+    % Figure \todo{ref} shows the performance of ments on the entropy trap environment, highlighting that it doesn't perform well for any setting of $\alpha$. In contrast, the algorithms defined in this chapter are able to overcome these issues.
 
 \section{Empirical Results}
 \label{sec:4-4-results}
