@@ -711,7 +711,7 @@ def sample_outcome($s$, $a$, ctx):
                 \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
                     + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_q} \\
             \Vuct(s_t) &\leftarrow 
-                \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t,a_t) 
+                \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
                     + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
         \end{align}  
 

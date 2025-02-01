@@ -165,7 +165,6 @@
     \subsection{Boltzmann Tree Search}
     \label{sec:4-2-1-bts}
 
-        \todo{add label}
         \todo{define BTS in thtspp}
 
         \todo{Define with variable alpha, change proofs to say for fixed alpha get regret bound. And add theorem that }
@@ -178,57 +177,129 @@
         %
 
 
-        This section introduces the \textit{Boltzmann Tree Search} (BTS) algorithm, presented in terms of the \thtspp\ewe schema \todo{ref}. BTS promotes exploration through the stochastic Boltzmann search policy, like MENTS \todo{ref}, while using backups that optimise for the standard objective, like UCT \todo{ref}. BTS uses Bellman value estimates at each node $\Vbts$ and $\Qbts$. The search policy is defined by:
+        This section introduces the \textit{Boltzmann Tree Search} (BTS) algorithm, presented in terms of the \thtspp\ewe schema \todo{ref}. BTS promotes exploration through the stochastic Boltzmann search policy, like MENTS \todo{ref}, while using backups that optimise for the standard objective, like UCT \todo{ref}. Unlike MENTS, the temperature parameter generalised to a function $\alphabts(x) > 0$, which allows the temperature to vary with the number of times that a node has visited. BTS uses Bellman value estimates at each node $\Vbts$ and $\Qbts$. The search policy is defined by:
         %
         \begin{align}
-            \pibts(a|s) &= (1-\lambda_s)\rhobts(a|s) + \frac{\lambda_s}{|\cl{A}|}, 
-                        \label{eq:bts_search_policy} \\ 
-            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alpha}\left(\Qbts(s,a)\right)\right).
-                        \label{eq:bts_value_policy}
+            \pibts(a|s) &= (1-\lambdabts)\rhobts(a|s) + \frac{\lambdabts}{|\cl{A}|}, 
+                        \label{eq:4:bts_search_policy} \\ 
+            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbts(s,a)\right)\right).
+                        \label{eq:4:bts_value_policy} \\
+            \lambda(s,x) &= \min\left(1, \frac{x}{\log(e+N(s))}\right) \label{eq:4:lambda}
         \end{align}
-
-        And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
+        %
+        where $\epsbts \in (0,\infty)$ is an exploration parameter and $\alphabts(x)$ is the search temperature schedule. \todo{Add a comment about defining rho as taking the max when N(s) is zero?} And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
         \begin{align}
             \Qbts(s_t,a_t) &\leftarrow 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s) \right), 
-                        \label{eq:bts_q_backup} \\ 
-            \Vbts(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a), 
-                        \label{eq:bts_v_backup} 
+                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s') \right), 
+                        \label{eq:4:bts_backup_q} \\ 
+            \Vbts(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a).
+                        \label{eq:4:bts_backup_v} 
         \end{align}
-        %
-        where $\lambda_s=\min(1,\epsilon/\log(e+N(s)))$, $\epsilon \in (0,\infty)$ is an exploration parameter and $\alpha$ is a search temperature (unrelated to entropy). \todo{$\alpha \rightarrow \alpha(t)$}.
-
-        \todo{Go through below to make work in thesis, just got it compiling because sleepy}
-
-        \todo{talk about value initialisation}
-        %Each $\hat{V}(s)$ and $\hat{Q}(s,a)$ are initialised using $V^{\text{init}}$ and $Q^{\text{init}}$ functions similarly to MENTS. 
+        
+        In line with the \thtspp\ewe schema, the values of $\hat{V}_{\bts}(s)$ and $\hat{Q}_{\bts}(s,a)$ are initialised using the arbitrary functions $\Vinit$ and $\Qinit$, which for example can be set to a constant value or be the output from a neural network. \todo{check all of the above definition is in line with thtspp definition} 
+        
         
         When BTS needs to recommend a policy, it can use it's Q-value estimates:
         %
         \begin{align}
             \psibts(s)=\argmax_{a\in\cl{A}}\Qbts(s,a).
         \end{align}
-
-        \todo{add comments to make latex directly read a bit nicer, but also not having spacing between paragraphs etc. Also make equations nicer in ch2}
-
         %
-        By using 
-        % DP 
-        Bellman
-        backups, we can guarantee that the BTS recommendation policy converges to the optimal standard policy for any temperature $\alpha$, given enough time. In other words, BTS is consistent.
+        Alternatively, the node visit counts can be used in the recommendation policy
+        \begin{align}
+            \texttt{mv}_{\bts}(s) = \argmax_{a\in\cl{A}} N(s,a).
+        \end{align}
         %
-        \begin{theorem} 
-            \label{thrm:bts}
-            For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$, and also $\Vbts(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
-        \end{theorem}
+        \todo{Find better notation for this?}
 
-        \todo{update for $\alpha$ being const etc. Add the more theorems about BTS here.}
+        As BTS uses Bellman backups, it can be guaranteed that the BTS recommendation policy converges to the optimal standard policy. \todo{make this sound better given we're also talking about most visited recommendation policy now.}
+        
+
+
+
+
+
+
+
+
+        \todo{Work out how best to add the AR-BTS stuff?}
+
+        Additionally, this search policy can still be used with average returns. The following is a summary of the definitions for \textit{Boltzmann Tree Search with Average Returns} (AR-BTS), which uses the value estimates of $\Varbts$ and $\Qarbts$ at each node, and temperature schedule $\alphaarbts(x) > 0$:
+        %
+        \begin{align}
+            \piarbts(a|s) &= (1-\lambdaarbts)\rhoarbts(a|s) + \frac{\lambdaarbts}{|\cl{A}|}, 
+                        \label{eq:arbts_search_policy} \\ 
+            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphaarbts(N(s))}\left(\Qarbts(s,a)\right)\right).
+                        \label{eq:arbts_value_policy}
+        \end{align}
+        %
+        where $\epsarbts \in (0,\infty)$ is an exploration parameter and $\alphaarbts(x)$ is the search temperature schedule. Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ and the leaf node value estimate $\tilde{r} = \Vinit(s_h)$, the value estimates are updated for $t=h-1,...,0$:
+        \begin{align}
+            \Qarbts(s_t,a_t) &\leftarrow 
+                \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Qarbts(s_t,a_t) 
+                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:4:arbsts_backup_q} \\
+            \Varbts(s_t) &\leftarrow 
+                \frac{1}{N(s_t)} \left( (N(s_t)-1) \Varbts(s_t) 
+                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right). \label{eq:4:arbsts_backup_v} 
+        \end{align}
+
+        Similarly to BTS, either the Q-value estimates can be used for a recommendation policy or the most visited child node can be used:
+        \begin{align}
+            \psiarbts(s) &= \argmax_{a\in\cl{A}}\Qbts(s,a), \\
+            \texttt{mv}_{\arbts}(s) &= \argmax_{a\in\cl{A}} N(s,a).
+        \end{align}
+        %
+        \todo{Still find better notation for this?}
+
+
+
+
+
+
+
+
+        In Section \todo{ref} convergence results about BTS and AR-BTS are given, which are summarised below:
+        %
+        \begin{itemize}
+            \item BTS is consistent and converges for any setting of parameters;
+            \item if $\alphabts(x) \geq L > 0$: BTS converges with an theoretical exponential rate;
+            % \item if $\alphabts(x) \rightarrow 0$: BTS converges still;
+            \item if $U \geq \alphaarbts(x)$ and $\alphaarbts(x) \rightarrow 0$: AR-BTS converges;
+        \end{itemize}
+        %
+        noting that these results are independent of all of the other parameters, including which of the two recommendation policies are used.
+
+        \todo{Add theorems here? Or just reference theorems?}
+
+        \todo{Is the upper bound needed for arbts? Revisit these after having written the proofs up.}
+
+
+
+
+
+
+
+
+        % By using Bellman backups, we can guarantee that the BTS recommendation policy converges to the optimal standard policy for any temperature $\alpha$, given enough time. In other words, BTS is consistent.
+        % %
+        % \begin{theorem} 
+        %     \label{thrm:bts}
+        %     For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$, and also $\Vbts(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
+        % \end{theorem}
+
+        % \todo{update for $\alpha$ being const etc. Add the more theorems about BTS here.}
         % \begin{proofoutline}
         % 		This result is a special case of Theorem \ref{thrm:dents} by setting $\beta(m)=0$.
         % \end{proofoutline}
         % \begin{proof}
         %     Proofs for Theorem \ref{thrm:bts} and Theorem \ref{thrm:dents} provided in Appendix \ref{app:proofs}.
         % \end{proof}
+
+
+
+
+
+
     
     \subsection{Decaying ENtropy Tree Search}
     \label{sec:4-2-2-dents}
@@ -236,16 +307,28 @@
         \todo{add label}
         \todo{define DENTS in thtspp}
 
-        The \textit{entropy values} are weighted by a bounded non-negative function $\beta(N(s))$ in the DENTS search policy $\pidents$:
+        \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by introducing \textit{entropy estimates}. In DENTS nodes have a secondary entropy value estimate, $\HVdents$ and $\HQdents$, which are monte carlo estimates the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in it's search policy, and discard it for recommendations.
+
+        Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$, the entropy values are updated as follows for $t=h-1,...,0$:
+        \begin{align}
+            \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
+            \label{eq:4:dents_entropy_v_backup} \\
+            \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
+            \label{eq::4dents_entropy_q_backup}
+        \end{align}
+        %
+        where $\cl{H}$ is the Shannon entropy function. \todo{sentence about how the entropy values are initialised} $\HVdents(s) \leftarrow 0$.
+
+        The entropy values are used as an exploration bonus in the search policy, and are weighted by a non-negative function $\betadents(x)\geq 0$. Generally this will be set to a function such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$ and will achieve better theoretical performance in this case. The DENTS search policy $\pidents$ is defined follows:
         %
         \begin{align}
-            \pidents(a|s) &= (1-\lambda_s)\rhodents(a|s) + \frac{\lambda_s}{|\cl{A}|}, 
+            \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
                         \label{eq:dents_search_policy} \\ 
-            \rhodents(a|s) &\propto \exp\left(\frac{1}{\alpha}\left(\Qdents(s,a)+\beta(N(s))\HQdents(s,a)\right)\right).
+            \rhodents(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s))}\left(\Qdents(s,a)+\beta(N(s))\HQdents(s,a)\right)\right).
                         \label{eq:dents_value_policy}
         \end{align}
 
-        And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
+        And finally, given the the trajectory $\tau$ the Bellman value estimates for DENTS, $\Vdents$ and $\Qdents$ are updated identically to BTS for $t=h-1,...,0$:
         \begin{align}
             \Qdents(s_t,a_t) &\leftarrow 
                 R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s) \right), 
@@ -253,12 +336,40 @@
             \Vdents(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a), 
                         \label{eq:dents_v_backup} 
         \end{align}
-        % 
-        and the \textit{entropy values} $\HVdents(s)$ and $\HQdents(s,a)$ (which are monte-carlo estimates of the entropy of the search policy rooted at $s$ and $(s,a)$ respectively) are updated given $\tau$ as follows:
-        \begin{align}
-            \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), \label{eq:dents_entropy_v_backup} \\
-            \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s').  \label{eq:dents_entropy_q_backup}
-        \end{align}
+
+        
+
+
+
+
+        \todo{Write about AR-DENTS here? My brain is getting bored copying and slightly editing things. this is just copying dents and then copying the value backups from ar-bts}
+
+
+
+
+
+
+        Section \todo{ref} also provides convergence results about DENTS and AR-DENTS are given, which are summarised below:
+        %
+        \begin{itemize}
+            \item When using the \todo{default? Bellman?} recommendation policy:
+            \begin{itemize}
+                \item DENTS is consistent and converges for any setting of parameters;
+                \item if $\alphadents(x) \geq L > 0$: DENTS converges with an theoretical exponential rate;
+                \item if $U \geq \alphaardents(x)$ and $\alphaarbts(x) \rightarrow 0$: AR-BTS converges;
+            \end{itemize}
+            \item When using the most visited recommendation policy, the same results hold, but additionally requires $\betadents(x)\rightarrow 0$.
+        \end{itemize}
+
+        \todo{Add theorems here? Or just reference theorems?}
+
+        \todo{Double check these after having written up the proofs. Particularly the differences between using the two different recommendation policies.}
+
+
+
+
+
+
 
 
 
@@ -269,7 +380,12 @@
 
         \todo{add ref to} \complexityq
 
-        \todo{some titeling for alias method to say we're talking about that now}
+
+
+
+
+
+        \subsubsection{The Alias Method in MCTS}
 
         When using the Alias Method in \thtspp\ewe an alias table \todo{capitalise?} is constructed at every decision node. This table can be updated every $\lambda|\cl{A}|$ visits to the node, for an arbitrary $\lambda\in\bb{R}_{>0}$, giving an amortised complexity of $O(1)$. \todo{just say constant amortised complexity?} $O(O(1)+\frac{|\cl{A}}{\lambda|\cl{A}|}) = O(O(1)+\frac{1}{\lambda}) = O(1)$. \todo{probably dont need to do that maths.} In \thtspp the value of the $\lambda$ can be varied to adjust the trade off between The value of lambda can be varied to adjust the trade off between up-to-dateness and sampling speed. For the remainder \todo{find a better way of saying this}, $\lambda=1$ will be considered \todo{but all of the results still hold}. Note that when a new decision node is constructed and added to the tree, there will still be a cost of $O(|\cl{A}|)$ to construct the new alias table.
         
@@ -288,21 +404,52 @@
         \todo{add label}
         \todo{write about alias sampling}
 
-    % \subsection{Encorporating Prior Knowledge}
 
-        \todo{add label}
-        \todo{write about using $\tilde{\pi}$, $\tilde{Q}$, $\tilde{V}$.}
+        
+
+
+
+
+
+
+        \subsubsection{Encorporating Prior Knowledge Through Mixture Policies}
+
+        Let $\pi$ be some \thtspp\ewe search policy, and supposed that we have access to another policy $\tilde{\pi}$ with prior knowledge, such as a neural network. Then a new search policy $\pi_{\text{mix}}$ can be naturally be defined using a mixture of $\pi$ and $\tilde{\pi}$.
+
+        \todo{some comment about just using the same mixing function as before ... because? .. it lets it tend towards the correct thing}
+
+        The mixture policy is defined by:
+        \begin{align}
+            \pi_{\text{mix}}(a|s) = 
+                (1-\lambda(s,\epsilon_{\text{mix}})) \pi(a|s) 
+                + \lambda(s,\epsilon_{\text{mix}}) \tilde{\pi}(a|s),
+        \end{align}
+
+        where $\lambda$ is the same function as defined in equation (\todo{ref}), and $\epsilon_{\text{mix}}\in(0,\infty)$ weights the amount to use the prior knowledge by. \todo{word better}.
+
+        \todo{are there theoretical results? Maybe we can show that for arbitrary function that it doesnt change anything. It should be the same as mixing in the uniform. Also another good reason to use the same function, because then the proof is basically the same thing as before.}
+
+
+        
+        \todo{write about using $\tilde{\pi}$, $\tilde{Q}$, $\tilde{V}$?}
         \todo{talk about grid world and how Qinit need to be able to handle costs}
 
-        MENTS suggests using $\tilde{\pi}$ as \todo{their description}
-
+        \todo{discuss the MENTS intiialisation here? :} MENTS suggests using $\tilde{\pi}$ as \todo{their description}
+        %
         However, this may still lead to issues in for example in grid world problems. \todo{talk about }
+
+
+
+
+
+
+
 
 
     \subsection{Things still missing in this section}
         Defining the average reward versions of the algorithms
 
-        Talking about the OG DENTS algorithm and why that didn't work?
+        \todo{Talking about the OG DENTS algorithm and why that didn't work? I feel like its a reasonable question}
 
 
 
