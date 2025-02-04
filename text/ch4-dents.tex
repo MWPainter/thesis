@@ -510,6 +510,197 @@
     - Generalise the AR proof to say that for decaying search functions still work (as long as they are bounded)
     - Have a result that using most visited is theoretically sound
 
+    The Neurips paper proof section was structured as follows:
+    \begin{enumerate}
+        \item First, in Section \ref{app:mcts_process} we revisit MCTS as a stochastic process, defining some additional notation that was not useful in the main body of the paper, but will be for the following proofs;
+        \item Second, in Section \ref{app:preliminaries} we introduce preliminary results, that will be useful building blocks for proofs in later Theorems;
+        \item Third, in Section \ref{app:soft_learning_results} we show some general results about soft values that will also be useful later;
+        \item Fourth, in Section \ref{app:simple_regret_results} simple regret is then revisited, and we show that any bounds on the simple regret of a policy are equivalent to showing bounds on the simple regret of an action;
+        \item Fifth, in Section \ref{app:q_result} we show in a general way, that if a value function admits a concentration inequality, then the corresponding Q-value function admits a similar concentration inequality;
+        \item Sixth, in Section \ref{app:ments_results} we show concentration inequalities for MENTS about the optimal soft values, and give bounds on the simple regret of MENTS, provided the temperature parameter is sufficiently small;
+        \item Seventh, in Sections \ref{appsec:dents_proofs} and \ref{appsec:bts_proofs} we also provide concentration inequalities around the optimal standard values for BTS and DENTS, and give simple regret bounds, irrespective of the temperature paramters;
+        \item Finally, in Section \ref{sec:ar_proofs} we consider results that are relavant for the algorithms using average returns from Section \ref{app:average_returns}.
+    \end{enumerate}
+
+    \todo{above is note taking and below is me starting to write the proofs stuff}
+
+
+% TODO: move to main OxThesis.tex
+
+    \subsection{MCTS As A Stochastic Process}
+        Now the MENTS, BTS and DENTS are written as a stochastic process, where values are indexed (with a superscript) by the number of times that the corresponding node has been visited. For completeness and reference, the stochastic processes for UCT, MENTS, BTS and DENTS are given below.
+        
+
+
+        When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
+        \begin{itemize}
+            \item 
+                The search policy used on the $k$th trial is $\pi^k$, and if the process were stopped after $k$ trials, the recommendation policy that the algorithm would output is denoted $\psi^k$. Where if the process is run for $n$ trials, then $k$ ranges from $1$ to $n$.
+            \item 
+                The $k$ trajectory sampled is $\tau^k=(s_0^k,a_0^k,...,s_{h-1}^k,a_{h-1}^k,s_{h}^k)$ \todo{add reward, also make it h subscript k instead of h?}, and is such that $a^k_i \sim \pi^k(\cdot|s^k_i)$ and $s^k_{i+1} \sim p(\cdot | s^k_i, a^k_i)$ \todo{check this is consistent with how defined things before}
+            \item 
+                The search tree after $k$ trials is denoted $\cl{T}^k$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
+        \end{itemize}
+
+        When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$. Note that superscript is used to index with respect to the trial, and superscript with parenthasis is used to denote the number of visits.
+
+
+
+        % In this subsection we recall the relevant details of the \textit{MCTS stochastic process}, and introduce additional notation that will be useful in the proofs that were not necessary in the main paper. We will also recall the details for the UCT, MENTS, BTS and DENTS processes. We will use the phrase \textit{any Boltzmann MCTS process} to refer to any one of the MENTS, BTS and DENTS processes. In particular, we index the (Q-)values with the number visits to the relevant node.
+        
+        % An MCTS process begins with a search tree $\mathcal{T}^0=\{s_0\}$ that contains only the root node/initial state. Let $\tau^n=(s_0^n,a_0^n,...,s_{h-1}^n,a_{h-1}^n,s_{h}^n)$ be a random variable for the $n$th trajectory or trial, where $s_0^n,...,s_{h-1}^n\in\mathcal{T}^{n-1}$ and $s_h^n\not\in\mathcal{T}^{n-1}$ (or $h=H$), and where actions are selected or sampled using $\pi^n$ the search policy for the $n$th trial. A new node is added to the search tree $\mathcal{T}^n=\{s_h^n\}\cup\mathcal{T}^{n-1}$. (Q-)Value estimates are kept at each node in the tree, and new values are initialised using the functions $V^{\text{init}}(s)$ and $Q^{\text{init}}(s,a)$, which are typically implemented as a constant value, using a \textit{rollout policy} or using a \textit{neural network}. Finally, the (Q-)value estimates are updated in a backup phase.
+        
+        In the following it will be useful to write the number of times that state
+
+
+        In the following, it will be useful to write the number of times state~$s$ was visited in the first $m$ trials as $N(s,m)$, and the number of times action~$a$ was selected from state~$s$ in the first m trials as $N(s,a,m).$ Additionally, it will be useful to write these quantities in terms of indicator random variables. 
+        
+        Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is:
+        %
+        \begin{align}
+            T(s_t,m) &= \{i | i\leq m, s^i_t = s_t \} \\
+            T(s_t,a_t,m) &= \{i | i\leq m, s^i_t = s_t, a^i_t = a_t \}.
+        \end{align}
+        %
+        This allows the counts $N(s_t,m),$ $N(s_t,a_t,m)$ and $N(s_{t+1},m)$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
+        %
+        \begin{align}
+            N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
+            N(s_t,a_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
+            N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{appeq:nsa_sum} \\
+            N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
+        \end{align}
+        %
+        Additionally, the assumption that for any two states $s,s'\in\cl{S}$ that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). 
+        
+        
+        
+        
+
+    
+        % \subsubsection{The UCT process.} 
+        % 	The UCT search policy can be defined as:
+        % %
+        % \begin{align}
+        %      \pi_{\textnormal{UCT}}^n(s_t) &= \max_{a\in\cl{A}} \text{UCB}^n(s_t,a), \\
+        %      \text{UCB}^n(s_t, a) &= 
+        %     		\begin{cases}
+        %     			\infty & \text{if } N(s_t,a)=0 \\
+        %     			\bar{Q}^{N(s_t,a)}(s_t, a)+c \sqrt{\frac{\log N(s_t)}{N(s_t, a)}} & \text{if } N(s_t,a)>0
+        %     		\end{cases}
+        % \end{align}
+        % %
+        % \noindent where, after $n$ trials, $\bar{Q}^{N(s,a)}(s,a)$ is the empirical estimate of the value at node $(s,a)$, where action~$a$ has been selected $N(s, a)$ from state~$s$. The backup consists of updating empirical estimates for $t=h-1,...,0$:
+        % %
+        % \begin{align}
+        %     \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1}, \label{appeq:uct_vbar} \\
+        %     \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) + \frac{\bar{R}(t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1}, \label{appeq:uct_qbar}
+        % \end{align}
+        % %
+        % \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and values are initialised as $\bar{V}^1(s)=V^{\text{init}}(s)$ and $\bar{Q}^0(s,a)=0$. 
+        
+        
+        
+        
+        
+        
+
+        % \paragraph{The MENTS process.} 
+        % %
+        % The policy for the MENTS process at state $s$ on the $n$th trial is:
+        % \begin{align}
+        %     \pi^{n}_{\text{MENTS}}(a|s) = (1-\lambda_s)\exp\left(\left(\Qst{s}{a}{N(s,a)}-\Vst{s}{N(s)}\right)/\alpha\right) + \frac{\lambda_s}{|\cl{A}|}, \label{appeq:ments_soft_policy}
+        % \end{align}
+        % where $\lambda_s=\min(1,\epsilon/\log(e+N(s)))$, $\epsilon \in (0,\infty)$. The estimated soft values are computed using the backups for $t=h-1,...,0$:
+        % \begin{align}
+        %     \Vst{s_t}{N(s_t)} &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\Qst{s_t}{a}{N(s_t,a)}/\alpha \right), \label{appeq:soft_v_backup} \\
+        %     \Qst{s_t}{a_t}{N(s_t,a_t)} &= R(s_t,a_t) + \sum_{s'\in\succc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vst{s'}{N(s')} \right). \label{appeq:soft_q_backup}
+        % \end{align}
+        % %
+        % The soft (Q-)values are initialised as $\Vst{s}{1}=V^{\text{init}}(s)$ and $\Qst{s}{a}{0}=Q^{\text{init}}_{\text{sft}}(s)$ (typically $Q^{\text{init}}_{\text{sft}}(s)=0$).
+
+
+
+
+
+
+        $\Vbts\vis{1}$ 
+
+
+        % \paragraph{The DENTS process.}
+        % %
+        % Let $\beta : \bb{R}\rightarrow [0,\infty)$ be a bounded function. The policy for the DENTS process at state $s$ on the $n$th trial is:
+        % %
+        % \begin{align}
+        %     \pi^{n}_{\text{DENTS}}(a|s) = (1-\lambda_s)\rho^n(a|s) + \frac{\lambda_s}{|\cl{A}|}, \label{appeq:dents_search_policy} 
+        % \end{align}
+        % %
+        % where $\lambda_s=\min(1,\epsilon/\log(e+N(s)))$, $\epsilon \in (0,\infty)$ and where $\rho$ is given by:
+        % %
+        % \begin{align}
+        %     \rho^n_{\text{DENTS}}(a|s) \propto \exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) \right)\right).
+        % \end{align}
+        % %
+        % The Bellman values and entropy values are computed using the backups for $t=h-1,...,0$:
+        % %
+        % \begin{align}
+        %     \Qt{s_t}{a_t}{N(s_t,a_t)} &= R(s_t,a_t) + \sum_{s' \in \succc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vt{s'}{N(s')} \right), \label{appeq:dp_q_backup} \\ 
+        %     \Vt{s_t}{N(s_t)} &=\max_{a\in\cl{A}} \Qt{s_t}{a}{N(s_t,a)}, \label{appeq:dp_v_backup} \\
+        %     \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) &= \sum_{s'\in \succc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \cl{H}_V^{N(s')}(s'), \\
+        %     \cl{H}_V^{N(s_t)}(s_t) &= \cl{H}(\pi^n_{\text{DENTS}}(\cdot | s_t)) + \sum_{a\in\cl{A}} \pi^n_{\text{DENTS}}(a_t|s_t)\cl{H}_Q^{N(s_t,a_t)}(s_t,a_t), 
+        % \end{align}
+        % %
+        
+        % The (Q-)values are initialised as $\Vt{s}{1}=V^{\text{init}}(s)$ and $\Qt{s}{a}{0}=Q^{\text{init}}_{\text{sft}}(s)$ (typically $Q^{\text{init}}_{\text{sft}}(s)=0$). The entropy values are initialised as $\cl{H}_Q^{0}(s,a)=0$ and $\cl{H}_V^{1}(s) = \cl{H}(\pi^n_{\text{DENTS}}(\cdot | s_t))$, where the node for $s$ is created on the $n$th trial.
+
+        % Because we need to reason about $\pi^n_{\text{DENTS}}$, and subsequently $\rho^n_{\text{DENTS}}$, we give the exact form of $\rho^n_{\text{DENTS}}$:
+        % \begin{align}
+        %     \rho^n_{\text{DENTS}}(a|s) &= \frac{\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) \right)\right)}{
+        %                         \sum_{a'\in\cl{A}} \exp\left(\frac{1}{\alpha}\left(\Qt{s}{a'}{N(s,a')} + \beta(N(s))\cl{H}_Q^{N(s,a')}(s,a') \right)\right)  }.  \label{appeq:full_rho}
+        % \end{align}
+        % %
+        % Let $V_\rho^{N(s)}(s)$ be defined as the value:
+        % %
+        % \begin{align}
+        %     V_\rho^{N(s)}(s) = \alpha \log \left[ \sum_{a'\in\cl{A}} \exp\left(\frac{1}{\alpha}\left(\Qt{s}{a'}{N(s,a')} + \beta(N(s))\cl{H}_Q^{N(s,a')}(s,a') \right)\right) \right], \label{appeq:v_rho}
+        % \end{align} 
+        % %
+        % and notice that the value of $\exp(V_\rho^{N(s)}(s)/\alpha)$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\rho^n_{\text{DENTS}}$ as 
+        % %
+        % \begin{align}
+        %     \rho^n_{\text{DENTS}}(a|s) &= \exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right), \label{appeq:rho_concise}
+        % \end{align}
+        % % 
+        % and subsequently, we can write 
+        % %
+        % \begin{align}
+        %     \pi^{n}_{\text{DENTS}}(a|s) = (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
+        % \end{align}
+
+
+
+
+
+
+
+        \subsubsection{The BTS process.}
+        %
+        The BTS process is a special case of the DENTS process when $\betadents(x)=0$. 
+        
+        As such, results about BTS will be corollaries by using the DENTS proof with $\betadents(x)=0$. 
+
+
+
+
+
+    
+    
+
+
+
+
+
+
 \section{Full Results}
 \label{sec:4-6-fullresults}
 
