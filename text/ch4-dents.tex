@@ -525,7 +525,16 @@
     \todo{above is note taking and below is me starting to write the proofs stuff}
 
 
-% TODO: move to main OxThesis.tex
+
+
+
+    %%%%
+    % THEORY - Stochastic Processes Definitions
+    %%%%
+
+
+
+
 
     \subsection{MCTS As A Stochastic Process}
         Now the MENTS, BTS and DENTS are written as a stochastic process, where values are indexed (with a superscript) by the number of times that the corresponding node has been visited. For completeness and reference, the stochastic processes for UCT, MENTS, BTS and DENTS are given below.
@@ -537,7 +546,7 @@
             \item 
                 The search policy used on the $k$th trial is $\pi^k$, and if the process were stopped after $k$ trials, the recommendation policy that the algorithm would output is denoted $\psi^k$. Where if the process is run for $n$ trials, then $k$ ranges from $1$ to $n$.
             \item 
-                The $k$ trajectory sampled is $\tau^k=(s_0^k,a_0^k,...,s_{h-1}^k,a_{h-1}^k,s_{h}^k)$ \todo{add reward, also make it h subscript k instead of h?}, and is such that $a^k_i \sim \pi^k(\cdot|s^k_i)$ and $s^k_{i+1} \sim p(\cdot | s^k_i, a^k_i)$ \todo{check this is consistent with how defined things before}
+                The $k$ trajectory sampled is $\tau^k=(s_0^k,a_0^k,...,s_{h-1}^k,a_{h-1}^k,s_{h}^k)$ \todo{add reward, also make it h subscript k instead of h?}, and is sampled using the search policy $\tau^k \sim \pi^k$ (that is $a^k_i \sim \pi^k(\cdot|s^k_i)$ and $s^k_{i+1} \sim p(\cdot | s^k_i, a^k_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense}
             \item 
                 The search tree after $k$ trials is denoted $\cl{T}^k$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
         \end{itemize}
@@ -555,14 +564,14 @@
 
         In the following, it will be useful to write the number of times state~$s$ was visited in the first $m$ trials as $N(s,m)$, and the number of times action~$a$ was selected from state~$s$ in the first m trials as $N(s,a,m).$ Additionally, it will be useful to write these quantities in terms of indicator random variables. 
         
-        Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is:
+        Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is: \todo{this can avoid using s subscript t}
         %
         \begin{align}
             T(s_t,m) &= \{i | i\leq m, s^i_t = s_t \} \\
             T(s_t,a_t,m) &= \{i | i\leq m, s^i_t = s_t, a^i_t = a_t \}.
         \end{align}
         %
-        This allows the counts $N(s_t,m),$ $N(s_t,a_t,m)$ and $N(s_{t+1},m)$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
+        This allows the counts $N^m(s_t),$ $N^m(s_t,a_t)$ and $N^m(s_{t+1})$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
         %
         \begin{align}
             N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
@@ -571,13 +580,13 @@
             N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
         \end{align}
         %
-        Additionally, the assumption that for any two states $s,s'\in\cl{S}$ that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). 
+        Additionally, the assumption that for any two states $s,s'\in\cl{S}$ \todo{double check use calligraphic S for state space?} that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{move this up}
         
         
         
         
 
-    
+        \todo{do we do anything at all with the UCT process?}
         % \subsubsection{The UCT process.} 
         % 	The UCT search policy can be defined as:
         % %
@@ -602,7 +611,62 @@
         
         
         
+        \subsubsection{The MENTS process}
         
+        Below is a complete summary of the MENTS process, for reference. On the $k$th trial, the MENTS process follows the search policy:
+
+        \todo{make ments section in ch2 use consistent definitions of alphaments, lambdaments and so on}
+
+        \begin{align}
+            \piments^k(a|s) &= (1-\lambdakments{k})\rhoments^k(a|s) + \frac{\lambdakments{k}}{|\cl{A}|}, 
+                        \label{appeq:ments_soft_policy} \\ 
+            \rhoments^k(a|s) &= \exp\left(\frac{1}{\alphaments}\left(\Qments\vis{N(s,a,k-1)}(s,a)-\Vments\vis{N(s,k-1)}(s)\right)\right). \\
+            \lambda^k(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,k-1))}\right),
+        \end{align}
+
+        where $\epsments\in(0,infty)$ is an exploration parameters, and $\alphaments$ is the temperature parameter. 
+
+        \todo{recommendation policies}
+
+        The $k$th trajectory is sampled using the search policy: $\tau^k \sim \piments^k$. Letting $\tau^k=(s_0^k,a_0^k,r_0^k,...,s_{h-1}^k,a_{h-1}^k,r_{h-1}^k,s_{h}^k)$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript k into every s and a, or update words to say implicit}
+        \begin{align}
+            \Vments\vis{N(s_t,k)}(s_t) &= 
+                \alphaments \log \sum_{a\in\cl{A}} \exp \left(
+                    \frac{1}{\alphaments}\Qments\vis{N(s_t,a,k)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
+            \Qments\vis{N(s_t,a_t,k)}(s_t,a_t) &= 
+                R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( 
+                    \frac{N(s',k)}{N(s_t,a_t,k)} \Vments\vis{N(s',k)}(s') \right). \label{appeq:soft_q_backup}
+        \end{align}
+
+        \todo{also want something to say that }
+        %
+        % The soft (Q-)values are initialised as $\Vst{s}{1}=V^{\text{init}}(s)$ and $\Qst{s}{a}{0}=Q^{\text{init}}_{\text{sft}}(s)$ (typically $Q^{\text{init}}_{\text{sft}}(s)=0$).
+
+
+
+
+
+
+
+        \todo{NEXT NEXT NEXT: clean things up for what written so far. Continue by first cleaning the above up. Then shitting out the below stuff. Then copying some of the lemmas and things. Add big gaps and block comments for the different things that we do.}
+
+
+
+        Would like to do the generic every action visited infinitely often part first.
+
+
+        
+
+
+        % %
+        % where $\epsbts \in (0,\infty)$ is an exploration parameter and $\alphabts(x)$ is the search temperature schedule. \todo{Add a comment about defining rho as taking the max when N(s) is zero?} And given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the value estimates are updated for $t=h-1,...,0$:
+        % \begin{align}
+        %     \Qbts(s_t,a_t) &\leftarrow 
+        %         R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s') \right), 
+        %                 \label{eq:4:bts_backup_q} \\ 
+        %     \Vbts(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a).
+        %                 \label{eq:4:bts_backup_v} 
+        % \end{align}
         
 
         % \paragraph{The MENTS process.} 
@@ -690,6 +754,86 @@
         As such, results about BTS will be corollaries by using the DENTS proof with $\betadents(x)=0$. 
 
 
+
+
+
+
+
+
+
+
+    %%%%
+    % THEORY - LEMMAS 
+    %%%%
+    
+    \subsection{Lemmas (to organise an title better)}
+
+        Because the search temperature is now decayed, we need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
+
+
+        \todo{This lemma restated means that Boltzmann search policies will select all actions infinitely often.}
+        \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
+
+        \begin{lemma} \label{lem:inf_often_action_select}
+            Let $\rho^k$ be an arbitrary policy, and the following policy:
+            \begin{align} 
+                \pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
+            \end{align} 
+            with $\lambda(k)=\min(1,\epsilon/\log(e+k))$, where $\epsilon\in(0,\infty)$. Let $a^k\sim \pi^k$ be the $k$th sampled action, and let $M(a,m)$ be the number of times action $a$ was sampled out of $m$ samples, i.e. $M(a,m)=\sum_{k=1}^m \one[a^k=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
+        \end{lemma}
+        \begin{proof}
+            First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell$ and $b\in\cl{A}$ such that:
+            \begin{align}
+                \Pr\left(\bigcap_{k=\ell}^\infty a^k \neq b\right) > 0. \label{appeq:ioas_contradict}
+            \end{align}
+
+            However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
+            \begin{align}
+                \Pr\left(a^k = b\right) \geq \frac{\lambda(k)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+k)}.
+            \end{align} 
+
+            And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
+            \begin{align}
+                \Pr\left(\bigcap_{k=\ell}^\infty a^k \neq b \right)
+                    &= \lim_{m\rightarrow\infty} \prod_{k=\ell}^m 
+                        \Pr(a^k \neq b) \\
+                    &\leq \lim_{m\rightarrow\infty} \prod_{k=\ell}^m 
+                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
+                    &\leq \lim_{m\rightarrow\infty} 
+                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+m)} \right)^{m-\ell} \label{appeq:ioas_one} \\
+                    &= 0, \label{appeq:ioas_two}
+            \end{align}
+            %
+            which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $k$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule generously gives:
+            \begin{align}
+                \lim_{x\rightarrow \infty} \log f(x) 
+                &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
+                &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \\
+                &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x\log(x)(\log(x)-1)}}{-x^{-2}} \\
+                &= \lim_{x\rightarrow \infty} \frac{-x}{\log(x)(\log(x)-1)} \\
+                &= \lim_{x\rightarrow \infty} \frac{-x}{2\log(x)-1} \\
+                &= \lim_{x\rightarrow \infty} \frac{-x}{2} \\
+                &= -\infty.
+            \end{align} 
+            %
+            And thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
+
+            \todo{cut this down maybe, its a little excessive showing all of the working out?}
+
+            Hence, by contradiction, it must be the case that $\Pr(M(a,m)\not\rightarrow\infty) = 0$, or rather that $\Pr(M(a,m)\rightarrow\infty) = 1$ which is the desired result.
+        \end{proof}
+
+        
+
+
+        \todo{Words about the consequences of this lemma?}
+
+        \begin{corollary} \label{cor:inf_often_action_select}
+            For any MCTS algorithm using a search policy of the form $\pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) \frac{1}{|\cl{A}|}$, all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$.
+        \end{corollary}
+        \begin{proofoutline}
+            This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
+        \end{proofoutline}
 
 
 

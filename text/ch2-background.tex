@@ -728,10 +728,12 @@ def sample_outcome($s$, $a$, ctx):
         Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
         \begin{align}
             \piments(a|s) &= 
-                (1-\lambda_s)\exp\left(\frac{1}{\alpha_{\ments}}\left(\Qments(s,a)-\Vments(s)\right)\right) 
-                    + \frac{\lambda_s}{|\cl{A}|}, \label{eq:2:ments_policy}
+                (1-\lambdaments)\rhoments^k(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
+            \rhoments(a|s) &= 
+                \exp\left(\frac{1}{\alphaments}\left(\Qments(s,a)-\Vments(s)\right)\right), \\
+            \lambda(s,x) &= \min\left(1,\frac{x}{\log(e+N(s))}\right).
         \end{align}
-        where $\lambda_s=\min(1,\epsilon/\log(e+N(s))),$ with $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alpha_{\ments}$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})).
+        where $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alphaments$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})).
 
         In MENTS the backups $\backupv$ and $\backupq$ update the soft value estimates and are updated using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows:
         \begin{align}
