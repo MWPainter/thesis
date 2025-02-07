@@ -4781,78 +4781,80 @@ These appendices are structured as follows:
     
     \subsection{Preliminaries} \label{app:preliminaries}
     
-        Now we will provide lemmas are useful to avoid having to repeat the same argument in multiple proofs. In the following it will be useful to know that any action at any node in any MCTS process, for any number of trials, there is a minimum positive probability that it is chosen. 
-        %
-        \begin{lemma} \label{lem:min_prob}
-             Consider any Boltzmann MCTS process. There exists some $\pi^{\textnormal{min}}>0$, such that for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $n\in\bb{N}$ we have $\pi^n(a_t|s_t)>\pi^{\textnormal{min}}$.
-        \end{lemma}
-        %
-        \begin{proofoutline}
-            Firstly, we consider the case of the MENTS process. Define the $Q^{\min}$ function as follows:
-            \begin{align}
-                Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\text{sft}}(s_i), R(s_i,a_i)).
-            \end{align}
-            
-            And define the $V^{\max}$ function as:
-            \begin{align}
-                V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alpha), \label{appeq:vmax} \\
-                Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\succc{s_t}{a_t}} V^{\max}(s_{t+1}).
-            \end{align}
-            
-            Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \Qst{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq \Vst{s_t}{N(s_t)}$. Now, define $\pi^{\min}$ as:
-            \begin{align}
-                \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
-            \end{align}
-            
-            Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
-            \begin{align}
-                \pi^{n}(a_t|s_t) 
-                    =& (1-\lambda_{s_t})\exp\left(\left(\Qst{s_t}{a_t}{N(s_t,a_t)}-\Vst{s_t}{N(s_t)}\right)/\alpha\right) 
-                        + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-                    \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
-                        + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-                    \geq& \pi^{\min}.
-            \end{align}
-            
-            
-            
-            Now we consider the DENTS process.
+        % DONE
 
-            For the DENTS process we can use similar reasoning, but need to update the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) to:
-            \begin{align}
-                V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + H\beta_{\max}\log|\cl{A}| \right)/\alpha\right), 
-            \end{align}
-            %
-            where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, we can show that $Q^{\min}(s_t,a_t)\leq \Qt{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq V_{\rho}^{N(s_t)}$, which implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$, which can be shown with an inductive argument, and using well-known properties of entropy. Defining $\pi^{\min}$ in the same way as Equation (\ref{eq:pi_min}), with the updated definition of $V^{\max}$. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, we have:
-            %
-            \begin{align}
-                \pi^{n}(a_t|s_t) 
-                    =& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
-                    \geq& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
-                    \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
-                        + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-                    \geq& \pi^{\min}.
-            \end{align}
-        \end{proofoutline}
+        % Now we will provide lemmas are useful to avoid having to repeat the same argument in multiple proofs. In the following it will be useful to know that any action at any node in any MCTS process, for any number of trials, there is a minimum positive probability that it is chosen. 
+        % %
+        % \begin{lemma} \label{lem:min_prob}
+        %      Consider any Boltzmann MCTS process. There exists some $\pi^{\textnormal{min}}>0$, such that for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $n\in\bb{N}$ we have $\pi^n(a_t|s_t)>\pi^{\textnormal{min}}$.
+        % \end{lemma}
+        % %
+        % \begin{proofoutline}
+        %     Firstly, we consider the case of the MENTS process. Define the $Q^{\min}$ function as follows:
+        %     \begin{align}
+        %         Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\text{sft}}(s_i), R(s_i,a_i)).
+        %     \end{align}
+            
+        %     And define the $V^{\max}$ function as:
+        %     \begin{align}
+        %         V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alpha), \label{appeq:vmax} \\
+        %         Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\succc{s_t}{a_t}} V^{\max}(s_{t+1}).
+        %     \end{align}
+            
+        %     Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \Qst{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq \Vst{s_t}{N(s_t)}$. Now, define $\pi^{\min}$ as:
+        %     \begin{align}
+        %         \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
+        %     \end{align}
+            
+        %     Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
+        %     \begin{align}
+        %         \pi^{n}(a_t|s_t) 
+        %             =& (1-\lambda_{s_t})\exp\left(\left(\Qst{s_t}{a_t}{N(s_t,a_t)}-\Vst{s_t}{N(s_t)}\right)/\alpha\right) 
+        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
+        %             \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
+        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
+        %             \geq& \pi^{\min}.
+        %     \end{align}
+            
+            
+            
+        %     Now we consider the DENTS process.
+
+        %     For the DENTS process we can use similar reasoning, but need to update the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) to:
+        %     \begin{align}
+        %         V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + H\beta_{\max}\log|\cl{A}| \right)/\alpha\right), 
+        %     \end{align}
+        %     %
+        %     where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, we can show that $Q^{\min}(s_t,a_t)\leq \Qt{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq V_{\rho}^{N(s_t)}$, which implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$, which can be shown with an inductive argument, and using well-known properties of entropy. Defining $\pi^{\min}$ in the same way as Equation (\ref{eq:pi_min}), with the updated definition of $V^{\max}$. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, we have:
+        %     %
+        %     \begin{align}
+        %         \pi^{n}(a_t|s_t) 
+        %             =& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
+        %             \geq& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
+        %             \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
+        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
+        %             \geq& \pi^{\min}.
+        %     \end{align}
+        % \end{proofoutline}
     
     
     
     
-    
+        % DONE
         
-        It will also be useful in the following that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely:
-        \begin{lemma} \label{lem:union_bound}
-            Let $A_1,...,A_{\ell}$ be some events that satisfy for $1\leq i \leq \ell$ the inequality $\Pr(\lnot A_i) \leq C_i\exp(-k_i)$ then:
-            \begin{align}
-                \Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\leq C\exp(-k), \label{eq:comb_exp_like} \\
-                \Pr\left(\bigcap_{i=1}^\ell A_i\right) = 1-\Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\geq 1-C\exp(-k), \label{eq:exp_likely}
-            \end{align}
-            where $C=\sum_{i=1}^\ell C_i$ and $k = \min_i k_i$.
-        \end{lemma}
+        % It will also be useful in the following that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely:
+        % \begin{lemma} \label{lem:union_bound}
+        %     Let $A_1,...,A_{\ell}$ be some events that satisfy for $1\leq i \leq \ell$ the inequality $\Pr(\lnot A_i) \leq C_i\exp(-k_i)$ then:
+        %     \begin{align}
+        %         \Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\leq C\exp(-k), \label{eq:comb_exp_like} \\
+        %         \Pr\left(\bigcap_{i=1}^\ell A_i\right) = 1-\Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\geq 1-C\exp(-k), \label{eq:exp_likely}
+        %     \end{align}
+        %     where $C=\sum_{i=1}^\ell C_i$ and $k = \min_i k_i$.
+        % \end{lemma}
         
-        \begin{proofoutline}
-            Lemma \ref{lem:union_bound} is a consequence of the union bound, rearranging and simplifying. Inequality (\ref{eq:exp_likely}) is a consequence from Inequality (\ref{eq:comb_exp_like}) by negating the events.
-        \end{proofoutline}
+        % \begin{proofoutline}
+        %     Lemma \ref{lem:union_bound} is a consequence of the union bound, rearranging and simplifying. Inequality (\ref{eq:exp_likely}) is a consequence from Inequality (\ref{eq:comb_exp_like}) by negating the events.
+        % \end{proofoutline}
     
 
 
@@ -5926,25 +5928,25 @@ These appendices are structured as follows:
 
 
 
+        % WRITTEN UP
 
-
-        Because the search temperature is now decayed, we need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
+        % Because the search temperature is now decayed, we need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
         
-        \begin{lemma} \label{lem:inf_often_action_select}
-            Let $\rho^k$ be an arbitrary policy, and let a search policy be $\pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) / |\cl{A}|$, with $\lambda(k)=\min(1,\epsilon/\log(e+k))$, where $\epsilon\in(0,\infty)$. Let $a^k\sim \pi^k$, and let $M(a)$ be the number of times action $a$ was sampled out of $m$ samples, i.e. $M(a)=\sum_{i=1}^m \one[a^i=a]$. Then for all $a\in\cl{A}$ we have $M(a)\rightarrow\infty$ as $m\rightarrow \infty$.
-        \end{lemma}
-        \begin{proofoutline}
-            This lemma restated means that our search policies will select all actions infinitely often. To show this, we argue by contradiction, and suppose that there is some $b\in\cl{A}$ such that after $\ell$ samples that $b$ is never sampled again. The probability of this happening at the $m$th sample is then:
-            \begin{align}
-                \Pr\left(\bigcap_{i=\ell}^m a^i \neq b \right)
-                    &= \prod_{i=\ell}^m \Pr(a^i \neq b) \\
-                    &\leq \prod_{i=\ell}^m \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+i)} \right) \\
-                    &\leq \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+m)} \right)^{m-\ell} \\
-                    &\rightarrow 0,
-            \end{align}
-            as $m\rightarrow\infty$. Which is a contradiction. 
-            \crtodo{Actually show the limit is zero using some convergence result. Also explain the maths a bit more. Also be more precise around the use of epsilon}
-        \end{proofoutline}
+        % \begin{lemma} \label{lem:inf_often_action_select}
+        %     Let $\rho^k$ be an arbitrary policy, and let a search policy be $\pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) / |\cl{A}|$, with $\lambda(k)=\min(1,\epsilon/\log(e+k))$, where $\epsilon\in(0,\infty)$. Let $a^k\sim \pi^k$, and let $M(a)$ be the number of times action $a$ was sampled out of $m$ samples, i.e. $M(a)=\sum_{i=1}^m \one[a^i=a]$. Then for all $a\in\cl{A}$ we have $M(a)\rightarrow\infty$ as $m\rightarrow \infty$.
+        % \end{lemma}
+        % \begin{proofoutline}
+        %     This lemma restated means that our search policies will select all actions infinitely often. To show this, we argue by contradiction, and suppose that there is some $b\in\cl{A}$ such that after $\ell$ samples that $b$ is never sampled again. The probability of this happening at the $m$th sample is then:
+        %     \begin{align}
+        %         \Pr\left(\bigcap_{i=\ell}^m a^i \neq b \right)
+        %             &= \prod_{i=\ell}^m \Pr(a^i \neq b) \\
+        %             &\leq \prod_{i=\ell}^m \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+i)} \right) \\
+        %             &\leq \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+m)} \right)^{m-\ell} \\
+        %             &\rightarrow 0,
+        %     \end{align}
+        %     as $m\rightarrow\infty$. Which is a contradiction. 
+        %     \crtodo{Actually show the limit is zero using some convergence result. Also explain the maths a bit more. Also be more precise around the use of epsilon}
+        % \end{proofoutline}
 
 
 
