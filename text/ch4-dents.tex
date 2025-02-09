@@ -556,11 +556,11 @@
         When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
         \begin{itemize}
             \item 
-                The search policy used on the $k$th trial is $\pi^k$, and if the process were stopped after $k$ trials, the recommendation policy that the algorithm would output is denoted $\psi^k$. Where if the process is run for $n$ trials, then $k$ ranges from $1$ to $n$.
+                The search policy used on the $m$th trial is $\pi^m$, and if the process were stopped after $m$ trials, the recommendation policy that the algorithm would output is denoted $\psi^m$. Where if the process is run for $n$ trials, then $m$ ranges from $1$ to $n$.
             \item 
-                The $k$ trajectory sampled is $\tau^k=(s_0^k,a_0^k,...,s_{h-1}^k,a_{h-1}^k,s_{h}^k)$ \todo{add reward, also make it h subscript k instead of h?}, and is sampled using the search policy $\tau^k \sim \pi^k$ (that is $a^k_i \sim \pi^k(\cdot|s^k_i)$ and $s^k_{i+1} \sim p(\cdot | s^k_i, a^k_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense. Comment about how the superscripts on s a and r will be used when necessary, but not always}
+                The $m$ trajectory sampled is $\tau^m=(s_0^m,a_0^m,...,s_{h-1}^m,a_{h-1}^m,s_{h}^m)$ \todo{add reward, also make it h subscript m instead of h?}, and is sampled using the search policy $\tau^m \sim \pi^m$ (that is $a^m_i \sim \pi^m(\cdot|s^m_i)$ and $s^m_{i+1} \sim p(\cdot | s^m_i, a^m_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense. Comment about how the superscripts on s a and r will be used when necessary, but not always}
             \item 
-                The search tree after $k$ trials is denoted $\cl{T}^k$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
+                The search tree after $m$ trials is denoted $\cl{T}^m$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
         \end{itemize}
 
         When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$. Note that superscript is used to index with respect to the trial, and superscript with parenthasis is used to denote the number of visits.
@@ -617,28 +617,28 @@
         
         \subsubsection{The MENTS Process}
         
-        Below is a complete summary of the MENTS process, for reference. On the $k$th trial, the MENTS process follows the search policy:
+        Below is a complete summary of the MENTS process, for reference. On the $m$th trial, the MENTS process follows the search policy:
 
         \todo{make ments section in ch2 use consistent definitions of alphaments, lambdaments and so on}
 
         \begin{align}
-            \kpiments{k}(a|s) &= (1-\klambdaments{k})\krhoments{k}(a|s) + \frac{\klambdaments{k}}{|\cl{A}|}, 
+            \mpiments{m}(a|s) &= (1-\mlambdaments{m})\mrhoments{m}(a|s) + \frac{\mlambdaments{m}}{|\cl{A}|}, 
                         \label{appeq:ments_soft_policy} \\ 
-            \krhoments{k}(a|s) &= \exp\left(
-                \frac{1}{\alphaments}\left(\kQments{N(s,a,k-1)}(s,a)-\kVments{N(s,k-1)}(s)\right)\right). \\
-            \lambda^k(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,k-1))}\right),
+            \mrhoments{m}(a|s) &= \exp\left(
+                \frac{1}{\alphaments}\left(\mQments{N(s,a,m-1)}(s,a)-\mVments{N(s,m-1)}(s)\right)\right). \\
+            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right),
         \end{align}
         %
         where $\epsments\in(0,\infty)$ is an exploration parameters, and $\alphaments$ is the temperature parameter. 
 
-        The $k$th trajectory is sampled using the search policy: $\tau^k \sim \piments^k$. Letting $\tau^k=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript k into every s and a, or update words to say implicit}
+        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
         \begin{align}
-            \kVments{N(s_t,k)}(s_t) &= 
+            \mVments{N(s_t,m)}(s_t) &= 
                 \alphaments \log \sum_{a\in\cl{A}} \exp \left(
-                    \frac{1}{\alphaments}\kQments{N(s_t,a,k)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
-            \kQments{N(s_t,a_t,k)}(s_t,a_t) &= 
+                    \frac{1}{\alphaments}\mQments{N(s_t,a,m)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
+            \mQments{N(s_t,a_t,m)}(s_t,a_t) &= 
                 R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( 
-                    \frac{N(s',k)}{N(s_t,a_t,k)} \kVments{N(s',k)}(s') \right). \label{appeq:soft_q_backup}
+                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVments{N(s',m)}(s') \right). \label{appeq:soft_q_backup}
         \end{align}
 
         \todo{also want something about initialisation and everything in line with thtspp}
@@ -647,8 +647,8 @@
 
         \todo{recommendation policies and some comment about it being the soft values used?}
         \begin{align}
-            \kpsiments{k}(s) &= \argmax_{a\in\cl{A}}\kQments{N(s,a,k)}(s,a), \\
-            \kmvments{k}(s) &= \argmax_{a\in\cl{A}} N(s,a,k).
+            \mpsiments{m}(s) &= \argmax_{a\in\cl{A}}\mQments{N(s,a,m)}(s,a), \\
+            \mmvments{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
         \end{align}
 
 
@@ -669,32 +669,32 @@
         \todo{add more wordy things. Some things we said here before were: (1) defining beta} $\beta : \bb{R}\rightarrow [0,\infty)$ be a bounded function; \todo{(2) defined epsilon as exploration policy; (3) in Neurips we defined the propto version of rho and also the full version saying ``becasue we need to reason about the search policy we give the exact form,'' for the moment I've kept both. I think just copy the full version where relevent in the proofs.}
         %
         \begin{align}
-            \kpidents{k}(a|s) &= (1-\klambdadents{k})\krhodents{k}(a|s) + \frac{\klambdadents{k}}{|\cl{A}|}, 
+            \mpidents{m}(a|s) &= (1-\mlambdadents{m})\mrhodents{m}(a|s) + \frac{\mlambdadents{m}}{|\cl{A}|}, 
                 \label{appeq:dents_search_policy}  \\
-            \krhodents{k}(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s,k))}
-                \left(\kQdents{N(s,a,k-1)}(s,a) + \betadents(N(s,k))\kHQdents{N(s,a,k-1)}(s,a) \right)\right). \\
-            \krhodents{k}(a|s) &= \frac{
-                \exp\left(\frac{1}{\alphadents(N(s,k))}\left(
-                    \kQdents{N(s,a,k-1)}(s,a) + \betadents(N(s,k))\kHQdents{N(s,a,k-1)}(s,a)   \right)\right)
-                }{\sum\limits_{a'\in\cl{A}} \exp\left(\frac{1}{\alphadents(N(s,k))}\left(
-                    \kQdents{N(s,a',k-1)}(s,a') + \betadents(N(s,k))\kHQdents{N(s,a',k-1)}(s,a')  \right)\right)}.  
+            \mrhodents{m}(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s,m))}
+                \left(\mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a) \right)\right). \\
+            \mrhodents{m}(a|s) &= \frac{
+                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                    \mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a)   \right)\right)
+                }{\sum\limits_{a'\in\cl{A}} \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                    \mQdents{N(s,a',m-1)}(s,a') + \betadents(N(s,m))\mHQdents{N(s,a',m-1)}(s,a')  \right)\right)}.  
                 \label{appeq:full_rho} \\
-            \lambda^k(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,k-1))}\right), 
+            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right), 
         \end{align}
 
-        The $k$th trajectory is sampled using the search policy: $\tau^k \sim \piments^k$. Letting $\tau^k=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the DENTS value and entropy estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript k into every s and a, or update words to say implicit}
+        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the DENTS value and entropy estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
         \begin{align}
-            \kQdents{N(s_t,a_t,k)}(s_t,a_t) &= 
+            \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
                 R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
-                    \frac{N(s',k)}{N(s_t,a_t,k)} \kVdents{N(s',k)}(s') \right), 
+                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
                 \label{appeq:dp_q_backup} \\ 
-            \kVdents{N(s_t,k)}(s_t) &=\max_{a\in\cl{A}} \kQdents{N(s_t,a,k)}(s_t,a), 
+            \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
                 \label{appeq:dp_v_backup} \\
-            \kHQdents{N(s_t,a_t,k)}(s_t,a_t) &= 
-                \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',k)}{N(s_t,a_t,k)} \kHVdents{N(s',k)}(s'), \\
-            \kHVdents{N(s_t)}(s_t) &= 
-                \cl{H}(\kpidents{k}(\cdot | s_t)) 
-                    + \sum_{a\in\cl{A}} \kpidents{k}(a_t|s_t)\kHQdents{N(s_t,a_t,k)}(s_t,a_t).
+            \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+                \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
+            \mHVdents{N(s_t)}(s_t) &= 
+                \cl{H}(\mpidents{m}(\cdot | s_t)) 
+                    + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
         \end{align}
 
         \todo{also want something about initialisation and everything in line with thtspp}
@@ -703,34 +703,36 @@
 
         \todo{recommendation policies word stuff}
         \begin{align}
-            \kpsidents{k}(s) &= \argmax_{a\in\cl{A}}\kQdents{N(s,a,k)}(s,a), \\
-            \kmvdents{k}(s) &= \argmax_{a\in\cl{A}} N(s,a,k).
+            \mpsidents{m}(s) &= \argmax_{a\in\cl{A}}\mQdents{N(s,a,m)}(s,a), \\
+            \mmvdents{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
         \end{align}
 
-        \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\kVrhodents{N(s)}(s)$ be defined as the value:
+        \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
         %
         \begin{align}
-            \kVrhodents{N(s)}(s) = &
-                \alphadents(N(s,k)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,k))}
-                    \big(\kQdents{N(s,a')}(s,a') \\
-                &+ \betadents(N(s,k))\kHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
+            \mVrhodents{N(s)}(s) = &
+                \alphadents(N(s,m)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,m))}
+                    \big(\mQdents{N(s,a')}(s,a') \nonumber \\
+                &+ \betadents(N(s,m))\mHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
         \end{align} 
         %
-        % and notice that the value of $\exp(\kVrhodents{N(s)}(s)/\alpha)$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\krhodents{k}$ as 
-        % %
-        % \begin{align}
-        %     \krhodents{k}(a|s) = 
-        %         % \exp\left(\frac{1}{\alphadents(N(s,k))}\left(
-        %         %     &\kQdents{N(s,a,k)}(s,a) 
-        %         %     &+ \betadents(N(s,k))\kHQdents{N(s,a)}(s,a) 
-        %         %     &- \kVrhodents{N(s)}(s) \right)\right), \label{appeq:rho_concise}
-        % \end{align}
-        % % 
-        % and subsequently, we can write \todo{the pi version without using rho as auxilary weights}
+        and notice that the value of $\exp(\mVrhodents{N(s,m)}(s)/\alphadents(N(s,m)))$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\mrhodents{m}$ as 
         %
-        % \begin{align}
-        %     \pi^{n}_{\text{DENTS}}(a|s) = (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
-        % \end{align}
+        \begin{align}
+            \mrhodents{m}(a|s) = 
+                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                    \mQdents{N(s,a,m)}(s,a) 
+                    + \betadents(N(s,m))\mHQdents{N(s,a,m)}(s,a) 
+                    - \mVrhodents{N(s,m)}(s) \right)\right), \label{appeq:rho_concise}
+        \end{align}
+        % 
+        and subsequently, the full DENTS policy can be written as:
+        \begin{align}
+            \mpidents{m}(a|s) = (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}\left(\mQdents{N(s,a,m)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) + \frac{\lambda(s,m)}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
+        \end{align}
+
+
+
 
 
 
@@ -745,7 +747,9 @@
 
 
 
-        \subsubsection{The BTS process.}
+
+
+        \subsubsection{The (AR-)BTS process.}
         %
         The (AR-)BTS process is a special case of the (AR-)DENTS process when $\betadents(x)=0$. As such, results about BTS will be corollaries from proofs about the (AR-)DENTS process.
 
@@ -758,11 +762,14 @@
 
 
 
+
+
+
     %%%%
-    % THEORY - Preliminaries
+    % THEORY - Preliminaries (for exp bound stuff)
     %%%%
     
-    \subsection{Preliminaries}
+    \subsection{Preliminaries - Exp}
 
         
     
@@ -771,15 +778,15 @@
     
     
     
-    
-        This subsection contains lemmas that \todo{HERE HERE HERE HERE, first clean up the wording below. and then get cracking on I guess.}
+        \todo{This section contains things related to exponential bounds, which might move to appendix}
+        This subsection contains lemmas that will be useful in multiple times and are used to avoid repeating the same argument multiple times. 
 
 
 
 
 
 
-        It will also be useful in the following that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound \todo{ref?} \todo{it is stated here so that it can be referenced, because this fact is used regularly }
+        Firstly it will be that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound \todo{ref?} \todo{it is stated here so that it can be referenced, because this fact is used regularly }
         %
         \todo{Some comment about how this is just a special case of the union bound (and ref that?) and also }
         %
@@ -801,60 +808,130 @@
 
 
         
-        % Now we will provide lemmas are useful to avoid having to repeat the same argument in multiple proofs. In the following it will be useful to know that any action at any node in any MCTS process, for any number of trials, there is a minimum positive probability that it is chosen. 
-        % %
-        % \begin{lemma} \label{lem:min_prob}
-        %     Consider any Boltzmann MCTS process. There exists some $\pi^{\textnormal{min}}>0$, such that for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $n\in\bb{N}$ we have $\pi^n(a_t|s_t)>\pi^{\textnormal{min}}$.
-        % \end{lemma}
-        % %
-        % \begin{proofoutline}
-        %     Firstly, we consider the case of the MENTS process. Define the $Q^{\min}$ function as follows:
-        %     \begin{align}
-        %         Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\text{sft}}(s_i), R(s_i,a_i)).
-        %     \end{align}
+        The following two lemma's show that the MENTS and DENTS processes always have a minimum probability of picking any action. \todo{not in good headspace writing up these two lemmas. Do a clean up, double checking maths and that have eliminated using 'we' and so on}
+        %
+        \begin{lemma} \label{lem:min_prob_ments}
+            For any MENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpiments{m}(a_t|s_t)\geq\pi^{\min}$.
+        \end{lemma}
+        %
+        \begin{proofoutline}
+            \todo{Fix N having to be N(s,m) not N(s) etc}
+            Define the $Q^{\min}$ function as follows:
+            \begin{align}
+                Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\text{sft}}(s_i), R(s_i,a_i)).
+            \end{align}
+            \todo{clean up with respect to init function}
             
-        %     And define the $V^{\max}$ function as:
-        %     \begin{align}
-        %         V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alpha), \label{appeq:vmax} \\
-        %         Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\succc{s_t}{a_t}} V^{\max}(s_{t+1}).
-        %     \end{align}
+            And define the $V^{\max}$ function as:
+            \begin{align}
+                V^{\max}(s_t) &= \alphaments \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alphaments), \label{appeq:vmax} \\
+                Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\suc{s_t}{a_t}} V^{\max}(s_{t+1}).
+            \end{align}
             
-        %     Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \Qst{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq \Vst{s_t}{N(s_t)}$. Now, define $\pi^{\min}$ as:
-        %     \begin{align}
-        %         \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
-        %     \end{align}
+            Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \mQments{N(s_t,a_t,m)}(s_t,a_t)$ and $V^{\max}(s_t)\geq \mVments{N(s_t,m)}(s_t)$ for any arbitrary $s_t,a_t$ and $m$. Now, define $\pi^{\min}$ as:
+            \begin{align}
+                \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
+            \end{align}
             
-        %     Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
-        %     \begin{align}
-        %         \pi^{n}(a_t|s_t) 
-        %             =& (1-\lambda_{s_t})\exp\left(\left(\Qst{s_t}{a_t}{N(s_t,a_t)}-\Vst{s_t}{N(s_t)}\right)/\alpha\right) 
-        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-        %             \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
-        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-        %             \geq& \pi^{\min}.
-        %     \end{align}
+            Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
+            \begin{align}
+                \mpiments{m}(a_t|s_t) 
+                    =& (1-\lambda(s_t,m))\exp\left(\left(\frac{1}{\alphaments}\left(\mQments{N(s_t,a_t,m)}(s_t,a_t)-\mVments{N(s_t,m)}(s_t)\right)\right)\right) 
+                        + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
+                    \geq& (1-\lambda(s_t,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
+                        + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
+                    \geq& \pi^{\min}.
+            \end{align}
+        \end{proofoutline}
             
             
-            
-        %     Now we consider the DENTS process.
 
-        %     For the DENTS process we can use similar reasoning, but need to update the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) to:
-        %     \begin{align}
-        %         V^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + H\beta_{\max}\log|\cl{A}| \right)/\alpha\right), 
-        %     \end{align}
-        %     %
-        %     where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, we can show that $Q^{\min}(s_t,a_t)\leq \Qt{s_t}{a_t}{N(s_t,a_t)}$ and $V^{\max}(s_t)\geq V_{\rho}^{N(s_t)}$, which implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$, which can be shown with an inductive argument, and using well-known properties of entropy. Defining $\pi^{\min}$ in the same way as Equation (\ref{eq:pi_min}), with the updated definition of $V^{\max}$. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, we have:
-        %     %
-        %     \begin{align}
-        %         \pi^{n}(a_t|s_t) 
-        %             =& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} + \beta(N(s))\cl{H}_Q^{N(s,a)}(s,a) - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
-        %             \geq& (1-\lambda_s)\exp\left(\frac{1}{\alpha}\left(\Qt{s}{a}{N(s,a)} - V_\rho^{N(s)}(s) \right)\right) + \frac{\lambda_s}{|\cl{A}|} \\
-        %             \geq& (1-\lambda_{s_t})\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
-        %                 + \frac{\lambda_{s_t}}{|\cl{A}|} \\
-        %             \geq& \pi^{\min}.
-        %     \end{align}
-        % \end{proofoutline}
 
+
+
+
+        \todo{this lemma requires} $\betadents(x) < U$ for all $x$, or $\betadents$ is bounded. AND it requires $\alphadents(x) < U'$ so $\alphadents$ to be bounded.
+        %
+        \begin{lemma} \label{lem:min_prob_dents}
+            For any DENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpidents{m}(a_t|s_t)\geq\pi^{\min}$.
+        \end{lemma}
+        %
+        \begin{proofoutline}
+            This proof outline follows similar reasoning to Lemma \ref{lem:min_prob_ments}. The same definition for $Q^{\min}$ can be used:
+            \begin{align}
+                Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\text{sft}}(s_i), R(s_i,a_i)).
+            \end{align}
+            \todo{clean up with respect to init function}
+
+            However, the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) needs to altered to:
+            \begin{align}
+                V^{\max}(s_t) &= \max_{a\in\cl{A}} Q^{\max}(s_t,a) \\
+                Q^{\max}(s_t,a_t) &= R(s_t,a_t) + \max_{s'\in\suc{s_t}{a_t}} V^{\max}(s') \\
+                V_\rho^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + \beta_{\max}H\log|\cl{A}| \right)/\alpha\right), 
+            \end{align}
+            \todo{clean up the use of alpha in this one. Should be alpha dents, and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
+            \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
+            %
+            where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ \todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
+            
+            Define $\pi^{\min}$ similarly to Equation (\ref{eq:pi_min}), with the updated definition of $V_\rho^{\max}$: 
+            \begin{align}
+                \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V_\rho^{\max}(s)\right)/\alpha_{\max}\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min_dents}
+            \end{align}
+            %
+            where $\alpha_{\max}=\sum_x \alphadents(x)$ \todo{double check this is right}. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, as well as $\betadents(N(s,m))\mHQdents{N(s,a)}(s,a) \geq 0$, the result follows:
+            %
+            \begin{align}
+                \mpidents{m}(a_t|s_t) 
+                    =& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
+                        \left(\mQdents{N(s,a,m)}(s,a) 
+                        + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) 
+                        - \mVrhodents{N(s,m)}(s) \right)\right) 
+                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                    \geq& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
+                        \left(\mQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) 
+                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                    \geq& (1-\lambda(s,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V_\rho^{\max}(s_t)\right)/\alpha_{\max}\right) 
+                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                    \geq& \pi^{\min}.
+            \end{align}
+        \end{proofoutline}
+
+
+
+
+
+
+    
+    
+        Additionally, Hoeffding's inequality will be useful to bound the difference between a sum of indicator random variables and its expectation. 
+        \begin{theorem} \label{thrm:hoeffding}
+            Let $\{X_i\}_{i=1}^k$ be indicator random variables (i.e. $X_i\in\{0,1\}$), and $S_k=\sum_{i=1}^k X_i$. Then Hoeffding's inequality for indicator random variables states for any $\varepsilon > 0$ that:
+            \begin{align}
+                \Pr(|S_k - \bb{E}S_k|>\varepsilon)\leq 2\exp\left(-\frac{2\varepsilon^2}{k}\right).
+            \end{align}
+        \end{theorem}
+        \begin{proof}
+            This is a specific case of Hoeffding's inequality. See \todo{add cite} %\citeapp{hoeffding1994probability} 
+            for proof.
+        \end{proof}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        \todo{here here here. Next time = consider just defining a logsumexp function, and define the temp to have at zero it equal to max. Also finish writing up the preliminaries}
 
 
 
@@ -877,36 +954,36 @@
         \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
 
         \begin{lemma} \label{lem:inf_often_action_select}
-            Let $\rho^k$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
+            Let $\rho^m$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
             \begin{align} 
-                \pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
+                \pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
             \end{align} 
-            with $\lambda(k)=\min(1,\epsilon/\log(e+k))$, where $\epsilon\in(0,\infty)$. Let $a^k\sim \pi^k$ be the $k$th sampled action, and let $M(a,m)$ be the number of times action $a$ was sampled out of $m$ samples, i.e. $M(a,m)=\sum_{k=1}^m \one[a^k=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
+            with $\lambda(m)=\min(1,\epsilon/\log(e+m))$, where $\epsilon\in(0,\infty)$. Let $a^m\sim \pi^m$ be the $m$th sampled action, and let $M(a,m)$ be the number of times action $a$ was selected in the first $m$ samples, i.e. $M(a,m)=\sum_{m=1}^m \one[a^m=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
         \end{lemma}
         \begin{proof}
             First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell\in\bb{N}$ and $b\in\cl{A}$ such that:
             \begin{align}
-                \Pr\left(\bigcap_{k=\ell}^\infty a^k \neq b\right) > 0. \label{appeq:ioas_contradict}
+                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b\right) > 0. \label{appeq:ioas_contradict}
             \end{align}
 
             However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
             \begin{align}
-                \Pr\left(a^k = b\right) \geq \frac{\lambda(k)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+k)}.
+                \Pr\left(a^m = b\right) \geq \frac{\lambda(m)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+m)}.
             \end{align} 
 
             And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
             \begin{align}
-                \Pr\left(\bigcap_{k=\ell}^\infty a^k \neq b \right)
-                    &= \lim_{m\rightarrow\infty} \prod_{k=\ell}^m 
-                        \Pr(a^k \neq b) \\
-                    &\leq \lim_{m\rightarrow\infty} \prod_{k=\ell}^m 
+                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b \right)
+                    &= \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
+                        \Pr(a^m \neq b) \\
+                    &\leq \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
                         \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
-                    &\leq \lim_{m\rightarrow\infty} 
-                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+m)} \right)^{m-\ell} \label{appeq:ioas_one} \\
+                    &\leq \lim_{k\rightarrow\infty} 
+                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right)^{k-\ell} \label{appeq:ioas_one} \\
                     &= 0, \label{appeq:ioas_two}
             \end{align}
             %
-            which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $k$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
+            which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
             \begin{align}
                 \lim_{x\rightarrow \infty} \log f(x) 
                 &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
@@ -935,7 +1012,7 @@
         In direct consequence of Lemma \ref{lem:inf_often_action_select}, every reachable state (and state-action pair) will be visited infinitely often in a Boltzmann MCTS Process.
 
         \begin{corollary} \label{cor:inf_often_action_select}
-            For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
+            For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
         \end{corollary}
         \begin{proofoutline}
             This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
