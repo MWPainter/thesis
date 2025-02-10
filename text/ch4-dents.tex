@@ -925,13 +925,92 @@
 
 
 
+    
+        It will also be convenient to be able to `translate' bounds that depend on some $N(s,a,m)$ to a corresponding bound on $N(s,m)$:
+        \begin{lemma} \label{lem:sa_to_s}
+            Consider any Boltzmann MCTS process. Suppose that every action $a_t$ has some minimum probability $\eta$ of being chosen from some state $s_t$ (irrespective of the number of trials), i.e. $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$. And suppose for some $C',k'>0$ that some event $E$ admits a bound:
+            \begin{align}
+                \Pr(E) \leq C'\exp(-k'N(s_t,a_t,m)). \label{eq:sa_to_s_assume_bound}
+            \end{align}
+            
+            Then, there exists $C,k>0$ such that:
+            \begin{align}
+                \Pr(E) \leq C\exp(-k N(s_t,m)). 
+            \end{align}
+        \end{lemma}
+        
+        \begin{proof}
+            \todo{Define m again somewhere?}
+            Recall from Equation (\ref{appeq:nsa_sum}) that $N(s_t,a_t,m)=\sum_{i\in T(s_t,m)} \one[a^i_t=a_t] = \sum_{i\in T(s_t,m)} \one[a^i_t=a_t | s^i_t=s_t]$. By taking expectations and using the assumed $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$ it follows that $\bb{E}N(s_t,a_t,m) \geq \eta N(s_t,m)$ (and more specifically as a consequence $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$). The probability of $N(s_t,a_t,m)$ being below a multiplicative ratio of $N(s_t,m)$ is bounded as follows:
+            \begin{align}
+                & \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                    \leq & \Pr\left(N(s_t,a_t,m) < \bb{E}N(s_t,a_t,m) - \frac{1}{2}\eta N(s_t,m)\right) \\
+                    = & \Pr\left(\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m) > \frac{1}{2}\eta N(s_t,m)\right) 
+                        \label{local:seven} \\
+                    \leq & \Pr\left(|\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m)| > \frac{1}{2}\eta N(s_t,m)\right) 
+                        \label{local:six} \\
+                    \leq & 2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right). \label{eq:bound_nsa}
+            \end{align}
+            
+            The first inequality follows from $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$, the second line is a rearrangement, the third line comes from the inequality in (\ref{local:seven}) implying the inequality in (\ref{local:six}), and the final line uses Theorem \ref{thrm:hoeffding}, a Hoeffding bound for the sum of indicator random variables. 
+            
+            Finally, the bound using $N(s_t,a_t,m)$ can be converted into one depending on $N(s_t,m)$ using the law of total probability as follows:
+            \begin{align}
+                \Pr\left( E \right)
+                    = & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) 
+                        \Pr\left(N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \nonumber \\
+                      & + \Pr\left( E \bigg| N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) 
+                        \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                    \leq & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \cdot 1 \nonumber \\
+                        & + 1 \cdot \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                    \leq & C'\exp\left(-\frac{1}{2}k'\eta N(s_t,m) \right) + 
+                        2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right) \label{local:eight} \\
+                    \leq & C\exp(-k N(s_t,m)), \label{local:eighttwo}
+            \end{align}
+            where (\ref{local:eight}) uses the assumed Inequality (\ref{eq:sa_to_s_assume_bound}) with the condition $N(s_t,a_t) \geq \eta N(s_t)/2$, and also uses the bound from (\ref{eq:bound_nsa}). The final inequality (\ref{local:eighttwo}) follows from Lemma \ref{lem:union_bound}, with $C=C'+2$ and $k = \min(-k'\eta/2, -\eta^2/2)$.
+        \end{proof}
+    
+    
+    
+    
+
+
+
+
+
+        \todo{here here here. Next time = consider just defining a logsumexp function, and define the temp to have at zero it equal to max. Also finish writing up the preliminaries (commented out below)}
 
 
 
 
 
 
-        \todo{here here here. Next time = consider just defining a logsumexp function, and define the temp to have at zero it equal to max. Also finish writing up the preliminaries}
+    
+    
+        Similar to Lemma \ref{lem:sa_to_s}, if we have some $s'\in\suc{s}{a}$, it will also be convenient to be able to translate bounds that depend on $N(s')$ into bounds that depend on $N(s,a)$:
+        \begin{lemma} \label{lem:s_to_sa}
+            Consider any Boltzmann MCTS process. For some state action pair $(s_t,a_t)$, and for some $s'_{t+1}\in\suc{s_t}{a_t}$, suppose for some $C',k'>0$ that some event $E$ admits a bound:
+            \begin{align}
+                \Pr(E) \leq C'\exp(-k'N(s'_t)).
+            \end{align}
+            Then, there exists $C,k>0$ such that:
+            \begin{align}
+                \Pr(E) \leq C\exp(-k N(s_t,a_t)).
+            \end{align}
+        \end{lemma}
+        \begin{proofoutline}
+            Proof is similar to Lemma \ref{lem:sa_to_s}. Instead of having a minimum probability of selecting an action $\eta$, replace it with the corresponding probability from the transition distribution $p(s_{t+1}|s_t,a_t)$. Then swapping any $N(s_t)$ with $N(s_t,a_t)$, any $N(s_t,a_t)$ with $N(s'_t)$, and using $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$ (Equation (\ref{appeq:ns_sum})) as the sum of indicator random variables will give the result.
+        \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
 
 
 
