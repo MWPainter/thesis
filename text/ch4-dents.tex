@@ -553,6 +553,8 @@
         
 
 
+        \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
+
         When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
         \begin{itemize}
             \item 
@@ -781,6 +783,8 @@
         \todo{This section contains things related to exponential bounds, which might move to appendix}
         This subsection contains lemmas that will be useful in multiple times and are used to avoid repeating the same argument multiple times. 
 
+        
+        \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
 
 
 
@@ -869,7 +873,7 @@
                 Q^{\max}(s_t,a_t) &= R(s_t,a_t) + \max_{s'\in\suc{s_t}{a_t}} V^{\max}(s') \\
                 V_\rho^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + \beta_{\max}H\log|\cl{A}| \right)/\alpha\right), 
             \end{align}
-            \todo{clean up the use of alpha in this one. Should be alpha dents, and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
+            \todo{clean up the use of alpha in this one. Should be alpha max (and also define alpha max), and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
             \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
             %
             where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ \todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
@@ -1019,6 +1023,8 @@
         %%%%
 
         \subsection{Maximum Entropy Reinforcement Learning} \label{app:soft_learning_results}
+        
+            \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}  
 
             \todo{DEFINITELY APPENDIX MATERIAL}
 
@@ -1064,7 +1070,7 @@
 
 
 
-            \todo{make below a defn?}
+            \todo{make below a defn? ALSO THIS DEFN IS NOT APPENDIX MATERIAL}
 
             The optimal soft and standard values can be `tied together' by picking a very low temperature. Let $\delta(s,t)$ be the set of actions that have different optimal standard Q-values, that is $\delta(s,t)=\{(a,a')|Q^*(s,a;t)\neq Q^*(s,a';t)\}$. Now define $\Delta_{\cl{M}}$ as follows:
             \begin{align}
@@ -1111,6 +1117,161 @@
             \end{proof}
 
 
+
+
+        %%%%
+        % THEORY - Simple Regret
+        %%%%
+
+        \subsection{Simple regret} \label{app:simple_regret_results}
+
+            \todo{DEFINITELY APPENDIX MATERIAL}
+    
+            This section revisits \textit{simple regret} in more detail. Recall the definition of simple regret \todo{double check this is correct notation (brain ded today)}:
+            %
+            \begin{align} 
+                \sreg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
+            \end{align}
+            %
+            where $\psi^n$ is the policy recommended after $n$ rounds or trials. This definition is different to what has been considered by the tree search literature so far \todo{cite: mcts\_simple\_regret,brue1}. However, this definition is a more natural extension to the simple regret considered for multi-armed bandit problems \todo{cite: simple\_regret\_short,simple\_regret\_long}, as it stems from a more general MDP planning problem that does not have to be solved using a tree search. For example, consider a non-tree search algorithm that outputs a recommendation policy rather than one action at a time. Besides, the difference can be reconciled by showing that any bound that holds for one definition also holds for the other. 
+            
+            Define the \textit{simple regret of an action} (or \textit{immediate simple regret}) as:
+            %
+            \begin{align}
+                \immreg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)].
+            \end{align}
+            
+            and we show that any asymptotic upper bounds provided on the two definitions are equivalent up to a multiplicative factor. 
+    
+    
+    
+    
+    
+    
+            From this definition of immediate simple regret, \todo{any big-O bounds on simple regret hold if and only if the same big-O bound holds for the immediate simple regret.}
+        
+            \begin{lemma} \label{lem:imm_simple_regret}
+                $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$.
+            \end{lemma}
+            \begin{proof}
+                Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
+                \begin{align}
+                    \sreg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
+                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
+                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
+                            \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
+                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
+                            \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
+                            &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
+                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
+                            &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
+                                V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
+                        =& \immreg(s,\psi^n) + 
+                            \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\sreg(s_{t+1},\psi^n)], \label{eq:regret_relation}
+                \end{align}
+                where line (\ref{eq:simple_reg}) uses $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
+                
+                This shows that if $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\immreg(s_t,\psi^n)\leq \bb{E}\sreg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\sreg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$, then:
+                \begin{align}
+                    \bb{E}\sreg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
+                \end{align}
+                where the outer expectation is with respect $\psi^n$ (as the recommendation policy is the output of a random process).
+            \end{proof}
+    
+    
+    
+    
+    
+            \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
+            
+            \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
+
+            % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
+            
+            % \begin{corollary} \label{cor:imm_to_full_simple_regret}
+            %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\sreg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\immreg(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
+            % \end{corollary}
+            % \begin{proofoutline}
+            %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
+            % \end{proofoutline}
+   
+    
+
+
+
+        %%%%
+        % THEORY - Simple Regret
+        %%%%
+
+
+        \subsection{General Q-value convergence result} \label{app:q_result}
+        
+            \todo{This section contains things related to exponential bounds, which might move to appendix}
+    
+            Recall the (soft) Q-value backups used by Boltzmann MCTS processes (Equations (\ref{appeq:soft_q_backup}) and (\ref{appeq:dp_q_backup})). Considering that these backups are of identical form, a reward \todo{plus an empirical averaging of child nodes / MC estimate of expected child value.} \todo{clean up old writing: Considering that the backups for MENTS and DENTS processes are of similar form, we will show that generally, backups of that form converge (exponentially), given that the values at any child nodes also converge (exponentially). However, towards showing this, we first need to consider the concentration of the empirical transition distribution around the true transition distribution.}
+    
+    
+    
+    
+    
+    
+            
+        
+            \begin{theorem} \label{thrm:dkw_inequality}
+                Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
+                \begin{align}
+                    \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
+                \end{align}
+            \end{theorem}
+            \begin{proof}
+                See \todo{fix cite}%\citeapp{dvoretzky1956asymptotic}.
+            \end{proof}
+    
+    
+    
+    
+    
+    
+    
+            
+        
+            The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
+            %
+            \begin{corollary} \label{cor:bound_transition_distribution}
+                Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
+                \begin{align}
+                    \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
+                \end{align}
+            \end{corollary}
+            \begin{proofoutline}
+                Recall Equation (\ref{appeq:ns_sum}) that allows $N(s_{t+1},n)$ to be written as a sum of $N(s_t,a_t,n)$ indicator random variables: $N(s_{t+1},n) = \sum_{i\in T(s_t,a_t,n)} \one[s^i_{t+1} = s_{t+1}]$. Consider mapping the empirical transition distribution, with $N(s_t,a_t,n)=|T(s_t,a_t,n)|$ samples, to an appropriate catagorical distribution. Applying Theorem \ref{thrm:dkw_inequality} with $\varepsilon/2$ gives the result. \todo{also make saying replacing varepsilon in above result with half varepsilon word better.} \todo{clean up ``we'' in this proof} In the constructed cumulative distribution function we need to account for an error of $\varepsilon/2$ before any $s_{t+1}$, and another error of $\varepsilon/2$ after the same $s_{t+1}$, to account for an error of $\varepsilon$ in the probability mass function (see Figure \ref{fig:dkw_diag}).
+            \end{proofoutline}
+
+
+
+
+
+
+
+
+
+            
+            % \begin{figure}
+            %     \centering
+            %     \includegraphics[scale=0.4]{Figures/theory/dkw_cor.png}
+            %     \caption{Example cdfs for the transition distribution (black solid line) and empirical transition distribution (red dashed line) around the successor state $s_{t+1}$. An error of $\varepsilon/2$ between the empirical and true cdfs is shown, and the probability mass for $s_{t+1}$ for the empirical and true transition distributions are shown to indicate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+            %     \label{fig:dkw_diag}
+            % \end{figure}
+
+
+
+
+
+
+
+
+
+            \todo{HERE HERE HERE, FIRST THING TO DO IS PROOF READ THIS SECTION, SECOND THING TO DO IS MAKE THE FIG.}
 
 
 
@@ -1198,16 +1359,35 @@
 
 
 
+
+        \todo{Values in BTS and DENTS converge to V* (Dynamic Programming)}
+
+
+
+
+        \todo{Values in AR-BTS and AR-DENTS converge to V* (and what conditions need to be)}
+
+
+
+
+        \todo{Simple regrets. (Consequence from visit counts tending to infinity, and therefore policy converges)}
+
+
         \todo{Theorem that show that values in AR-BTS and AR-DENTS converge}
+
+
+
 
 
         \todo{Theorem that shows if backups converge to the optimal, then guaranteed to converge and simple regret tends to 0 which is the result.}
 
 
-        \todo{Theorem to show that most visited policy will also converge. Say that from the point of values converging it will add exp many additional trials for the. Essentially, if converges after K trials, then each action visited M(a) many times is a constant start. And then N(a) eq new(a) plus M(a) will converge by law of large numbers, and should do exp fast. Basically need to do some DKW and (strong?) law of large numbers stuff. Its just a bit bothersome because the sum is not identically distributed, as each action sampled from a diff distribution.}
+        \todo{Theorem to show that most visited policy will also converge. Say that from the point of values converging it will add exp many additional trials for the. Essentially, if converges after K trials, then each action visited M(a) many times is a constant start. And then N(a) eq new(a) plus M(a) will converge by law of large numbers, and should do exp fast. Basically need to do some DKW and (strong?) law of large numbers stuff. Its just a bit bothersome because the sum is not identically distributed, as each action sampled from a diff distribution.} \todo{also see this llm chat: https://chatgpt.com/c/67ad143f-6374-8007-9126-e90eb9f42578 - I like the argument } \todo{I liked the argument that if xn converges to x then avg(x1,...,xm) also converges to x. I also like how I posed the question to llm}
 
         %https://en.wikipedia.org/wiki/Dvoretzky%E2%80%93Kiefer%E2%80%93Wolfowitz_inequality
         %https://en.wikipedia.org/wiki/Law_of_large_numbers
+
+
 
 
 

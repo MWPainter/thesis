@@ -5075,15 +5075,17 @@ These appendices are structured as follows:
     
     \subsection{Simple regret} \label{app:simple_regret_results}
     
-        In this section we will revisit \textit{simple regret} in more detail. Recall that our definition of simple regret is:
-        \begin{align} 
-            \reg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
-        \end{align}
-        where $\psi^n$ is the policy recommended by a forecaster after $n$ rounds or trials. This definition is different to what has been considered by the tree search literature so far \citeapp{mcts_simple_regret,brue1}. However, we feel that this definition is a more natural extension to the simple regret considered for multi-armed bandit problems \citeapp{simple_regret_short,simple_regret_long}, as it stems from a more general MDP planning problem that does not necessarily have to be solved using a tree search (for example, consider if we want to reason about a non-tree search algorithm's simple regret, that only outputs full policies). Moreover, we can reconcile the difference by defining the \textit{simple regret of an action} (or \textit{immediate simple regret}) as:
-        \begin{align}
-            \reg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)],
-        \end{align}
-        and we show that any asymptotic upper bounds provided on the two definitions are equivalent up to a multiplicative factor. 
+        % DONE
+
+        % In this section we will revisit \textit{simple regret} in more detail. Recall that our definition of simple regret is:
+        % \begin{align} 
+        %     \reg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
+        % \end{align}
+        % where $\psi^n$ is the policy recommended by a forecaster after $n$ rounds or trials. This definition is different to what has been considered by the tree search literature so far \citeapp{mcts_simple_regret,brue1}. However, we feel that this definition is a more natural extension to the simple regret considered for multi-armed bandit problems \citeapp{simple_regret_short,simple_regret_long}, as it stems from a more general MDP planning problem that does not necessarily have to be solved using a tree search (for example, consider if we want to reason about a non-tree search algorithm's simple regret, that only outputs full policies). Moreover, we can reconcile the difference by defining the \textit{simple regret of an action} (or \textit{immediate simple regret}) as:
+        % \begin{align}
+        %     \reg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)],
+        % \end{align}
+        % and we show that any asymptotic upper bounds provided on the two definitions are equivalent up to a multiplicative factor. 
 
 
 
@@ -5091,48 +5093,49 @@ These appendices are structured as follows:
 
 
 
+        % DONE
     
-        \begin{lemma} \label{lem:imm_simple_regret}
-            $\bb{E}\reg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\reg_I(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$.
-        \end{lemma}
-        \begin{proof}
-            Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
-            \begin{align}
-                \reg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
-                        \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
-                        \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
-                        &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
-                        &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
-                            V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
-                    =& \reg_I(s,\psi^n) + 
-                        \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\reg(s_{t+1},\psi^n)], \label{eq:regret_relation}
-            \end{align}
-            where in line (\ref{eq:simple_reg}) we used $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
+        % \begin{lemma} \label{lem:imm_simple_regret}
+        %     $\bb{E}\reg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\reg_I(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$.
+        % \end{lemma}
+        % \begin{proof}
+        %     Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
+        %     \begin{align}
+        %         \reg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
+        %             =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
+        %             =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
+        %                 \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
+        %             =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
+        %                 \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
+        %                 &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
+        %             =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
+        %                 &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
+        %                     V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
+        %             =& \reg_I(s,\psi^n) + 
+        %                 \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\reg(s_{t+1},\psi^n)], \label{eq:regret_relation}
+        %     \end{align}
+        %     where in line (\ref{eq:simple_reg}) we used $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
             
-            This shows that if $\bb{E}\reg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\reg_I(s_t,\psi^n)\leq \bb{E}\reg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\reg_I(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\reg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\suc{s_t}$, then:
-            \begin{align}
-                \bb{E}\reg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
-            \end{align}
-            where the outer expectation is with respect $\psi^n$ (as the relevant MENTS process is a stochastic one).
-        \end{proof}
+        %     This shows that if $\bb{E}\reg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\reg_I(s_t,\psi^n)\leq \bb{E}\reg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\reg_I(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\reg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\suc{s_t}$, then:
+        %     \begin{align}
+        %         \bb{E}\reg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
+        %     \end{align}
+        %     where the outer expectation is with respect $\psi^n$ (as the relevant MENTS process is a stochastic one).
+        % \end{proof}
 
 
 
 
-
+        % DONE
     
-        It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
+        % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
         
-        \begin{corollary} \label{cor:imm_to_full_simple_regret}
-            Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\reg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\reg_I(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
-        \end{corollary}
-        \begin{proofoutline}
-            The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\suc{s_t}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
-        \end{proofoutline}
+        % \begin{corollary} \label{cor:imm_to_full_simple_regret}
+        %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\reg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\reg_I(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
+        % \end{corollary}
+        % \begin{proofoutline}
+        %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\suc{s_t}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
+        % \end{proofoutline}
     
 
 
@@ -5144,7 +5147,10 @@ These appendices are structured as follows:
     \subsection{General Q-value convergence result} \label{app:q_result}
         
     
-        Recall the (soft) Q-value backups used by Boltzmann MCTS processes (Equations (\ref{appeq:soft_q_backup}) and (\ref{appeq:dp_q_backup})). Considering that the backups for MENTS and DENTS processes are of similar form, we will show that generally, backups of that form converge (exponentially), given that the values at any child nodes also converge (exponentially). However, towards showing this, we first need to consider the concentration of the empirical transition distribution around the true transition distribution.
+        
+        % DONE
+
+        % Recall the (soft) Q-value backups used by Boltzmann MCTS processes (Equations (\ref{appeq:soft_q_backup}) and (\ref{appeq:dp_q_backup})). Considering that the backups for MENTS and DENTS processes are of similar form, we will show that generally, backups of that form converge (exponentially), given that the values at any child nodes also converge (exponentially). However, towards showing this, we first need to consider the concentration of the empirical transition distribution around the true transition distribution.
 
 
 
@@ -5152,16 +5158,17 @@ These appendices are structured as follows:
 
 
         
+        % DONE
     
-        \begin{theorem} \label{thrm:dkw_inequality}
-            Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
-            \begin{align}
-                \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
-            \end{align}
-        \end{theorem}
-        \begin{proof}
-            See \citeapp{dvoretzky1956asymptotic}.
-        \end{proof}
+        % \begin{theorem} \label{thrm:dkw_inequality}
+        %     Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
+        %     \begin{align}
+        %         \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
+        %     \end{align}
+        % \end{theorem}
+        % \begin{proof}
+        %     See \citeapp{dvoretzky1956asymptotic}.
+        % \end{proof}
 
 
 
@@ -5169,25 +5176,25 @@ These appendices are structured as follows:
 
 
 
-        
+        % DONE
     
-        The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows us to tightly bound the empirical transition probability $N(s_{t+1})/N(s_t,a_t)$ with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
-        \begin{corollary} \label{cor:bound_transition_distribution}
-            Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
-            \begin{align}
-                \Pr\left(\max_{s_{t+1}\in\succc{s_t}{a_t}}\left| \frac{N(s_{t+1})}{N(s_t,a_t)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
-            \end{align}
-        \end{corollary}
-        \begin{proofoutline}
-            Recall Equation (\ref{appeq:ns_sum}) that allows $N(s_{t+1})$ to be written as a sum of $N(s_t,a_t)$ indicator random variables: $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$. Consider mapping the empirical transition distribution, with $N(s_t,a_t)=|T(s_t,a_t)|$ samples, to an appropriate catagorical distribution. Applying Theorem \ref{thrm:dkw_inequality} with $\varepsilon/2$ gives the result. In the constructed cumulative distribution function we need to account for an error of $\varepsilon/2$ before any $s_{t+1}$, and another error of $\varepsilon/2$ after the same $s_{t+1}$, to account for an error of $\varepsilon$ in the probability mass function (see Figure \ref{fig:dkw_diag}).
-        \end{proofoutline}
+        % The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows us to tightly bound the empirical transition probability $N(s_{t+1})/N(s_t,a_t)$ with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
+        % \begin{corollary} \label{cor:bound_transition_distribution}
+        %     Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
+        %     \begin{align}
+        %         \Pr\left(\max_{s_{t+1}\in\succc{s_t}{a_t}}\left| \frac{N(s_{t+1})}{N(s_t,a_t)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
+        %     \end{align}
+        % \end{corollary}
+        % \begin{proofoutline}
+        %     Recall Equation (\ref{appeq:ns_sum}) that allows $N(s_{t+1})$ to be written as a sum of $N(s_t,a_t)$ indicator random variables: $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$. Consider mapping the empirical transition distribution, with $N(s_t,a_t)=|T(s_t,a_t)|$ samples, to an appropriate catagorical distribution. Applying Theorem \ref{thrm:dkw_inequality} with $\varepsilon/2$ gives the result. In the constructed cumulative distribution function we need to account for an error of $\varepsilon/2$ before any $s_{t+1}$, and another error of $\varepsilon/2$ after the same $s_{t+1}$, to account for an error of $\varepsilon$ in the probability mass function (see Figure \ref{fig:dkw_diag}).
+        % \end{proofoutline}
         
-        \begin{figure}
-            \centering
-            \includegraphics[scale=0.4]{Figures/theory/dkw_cor.png}
-            \caption{Example cdfs for the transition distribution (black solid line) and empirical transition distribution (red dashed line) around the successor state $s_{t+1}$. An error of $\varepsilon/2$ between the empirical and true cdfs is shown, and the probability mass for $s_{t+1}$ for the empirical and true transition distributions are shown to indicate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
-            \label{fig:dkw_diag}
-        \end{figure}
+        % \begin{figure}
+        %     \centering
+        %     \includegraphics[scale=0.4]{Figures/theory/dkw_cor.png}
+        %     \caption{Example cdfs for the transition distribution (black solid line) and empirical transition distribution (red dashed line) around the successor state $s_{t+1}$. An error of $\varepsilon/2$ between the empirical and true cdfs is shown, and the probability mass for $s_{t+1}$ for the empirical and true transition distributions are shown to indicate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+        %     \label{fig:dkw_diag}
+        % \end{figure}
     
     
 
