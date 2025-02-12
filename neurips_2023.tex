@@ -4980,87 +4980,87 @@ These appendices are structured as follows:
     \subsection{Soft learning} \label{app:soft_learning_results}
     
     
-        For this subsection we will temporarily reintroduce the time-step parameter into our value functions to simplify other notation. We will show two results about soft Q-values: that the optimal standard Q-value is less than the optimal soft Q-value, and, that given a sufficiently small temperature, the optimal soft Q-values will preserve any \textit{strict} ordering over actions given by the optimal standard Q-values. 
+        % For this subsection we will temporarily reintroduce the time-step parameter into our value functions to simplify other notation. We will show two results about soft Q-values: that the optimal standard Q-value is less than the optimal soft Q-value, and, that given a sufficiently small temperature, the optimal soft Q-values will preserve any \textit{strict} ordering over actions given by the optimal standard Q-values. 
 
 
 
 
-
+        % DONE
     
-        For some policy $\pi$, the definition of $V^{\pi}_{\text{sft}}$ (Equation (\ref{eq:vsft_def})) can be re-arranged, to give a relation between the soft Q-value, the standard Q-value and the entropy of the policy:
-        \begin{align}
-            Q^{\pi}_{\text{sft}}(s,a,t) &= Q^{\pi}(s,a,t) 
-                + \alpha \bb{E}_{\pi}\left[
-                    \sum_{i=t+1}^H \cl{H}\left(\pi(\cdot|s_i)\right) \Bigg| s_t=s, a_t=a
-                    \right], \label{eq:soft_standard_rel} \\
-                &= Q^{\pi}(s,a,t) 
-                + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a),
-        \end{align}
-        where $\cl{H}_{t+1}$ is used as a shorthand for the entropy term. By using this relation, it can be shown that the optimal soft Q-value will always be at least as large as the optimal standard Q-value:
-        \begin{lemma} \label{lem:soft_geq_standard}
-            $Q^*(s,a,t) \leq Q_{\textnormal{sft}}^*(s,a,t).$
-        \end{lemma}
-        \begin{proof}
-            Taking a maximum over policies in Equation (\ref{eq:soft_standard_rel}), and considering that $\pi^*$, the optimal standard policy, is one of the possible policies considered in the maximisation, gives the result:
-            \begin{align}
-                Q_{\text{sft}}^*(s,a,t) &= \max_\pi \left(Q^{\pi}(s,a,t) + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a)\right) \\
-                    &\geq Q^{\pi^*}(s,a,t) + \alpha\cl{H}_{t+1}(\pi^*|s_t=s,a_t=a) \\
-                    &\geq Q^*(s,a,t).
-            \end{align} 
+        % For some policy $\pi$, the definition of $V^{\pi}_{\text{sft}}$ (Equation (\ref{eq:vsft_def})) can be re-arranged, to give a relation between the soft Q-value, the standard Q-value and the entropy of the policy:
+        % \begin{align}
+        %     Q^{\pi}_{\text{sft}}(s,a,t) &= Q^{\pi}(s,a,t) 
+        %         + \alpha \bb{E}_{\pi}\left[
+        %             \sum_{i=t+1}^H \cl{H}\left(\pi(\cdot|s_i)\right) \Bigg| s_t=s, a_t=a
+        %             \right], \label{eq:soft_standard_rel} \\
+        %         &= Q^{\pi}(s,a,t) 
+        %         + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a),
+        % \end{align}
+        % where $\cl{H}_{t+1}$ is used as a shorthand for the entropy term. By using this relation, it can be shown that the optimal soft Q-value will always be at least as large as the optimal standard Q-value:
+        % \begin{lemma} \label{lem:soft_geq_standard}
+        %     $Q^*(s,a,t) \leq Q_{\textnormal{sft}}^*(s,a,t).$
+        % \end{lemma}
+        % \begin{proof}
+        %     Taking a maximum over policies in Equation (\ref{eq:soft_standard_rel}), and considering that $\pi^*$, the optimal standard policy, is one of the possible policies considered in the maximisation, gives the result:
+        %     \begin{align}
+        %         Q_{\text{sft}}^*(s,a,t) &= \max_\pi \left(Q^{\pi}(s,a,t) + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a)\right) \\
+        %             &\geq Q^{\pi^*}(s,a,t) + \alpha\cl{H}_{t+1}(\pi^*|s_t=s,a_t=a) \\
+        %             &\geq Q^*(s,a,t).
+        %     \end{align} 
             
-            Noting that the entropy function is non-negative function.
-        \end{proof}
+        %     Noting that the entropy function is non-negative function.
+        % \end{proof}
     
     
     
     
     
-        The optimal soft and standard values can be `tied together' by picking a very low temperature. Let $\delta(s,t)$ be the set of actions that have different optimal standard Q-values, that is $\delta(s,t)=\{(a,a')|Q^*(s,a,t)\neq Q^*(s,a',t)\}$. Now define $\Delta_{\cl{M}}$ as follows:
-        \begin{align}
-            \Delta_{s,t} &= \min_{(a,a')\in\delta(s,t)} |Q^*(s,a,t)-Q^*(s,a',t)|, \\
-            \Delta_{\cl{M}} &= \min_{s,t} \Delta_{s,t}. \label{eq:delta}
-        \end{align}
+        % The optimal soft and standard values can be `tied together' by picking a very low temperature. Let $\delta(s,t)$ be the set of actions that have different optimal standard Q-values, that is $\delta(s,t)=\{(a,a')|Q^*(s,a,t)\neq Q^*(s,a',t)\}$. Now define $\Delta_{\cl{M}}$ as follows:
+        % \begin{align}
+        %     \Delta_{s,t} &= \min_{(a,a')\in\delta(s,t)} |Q^*(s,a,t)-Q^*(s,a',t)|, \\
+        %     \Delta_{\cl{M}} &= \min_{s,t} \Delta_{s,t}. \label{eq:delta}
+        % \end{align}
     
-        Note in particular, for some $(a,a')\in\delta(s,t)$ that the definition of $\Delta_{\cl{M}}$ implies that if $Q^*(s,a,t)<Q^*(s,a',t)$ then 
-        \begin{align}
-            Q^*(s,a,t)+\Delta_{\cl{M}}\leq Q^*(s,a',t). \label{appeq:delta_diff}
-        \end{align}
+        % Note in particular, for some $(a,a')\in\delta(s,t)$ that the definition of $\Delta_{\cl{M}}$ implies that if $Q^*(s,a,t)<Q^*(s,a',t)$ then 
+        % \begin{align}
+        %     Q^*(s,a,t)+\Delta_{\cl{M}}\leq Q^*(s,a',t). \label{appeq:delta_diff}
+        % \end{align}
 
 
 
 
 
-        
+        % DONE
     
-        \begin{lemma} \label{lem:soft_standard_consistent_order}
-            If $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, then for all $t=1,...,H$, for all $s\in\cl{S}$ and for all $(a,a')\in\delta(s,t)$ we have $Q_{\textnormal{sft}}^*(s,a,t)<Q_{\textnormal{sft}}^*(s,a',t)$ iff $Q^*(s,a,t) < Q^*(s,a',t)$.
-        \end{lemma}
-        \begin{proof}
-            $(\Leftarrow)$ First consider that the optimal soft Q-value is less than or equal to the optimal standard Q-value and maximum possible entropy:
-            \begin{align}
-                Q_{\textnormal{sft}}^*(s,a,t) &= \max_\pi \left(Q^{\pi}(s,a,t) + \alpha\cl{H}_{t+1}(\pi)\right) \\
-                    &\leq \max_\pi Q^{\pi}(s,a,t) + \max_\pi \alpha\cl{H}_{t+1}(\pi) \label{appeq:softdiv} \\
-                    &= Q^*(s,a,t) + \alpha (H-t)\log |\cl{A}| \\
-                    &\leq Q^*(s,a,t) + \alpha H\log |\cl{A}|.
-            \end{align}
+        % \begin{lemma} \label{lem:soft_standard_consistent_order}
+        %     If $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, then for all $t=1,...,H$, for all $s\in\cl{S}$ and for all $(a,a')\in\delta(s,t)$ we have $Q_{\textnormal{sft}}^*(s,a,t)<Q_{\textnormal{sft}}^*(s,a',t)$ iff $Q^*(s,a,t) < Q^*(s,a',t)$.
+        % \end{lemma}
+        % \begin{proof}
+        %     $(\Leftarrow)$ First consider that the optimal soft Q-value is less than or equal to the optimal standard Q-value and maximum possible entropy:
+        %     \begin{align}
+        %         Q_{\textnormal{sft}}^*(s,a,t) &= \max_\pi \left(Q^{\pi}(s,a,t) + \alpha\cl{H}_{t+1}(\pi)\right) \\
+        %             &\leq \max_\pi Q^{\pi}(s,a,t) + \max_\pi \alpha\cl{H}_{t+1}(\pi) \label{appeq:softdiv} \\
+        %             &= Q^*(s,a,t) + \alpha (H-t)\log |\cl{A}| \\
+        %             &\leq Q^*(s,a,t) + \alpha H\log |\cl{A}|.
+        %     \end{align}
             
-            By using the assumed $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, using $Q^*(s,a,t)+\Delta_{\cl{M}}\leq Q^*(s,a',t)$ and that $Q^*(s,a',t)\leq \Qss{s}{a',t}$  from Lemma \ref{lem:soft_geq_standard} we get:
-            \begin{align}
-                Q_{\text{sft}}^*(s,a,t) &\leq Q^*(s,a,t) + \alpha H\log |\cl{A}| \\
-                    &< Q^*(s,a,t) + \Delta_{\cl{M}} \\
-                    &\leq Q^*(s,a',t) \\
-                    &\leq Q_{\text{sft}}^*(s,a',t).
-            \end{align}
+        %     By using the assumed $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, using $Q^*(s,a,t)+\Delta_{\cl{M}}\leq Q^*(s,a',t)$ and that $Q^*(s,a',t)\leq \Qss{s}{a',t}$  from Lemma \ref{lem:soft_geq_standard} we get:
+        %     \begin{align}
+        %         Q_{\text{sft}}^*(s,a,t) &\leq Q^*(s,a,t) + \alpha H\log |\cl{A}| \\
+        %             &< Q^*(s,a,t) + \Delta_{\cl{M}} \\
+        %             &\leq Q^*(s,a',t) \\
+        %             &\leq Q_{\text{sft}}^*(s,a',t).
+        %     \end{align}
             
-            ($\Rightarrow$) To show that given the assumptions that $Q_{\text{sft}}^*(s,a,t)<Q_{\text{sft}}^*(s,a',t) \Rightarrow Q^*(s,a,t) < Q^*(s,a',t)$ we will show the contrapostive instead, which is $Q^*(s,a,t) \geq Q^*(s,a',t) \Rightarrow Q_{\text{sft}}^*(s,a,t)\geq Q_{\text{sft}}^*(s,a',t)$. Given that it is assumed that $(a,a')\in\delta(s,t)$, the following implications hold:
-            \begin{align}
-                Q^*(s,a,t) &\geq Q^*(s,a',t) \\
-                \Rightarrow Q^*(s,a,t) &> Q^*(s,a',t) \\
-                \Rightarrow Q_{\text{sft}}^*(s,a,t) &> Q_{\text{sft}}^*(s,a',t) \label{eq:reuse_proof} \\
-                \Rightarrow Q_{\text{sft}}^*(s,a,t) &\geq Q_{\text{sft}}^*(s,a',t),
-            \end{align}
-            where the first implication uses that $(a,a')\in\delta(s)$, the second reuses the ($\Leftarrow$) proof, and the final implication holds generally. 
-        \end{proof}
+        %     ($\Rightarrow$) To show that given the assumptions that $Q_{\text{sft}}^*(s,a,t)<Q_{\text{sft}}^*(s,a',t) \Rightarrow Q^*(s,a,t) < Q^*(s,a',t)$ we will show the contrapostive instead, which is $Q^*(s,a,t) \geq Q^*(s,a',t) \Rightarrow Q_{\text{sft}}^*(s,a,t)\geq Q_{\text{sft}}^*(s,a',t)$. Given that it is assumed that $(a,a')\in\delta(s,t)$, the following implications hold:
+        %     \begin{align}
+        %         Q^*(s,a,t) &\geq Q^*(s,a',t) \\
+        %         \Rightarrow Q^*(s,a,t) &> Q^*(s,a',t) \\
+        %         \Rightarrow Q_{\text{sft}}^*(s,a,t) &> Q_{\text{sft}}^*(s,a',t) \label{eq:reuse_proof} \\
+        %         \Rightarrow Q_{\text{sft}}^*(s,a,t) &\geq Q_{\text{sft}}^*(s,a',t),
+        %     \end{align}
+        %     where the first implication uses that $(a,a')\in\delta(s)$, the second reuses the ($\Leftarrow$) proof, and the final implication holds generally. 
+        % \end{proof}
     
     
     
