@@ -538,210 +538,588 @@
 
 
 
-    %%%%
-    % THEORY - Stochastic Processes Definitions
-    %%%%
+%%%%
+% THEORY - Stochastic Processes Definitions
+%%%%
 
 
 
-    \todo{Some comment about using a policy of the form XXX will be refered to a Boltzmann MCTS Process.}
+\todo{Some comment about using a policy of the form XXX will be refered to a Boltzmann MCTS Process.}
 
 
 
-    \subsection{MCTS As A Stochastic Process}
-        Now the MENTS, BTS and DENTS are written as a stochastic process, where values are indexed (with a superscript) by the number of times that the corresponding node has been visited. For completeness and reference, the stochastic processes for \todo{UCT?}, MENTS, BTS and DENTS are given below.
+\subsection{MCTS As A Stochastic Process}
+    Now the MENTS, BTS and DENTS are written as a stochastic process, where values are indexed (with a superscript) by the number of times that the corresponding node has been visited. For completeness and reference, the stochastic processes for \todo{UCT?}, MENTS, BTS and DENTS are given below.
+    
+
+
+    \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
+
+    When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
+    \begin{itemize}
+        \item 
+            The search policy used on the $m$th trial is $\pi^m$, and if the process were stopped after $m$ trials, the recommendation policy that the algorithm would output is denoted $\psi^m$. Where if the process is run for $n$ trials, then $m$ ranges from $1$ to $n$.
+        \item 
+            The $m$ trajectory sampled is $\tau^m=(s_0^m,a_0^m,...,s_{h-1}^m,a_{h-1}^m,s_{h}^m)$ \todo{add reward, also make it h subscript m instead of h?}, and is sampled using the search policy $\tau^m \sim \pi^m$ (that is $a^m_i \sim \pi^m(\cdot|s^m_i)$ and $s^m_{i+1} \sim p(\cdot | s^m_i, a^m_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense. Comment about how the superscripts on s a and r will be used when necessary, but not always}
+        \item 
+            The search tree after $m$ trials is denoted $\cl{T}^m$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
+    \end{itemize}
+
+    When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$. Note that superscript is used to index with respect to the trial, and superscript with parenthasis is used to denote the number of visits.
+
+    In the proofs of following sections, it will be useful to write the number of times state~$s$ was visited in the first $m$ trials as $N(s,m)$, and the number of times action~$a$ was selected from state~$s$ in the first m trials as $N(s,a,m).$ Additionally, it will be useful to write these quantities in terms of indicator random variables. 
+    
+    Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is: \todo{this can avoid using s subscript t}
+    %
+    \begin{align}
+        T(s_t,m) &= \{i | i\leq m, s^i_t = s_t \} \\
+        T(s_t,a_t,m) &= \{i | i\leq m, s^i_t = s_t, a^i_t = a_t \}.
+    \end{align}
+    %
+    This allows the counts $N^m(s_t),$ $N^m(s_t,a_t)$ and $N^m(s_{t+1})$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
+    %
+    \begin{align}
+        N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
+        N(s_t,a_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
+        N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{appeq:nsa_sum} \\
+        N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
+    \end{align}
+    %
+    Additionally, the assumption that for any two states $s,s'\in\cl{S}$ \todo{double check use calligraphic S for state space?} that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{move this up}
+        
+        
+        
+        
+
+    \todo{do we do anything at all with the UCT process?}
+    % \subsubsection{The UCT process.} 
+    % 	The UCT search policy can be defined as:
+    % %
+    % \begin{align}
+    %      \pi_{\textnormal{UCT}}^n(s_t) &= \max_{a\in\cl{A}} \text{UCB}^n(s_t,a), \\
+    %      \text{UCB}^n(s_t, a) &= 
+    %     		\begin{cases}
+    %     			\infty & \text{if } N(s_t,a)=0 \\
+    %     			\bar{Q}^{N(s_t,a)}(s_t, a)+c \sqrt{\frac{\log N(s_t)}{N(s_t, a)}} & \text{if } N(s_t,a)>0
+    %     		\end{cases}
+    % \end{align}
+    % %
+    % \noindent where, after $n$ trials, $\bar{Q}^{N(s,a)}(s,a)$ is the empirical estimate of the value at node $(s,a)$, where action~$a$ has been selected $N(s, a)$ from state~$s$. The backup consists of updating empirical estimates for $t=h-1,...,0$:
+    % %
+    % \begin{align}
+    %     \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1}, \label{appeq:uct_vbar} \\
+    %     \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) + \frac{\bar{R}(t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1}, \label{appeq:uct_qbar}
+    % \end{align}
+    % %
+    % \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and values are initialised as $\bar{V}^1(s)=V^{\text{init}}(s)$ and $\bar{Q}^0(s,a)=0$. 
+    
+
+    
+    
+    
+    \subsubsection{The MENTS Process}
+    
+    Below is a complete summary of the MENTS process, for reference. On the $m$th trial, the MENTS process follows the search policy:
+
+    \todo{make ments section in ch2 use consistent definitions of alphaments, lambdaments and so on}
+
+    \begin{align}
+        \mpiments{m}(a|s) &= (1-\mlambdaments{m})\mrhoments{m}(a|s) + \frac{\mlambdaments{m}}{|\cl{A}|}, 
+                    \label{appeq:ments_soft_policy} \\ 
+        \mrhoments{m}(a|s) &= \exp\left(
+            \frac{1}{\alphaments}\left(\mQments{N(s,a,m-1)}(s,a)-\mVments{N(s,m-1)}(s)\right)\right). \\
+        \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right),
+    \end{align}
+    %
+    where $\epsments\in(0,\infty)$ is an exploration parameters, and $\alphaments$ is the temperature parameter. 
+
+    The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
+    \begin{align}
+        \mVments{N(s_t,m)}(s_t) &= 
+            \alphaments \log \sum_{a\in\cl{A}} \exp \left(
+                \frac{1}{\alphaments}\mQments{N(s_t,a,m)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
+        \mQments{N(s_t,a_t,m)}(s_t,a_t) &= 
+            R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( 
+                \frac{N(s',m)}{N(s_t,a_t,m)} \mVments{N(s',m)}(s') \right). \label{appeq:soft_q_backup}
+    \end{align}
+
+    \todo{also want something about initialisation and everything in line with thtspp}
+    %
+    % The soft (Q-)values are initialised as $\Vst{s}{1}=V^{\text{init}}(s)$ and $\Qst{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$).
+
+    \todo{recommendation policies and some comment about it being the soft values used?}
+    \begin{align}
+        \mpsiments{m}(s) &= \argmax_{a\in\cl{A}}\mQments{N(s,a,m)}(s,a), \\
+        \mmvments{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
+    \end{align}
+
+
+
+
+
+
+
+
+
+
+\subsubsection{The DENTS Process}
+
+    \todo{this whole sections math is pretty mess and a struggle to fit onto one line at a time. Maybe it suffices to just wordily describe the values of the sufixed values?}
+
+    Follow policy: 
+    %
+    \todo{add more wordy things. Some things we said here before were: (1) defining beta} $\beta : \bb{R}\rightarrow [0,\infty)$ be a bounded function; \todo{(2) defined epsilon as exploration policy; (3) in Neurips we defined the propto version of rho and also the full version saying ``becasue we need to reason about the search policy we give the exact form,'' for the moment I've kept both. I think just copy the full version where relevent in the proofs.}
+    %
+    \begin{align}
+        \mpidents{m}(a|s) &= (1-\mlambdadents{m})\mrhodents{m}(a|s) + \frac{\mlambdadents{m}}{|\cl{A}|}, 
+            \label{appeq:dents_search_policy}  \\
+        \mrhodents{m}(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s,m))}
+            \left(\mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a) \right)\right). \\
+        \mrhodents{m}(a|s) &= \frac{
+            \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                \mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a)   \right)\right)
+            }{\sum\limits_{a'\in\cl{A}} \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                \mQdents{N(s,a',m-1)}(s,a') + \betadents(N(s,m))\mHQdents{N(s,a',m-1)}(s,a')  \right)\right)}.  
+            \label{appeq:full_rho} \\
+        \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right), 
+    \end{align}
+
+    The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the DENTS value and entropy estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
+    \begin{align}
+        \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
+                \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
+            \label{appeq:dp_q_backup} \\ 
+        \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
+            \label{appeq:dp_v_backup} \\
+        \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+            \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
+        \mHVdents{N(s_t)}(s_t) &= 
+            \cl{H}(\mpidents{m}(\cdot | s_t)) 
+                + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
+    \end{align}
+
+    \todo{also want something about initialisation and everything in line with thtspp}
+    %
+    % The (Q-)values are initialised as $\Vt{s}{1}=V^{\text{init}}(s)$ and $\Qt{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$). The entropy values are initialised as $\cl{H}_Q^{0}(s,a)=0$ and $\cl{H}_V^{1}(s) = \cl{H}(\pi^n_{\text{DENTS}}(\cdot | s_t))$, where the node for $s$ is created on the $n$th trial
+
+    \todo{recommendation policies word stuff}
+    \begin{align}
+        \mpsidents{m}(s) &= \argmax_{a\in\cl{A}}\mQdents{N(s,a,m)}(s,a), \\
+        \mmvdents{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
+    \end{align}
+
+    \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
+    %
+    \begin{align}
+        \mVrhodents{N(s)}(s) = &
+            \alphadents(N(s,m)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,m))}
+                \big(\mQdents{N(s,a')}(s,a') \nonumber \\
+            &+ \betadents(N(s,m))\mHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
+    \end{align} 
+    %
+    and notice that the value of $\exp(\mVrhodents{N(s,m)}(s)/\alphadents(N(s,m)))$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\mrhodents{m}$ as 
+    %
+    \begin{align}
+        \mrhodents{m}(a|s) = 
+            \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+                \mQdents{N(s,a,m)}(s,a) 
+                + \betadents(N(s,m))\mHQdents{N(s,a,m)}(s,a) 
+                - \mVrhodents{N(s,m)}(s) \right)\right), \label{appeq:rho_concise}
+    \end{align}
+    % 
+    and subsequently, the full DENTS policy can be written as:
+    \begin{align}
+        \mpidents{m}(a|s) = (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}\left(\mQdents{N(s,a,m)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) + \frac{\lambda(s,m)}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
+    \end{align}
+
+
+
+
+
+
+
+
+\subsubsection{The AR-DENTS Process}
         
 
 
-        \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
 
-        When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
-        \begin{itemize}
-            \item 
-                The search policy used on the $m$th trial is $\pi^m$, and if the process were stopped after $m$ trials, the recommendation policy that the algorithm would output is denoted $\psi^m$. Where if the process is run for $n$ trials, then $m$ ranges from $1$ to $n$.
-            \item 
-                The $m$ trajectory sampled is $\tau^m=(s_0^m,a_0^m,...,s_{h-1}^m,a_{h-1}^m,s_{h}^m)$ \todo{add reward, also make it h subscript m instead of h?}, and is sampled using the search policy $\tau^m \sim \pi^m$ (that is $a^m_i \sim \pi^m(\cdot|s^m_i)$ and $s^m_{i+1} \sim p(\cdot | s^m_i, a^m_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense. Comment about how the superscripts on s a and r will be used when necessary, but not always}
-            \item 
-                The search tree after $m$ trials is denoted $\cl{T}^m$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
-        \end{itemize}
 
-        When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$. Note that superscript is used to index with respect to the trial, and superscript with parenthasis is used to denote the number of visits.
 
-        In the proofs of following sections, it will be useful to write the number of times state~$s$ was visited in the first $m$ trials as $N(s,m)$, and the number of times action~$a$ was selected from state~$s$ in the first m trials as $N(s,a,m).$ Additionally, it will be useful to write these quantities in terms of indicator random variables. 
-        
-        Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is: \todo{this can avoid using s subscript t}
-        %
+
+
+
+
+\subsubsection{The (AR-)BTS process.}
+
+    The (AR-)BTS process is a special case of the (AR-)DENTS process when $\betadents(x)=0$. As such, results about BTS will be corollaries from proofs about the (AR-)DENTS process.
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%
+% THEORY - Preliminaries (for exp bound stuff)
+%%%%
+
+\subsection{Preliminaries - Exp}
+
+    
+
+
+
+
+
+
+    \todo{This section contains things related to exponential bounds, which might move to appendix}
+    This subsection contains lemmas that will be useful in multiple times and are used to avoid repeating the same argument multiple times. 
+
+    
+    \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
+
+
+
+
+
+    Firstly it will be that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound \todo{ref?} \todo{it is stated here so that it can be referenced, because this fact is used regularly }
+    %
+    \todo{Some comment about how this is just a special case of the union bound (and ref that?) and also }
+    %
+    \begin{lemma} \label{lem:union_bound}
+        Let $A_1,...,A_{\ell}$ be some events that satisfy for $1\leq i \leq \ell$ the inequality $\Pr(\lnot A_i) \leq C_i\exp(-k_i)$ then:
         \begin{align}
-            T(s_t,m) &= \{i | i\leq m, s^i_t = s_t \} \\
-            T(s_t,a_t,m) &= \{i | i\leq m, s^i_t = s_t, a^i_t = a_t \}.
+            \Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\leq C\exp(-k), \label{appeq:comb_exp_like} \\
+            \Pr\left(\bigcap_{i=1}^\ell A_i\right) = 1-\Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\geq 1-C\exp(-k), \label{appeq:exp_likely}
+        \end{align}
+        where $C=\sum_{i=1}^\ell C_i$ and $k = \min_i k_i$.
+    \end{lemma}
+    \begin{proofoutline}
+        Lemma \ref{lem:union_bound} is a consequence of the union bound, using $\exp(k_i)\leq\exp(k)$ and simplifying. Inequality (\ref{appeq:exp_likely}) is just a negation of Inequality (\ref{appeq:comb_exp_like}).
+    \end{proofoutline}
+
+
+
+
+
+
+    
+    The following two lemma's show that the MENTS and DENTS processes always have a minimum probability of picking any action. \todo{not in good headspace writing up these two lemmas. Do a clean up, double checking maths and that have eliminated using 'we' and so on}
+    %
+    \begin{lemma} \label{lem:min_prob_ments}
+        For any MENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpiments{m}(a_t|s_t)\geq\pi^{\min}$.
+    \end{lemma}
+    %
+    \begin{proofoutline}
+        \todo{Fix N having to be N(s,m) not N(s) etc}
+        Define the $Q^{\min}$ function as follows:
+        \begin{align}
+            Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
+        \end{align}
+        \todo{clean up with respect to init function}
+        
+        And define the $V^{\max}$ function as:
+        \begin{align}
+            V^{\max}(s_t) &= \alphaments \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alphaments), \label{appeq:vmax} \\
+            Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\suc{s_t}{a_t}} V^{\max}(s_{t+1}).
+        \end{align}
+        
+        Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \mQments{N(s_t,a_t,m)}(s_t,a_t)$ and $V^{\max}(s_t)\geq \mVments{N(s_t,m)}(s_t)$ for any arbitrary $s_t,a_t$ and $m$. Now, define $\pi^{\min}$ as:
+        \begin{align}
+            \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
+        \end{align}
+        
+        Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
+        \begin{align}
+            \mpiments{m}(a_t|s_t) 
+                =& (1-\lambda(s_t,m))\exp\left(\left(\frac{1}{\alphaments}\left(\mQments{N(s_t,a_t,m)}(s_t,a_t)-\mVments{N(s_t,m)}(s_t)\right)\right)\right) 
+                    + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
+                \geq& (1-\lambda(s_t,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
+                    + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
+                \geq& \pi^{\min}.
+        \end{align}
+    \end{proofoutline}
+        
+        
+
+
+
+
+
+    \todo{this lemma requires} $\betadents(x) < U$ for all $x$, or $\betadents$ is bounded. AND it requires $\alphadents(x) < U'$ so $\alphadents$ to be bounded. \todo{THERE IS CURRENTLY ERROR IN THIS. EXP BOUND REQUIRES A MINIMUM TEMP. Might need to reason around logsumexp's around here. But, as alpha tends to infinity, the probability distribution will tend to a uniform distribution, and min prob is fine, if alpha tends to zero, then softmax tends to max, and then min prob can be zero, so dont have a min prob. Might need to use a different value of alpha for the computation of V, so might need to have both a lower and upper bound on alpha.}
+    %
+    \begin{lemma} \label{lem:min_prob_dents}
+        For any DENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpidents{m}(a_t|s_t)\geq\pi^{\min}$.
+    \end{lemma}
+    %
+    \begin{proofoutline}
+        This proof outline follows similar reasoning to Lemma \ref{lem:min_prob_ments}. The same definition for $Q^{\min}$ can be used:
+        \begin{align}
+            Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
+        \end{align}
+        \todo{clean up with respect to init function}
+
+        However, the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) needs to altered to:
+        \begin{align}
+            V^{\max}(s_t) &= \max_{a\in\cl{A}} Q^{\max}(s_t,a) \\
+            Q^{\max}(s_t,a_t) &= R(s_t,a_t) + \max_{s'\in\suc{s_t}{a_t}} V^{\max}(s') \\
+            V_\rho^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + \beta_{\max}H\log|\cl{A}| \right)/\alpha\right), 
+        \end{align}
+        \todo{clean up the use of alpha in this one. Should be alpha max (and also define alpha max), and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
+        \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
+        %
+        where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ \todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
+        
+        Define $\pi^{\min}$ similarly to Equation (\ref{eq:pi_min}), with the updated definition of $V_\rho^{\max}$: 
+        \begin{align}
+            \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V_\rho^{\max}(s)\right)/\alpha_{\max}\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min_dents}
         \end{align}
         %
-        This allows the counts $N^m(s_t),$ $N^m(s_t,a_t)$ and $N^m(s_{t+1})$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
+        where $\alpha_{\max}=\sum_x \alphadents(x)$ \todo{double check this is right}. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, as well as $\betadents(N(s,m))\mHQdents{N(s,a)}(s,a) \geq 0$, the result follows:
         %
         \begin{align}
-            N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
-            N(s_t,a_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
-            N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{appeq:nsa_sum} \\
-            N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
+            \mpidents{m}(a_t|s_t) 
+                =& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
+                    \left(\mQdents{N(s,a,m)}(s,a) 
+                    + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) 
+                    - \mVrhodents{N(s,m)}(s) \right)\right) 
+                    + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                \geq& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
+                    \left(\mQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) 
+                    + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                \geq& (1-\lambda(s,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V_\rho^{\max}(s_t)\right)/\alpha_{\max}\right) 
+                    + \frac{\lambda(s,m)}{|\cl{A}|} \\
+                \geq& \pi^{\min}.
         \end{align}
-        %
-        Additionally, the assumption that for any two states $s,s'\in\cl{S}$ \todo{double check use calligraphic S for state space?} that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{move this up}
-        
-        
-        
-        
+    \end{proofoutline}
 
-        \todo{do we do anything at all with the UCT process?}
-        % \subsubsection{The UCT process.} 
-        % 	The UCT search policy can be defined as:
-        % %
-        % \begin{align}
-        %      \pi_{\textnormal{UCT}}^n(s_t) &= \max_{a\in\cl{A}} \text{UCB}^n(s_t,a), \\
-        %      \text{UCB}^n(s_t, a) &= 
-        %     		\begin{cases}
-        %     			\infty & \text{if } N(s_t,a)=0 \\
-        %     			\bar{Q}^{N(s_t,a)}(s_t, a)+c \sqrt{\frac{\log N(s_t)}{N(s_t, a)}} & \text{if } N(s_t,a)>0
-        %     		\end{cases}
-        % \end{align}
-        % %
-        % \noindent where, after $n$ trials, $\bar{Q}^{N(s,a)}(s,a)$ is the empirical estimate of the value at node $(s,a)$, where action~$a$ has been selected $N(s, a)$ from state~$s$. The backup consists of updating empirical estimates for $t=h-1,...,0$:
-        % %
-        % \begin{align}
-        %     \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1}, \label{appeq:uct_vbar} \\
-        %     \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) + \frac{\bar{R}(t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1}, \label{appeq:uct_qbar}
-        % \end{align}
-        % %
-        % \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and values are initialised as $\bar{V}^1(s)=V^{\text{init}}(s)$ and $\bar{Q}^0(s,a)=0$. 
-        
 
-        
-        
-        
-        \subsubsection{The MENTS Process}
-        
-        Below is a complete summary of the MENTS process, for reference. On the $m$th trial, the MENTS process follows the search policy:
 
-        \todo{make ments section in ch2 use consistent definitions of alphaments, lambdaments and so on}
 
+
+
+
+
+    Additionally, Hoeffding's inequality will be useful to bound the difference between a sum of indicator random variables and its expectation. 
+    \begin{theorem} \label{thrm:hoeffding}
+        Let $\{X_i\}_{i=1}^k$ be indicator random variables (i.e. $X_i\in\{0,1\}$), and $S_k=\sum_{i=1}^k X_i$. Then Hoeffding's inequality for indicator random variables states for any $\varepsilon > 0$ that:
         \begin{align}
-            \mpiments{m}(a|s) &= (1-\mlambdaments{m})\mrhoments{m}(a|s) + \frac{\mlambdaments{m}}{|\cl{A}|}, 
-                        \label{appeq:ments_soft_policy} \\ 
-            \mrhoments{m}(a|s) &= \exp\left(
-                \frac{1}{\alphaments}\left(\mQments{N(s,a,m-1)}(s,a)-\mVments{N(s,m-1)}(s)\right)\right). \\
-            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right),
+            \Pr(|S_k - \bb{E}S_k|>\varepsilon)\leq 2\exp\left(-\frac{2\varepsilon^2}{k}\right).
         \end{align}
-        %
-        where $\epsments\in(0,\infty)$ is an exploration parameters, and $\alphaments$ is the temperature parameter. 
+    \end{theorem}
+    \begin{proof}
+        This is a specific case of Hoeffding's inequality. See \todo{add cite} %\citeapp{hoeffding1994probability} 
+        for proof.
+    \end{proof}
 
-        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
+
+
+
+
+
+
+
+
+
+
+    It will also be convenient to be able to `translate' bounds that depend on some $N(s,a,m)$ to a corresponding bound on $N(s,m)$:
+    \begin{lemma} \label{lem:sa_to_s}
+        Consider any Boltzmann MCTS process. Suppose that every action $a_t$ has some minimum probability $\eta$ of being chosen from some state $s_t$ (irrespective of the number of trials), i.e. $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$. And suppose for some $C',k'>0$ that some event $E$ admits a bound:
         \begin{align}
-            \mVments{N(s_t,m)}(s_t) &= 
-                \alphaments \log \sum_{a\in\cl{A}} \exp \left(
-                    \frac{1}{\alphaments}\mQments{N(s_t,a,m)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
-            \mQments{N(s_t,a_t,m)}(s_t,a_t) &= 
-                R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( 
-                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVments{N(s',m)}(s') \right). \label{appeq:soft_q_backup}
+            \Pr(E) \leq C'\exp(-k'N(s_t,a_t,m)). \label{eq:sa_to_s_assume_bound}
         \end{align}
-
-        \todo{also want something about initialisation and everything in line with thtspp}
-        %
-        % The soft (Q-)values are initialised as $\Vst{s}{1}=V^{\text{init}}(s)$ and $\Qst{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$).
-
-        \todo{recommendation policies and some comment about it being the soft values used?}
+        
+        Then, there exists $C,k>0$ such that:
         \begin{align}
-            \mpsiments{m}(s) &= \argmax_{a\in\cl{A}}\mQments{N(s,a,m)}(s,a), \\
-            \mmvments{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
+            \Pr(E) \leq C\exp(-k N(s_t,m)). 
         \end{align}
-
-
-
-
-
-
-
-
-
-
-        \subsubsection{The DENTS Process}
-
-        \todo{this whole sections math is pretty mess and a struggle to fit onto one line at a time. Maybe it suffices to just wordily describe the values of the sufixed values?}
-
-        Follow policy: 
-        %
-        \todo{add more wordy things. Some things we said here before were: (1) defining beta} $\beta : \bb{R}\rightarrow [0,\infty)$ be a bounded function; \todo{(2) defined epsilon as exploration policy; (3) in Neurips we defined the propto version of rho and also the full version saying ``becasue we need to reason about the search policy we give the exact form,'' for the moment I've kept both. I think just copy the full version where relevent in the proofs.}
-        %
+    \end{lemma}
+    
+    \begin{proof}
+        \todo{Define m again somewhere?}
+        Recall from Equation (\ref{appeq:nsa_sum}) that $N(s_t,a_t,m)=\sum_{i\in T(s_t,m)} \one[a^i_t=a_t] = \sum_{i\in T(s_t,m)} \one[a^i_t=a_t | s^i_t=s_t]$. By taking expectations and using the assumed $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$ it follows that $\bb{E}N(s_t,a_t,m) \geq \eta N(s_t,m)$ (and more specifically as a consequence $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$). The probability of $N(s_t,a_t,m)$ being below a multiplicative ratio of $N(s_t,m)$ is bounded as follows:
         \begin{align}
-            \mpidents{m}(a|s) &= (1-\mlambdadents{m})\mrhodents{m}(a|s) + \frac{\mlambdadents{m}}{|\cl{A}|}, 
-                \label{appeq:dents_search_policy}  \\
-            \mrhodents{m}(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s,m))}
-                \left(\mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a) \right)\right). \\
-            \mrhodents{m}(a|s) &= \frac{
-                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a)   \right)\right)
-                }{\sum\limits_{a'\in\cl{A}} \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a',m-1)}(s,a') + \betadents(N(s,m))\mHQdents{N(s,a',m-1)}(s,a')  \right)\right)}.  
-                \label{appeq:full_rho} \\
-            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right), 
+            & \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                \leq & \Pr\left(N(s_t,a_t,m) < \bb{E}N(s_t,a_t,m) - \frac{1}{2}\eta N(s_t,m)\right) \\
+                = & \Pr\left(\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m) > \frac{1}{2}\eta N(s_t,m)\right) 
+                    \label{local:seven} \\
+                \leq & \Pr\left(|\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m)| > \frac{1}{2}\eta N(s_t,m)\right) 
+                    \label{local:six} \\
+                \leq & 2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right). \label{eq:bound_nsa}
         \end{align}
-
-        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the DENTS value and entropy estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
+        
+        The first inequality follows from $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$, the second line is a rearrangement, the third line comes from the inequality in (\ref{local:seven}) implying the inequality in (\ref{local:six}), and the final line uses Theorem \ref{thrm:hoeffding}, a Hoeffding bound for the sum of indicator random variables. 
+        
+        Finally, the bound using $N(s_t,a_t,m)$ can be converted into one depending on $N(s_t,m)$ using the law of total probability as follows:
         \begin{align}
-            \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
-                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
-                \label{appeq:dp_q_backup} \\ 
-            \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
-                \label{appeq:dp_v_backup} \\
-            \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
-                \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
-            \mHVdents{N(s_t)}(s_t) &= 
-                \cl{H}(\mpidents{m}(\cdot | s_t)) 
-                    + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
+            \Pr\left( E \right)
+                = & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) 
+                    \Pr\left(N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \nonumber \\
+                    & + \Pr\left( E \bigg| N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) 
+                    \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                \leq & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \cdot 1 \nonumber \\
+                    & + 1 \cdot \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
+                \leq & C'\exp\left(-\frac{1}{2}k'\eta N(s_t,m) \right) + 
+                    2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right) \label{local:eight} \\
+                \leq & C\exp(-k N(s_t,m)), \label{local:eighttwo}
         \end{align}
+        where (\ref{local:eight}) uses the assumed Inequality (\ref{eq:sa_to_s_assume_bound}) with the condition $N(s_t,a_t) \geq \eta N(s_t)/2$, and also uses the bound from (\ref{eq:bound_nsa}). The final inequality (\ref{local:eighttwo}) follows from Lemma \ref{lem:union_bound}, with $C=C'+2$ and $k = \min(-k'\eta/2, -\eta^2/2)$.
+    \end{proof}
 
-        \todo{also want something about initialisation and everything in line with thtspp}
-        %
-        % The (Q-)values are initialised as $\Vt{s}{1}=V^{\text{init}}(s)$ and $\Qt{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$). The entropy values are initialised as $\cl{H}_Q^{0}(s,a)=0$ and $\cl{H}_V^{1}(s) = \cl{H}(\pi^n_{\text{DENTS}}(\cdot | s_t))$, where the node for $s$ is created on the $n$th trial
 
-        \todo{recommendation policies word stuff}
+
+
+
+
+
+
+
+    \todo{consider just defining a logsumexp function, and define the temp to have at zero it equal to max. Also finish writing up the preliminaries (commented out below)}
+
+
+
+
+
+
+
+
+    Similar to Lemma \ref{lem:sa_to_s}, it will also be convenient to be able to translate bounds that depend on $N(s')$, for some $s'\in\suc{s}{a}$, into bounds that depend on $N(s,a)$:
+    \begin{lemma} \label{lem:s_to_sa}
+        Consider any Boltzmann MCTS process. For some state action pair $(s_t,a_t)$, and for some $s'_{t+1}\in\suc{s_t}{a_t}$, suppose for some $C',k'>0$ that some event $E$ admits a bound:
         \begin{align}
-            \mpsidents{m}(s) &= \argmax_{a\in\cl{A}}\mQdents{N(s,a,m)}(s,a), \\
-            \mmvdents{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
+            \Pr(E) \leq C'\exp(-k'N(s'_t)).
         \end{align}
-
-        \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
-        %
+        Then, there exists $C,k>0$ such that:
         \begin{align}
-            \mVrhodents{N(s)}(s) = &
-                \alphadents(N(s,m)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,m))}
-                    \big(\mQdents{N(s,a')}(s,a') \nonumber \\
-                &+ \betadents(N(s,m))\mHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
+            \Pr(E) \leq C\exp(-k N(s_t,a_t)).
+        \end{align}
+    \end{lemma}
+    \begin{proofoutline}
+        Proof is similar to Lemma \ref{lem:sa_to_s}. Instead of having a minimum probability of selecting an action $\eta$, replace it with the corresponding probability from the transition distribution $p(s_{t+1}|s_t,a_t)$. Then swapping any $N(s_t)$ with $N(s_t,a_t)$, any $N(s_t,a_t)$ with $N(s'_t)$, and using $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$ (Equation (\ref{appeq:ns_sum})) as the sum of indicator random variables will give the result.
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%
+% THEORY - Maximum Entropy RL
+%%%%
+
+\subsection{Maximum Entropy Reinforcement Learning} \label{app:soft_learning_results}
+
+    \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}  
+
+    \todo{DEFINITELY APPENDIX MATERIAL}
+
+    This subsection shows some basic results that relate the maximum entropy and standard objectives, which will be used to show results about MENTS. This subsection temporarily reintroduces the time-step parameter into value functions to simplify other notation. Two results about soft Q-values are given: first, that the optimal standard Q-value is less than the optimal soft Q-value, and secondly, that given a sufficiently small temperature, the optimal soft Q-values will preserve any \textit{strict} ordering over actions given by the optimal standard Q-values. 
+
+
+
+
+
+
+
+    \todo{recall the max entropy objective, and ref that below}
+
+    For some policy $\pi$, the definition of $V^{\pi}_{\sft}$ (Equation (\todo{ref})) can be re-arranged, to give a relation between the soft Q-value, the standard Q-value and the entropy of the policy:
+    \begin{align}
+        Q^{\pi}_{\sft}(s,a;t) &= Q^{\pi}(s,a;t) 
+            + \alpha \bb{E}_{\pi}\left[
+                \sum_{i=t+1}^H \cl{H}\left(\pi(\cdot|s_i)\right) \Bigg| s_t=s, a_t=a
+                \right],  \\
+            &= Q^{\pi}(s,a;t) 
+            + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a), \label{eq:soft_standard_rel}
+    \end{align}
+    %
+    where $\cl{H}_{t+1}$ is used as a shorthand for the entropy term. By using this relation, it can be shown that the optimal soft Q-value will always be at least as large as the optimal standard Q-value:
+    %
+    \begin{lemma} \label{lem:soft_geq_standard}
+        $Q^*(s,a;t) \leq Q_{\textnormal{sft}}^*(s,a;t).$
+    \end{lemma}
+    \begin{proof}
+        Taking a maximum over policies in Equation (\ref{eq:soft_standard_rel}), and considering that $\pi^*$, the optimal standard policy, is one of the possible policies considered in the maximisation, gives the result:
+        \begin{align}
+            Q_{\sft}^*(s,a;t) &= \max_\pi \left(Q^{\pi}(s,a;t) + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a)\right) \\
+                &\geq Q^{\pi^*}(s,a;t) + \alpha\cl{H}_{t+1}(\pi^*|s_t=s,a_t=a) \\
+                &\geq Q^*(s,a;t).
         \end{align} 
         %
-        and notice that the value of $\exp(\mVrhodents{N(s,m)}(s)/\alphadents(N(s,m)))$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\mrhodents{m}$ as 
-        %
+        Noting that the entropy function is non-negative function.
+    \end{proof}
+
+
+
+
+
+
+
+    \todo{make below a defn? ALSO THIS DEFN IS NOT APPENDIX MATERIAL}
+
+    The optimal soft and standard values can be `tied together' by picking a very low temperature. Let $\delta(s,t)$ be the set of actions that have different optimal standard Q-values, that is $\delta(s,t)=\{(a,a')|Q^*(s,a;t)\neq Q^*(s,a';t)\}$. Now define $\Delta_{\cl{M}}$ as follows:
+    \begin{align}
+        \Delta_{s,t} &= \min_{(a,a')\in\delta(s,t)} |Q^*(s,a;t)-Q^*(s,a';t)|, \\
+        \Delta_{\cl{M}} &= \min_{s,t} \Delta_{s,t}. \label{eq:delta}
+    \end{align}
+
+    Note in particular, for some $(a,a')\in\delta(s,t)$ that the definition of $\Delta_{\cl{M}}$ implies that if $Q^*(s,a;t)<Q^*(s,a';t)$ then 
+    \begin{align}
+        Q^*(s,a;t)+\Delta_{\cl{M}}\leq Q^*(s,a';t). \label{appeq:delta_diff}
+    \end{align}
+
+
+
+
+
+
+    
+    Using this problem dependent constant, $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$ is a sufficient condition for the optimal standard and optimal soft policies to coincide, a consequence of the following Lemma.
+
+    \begin{lemma} \label{lem:soft_standard_consistent_order}
+        If $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, then for all $t=1,...,H$, for all $s\in\cl{S}$ and for all $(a,a')\in\delta(s,t)$ we have $Q_{\textnormal{sft}}^*(s,a;t)<Q_{\textnormal{sft}}^*(s,a';t)$ iff $Q^*(s,a;t) < Q^*(s,a';t)$.
+    \end{lemma}
+    \begin{proof}
+        $(\Leftarrow)$ First consider that the optimal soft Q-value is less than or equal to the optimal standard Q-value and maximum possible entropy:
         \begin{align}
-            \mrhodents{m}(a|s) = 
-                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a,m)}(s,a) 
-                    + \betadents(N(s,m))\mHQdents{N(s,a,m)}(s,a) 
-                    - \mVrhodents{N(s,m)}(s) \right)\right), \label{appeq:rho_concise}
+            Q_{\textnormal{sft}}^*(s,a;t) &= \max_\pi \left(Q^{\pi}(s,a;t) + \alpha\cl{H}_{t+1}(\pi)\right) \\
+                &\leq \max_\pi Q^{\pi}(s,a;t) + \max_\pi \alpha\cl{H}_{t+1}(\pi) \label{appeq:softdiv} \\
+                &= Q^*(s,a;t) + \alpha (H-t)\log |\cl{A}| \\
+                &\leq Q^*(s,a;t) + \alpha H\log |\cl{A}|.
         \end{align}
-        % 
-        and subsequently, the full DENTS policy can be written as:
+        
+        Then, using $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, $Q^*(s,a;t)+\Delta_{\cl{M}}\leq Q^*(s,a';t)$ and $Q^*(s,a';t)\leq Q_{\sft}(s,a;t)$ from Lemma \ref{lem:soft_geq_standard} gives the desired inequality:
         \begin{align}
-            \mpidents{m}(a|s) = (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}\left(\mQdents{N(s,a,m)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) + \frac{\lambda(s,m)}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
+            Q_{\sft}^*(s,a;t) &\leq Q^*(s,a;t) + \alpha H\log |\cl{A}| \\
+                &< Q^*(s,a;t) + \Delta_{\cl{M}} \\
+                &\leq Q^*(s,a';t) \\
+                &\leq Q_{\sft}^*(s,a';t).
         \end{align}
-
-
-
-
-
-
-
-
-        \subsubsection{The AR-DENTS Process}
         
+        ($\Rightarrow$) To show that $Q_{\sft}^*(s,a;t)<Q_{\sft}^*(s,a';t) \Rightarrow Q^*(s,a;t) < Q^*(s,a';t)$ it is easier to show the contrapostive instead, which is $Q^*(s,a;t) \geq Q^*(s,a';t) \Rightarrow Q_{\sft}^*(s,a;t)\geq Q_{\sft}^*(s,a';t)$. Given that it is assumed that $(a,a')\in\delta(s,t)$, the following implications hold:
+        \begin{align}
+            Q^*(s,a;t) &\geq Q^*(s,a';t) \\
+            \Rightarrow Q^*(s,a;t) &> Q^*(s,a';t) \\
+            \Rightarrow Q_{\sft}^*(s,a;t) &> Q_{\sft}^*(s,a';t) \label{eq:reuse_proof} \\
+            \Rightarrow Q_{\sft}^*(s,a;t) &\geq Q_{\sft}^*(s,a';t),
+        \end{align}
+        where the first implication uses that $(a,a')\in\delta(s)$, the second reuses the ($\Leftarrow$) proof. \todo{Try to respect reader more, dont need to explain the last line... (e.g. cut after this)}, and the final implication holds generally. 
+    \end{proof}
 
 
 
@@ -750,504 +1128,260 @@
 
 
 
+%%%%
+% THEORY - Simple Regret
+%%%%
 
-        \subsubsection{The (AR-)BTS process.}
-        %
-        The (AR-)BTS process is a special case of the (AR-)DENTS process when $\betadents(x)=0$. As such, results about BTS will be corollaries from proofs about the (AR-)DENTS process.
+\subsection{Simple regret} \label{app:simple_regret_results}
 
+    \todo{DEFINITELY APPENDIX MATERIAL}
 
-
-
-
-
-
-
-
-
-
-
-
-    %%%%
-    % THEORY - Preliminaries (for exp bound stuff)
-    %%%%
+    This section revisits \textit{simple regret} in more detail. Recall the definition of simple regret \todo{double check this is correct notation (brain ded today)}:
+    %
+    \begin{align} 
+        \sreg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
+    \end{align}
+    %
+    where $\psi^n$ is the policy recommended after $n$ rounds or trials. This definition is different to what has been considered by the tree search literature so far \todo{cite: mcts\_simple\_regret,brue1}. However, this definition is a more natural extension to the simple regret considered for multi-armed bandit problems \todo{cite: simple\_regret\_short,simple\_regret\_long}, as it stems from a more general MDP planning problem that does not have to be solved using a tree search. For example, consider a non-tree search algorithm that outputs a recommendation policy rather than one action at a time. Besides, the difference can be reconciled by showing that any bound that holds for one definition also holds for the other. 
     
-    \subsection{Preliminaries - Exp}
+    Define the \textit{simple regret of an action} (or \textit{immediate simple regret}) as:
+    %
+    \begin{align}
+        \immreg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)].
+    \end{align}
+    
+    and we show that any asymptotic upper bounds provided on the two definitions are equivalent up to a multiplicative factor. 
 
+
+
+
+
+
+    From this definition of immediate simple regret, \todo{any big-O bounds on simple regret hold if and only if the same big-O bound holds for the immediate simple regret.}
+
+    \begin{lemma} \label{lem:imm_simple_regret}
+        $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$.
+    \end{lemma}
+    \begin{proof}
+        Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
+        \begin{align}
+            \sreg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
+                    \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
+                    \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
+                    &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
+                    &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
+                        V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
+                =& \immreg(s,\psi^n) + 
+                    \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\sreg(s_{t+1},\psi^n)], \label{eq:regret_relation}
+        \end{align}
+        where line (\ref{eq:simple_reg}) uses $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
         
+        This shows that if $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\immreg(s_t,\psi^n)\leq \bb{E}\sreg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\sreg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$, then:
+        \begin{align}
+            \bb{E}\sreg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
+        \end{align}
+        where the outer expectation is with respect $\psi^n$ (as the recommendation policy is the output of a random process).
+    \end{proof}
+
+
+
+
+
+    \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
     
+    \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
+
+    % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
     
-    
-    
-    
-    
-        \todo{This section contains things related to exponential bounds, which might move to appendix}
-        This subsection contains lemmas that will be useful in multiple times and are used to avoid repeating the same argument multiple times. 
-
-        
-        \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
-
-
-
-
-
-        Firstly it will be that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound \todo{ref?} \todo{it is stated here so that it can be referenced, because this fact is used regularly }
-        %
-        \todo{Some comment about how this is just a special case of the union bound (and ref that?) and also }
-        %
-        \begin{lemma} \label{lem:union_bound}
-            Let $A_1,...,A_{\ell}$ be some events that satisfy for $1\leq i \leq \ell$ the inequality $\Pr(\lnot A_i) \leq C_i\exp(-k_i)$ then:
-            \begin{align}
-                \Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\leq C\exp(-k), \label{appeq:comb_exp_like} \\
-                \Pr\left(\bigcap_{i=1}^\ell A_i\right) = 1-\Pr\left(\bigcup_{i=1}^\ell \lnot A_i\right) &\geq 1-C\exp(-k), \label{appeq:exp_likely}
-            \end{align}
-            where $C=\sum_{i=1}^\ell C_i$ and $k = \min_i k_i$.
-        \end{lemma}
-        \begin{proofoutline}
-            Lemma \ref{lem:union_bound} is a consequence of the union bound, using $\exp(k_i)\leq\exp(k)$ and simplifying. Inequality (\ref{appeq:exp_likely}) is just a negation of Inequality (\ref{appeq:comb_exp_like}).
-        \end{proofoutline}
-
-
-
-
-
-
-        
-        The following two lemma's show that the MENTS and DENTS processes always have a minimum probability of picking any action. \todo{not in good headspace writing up these two lemmas. Do a clean up, double checking maths and that have eliminated using 'we' and so on}
-        %
-        \begin{lemma} \label{lem:min_prob_ments}
-            For any MENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpiments{m}(a_t|s_t)\geq\pi^{\min}$.
-        \end{lemma}
-        %
-        \begin{proofoutline}
-            \todo{Fix N having to be N(s,m) not N(s) etc}
-            Define the $Q^{\min}$ function as follows:
-            \begin{align}
-                Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
-            \end{align}
-            \todo{clean up with respect to init function}
-            
-            And define the $V^{\max}$ function as:
-            \begin{align}
-                V^{\max}(s_t) &= \alphaments \log \sum_{a\in\cl{A}} \exp (Q^{\max}(s_t,a)/\alphaments), \label{appeq:vmax} \\
-                Q^{\max}(s_t,a_t) &= R(s_t,a_t)+\max_{s_{t+1}\in\suc{s_t}{a_t}} V^{\max}(s_{t+1}).
-            \end{align}
-            
-            Via induction, it is possible to show that $Q^{\min}(s_t,a_t)\leq \mQments{N(s_t,a_t,m)}(s_t,a_t)$ and $V^{\max}(s_t)\geq \mVments{N(s_t,m)}(s_t)$ for any arbitrary $s_t,a_t$ and $m$. Now, define $\pi^{\min}$ as:
-            \begin{align}
-                \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V^{\max}(s)\right)/\alpha\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min}
-            \end{align}
-            
-            Because the value of an exponential is positive, as is $1/|\cl{A}|$, it follows that $\pi^{\min}>0.$ Recall the MENTS policy (Equation (\ref{appeq:ments_soft_policy})). By the monotonicity of the exponential function, it follows that for any $s_t\in\cl{S}, a_t\in\cl{A}, n\in\bb{N}$:
-            \begin{align}
-                \mpiments{m}(a_t|s_t) 
-                    =& (1-\lambda(s_t,m))\exp\left(\left(\frac{1}{\alphaments}\left(\mQments{N(s_t,a_t,m)}(s_t,a_t)-\mVments{N(s_t,m)}(s_t)\right)\right)\right) 
-                        + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
-                    \geq& (1-\lambda(s_t,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V^{\max}(s_t)\right)/\alpha\right) 
-                        + \frac{\lambda(s_t,m)}{|\cl{A}|} \\
-                    \geq& \pi^{\min}.
-            \end{align}
-        \end{proofoutline}
-            
-            
-
-
-
-
-
-        \todo{this lemma requires} $\betadents(x) < U$ for all $x$, or $\betadents$ is bounded. AND it requires $\alphadents(x) < U'$ so $\alphadents$ to be bounded.
-        %
-        \begin{lemma} \label{lem:min_prob_dents}
-            For any DENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpidents{m}(a_t|s_t)\geq\pi^{\min}$.
-        \end{lemma}
-        %
-        \begin{proofoutline}
-            This proof outline follows similar reasoning to Lemma \ref{lem:min_prob_ments}. The same definition for $Q^{\min}$ can be used:
-            \begin{align}
-                Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
-            \end{align}
-            \todo{clean up with respect to init function}
-
-            However, the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) needs to altered to:
-            \begin{align}
-                V^{\max}(s_t) &= \max_{a\in\cl{A}} Q^{\max}(s_t,a) \\
-                Q^{\max}(s_t,a_t) &= R(s_t,a_t) + \max_{s'\in\suc{s_t}{a_t}} V^{\max}(s') \\
-                V_\rho^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + \beta_{\max}H\log|\cl{A}| \right)/\alpha\right), 
-            \end{align}
-            \todo{clean up the use of alpha in this one. Should be alpha max (and also define alpha max), and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
-            \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
-            %
-            where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ \todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
-            
-            Define $\pi^{\min}$ similarly to Equation (\ref{eq:pi_min}), with the updated definition of $V_\rho^{\max}$: 
-            \begin{align}
-                \pi^{\min} = \inf_{\lambda\in[0,1]} \min_{(s,a)\in\cl{S}\times\cl{A}} (1-\lambda) \exp\left(\left(Q^{\min}(s,a)-V_\rho^{\max}(s)\right)/\alpha_{\max}\right) + \frac{\lambda}{|\cl{A}|}. \label{eq:pi_min_dents}
-            \end{align}
-            %
-            where $\alpha_{\max}=\sum_x \alphadents(x)$ \todo{double check this is right}. Recalling the DENTS policy (Equation (\ref{appeq:dents_search_policy_exact})), and using similar reasoning to before, as well as $\betadents(N(s,m))\mHQdents{N(s,a)}(s,a) \geq 0$, the result follows:
-            %
-            \begin{align}
-                \mpidents{m}(a_t|s_t) 
-                    =& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
-                        \left(\mQdents{N(s,a,m)}(s,a) 
-                        + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) 
-                        - \mVrhodents{N(s,m)}(s) \right)\right) 
-                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
-                    \geq& (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}
-                        \left(\mQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) 
-                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
-                    \geq& (1-\lambda(s,m))\exp\left(\left(Q^{\min}(s_t,a_t)-V_\rho^{\max}(s_t)\right)/\alpha_{\max}\right) 
-                        + \frac{\lambda(s,m)}{|\cl{A}|} \\
-                    \geq& \pi^{\min}.
-            \end{align}
-        \end{proofoutline}
-
-
-
-
-
-
-    
-    
-        Additionally, Hoeffding's inequality will be useful to bound the difference between a sum of indicator random variables and its expectation. 
-        \begin{theorem} \label{thrm:hoeffding}
-            Let $\{X_i\}_{i=1}^k$ be indicator random variables (i.e. $X_i\in\{0,1\}$), and $S_k=\sum_{i=1}^k X_i$. Then Hoeffding's inequality for indicator random variables states for any $\varepsilon > 0$ that:
-            \begin{align}
-                \Pr(|S_k - \bb{E}S_k|>\varepsilon)\leq 2\exp\left(-\frac{2\varepsilon^2}{k}\right).
-            \end{align}
-        \end{theorem}
-        \begin{proof}
-            This is a specific case of Hoeffding's inequality. See \todo{add cite} %\citeapp{hoeffding1994probability} 
-            for proof.
-        \end{proof}
-    
-
-
-
-
-
-
-
-
-
-    
-        It will also be convenient to be able to `translate' bounds that depend on some $N(s,a,m)$ to a corresponding bound on $N(s,m)$:
-        \begin{lemma} \label{lem:sa_to_s}
-            Consider any Boltzmann MCTS process. Suppose that every action $a_t$ has some minimum probability $\eta$ of being chosen from some state $s_t$ (irrespective of the number of trials), i.e. $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$. And suppose for some $C',k'>0$ that some event $E$ admits a bound:
-            \begin{align}
-                \Pr(E) \leq C'\exp(-k'N(s_t,a_t,m)). \label{eq:sa_to_s_assume_bound}
-            \end{align}
-            
-            Then, there exists $C,k>0$ such that:
-            \begin{align}
-                \Pr(E) \leq C\exp(-k N(s_t,m)). 
-            \end{align}
-        \end{lemma}
-        
-        \begin{proof}
-            \todo{Define m again somewhere?}
-            Recall from Equation (\ref{appeq:nsa_sum}) that $N(s_t,a_t,m)=\sum_{i\in T(s_t,m)} \one[a^i_t=a_t] = \sum_{i\in T(s_t,m)} \one[a^i_t=a_t | s^i_t=s_t]$. By taking expectations and using the assumed $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$ it follows that $\bb{E}N(s_t,a_t,m) \geq \eta N(s_t,m)$ (and more specifically as a consequence $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$). The probability of $N(s_t,a_t,m)$ being below a multiplicative ratio of $N(s_t,m)$ is bounded as follows:
-            \begin{align}
-                & \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
-                    \leq & \Pr\left(N(s_t,a_t,m) < \bb{E}N(s_t,a_t,m) - \frac{1}{2}\eta N(s_t,m)\right) \\
-                    = & \Pr\left(\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m) > \frac{1}{2}\eta N(s_t,m)\right) 
-                        \label{local:seven} \\
-                    \leq & \Pr\left(|\bb{E}N(s_t,a_t,m) - N(s_t,a_t,m)| > \frac{1}{2}\eta N(s_t,m)\right) 
-                        \label{local:six} \\
-                    \leq & 2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right). \label{eq:bound_nsa}
-            \end{align}
-            
-            The first inequality follows from $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$, the second line is a rearrangement, the third line comes from the inequality in (\ref{local:seven}) implying the inequality in (\ref{local:six}), and the final line uses Theorem \ref{thrm:hoeffding}, a Hoeffding bound for the sum of indicator random variables. 
-            
-            Finally, the bound using $N(s_t,a_t,m)$ can be converted into one depending on $N(s_t,m)$ using the law of total probability as follows:
-            \begin{align}
-                \Pr\left( E \right)
-                    = & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) 
-                        \Pr\left(N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \nonumber \\
-                      & + \Pr\left( E \bigg| N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) 
-                        \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
-                    \leq & \Pr\left( E \bigg| N(s_t,a_t,m) \geq \frac{1}{2}\eta N(s_t,m)\right) \cdot 1 \nonumber \\
-                        & + 1 \cdot \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
-                    \leq & C'\exp\left(-\frac{1}{2}k'\eta N(s_t,m) \right) + 
-                        2\exp\left(-\frac{1}{2}\eta^2N(s_t,m)\right) \label{local:eight} \\
-                    \leq & C\exp(-k N(s_t,m)), \label{local:eighttwo}
-            \end{align}
-            where (\ref{local:eight}) uses the assumed Inequality (\ref{eq:sa_to_s_assume_bound}) with the condition $N(s_t,a_t) \geq \eta N(s_t)/2$, and also uses the bound from (\ref{eq:bound_nsa}). The final inequality (\ref{local:eighttwo}) follows from Lemma \ref{lem:union_bound}, with $C=C'+2$ and $k = \min(-k'\eta/2, -\eta^2/2)$.
-        \end{proof}
-    
-    
-    
-    
-
-
-
-
-
-        \todo{here here here. Next time = consider just defining a logsumexp function, and define the temp to have at zero it equal to max. Also finish writing up the preliminaries (commented out below)}
-
-
-
-
-
-
-    
-    
-        Similar to Lemma \ref{lem:sa_to_s}, if we have some $s'\in\suc{s}{a}$, it will also be convenient to be able to translate bounds that depend on $N(s')$ into bounds that depend on $N(s,a)$:
-        \begin{lemma} \label{lem:s_to_sa}
-            Consider any Boltzmann MCTS process. For some state action pair $(s_t,a_t)$, and for some $s'_{t+1}\in\suc{s_t}{a_t}$, suppose for some $C',k'>0$ that some event $E$ admits a bound:
-            \begin{align}
-                \Pr(E) \leq C'\exp(-k'N(s'_t)).
-            \end{align}
-            Then, there exists $C,k>0$ such that:
-            \begin{align}
-                \Pr(E) \leq C\exp(-k N(s_t,a_t)).
-            \end{align}
-        \end{lemma}
-        \begin{proofoutline}
-            Proof is similar to Lemma \ref{lem:sa_to_s}. Instead of having a minimum probability of selecting an action $\eta$, replace it with the corresponding probability from the transition distribution $p(s_{t+1}|s_t,a_t)$. Then swapping any $N(s_t)$ with $N(s_t,a_t)$, any $N(s_t,a_t)$ with $N(s'_t)$, and using $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$ (Equation (\ref{appeq:ns_sum})) as the sum of indicator random variables will give the result.
-        \end{proofoutline}
-
-
-
-
-
-
-
-
-
-
-
-
-
-        %%%%
-        % THEORY - Maximum Entropy RL
-        %%%%
-
-        \subsection{Maximum Entropy Reinforcement Learning} \label{app:soft_learning_results}
-        
-            \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}  
-
-            \todo{DEFINITELY APPENDIX MATERIAL}
-
-            This subsection shows some basic results that relate the maximum entropy and standard objectives, which will be used to show results about MENTS. This subsection temporarily reintroduces the time-step parameter into value functions to simplify other notation. Two results about soft Q-values are given: first, that the optimal standard Q-value is less than the optimal soft Q-value, and secondly, that given a sufficiently small temperature, the optimal soft Q-values will preserve any \textit{strict} ordering over actions given by the optimal standard Q-values. 
-
-
-
-
-
-
-
-            \todo{recall the max entropy objective, and ref that below}
-
-            For some policy $\pi$, the definition of $V^{\pi}_{\sft}$ (Equation (\todo{ref})) can be re-arranged, to give a relation between the soft Q-value, the standard Q-value and the entropy of the policy:
-            \begin{align}
-                Q^{\pi}_{\sft}(s,a;t) &= Q^{\pi}(s,a;t) 
-                    + \alpha \bb{E}_{\pi}\left[
-                        \sum_{i=t+1}^H \cl{H}\left(\pi(\cdot|s_i)\right) \Bigg| s_t=s, a_t=a
-                        \right],  \\
-                    &= Q^{\pi}(s,a;t) 
-                    + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a), \label{eq:soft_standard_rel}
-            \end{align}
-            %
-            where $\cl{H}_{t+1}$ is used as a shorthand for the entropy term. By using this relation, it can be shown that the optimal soft Q-value will always be at least as large as the optimal standard Q-value:
-            %
-            \begin{lemma} \label{lem:soft_geq_standard}
-                $Q^*(s,a;t) \leq Q_{\textnormal{sft}}^*(s,a;t).$
-            \end{lemma}
-            \begin{proof}
-                Taking a maximum over policies in Equation (\ref{eq:soft_standard_rel}), and considering that $\pi^*$, the optimal standard policy, is one of the possible policies considered in the maximisation, gives the result:
-                \begin{align}
-                    Q_{\sft}^*(s,a;t) &= \max_\pi \left(Q^{\pi}(s,a;t) + \alpha\cl{H}_{t+1}(\pi|s_t=s,a_t=a)\right) \\
-                        &\geq Q^{\pi^*}(s,a;t) + \alpha\cl{H}_{t+1}(\pi^*|s_t=s,a_t=a) \\
-                        &\geq Q^*(s,a;t).
-                \end{align} 
-                %
-                Noting that the entropy function is non-negative function.
-            \end{proof}
-
-
-
-
-
-
-
-            \todo{make below a defn? ALSO THIS DEFN IS NOT APPENDIX MATERIAL}
-
-            The optimal soft and standard values can be `tied together' by picking a very low temperature. Let $\delta(s,t)$ be the set of actions that have different optimal standard Q-values, that is $\delta(s,t)=\{(a,a')|Q^*(s,a;t)\neq Q^*(s,a';t)\}$. Now define $\Delta_{\cl{M}}$ as follows:
-            \begin{align}
-                \Delta_{s,t} &= \min_{(a,a')\in\delta(s,t)} |Q^*(s,a;t)-Q^*(s,a';t)|, \\
-                \Delta_{\cl{M}} &= \min_{s,t} \Delta_{s,t}. \label{eq:delta}
-            \end{align}
-        
-            Note in particular, for some $(a,a')\in\delta(s,t)$ that the definition of $\Delta_{\cl{M}}$ implies that if $Q^*(s,a;t)<Q^*(s,a';t)$ then 
-            \begin{align}
-                Q^*(s,a;t)+\Delta_{\cl{M}}\leq Q^*(s,a';t). \label{appeq:delta_diff}
-            \end{align}
-
-            
-            Using this problem dependent constant, $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$ is a sufficient condition for the optimal standard and optimal soft policies to coincide, a consequence of the following Lemma.
-
-            \begin{lemma} \label{lem:soft_standard_consistent_order}
-                If $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, then for all $t=1,...,H$, for all $s\in\cl{S}$ and for all $(a,a')\in\delta(s,t)$ we have $Q_{\textnormal{sft}}^*(s,a;t)<Q_{\textnormal{sft}}^*(s,a';t)$ iff $Q^*(s,a;t) < Q^*(s,a';t)$.
-            \end{lemma}
-            \begin{proof}
-                $(\Leftarrow)$ First consider that the optimal soft Q-value is less than or equal to the optimal standard Q-value and maximum possible entropy:
-                \begin{align}
-                    Q_{\textnormal{sft}}^*(s,a;t) &= \max_\pi \left(Q^{\pi}(s,a;t) + \alpha\cl{H}_{t+1}(\pi)\right) \\
-                        &\leq \max_\pi Q^{\pi}(s,a;t) + \max_\pi \alpha\cl{H}_{t+1}(\pi) \label{appeq:softdiv} \\
-                        &= Q^*(s,a;t) + \alpha (H-t)\log |\cl{A}| \\
-                        &\leq Q^*(s,a;t) + \alpha H\log |\cl{A}|.
-                \end{align}
-                
-                Then, using $\alpha < \Delta_{\cl{M}} / H\log |\cl{A}|$, $Q^*(s,a;t)+\Delta_{\cl{M}}\leq Q^*(s,a';t)$ and $Q^*(s,a';t)\leq Q_{\sft}(s,a;t)$ from Lemma \ref{lem:soft_geq_standard} gives the desired inequality:
-                \begin{align}
-                    Q_{\sft}^*(s,a;t) &\leq Q^*(s,a;t) + \alpha H\log |\cl{A}| \\
-                        &< Q^*(s,a;t) + \Delta_{\cl{M}} \\
-                        &\leq Q^*(s,a';t) \\
-                        &\leq Q_{\sft}^*(s,a';t).
-                \end{align}
-                
-                ($\Rightarrow$) To show that $Q_{\sft}^*(s,a;t)<Q_{\sft}^*(s,a';t) \Rightarrow Q^*(s,a;t) < Q^*(s,a';t)$ it is easier to show the contrapostive instead, which is $Q^*(s,a;t) \geq Q^*(s,a';t) \Rightarrow Q_{\sft}^*(s,a;t)\geq Q_{\sft}^*(s,a';t)$. Given that it is assumed that $(a,a')\in\delta(s,t)$, the following implications hold:
-                \begin{align}
-                    Q^*(s,a;t) &\geq Q^*(s,a';t) \\
-                    \Rightarrow Q^*(s,a;t) &> Q^*(s,a';t) \\
-                    \Rightarrow Q_{\sft}^*(s,a;t) &> Q_{\sft}^*(s,a';t) \label{eq:reuse_proof} \\
-                    \Rightarrow Q_{\sft}^*(s,a;t) &\geq Q_{\sft}^*(s,a';t),
-                \end{align}
-                where the first implication uses that $(a,a')\in\delta(s)$, the second reuses the ($\Leftarrow$) proof. \todo{Try to respect reader more, dont need to explain the last line... (e.g. cut after this)}, and the final implication holds generally. 
-            \end{proof}
-
-
-
-
-        %%%%
-        % THEORY - Simple Regret
-        %%%%
-
-        \subsection{Simple regret} \label{app:simple_regret_results}
-
-            \todo{DEFINITELY APPENDIX MATERIAL}
-    
-            This section revisits \textit{simple regret} in more detail. Recall the definition of simple regret \todo{double check this is correct notation (brain ded today)}:
-            %
-            \begin{align} 
-                \sreg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
-            \end{align}
-            %
-            where $\psi^n$ is the policy recommended after $n$ rounds or trials. This definition is different to what has been considered by the tree search literature so far \todo{cite: mcts\_simple\_regret,brue1}. However, this definition is a more natural extension to the simple regret considered for multi-armed bandit problems \todo{cite: simple\_regret\_short,simple\_regret\_long}, as it stems from a more general MDP planning problem that does not have to be solved using a tree search. For example, consider a non-tree search algorithm that outputs a recommendation policy rather than one action at a time. Besides, the difference can be reconciled by showing that any bound that holds for one definition also holds for the other. 
-            
-            Define the \textit{simple regret of an action} (or \textit{immediate simple regret}) as:
-            %
-            \begin{align}
-                \immreg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)].
-            \end{align}
-            
-            and we show that any asymptotic upper bounds provided on the two definitions are equivalent up to a multiplicative factor. 
-    
-    
-    
-    
-    
-    
-            From this definition of immediate simple regret, \todo{any big-O bounds on simple regret hold if and only if the same big-O bound holds for the immediate simple regret.}
-        
-            \begin{lemma} \label{lem:imm_simple_regret}
-                $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$.
-            \end{lemma}
-            \begin{proof}
-                Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
-                \begin{align}
-                    \sreg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
-                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
-                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
-                            \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
-                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
-                            \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
-                            &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
-                        =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
-                            &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
-                                V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
-                        =& \immreg(s,\psi^n) + 
-                            \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\sreg(s_{t+1},\psi^n)], \label{eq:regret_relation}
-                \end{align}
-                where line (\ref{eq:simple_reg}) uses $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
-                
-                This shows that if $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\immreg(s_t,\psi^n)\leq \bb{E}\sreg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\sreg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$, then:
-                \begin{align}
-                    \bb{E}\sreg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
-                \end{align}
-                where the outer expectation is with respect $\psi^n$ (as the recommendation policy is the output of a random process).
-            \end{proof}
-    
-    
-    
-    
-    
-            \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
-            
-            \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
-
-            % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
-            
-            % \begin{corollary} \label{cor:imm_to_full_simple_regret}
-            %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\sreg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\immreg(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
-            % \end{corollary}
-            % \begin{proofoutline}
-            %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
-            % \end{proofoutline}
+    % \begin{corollary} \label{cor:imm_to_full_simple_regret}
+    %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\sreg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\immreg(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
+    % \end{corollary}
+    % \begin{proofoutline}
+    %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
+    % \end{proofoutline}
    
     
 
 
 
-        %%%%
-        % THEORY - Simple Regret
-        %%%%
+%%%%
+% THEORY - Q Value Convergence (exp bounds)
+%%%%
 
 
-        \subsection{General Q-value convergence result} \label{app:q_result}
+\subsection{General Q-value convergence result} \label{app:q_result}
+
+    \todo{This section contains things related to exponential bounds, which might move to appendix}
+
+    Recall the (soft) Q-value backups used by Boltzmann MCTS processes (Equations (\ref{appeq:soft_q_backup}) and (\ref{appeq:dp_q_backup})). Considering that these backups are of identical form, a reward \todo{plus an empirical averaging of child nodes / MC estimate of expected child value.} \todo{clean up old writing: Considering that the backups for MENTS and DENTS processes are of similar form, we will show that generally, backups of that form converge (exponentially), given that the values at any child nodes also converge (exponentially). However, towards showing this, we first need to consider the concentration of the empirical transition distribution around the true transition distribution.}
+
+
+
+
+
+
+    
+
+    \begin{theorem} \label{thrm:dkw_inequality}
+        Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
+        \begin{align}
+            \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        See \todo{fix cite}%\citeapp{dvoretzky1956asymptotic}.
+    \end{proof}
+
+
+
+
+
+
+
+    
+
+    The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
+    %
+    \begin{corollary} \label{cor:bound_transition_distribution}
+        Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
+        \begin{align}
+            \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
+        \end{align}
+    \end{corollary}
+    \begin{proofoutline}
+        By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
+
+        To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+    
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
+        \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+        \label{fig:dkw_diag}
+    \end{figure}
+
+
+
+
+
+
+
         
-            \todo{This section contains things related to exponential bounds, which might move to appendix}
+
+
+    Now that Corollary \ref{cor:bound_transition_distribution} can be used to bound  the empirical transition distribution to the true transition distribution,  a general purpose concentration inequality for Q-values can be proved for use in later proofs.
     
-            Recall the (soft) Q-value backups used by Boltzmann MCTS processes (Equations (\ref{appeq:soft_q_backup}) and (\ref{appeq:dp_q_backup})). Considering that these backups are of identical form, a reward \todo{plus an empirical averaging of child nodes / MC estimate of expected child value.} \todo{clean up old writing: Considering that the backups for MENTS and DENTS processes are of similar form, we will show that generally, backups of that form converge (exponentially), given that the values at any child nodes also converge (exponentially). However, towards showing this, we first need to consider the concentration of the empirical transition distribution around the true transition distribution.}
-    
-    
-    
-    
-    
-    
-            
+    \begin{lemma} \label{lem:stochastic_step}
+        Consider any Boltzmann MCTS process, and some state action pair $(s_t,a_t)\in\cl{S}\times\cl{A}$. Let $\dot{V}^{N(s,n)}(s):\cl{S}\rightarrow \bb{R}$, $\dot{V}^*(s):\cl{S}\rightarrow \bb{R}$ be some estimated and optimal value functions respectively and suppose that for all $s_{t+1}\in\suc{s_t}{a_t}$ that there is some $C_{s_{t+1}}, k_{s_{t+1}}>0$ such that for all $\varepsilon_0 >0$:
+        \begin{align}
+            \Pr\left(\left| \dot{V}^{N(s_{t+1})}(s_{t+1}) - \dot{V}^*(s_{t+1}) \right| > \varepsilon_0 \right) \leq C_{s_{t+1}}\exp(-k_{s_{t+1}}\varepsilon_0^2 N(s')).
+        \end{align}
         
-            \begin{theorem} \label{thrm:dkw_inequality}
-                Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
-                \begin{align}
-                    \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
-                \end{align}
-            \end{theorem}
-            \begin{proof}
-                See \todo{fix cite}%\citeapp{dvoretzky1956asymptotic}.
-            \end{proof}
-    
-    
-    
-    
-    
-    
-    
-            
+        If the optimal and estimated Q-values are defined as follows: 
+        \begin{align}
+            \dot{Q}^*(s,a)&=R(s,a)+\bb{E}_{s'\sim p(\cdot|s,a)}\left[\dot{V}^*(s')\right], \\
+            \dot{Q}^{N(s,a,n)}(s,a)&=R(s,a)+\sum_{s'\in\suc{s}{a}} \left[
+                \frac{N(s',n)}{N(s,a,n)} \dot{V}^{N(s',n)}(s')\right].
+        \end{align}
         
-            The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
-            %
-            \begin{corollary} \label{cor:bound_transition_distribution}
-                Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
-                \begin{align}
-                    \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
-                \end{align}
-            \end{corollary}
-            \begin{proofoutline}
-                By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
+        Then there exists some $C,k>0$, for all $\varepsilon>0$ such that:
+        \begin{align}
+            \Pr\left(\left| \dot{Q}^{N(s,a,n)}(s,a) - \dot{Q}^*(s,a) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s,a,n)).
+        \end{align}
+    \end{lemma}
+    
+    \begin{proof}
+        By the assumed bounds, Lemma \ref{lem:union_bound} and Lemma \ref{lem:s_to_sa}, there is some $C_1,k_1>0$, such that for any $\varepsilon_1 >0$:
+        \begin{align}
+            \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t)). \label{local:one}
+        \end{align}
 
-                To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
-            \end{proofoutline}
+        And recall that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$, using Corollary \ref{cor:bound_transition_distribution} that:
+        \begin{align}
+            \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}} 
+                \left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| 
+                \leq \varepsilon_2 \right) 
+                    > 1 - 2 \exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right). \label{local:two}
+        \end{align}
+        
+        If the events in Inequalities (\ref{local:one}) and (\ref{local:two}) hold, then the following inequalities must also hold:
+        \begin{align}
+            \dot{V}^*(s_{t+1})- \varepsilon_1 
+                &\leq \dot{V}^{N_n(s_{t+1},n)}(s_{t+1}) 
+                \leq \dot{V}^*(s_{t+1})+ \varepsilon_1 \\
+            p(s_{t+1}|s_t,a_t) - \varepsilon_2 
+                &\leq \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} 
+                \leq p(s_{t+1}|s_t,a_t) + \varepsilon_2.
+        \end{align} 
+        
+        The upper bounds on $\dot{V}^{N_n(s_{t+1},n)}(s_{t+1})$ and $N(s_{t+1},n)/N(s_t,a_t,n)$ can be used to obtain an upper bound on $\dot{Q}^{N(s_t,a_t,n)}(s_t,a_t)$: 
+        \begin{align}
+            &\dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) \\
+                =& R(s_t,a_t) 
+                    + \sum_{s_{t+1}\in\suc{s_t}{a_t}}\frac{N(s_{t+1},n)}{N(s_t,a_t,n)} 
+                        \dot{V}^{N(s_{t+1},n)}(s_{t+1}) \\
+                \leq& R(s_t,a_t) 
+                    + \sum_{s_{t+1}\in\suc{s_t}{a_t}}(p(s_{t+1}|s_t,a_t)+\varepsilon_2)
+                        (\dot{V}^*(s_{t+1})+\varepsilon_1) \\
+                =& R(s_t,a_t) 
+                    + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
+                    + \varepsilon_1 
+                    + \varepsilon_2\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1}) 
+                    + \varepsilon_1 \varepsilon_2 \\
+                \leq& R(s_t,a_t) 
+                    + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
+                    + \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    + \varepsilon_2 + \varepsilon_1 \varepsilon_2 \\
+                =& \dot{Q}^*(s_t,a_t) 
+                    + \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    + \varepsilon_2 
+                    + \varepsilon_1 \varepsilon_2.
+        \end{align}
+        
+        Following the same reasoning but using the lower bounds on $\dot{V}^{N_n(s_{t+1},n)}(s_{t+1})$ and $N(s_{t+1},n)/N(s_t,a_t,n)$ gives:
+        \begin{align}
+            \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) 
+                &\geq \dot{Q}^*(s_t,a_t) 
+                    - \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    - \varepsilon_2 
+                    + \varepsilon_1 \varepsilon_2.
+        \end{align}
+        
+        Now given an arbitrary $\varepsilon >0$, setting $\varepsilon_1 = \min(\varepsilon/3, \varepsilon/3|\sum_{s_{t+1}} \dot{V}^*(s_{t+1})|)$ and $\varepsilon_2 = \varepsilon/3$ then gives:
+        %
+        \begin{align}
+            \dot{Q}^*(s_t,a_t) - \varepsilon \leq \dot{Q}^{N(s_t,a_t)}(s_t,a_t) \leq \dot{Q}^*(s_t,a_t) + \varepsilon.
+        \end{align}
+        
+        Using Lemma \ref{lem:union_bound} liberally, there is some $C_2,C_3,k_2,k_3>0$ such that:
+        \begin{align}
+            &\Pr\left(\left| \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| \leq \varepsilon \right) \\
+                >& \left(1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t))\right) \left(1-2\exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right)\right) \\
+                =& \left(1-C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t) \right) \cdot \left(1-C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)\right) \\
+                =& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)) \notag \\
+                    &+ C_2C_3\exp(-(k_2+k_3)\varepsilon^2 N(s_t,a_t) ) \\
+                >& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)).
+        \end{align}
+        
+        Finally, by negating and setting $C=C_2+C_3$ and $k=\min(k_2,k_3)$ the result follows:
+        \begin{align}
+                \Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s_t,a_t)).
+        \end{align}
+    \end{proof}
 
 
 
@@ -1257,13 +1391,6 @@
 
 
 
-            
-            \begin{figure}
-                \centering
-                \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-                \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
-                \label{fig:dkw_diag}
-            \end{figure}
 
 
 
@@ -1273,7 +1400,11 @@
 
 
 
-            \todo{HERE HERE HERE, CONTINUE.}
+    \todo{HERE HERE HERE HERE HERE}
+
+
+
+
 
 
 

@@ -5203,93 +5203,93 @@ These appendices are structured as follows:
 
 
 
+        % DONE
     
-    
-        Now that Corollary \ref{cor:bound_transition_distribution} can be used to bound  the empirical transition distribution to the true transition distribution, we can provide a general purpose concentration inequality for Q-values to use in later proofs.
+        % Now that Corollary \ref{cor:bound_transition_distribution} can be used to bound  the empirical transition distribution to the true transition distribution, we can provide a general purpose concentration inequality for Q-values to use in later proofs.
         
-        \begin{lemma} \label{lem:stochastic_step}
-            Consider any Boltzmann MCTS process, and some state action pair $(s_t,a_t)\in\cl{S}\times\cl{A}$. Let $\dot{V}^{N(s)}(s):\cl{S}\rightarrow \bb{R}$, $\dot{V}^*(s):\cl{S}\rightarrow \bb{R}$ be some estimated and optimal value functions respectively and suppose that for all $s_{t+1}\in\succc{s_t}{a_t}$ that:
-            \begin{align}
-                \Pr\left(\left| \dot{V}^{N(s_{t+1})}(s_{t+1}) - \dot{V}^*(s_{t+1}) \right| > \varepsilon_1 \right) \leq C_{s_{t+1}}\exp(-k_{s_{t+1}}\varepsilon_1^2 N(s')).
-            \end{align}
+        % \begin{lemma} \label{lem:stochastic_step}
+        %     Consider any Boltzmann MCTS process, and some state action pair $(s_t,a_t)\in\cl{S}\times\cl{A}$. Let $\dot{V}^{N(s)}(s):\cl{S}\rightarrow \bb{R}$, $\dot{V}^*(s):\cl{S}\rightarrow \bb{R}$ be some estimated and optimal value functions respectively and suppose that for all $s_{t+1}\in\succc{s_t}{a_t}$ that:
+        %     \begin{align}
+        %         \Pr\left(\left| \dot{V}^{N(s_{t+1})}(s_{t+1}) - \dot{V}^*(s_{t+1}) \right| > \varepsilon_1 \right) \leq C_{s_{t+1}}\exp(-k_{s_{t+1}}\varepsilon_1^2 N(s')).
+        %     \end{align}
             
-            If we have optimal and estimated Q-values defined as follows: 
-            \begin{align}
-                \dot{Q}^*(s,a)&=R(s,a)+\bb{E}_{s'\sim p(\cdot|s,a)}\left[\dot{V}^*(s')\right], \\
-                \dot{Q}^{N(s,a)}(s,a)&=R(s,a)+\sum_{s'\in\succc{s}{a}} \left[\frac{N(s')}{N(s,a)} \dot{V}^{N(s')}(s')\right].
-            \end{align}
+        %     If we have optimal and estimated Q-values defined as follows: 
+        %     \begin{align}
+        %         \dot{Q}^*(s,a)&=R(s,a)+\bb{E}_{s'\sim p(\cdot|s,a)}\left[\dot{V}^*(s')\right], \\
+        %         \dot{Q}^{N(s,a)}(s,a)&=R(s,a)+\sum_{s'\in\succc{s}{a}} \left[\frac{N(s')}{N(s,a)} \dot{V}^{N(s')}(s')\right].
+        %     \end{align}
             
-            Then for some $C,k>0$, and for all $\varepsilon>0$:
-            \begin{align}
-                \Pr\left(\left| \dot{Q}^{N(s,a)}(s,a) - \dot{Q}^*(s,a) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s,a)).
-            \end{align}
-        \end{lemma}
+        %     Then for some $C,k>0$, and for all $\varepsilon>0$:
+        %     \begin{align}
+        %         \Pr\left(\left| \dot{Q}^{N(s,a)}(s,a) - \dot{Q}^*(s,a) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s,a)).
+        %     \end{align}
+        % \end{lemma}
         
-        \begin{proof}
-            By the assumed bounds, Lemma \ref{lem:union_bound} and Lemma \ref{lem:s_to_sa}, there is some $C_1,k_1>0$, such that for any $\varepsilon_1 >0$:
-            \begin{align}
-                \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t)), \label{local:one}
-            \end{align}
-            and recall using Corollary \ref{cor:bound_transition_distribution} that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$ we must have:
-            \begin{align}
-                \Pr\left(\max_{s_{t+1}\in\succc{s_t}{a_t}} 
-                    \left| \frac{N(s_{t+1})}{N(s_t,a_t)} - p(s_t,a_t,s_{t+1}) \right| 
-                    \leq \varepsilon_2 \right) 
-                        > 1 - 2 \exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right). \label{local:two}
-            \end{align}
+        % \begin{proof}
+        %     By the assumed bounds, Lemma \ref{lem:union_bound} and Lemma \ref{lem:s_to_sa}, there is some $C_1,k_1>0$, such that for any $\varepsilon_1 >0$:
+        %     \begin{align}
+        %         \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t)), \label{local:one}
+        %     \end{align}
+        %     and recall using Corollary \ref{cor:bound_transition_distribution} that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$ we must have:
+        %     \begin{align}
+        %         \Pr\left(\max_{s_{t+1}\in\succc{s_t}{a_t}} 
+        %             \left| \frac{N(s_{t+1})}{N(s_t,a_t)} - p(s_t,a_t,s_{t+1}) \right| 
+        %             \leq \varepsilon_2 \right) 
+        %                 > 1 - 2 \exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right). \label{local:two}
+        %     \end{align}
             
-            If the events in Inequalities (\ref{local:one}) and (\ref{local:two}) hold, then $\dot{V}^*(s_{t+1})- \varepsilon_1 \leq \dot{V}^{N_n(s_{t+1})}(s_{t+1}) \leq \dot{V}^*(s_{t+1})+ \varepsilon_1$ and $p(s_{t+1}|s_t,a_t) - \varepsilon_2 \leq N(s_{t+1})/N(s_t,a_t) \leq p(s_{t+1}|s_t,a_t) + \varepsilon_2$. The upper bounds on $\dot{V}^{N_n(s_{t+1})}(s_{t+1})$ and $N(s_{t+1})/N(s_t,a_t)$ can be used to obtain an upper bound on $\dot{Q}^{N(s_t,a_t)}$: 
-            \begin{align}
-                &\dot{Q}^{N(s_t,a_t)}(s_t,a_t) \\
-                    =& R(s_t,a_t) 
-                        + \sum_{s_{t+1}\in\succc{s_t}{a_t}}\frac{N_n(s_{t+1})}{N_n(s_t,a_t)} 
-                            \dot{V}^{N_n(s_{t+1})}(s_{t+1}) \\
-                    \leq& R(s_t,a_t) 
-                        + \sum_{s_{t+1}\in\succc{s_t}{a_t}}(p(s_{t+1}|s_t,a_t)+\varepsilon_2)
-                            (\dot{V}^*(s')+\varepsilon_1) \\
-                    =& R(s_t,a_t) 
-                        + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
-                        + \varepsilon_1 
-                        + \varepsilon_2\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1}) 
-                        + \varepsilon_1 \varepsilon_2 \\
-                    \leq& R(s_t,a_t) 
-                        + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
-                        + \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                        + \varepsilon_2 + \varepsilon_1 \varepsilon_2 \\
-                    =& \dot{Q}^*(s_t,a_t) 
-                        + \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                        + \varepsilon_2 
-                        + \varepsilon_1 \varepsilon_2.
-            \end{align}
+        %     If the events in Inequalities (\ref{local:one}) and (\ref{local:two}) hold, then $\dot{V}^*(s_{t+1})- \varepsilon_1 \leq \dot{V}^{N_n(s_{t+1})}(s_{t+1}) \leq \dot{V}^*(s_{t+1})+ \varepsilon_1$ and $p(s_{t+1}|s_t,a_t) - \varepsilon_2 \leq N(s_{t+1})/N(s_t,a_t) \leq p(s_{t+1}|s_t,a_t) + \varepsilon_2$. The upper bounds on $\dot{V}^{N_n(s_{t+1})}(s_{t+1})$ and $N(s_{t+1})/N(s_t,a_t)$ can be used to obtain an upper bound on $\dot{Q}^{N(s_t,a_t)}$: 
+        %     \begin{align}
+        %         &\dot{Q}^{N(s_t,a_t)}(s_t,a_t) \\
+        %             =& R(s_t,a_t) 
+        %                 + \sum_{s_{t+1}\in\succc{s_t}{a_t}}\frac{N_n(s_{t+1})}{N_n(s_t,a_t)} 
+        %                     \dot{V}^{N_n(s_{t+1})}(s_{t+1}) \\
+        %             \leq& R(s_t,a_t) 
+        %                 + \sum_{s_{t+1}\in\succc{s_t}{a_t}}(p(s_{t+1}|s_t,a_t)+\varepsilon_2)
+        %                     (\dot{V}^*(s')+\varepsilon_1) \\
+        %             =& R(s_t,a_t) 
+        %                 + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
+        %                 + \varepsilon_1 
+        %                 + \varepsilon_2\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1}) 
+        %                 + \varepsilon_1 \varepsilon_2 \\
+        %             \leq& R(s_t,a_t) 
+        %                 + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
+        %                 + \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+        %                 + \varepsilon_2 + \varepsilon_1 \varepsilon_2 \\
+        %             =& \dot{Q}^*(s_t,a_t) 
+        %                 + \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+        %                 + \varepsilon_2 
+        %                 + \varepsilon_1 \varepsilon_2.
+        %     \end{align}
             
-            Following the same reasoning but using the lower bounds on $\dot{V}^{N_n(s_{t+1})}(s_{t+1})$ and $N(s_{t+1})/N(s_t,a_t)$ gives:
-            \begin{align}
-                \dot{Q}^{N(s_t,a_t)}(s_t,a_t) 
-                    &\geq \dot{Q}^*(s_t,a_t) 
-                        - \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                        - \varepsilon_2 
-                        + \varepsilon_1 \varepsilon_2.
-            \end{align}
+        %     Following the same reasoning but using the lower bounds on $\dot{V}^{N_n(s_{t+1})}(s_{t+1})$ and $N(s_{t+1})/N(s_t,a_t)$ gives:
+        %     \begin{align}
+        %         \dot{Q}^{N(s_t,a_t)}(s_t,a_t) 
+        %             &\geq \dot{Q}^*(s_t,a_t) 
+        %                 - \varepsilon_1\left|\sum_{s_{t+1}\in\succc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+        %                 - \varepsilon_2 
+        %                 + \varepsilon_1 \varepsilon_2.
+        %     \end{align}
             
-            For any $\varepsilon >0$, setting $\varepsilon_1 = \min(\varepsilon/3, \varepsilon/3|\sum_{s_{t+1}} \dot{V}^*(s_{t+1})|)$ and $\varepsilon_2 = \min( \varepsilon/3, p(s_{t+1}|s_t,a_t))$ then gives:
-            \begin{align}
-                \dot{Q}^*(s_t,a_t) - \varepsilon \leq \dot{Q}^{N(s_t,a_t)}(s_t,a_t) \leq \dot{Q}^*(s_t,a_t) + \varepsilon.
-            \end{align}
+        %     For any $\varepsilon >0$, setting $\varepsilon_1 = \min(\varepsilon/3, \varepsilon/3|\sum_{s_{t+1}} \dot{V}^*(s_{t+1})|)$ and $\varepsilon_2 = \min( \varepsilon/3, p(s_{t+1}|s_t,a_t))$ then gives:
+        %     \begin{align}
+        %         \dot{Q}^*(s_t,a_t) - \varepsilon \leq \dot{Q}^{N(s_t,a_t)}(s_t,a_t) \leq \dot{Q}^*(s_t,a_t) + \varepsilon.
+        %     \end{align}
             
-            Using Lemma \ref{lem:union_bound} liberally, there is some $C_2,C_3,k_2,k_3>0$ such that:
-            \begin{align}
-                &\Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| \leq \varepsilon \right) \\
-                    >& \left(1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t))\right) \left(1-2\exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right)\right) \\
-                    =& \left(1-C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t) \right) \cdot \left(1-C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)\right) \\
-                    =& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)) \notag \\
-                        &+ C_2C_3\exp(-(k_2+k_3)\varepsilon^2 N(s_t,a_t) ) \\
-                    >& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)),
-            \end{align}
-            and then by negating, with $C=C_1+C_2$ and $k=\min(k_1,k_2)$ the result follows:
-            \begin{align}
-                    \Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s_t,a_t)).
-            \end{align}
-        \end{proof}
+        %     Using Lemma \ref{lem:union_bound} liberally, there is some $C_2,C_3,k_2,k_3>0$ such that:
+        %     \begin{align}
+        %         &\Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| \leq \varepsilon \right) \\
+        %             >& \left(1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t))\right) \left(1-2\exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right)\right) \\
+        %             =& \left(1-C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t) \right) \cdot \left(1-C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)\right) \\
+        %             =& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)) \notag \\
+        %                 &+ C_2C_3\exp(-(k_2+k_3)\varepsilon^2 N(s_t,a_t) ) \\
+        %             >& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)),
+        %     \end{align}
+        %     and then by negating, with $C=C_1+C_2$ and $k=\min(k_1,k_2)$ the result follows:
+        %     \begin{align}
+        %             \Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s_t,a_t)).
+        %     \end{align}
+        % \end{proof}
     
     
     
