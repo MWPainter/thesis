@@ -1,0 +1,7 @@
+CDF
+
+$p(s_{t+1}|s_t,a_t)$
+
+$\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$
+
+$\varepsilon/2$
