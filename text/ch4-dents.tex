@@ -1244,7 +1244,9 @@
                 \end{align}
             \end{corollary}
             \begin{proofoutline}
-                Recall Equation (\ref{appeq:ns_sum}) that allows $N(s_{t+1},n)$ to be written as a sum of $N(s_t,a_t,n)$ indicator random variables: $N(s_{t+1},n) = \sum_{i\in T(s_t,a_t,n)} \one[s^i_{t+1} = s_{t+1}]$. Consider mapping the empirical transition distribution, with $N(s_t,a_t,n)=|T(s_t,a_t,n)|$ samples, to an appropriate catagorical distribution. Applying Theorem \ref{thrm:dkw_inequality} with $\varepsilon/2$ gives the result. \todo{also make saying replacing varepsilon in above result with half varepsilon word better.} \todo{clean up ``we'' in this proof} In the constructed cumulative distribution function we need to account for an error of $\varepsilon/2$ before any $s_{t+1}$, and another error of $\varepsilon/2$ after the same $s_{t+1}$, to account for an error of $\varepsilon$ in the probability mass function (see Figure \ref{fig:dkw_diag}).
+                By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
+
+                To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
             \end{proofoutline}
 
 
@@ -1256,12 +1258,12 @@
 
 
             
-            % \begin{figure}
-            %     \centering
-            %     \includegraphics[scale=0.4]{Figures/theory/dkw_cor.png}
-            %     \caption{Example cdfs for the transition distribution (black solid line) and empirical transition distribution (red dashed line) around the successor state $s_{t+1}$. An error of $\varepsilon/2$ between the empirical and true cdfs is shown, and the probability mass for $s_{t+1}$ for the empirical and true transition distributions are shown to indicate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
-            %     \label{fig:dkw_diag}
-            % \end{figure}
+            \begin{figure}
+                \centering
+                \includegraphics[scale=0.4]{figures/todo.jpg}
+                \caption{Example cdfs for the (true) transition distribution (black solid line) and empirical transition distribution (red dashed line) around the successor state $s_{t+1}$. An error of $\varepsilon/2$ between the empirical and true cdfs is shown, and the probability mass for $s_{t+1}$ for the empirical and true transition distributions are shown to indicate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+                \label{fig:dkw_diag}
+            \end{figure}
 
 
 
