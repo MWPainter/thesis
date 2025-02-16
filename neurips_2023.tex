@@ -5391,20 +5391,22 @@ These appendices are structured as follows:
         
         
         
+
+        % DONE
         
-        Note that all of our concentration inequalities imply a convergence in probability. For example, we explicitly demonstrate this in Corollary \ref{cor:sftq_convg}.
+        % Note that all of our concentration inequalities imply a convergence in probability. For example, we explicitly demonstrate this in Corollary \ref{cor:sftq_convg}.
         
-        \begin{corollary} \label{cor:sftq_convg}
-        		$\Qst{s_t}{a_t}{N(s_{t},a_t)}\rap \Qss{s_t}{a_t}$
-        \end{corollary}
-        \begin{proof}
-        		This follows from the concentration inequalities shown in Lemma \ref{lem:stochastic_step} and Theorem \ref{thrm:ments_val_converge}. As the RHS of the bound tend to zero as $n\rightarrow\infty$, these concentration inequalities follow by taking the limit $n\rightarrow\infty$:
-        		\begin{align}	
-                \lim_{n\rightarrow\infty} \Pr\left(\left| \Qst{s_{t}}{a_t}{N(s_{t},a_t)} - \Qss{s_t}{a_t} \right| > \varepsilon \right) 
-                    &\leq \lim_{n\rightarrow\infty}  C\exp\left( -k\varepsilon^2 N(s_{t}) \right) \\
-                    &= 0.
-        		\end{align}
-        	\end{proof}
+        % \begin{corollary} \label{cor:sftq_convg}
+        % 		$\Qst{s_t}{a_t}{N(s_{t},a_t)}\rap \Qss{s_t}{a_t}$
+        % \end{corollary}
+        % \begin{proof}
+        % 		This follows from the concentration inequalities shown in Lemma \ref{lem:stochastic_step} and Theorem \ref{thrm:ments_val_converge}. As the RHS of the bound tend to zero as $n\rightarrow\infty$, these concentration inequalities follow by taking the limit $n\rightarrow\infty$:
+        % 		\begin{align}	
+        %         \lim_{n\rightarrow\infty} \Pr\left(\left| \Qst{s_{t}}{a_t}{N(s_{t},a_t)} - \Qss{s_t}{a_t} \right| > \varepsilon \right) 
+        %             &\leq \lim_{n\rightarrow\infty}  C\exp\left( -k\varepsilon^2 N(s_{t}) \right) \\
+        %             &= 0.
+        % 		\end{align}
+        % 	\end{proof}
 
 
 
@@ -5412,60 +5414,60 @@ These appendices are structured as follows:
 
 
 
-        
+        % DONE
     
-        Now we use the concentration inequalities to show that we are exponentially unlikely to recommend a suboptimal action with respect to the standard values (i.e. the simple regret tends to zero exponentially), provided the temperature parameter $\alpha$ is small enough.
+        % Now we use the concentration inequalities to show that we are exponentially unlikely to recommend a suboptimal action with respect to the standard values (i.e. the simple regret tends to zero exponentially), provided the temperature parameter $\alpha$ is small enough.
         
-        \begin{lemma} \label{lem:ments_imm_simple_regret}
-            Consider a MENTS process with $\alpha<\Delta_{\cl{M}}/3H\log |\cl{A}|$. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ then there is some $C',k'>0$ such that:
-            \begin{align}
-                \bb{E} \reg_I(s_{t},\psi^n_{\textnormal{MENTS}}) &\leq C'\exp\left( -k' N(s_{t}) \right).
-            \end{align}
-        \end{lemma}
-        \begin{proof}
-            Let $a^*$ be the optimal action with respect to the soft values, so $a^*=\argmax_{a\in\cl{A}} \Qss{s_t}{a}$. Then by Lemma \ref{lem:soft_standard_consistent_order} $a^*$ must also be the optimal action for the standard Q-value function $a^*=\argmax_{a\in\cl{A}} Q^*(s_t,a)$. By Theorem \ref{thrm:ments_val_converge} and Lemmas \ref{lem:stochastic_step} and \ref{lem:sa_to_s} there exists $C_1,k_1>0$ such that for all $\varepsilon_1>0$:
-            \begin{align}
-                \Pr\left(\forall a_t\in\cl{A} \left|\Qst{s_t}{a_t}{N(s_t,a_t)}-\Qss{s_t}{a_t}\right|\leq \varepsilon_1\right) &> 1-C_1 \exp(-k_1 \varepsilon_1^2 N(s_t)).
-            \end{align}
+        % \begin{lemma} \label{lem:ments_imm_simple_regret}
+        %     Consider a MENTS process with $\alpha<\Delta_{\cl{M}}/3H\log |\cl{A}|$. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ then there is some $C',k'>0$ such that:
+        %     \begin{align}
+        %         \bb{E} \reg_I(s_{t},\psi^n_{\textnormal{MENTS}}) &\leq C'\exp\left( -k' N(s_{t}) \right).
+        %     \end{align}
+        % \end{lemma}
+        % \begin{proof}
+        %     Let $a^*$ be the optimal action with respect to the soft values, so $a^*=\argmax_{a\in\cl{A}} \Qss{s_t}{a}$. Then by Lemma \ref{lem:soft_standard_consistent_order} $a^*$ must also be the optimal action for the standard Q-value function $a^*=\argmax_{a\in\cl{A}} Q^*(s_t,a)$. By Theorem \ref{thrm:ments_val_converge} and Lemmas \ref{lem:stochastic_step} and \ref{lem:sa_to_s} there exists $C_1,k_1>0$ such that for all $\varepsilon_1>0$:
+        %     \begin{align}
+        %         \Pr\left(\forall a_t\in\cl{A} \left|\Qst{s_t}{a_t}{N(s_t,a_t)}-\Qss{s_t}{a_t}\right|\leq \varepsilon_1\right) &> 1-C_1 \exp(-k_1 \varepsilon_1^2 N(s_t)).
+        %     \end{align}
             
-            Setting $\varepsilon_1=\Delta_{\cl{M}}/3H\log |\cl{A}|$ then gives with probability at least $1-C_1 \exp(-k_2N(s_t))$ (where $k_2=k_1(\Delta_{\cl{M}} /3H\log|\cl{A}|)^2$) that for all actions $a_t\in\cl{A}$:
-            \begin{align}
-                \Qss{s_t}{a_t} - \Delta_{\cl{M}}/3 \leq \Qst{s_t}{a_t}{N(s_t,a_t)} \leq \Qss{s_t}{a_t} + \Delta_{\cl{M}}/3.
-            \end{align}
+        %     Setting $\varepsilon_1=\Delta_{\cl{M}}/3H\log |\cl{A}|$ then gives with probability at least $1-C_1 \exp(-k_2N(s_t))$ (where $k_2=k_1(\Delta_{\cl{M}} /3H\log|\cl{A}|)^2$) that for all actions $a_t\in\cl{A}$:
+        %     \begin{align}
+        %         \Qss{s_t}{a_t} - \Delta_{\cl{M}}/3 \leq \Qst{s_t}{a_t}{N(s_t,a_t)} \leq \Qss{s_t}{a_t} + \Delta_{\cl{M}}/3.
+        %     \end{align}
             
-            And hence, with probability at least $1-C_1 \exp(-k_2N(s_t))$, for all $a\in\cl{A}-\{a^*\}$ we have:
-            \begin{align}
-                \Qst{s_t}{a}{N(s_t,a)}
-                    \leq& \Qss{s_t}{a} + \Delta_{\cl{M}}/3 \\
-                    \leq& Q^*(s_t,a) + \alpha H\log |\cl{A}| + \Delta_{\cl{M}}/3 \\
-                    \leq& Q^*(s_t,a) + 2\Delta_{\cl{M}}/3 \\
-                    \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/3 \\
-                    \leq& \Qss{s_t}{a^*} - \Delta_{\cl{M}}/3 \\
-                    \leq& \Qst{s_t}{a^*}{N(s_t,a^*)}. \label{local:nine}
-            \end{align}
+        %     And hence, with probability at least $1-C_1 \exp(-k_2N(s_t))$, for all $a\in\cl{A}-\{a^*\}$ we have:
+        %     \begin{align}
+        %         \Qst{s_t}{a}{N(s_t,a)}
+        %             \leq& \Qss{s_t}{a} + \Delta_{\cl{M}}/3 \\
+        %             \leq& Q^*(s_t,a) + \alpha H\log |\cl{A}| + \Delta_{\cl{M}}/3 \\
+        %             \leq& Q^*(s_t,a) + 2\Delta_{\cl{M}}/3 \\
+        %             \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/3 \\
+        %             \leq& \Qss{s_t}{a^*} - \Delta_{\cl{M}}/3 \\
+        %             \leq& \Qst{s_t}{a^*}{N(s_t,a^*)}. \label{local:nine}
+        %     \end{align}
             
-            Where in the above, the first line holds from the upper bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$; The second holds from maximising the standard return and entropy portions of the soft value seperately (recall Inequality (\ref{appeq:softdiv}) in Lemma \ref{lem:soft_standard_consistent_order}); The third holds from the assumption on $\alpha$; The fourth holds from the definition of $\Delta_{\cl{M}}$ (also see Inequality (\ref{appeq:delta_diff})); The fifth holds from the optimal soft value being greater than the optimal standard value (Lemma \ref{lem:soft_geq_standard}); And the final line holds by using the lower bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ given above with $a_t=a^*$. 
+        %     Where in the above, the first line holds from the upper bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$; The second holds from maximising the standard return and entropy portions of the soft value seperately (recall Inequality (\ref{appeq:softdiv}) in Lemma \ref{lem:soft_standard_consistent_order}); The third holds from the assumption on $\alpha$; The fourth holds from the definition of $\Delta_{\cl{M}}$ (also see Inequality (\ref{appeq:delta_diff})); The fifth holds from the optimal soft value being greater than the optimal standard value (Lemma \ref{lem:soft_geq_standard}); And the final line holds by using the lower bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ given above with $a_t=a^*$. 
             
-            Negating the probability that (\ref{local:nine}) holds gives:
-            \begin{align}
-                \Pr\left(\exists a_t\in\cl{A}-\{a^*\}.\left( \Qst{s_t}{a}{N(s_t,a)} > \Qst{s_t}{a^*}{N(s_t,a^*)}\right)\right)
-                    \leq C_1 \exp(-k_2N(s_t)).
-            \end{align}
+        %     Negating the probability that (\ref{local:nine}) holds gives:
+        %     \begin{align}
+        %         \Pr\left(\exists a_t\in\cl{A}-\{a^*\}.\left( \Qst{s_t}{a}{N(s_t,a)} > \Qst{s_t}{a^*}{N(s_t,a^*)}\right)\right)
+        %             \leq C_1 \exp(-k_2N(s_t)).
+        %     \end{align}
             
-            Finally, we can bound our expected immediate regret as follows:
-            \begin{align}
-                & \bb{E}\reg_I(s_t,\psi^n_{\text{MENTS}})  \\
-                    =& \sum_{a\in\cl{A}-\{a^*\}} 
-                        \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\psi^n_{\text{MENTS}}(s_t) =a \right) \\
-                    =& \sum_{a\in\cl{A}-\{a^*\}} 
-                        \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \Qst{s_t}{a'}{N(s_t,a)} \right) \\
-                    \leq& \sum_{a\in\cl{A}-\{a^*\}} 
-                        \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\Qst{s_t}{a}{N(s_t,a)} > \Qst{s_t}{a^*}{N(s_t,a^*)}  \right) \\
-                    \leq&  \sum_{a\in\cl{A}-\{a^*\}} 
-                        \left(V^*(s_t)-Q^*(s_t,a)\right) C_1 \exp(-k_2N(s_t)),
-            \end{align}
-            and setting $k'=k_2$ and $C'=C_1\sum_{a\in\cl{A}-\{a^*\}} \left(V^*(s_t)-Q^*(s_t,a)\right)$ gives the result.
-        \end{proof}
+        %     Finally, we can bound our expected immediate regret as follows:
+        %     \begin{align}
+        %         & \bb{E}\reg_I(s_t,\psi^n_{\text{MENTS}})  \\
+        %             =& \sum_{a\in\cl{A}-\{a^*\}} 
+        %                 \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\psi^n_{\text{MENTS}}(s_t) =a \right) \\
+        %             =& \sum_{a\in\cl{A}-\{a^*\}} 
+        %                 \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \Qst{s_t}{a'}{N(s_t,a)} \right) \\
+        %             \leq& \sum_{a\in\cl{A}-\{a^*\}} 
+        %                 \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\Qst{s_t}{a}{N(s_t,a)} > \Qst{s_t}{a^*}{N(s_t,a^*)}  \right) \\
+        %             \leq&  \sum_{a\in\cl{A}-\{a^*\}} 
+        %                 \left(V^*(s_t)-Q^*(s_t,a)\right) C_1 \exp(-k_2N(s_t)),
+        %     \end{align}
+        %     and setting $k'=k_2$ and $C'=C_1\sum_{a\in\cl{A}-\{a^*\}} \left(V^*(s_t)-Q^*(s_t,a)\right)$ gives the result.
+        % \end{proof}
 
 
 

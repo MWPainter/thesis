@@ -766,6 +766,49 @@
 
 
 
+%%%%
+% THEORY - Defns
+%%%%
+
+\subsection{Preliminaries}
+
+
+    \todo{had this (below) in the Neurips paper, but probably want to actually just define convergence in probability here, and say ``letting n tend to infinity'' gives the convergence in probability result.}
+
+    \begin{defn}
+        A sequence of random variables $X_i$ \textnormal{converges in probability} to a random variable $X$, written as $X_n \rap X$, if for all $\varepsilon>0$ the following holds:
+        \begin{align}
+            \Pr\left(\left|X_n - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ n \rightarrow \infty.
+        \end{align}
+    \end{defn}
+
+    \begin{defn}
+        A sequence of random variables $X_i$ \textnormal{converges almost surely} to a random variable $X$, written as $X_n \raas X$, if the following holds:
+        \begin{align}
+            \Pr\left(\lim_{n\rightarrow\infty} X_n = X\right) = 1.
+        \end{align}
+    \end{defn}
+
+
+% Note that all of our concentration inequalities imply a convergence in probability. For example, we explicitly demonstrate this in Corollary \ref{cor:sftq_convg}.
+        
+% \begin{corollary} \label{cor:sftq_convg}
+%         $\Qst{s_t}{a_t}{N(s_{t},a_t)}\rap \Qss{s_t}{a_t}$
+% \end{corollary}
+% \begin{proof}
+%         This follows from the concentration inequalities shown in Lemma \ref{lem:stochastic_step} and Theorem \ref{thrm:ments_val_converge}. As the RHS of the bound tend to zero as $n\rightarrow\infty$, these concentration inequalities follow by taking the limit $n\rightarrow\infty$:
+%         \begin{align}	
+%         \lim_{n\rightarrow\infty} \Pr\left(\left| \Qst{s_{t}}{a_t}{N(s_{t},a_t)} - \Qss{s_t}{a_t} \right| > \varepsilon \right) 
+%             &\leq \lim_{n\rightarrow\infty}  C\exp\left( -k\varepsilon^2 N(s_{t}) \right) \\
+%             &= 0.
+%         \end{align}
+%     \end{proof}
+
+
+
+
+
+
 
 %%%%
 % THEORY - Preliminaries (for exp bound stuff)
@@ -1481,14 +1524,15 @@
             \Pr\left(\left| \mVments{N(s_{t},n)}(s_{t}) - V_{\sft}^*(s_{t}) \right| > \varepsilon \right) 
                 &\leq C\exp\left( -k\varepsilon^2 N(s_{t},n) \right).
         \end{align}
-        Moreover, at the root node $s_0$ we have:
+        Moreover, at the root node $s_0$:
         \begin{align}
             \Pr\left(\left| \mVments{N(s_{0},n)}(s_{0}) - V_{\sft}^*(s_{0}) \right| > \varepsilon \right) 
                 &\leq C\exp\left( -k\varepsilon^2 n \right). \label{local:three}
         \end{align}
+        And hence $\mVments{N(s_{t},n)}(s_{t}) \rap V_{\sft}^*(s_{t})$.
     \end{theorem}
     \begin{proof}
-        Consider that the result holds for $t=H+1$, because $\mVments{N(s_{H+1})}(s_{H+1})=V_{\sft}^*(s_{H+1})=0$. Therefore the result holds for any $t=0,...,H+1$ by induction using Lemma \ref{lem:ments_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:three}). \todo{Double check the H stuf is consistent with the thtspp and MDP defns}
+        Consider that the result holds for $t=H+1$, because $\mVments{N(s_{H+1},n)}(s_{H+1})=V_{\sft}^*(s_{H+1})=0$. Therefore the result holds for any $t=0,...,H+1$ by induction using Lemma \ref{lem:ments_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:three}). \todo{To see the convergence in probability, let }$n\rightarrow\infty$. \todo{Double check the H stuf is consistent with the thtspp and MDP defns}
     \end{proof}
 
 
@@ -1498,6 +1542,70 @@
 
 
 
+
+
+    Provided MENTS's temperature parameter is set small enough, such that the optimal standard and soft values lead to identical recommendation policies \todo{ref the max entropy proof of this}, then MENTS is consistent and the expected simple regret tends to zero exponentially. This is shown in the following lemma.
+        
+    \begin{lemma} \label{lem:ments_imm_simple_regret}
+        Consider a MENTS process with $\alpha<\Delta_{\cl{M}}/3H\log |\cl{A}|$. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ then there is some $C',k'>0$ such that:
+        \begin{align}
+            \bb{E} \sreg(s_{t},\mpsiments{n}) &\leq C'\exp\left( -k' N(s_{t},n) \right).
+        \end{align}
+    \end{lemma}
+    \begin{proof}
+        \todo{Why cant we just replace this with, the values converge in probability from the previous result, and then use that it means the recommendation policy converges in probability, and then use that to say simple regret go zero? The case where it doesnt work is if there is suboptimal soft value which equals the optimal soft value (which has no entropy), in this case, becase we need the value ESTIMATES to converge, not the optimal values, we need the temperature to be a bit stricter. I think}
+
+        Let $a^*$ be the optimal action with respect to the soft values, so $a^*=\argmax_{a\in\cl{A}} Q_{\sft}^*(s_t,a)$. Then by Lemma \ref{lem:soft_standard_consistent_order} $a^*$ must also be the optimal action for the standard Q-value function $a^*=\argmax_{a\in\cl{A}} Q^*(s_t,a)$. By Theorem \ref{thrm:ments_val_converge} and Lemmas \ref{lem:stochastic_step} and \ref{lem:sa_to_s} there exists $C_1,k_1>0$ such that for all $\varepsilon_1>0$: \todo{reword this paragraph, its a bit meh}
+        \begin{align}
+            \Pr\left(\forall a_t\in\cl{A} \left|\mQments{N(s_t,a_t,n)}(s_t,a_t)-Q_{\sft}^*(s_t,a_t)\right|\leq \varepsilon_1\right) &> 1-C_1 \exp(-k_1 \varepsilon_1^2 N(s_t,n)).
+        \end{align}
+        
+        Setting $\varepsilon_1=\Delta_{\cl{M}}/3H\log |\cl{A}|$ then gives with probability at least $1-C_1 \exp(-k_2N(s_t,n))$ (where $k_2=k_1\left(\frac{\Delta_{\cl{M}}}{3H\log|\cl{A}|}\right)^2$) that for all actions $a_t\in\cl{A}$:
+        \begin{align}
+            Q_{\sft}^*(s_t,a_t) - \Delta_{\cl{M}}/3 \leq \mQments{N(s_t,a_t,n)}(s_t,a_t) \leq Q_{\sft}^*(s_t,a_t) + \Delta_{\cl{M}}/3.
+        \end{align}
+        
+        And hence, with probability at least $1-C_1 \exp(-k_2N(s_t,n))$, for all $a\in\cl{A}-\{a^*\}$ we have:
+        \begin{align}
+            \mQments{N(s_t,a,n)}(s_t,a)
+                \leq& Q_{\sft}^*(s_t,a) + \Delta_{\cl{M}}/3 \\
+                \leq& Q^*(s_t,a) + \alpha H\log |\cl{A}| + \Delta_{\cl{M}}/3 \\
+                \leq& Q^*(s_t,a) + 2\Delta_{\cl{M}}/3 \\
+                \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/3 \\
+                \leq& Q_{\sft}^*(s_t,a^*) - \Delta_{\cl{M}}/3 \\
+                \leq& \mQments{N(s_t,a^*,n)}(s_t,a^*). \label{local:nine}
+        \end{align}
+        
+        Where in the above, the first line holds from the upper bound on $\mQments{N(s_t,a_t,n)}(s_t,a_t)$; The second holds from maximising the standard return and entropy portions of the soft value separately (recall Inequality (\ref{appeq:softdiv}) in Lemma \ref{lem:soft_standard_consistent_order}); The third holds from the assumption on $\alpha$; The fourth holds from the definition of $\Delta_{\cl{M}}$ (also see Inequality (\ref{appeq:delta_diff})); The fifth holds from the optimal soft value being greater than the optimal standard value (Lemma \ref{lem:soft_geq_standard}); And the final line holds by using the lower bound on $\mQments{N(s_t,a_t,n)}(s_t,a_t)$ given above with $a_t=a^*$. 
+        
+        Negating the probability that (\ref{local:nine}) holds gives:
+        \begin{align}
+            \Pr\left(\exists a_t\in\cl{A}-\{a^*\}.\left( 
+                \mQments{N(s_t,a)}(s_t,a) > \mQments{N(s_t,a^*,n)}(s_t,a^*)\right)\right)
+                \leq C_1 \exp(-k_2N(s_t)).
+        \end{align}
+        
+        The expected immediate regret can be bounded as follows:
+        \begin{align}
+            & \bb{E}\ireg(s_t,\mpsiments{n})  \\
+                =& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mpsiments{n}(s_t) =a \right) \\
+                =& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQments{N(s_t,a')}(s_t,a') \right) \\
+                \leq& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mQments{N(s_t,a,n)}(s_t,a) > \mQments{N(s_t,a^*,n)}(s_t,a^*)  \right) \\
+                \leq&  \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) C_1 \exp(-k_2N(s_t,n)),
+        \end{align}
+        where $k'=k_2$ and $C'=C_1\sum_{a\in\cl{A}-\{a^*\}} \left(V^*(s_t)-Q^*(s_t,a)\right)$. Finally, using \todo{ref lemma} gives the result.
+    \end{proof}
+
+
+
+
+
+
+    
 
 
     \todo{HERE HERE HERE HERE HERE}
