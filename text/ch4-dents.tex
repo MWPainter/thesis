@@ -1307,7 +1307,7 @@
     \begin{proof}
         By the assumed bounds, Lemma \ref{lem:union_bound} and Lemma \ref{lem:s_to_sa}, there is some $C_1,k_1>0$, such that for any $\varepsilon_1 >0$:
         \begin{align}
-            \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t)). \label{local:one}
+            \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t,n)). \label{local:one}
         \end{align}
 
         And recall that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$, using Corollary \ref{cor:bound_transition_distribution} that:
@@ -1315,7 +1315,7 @@
             \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}} 
                 \left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| 
                 \leq \varepsilon_2 \right) 
-                    > 1 - 2 \exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right). \label{local:two}
+                    > 1 - 2 \exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t,n) \right). \label{local:two}
         \end{align}
         
         If the events in Inequalities (\ref{local:one}) and (\ref{local:two}) hold, then the following inequalities must also hold:
@@ -1344,42 +1344,44 @@
                     + \varepsilon_1 \varepsilon_2 \\
                 \leq& R(s_t,a_t) 
                     + \bb{E}_{s_{t+1}\sim p(\cdot|s_t,a_t)}[\dot{V}^*(s_{t+1})] 
-                    + \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                    + \varepsilon_2 + \varepsilon_1 \varepsilon_2 \\
+                    + \varepsilon_2\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    + \varepsilon_1 + \varepsilon_1 \varepsilon_2 \\
                 =& \dot{Q}^*(s_t,a_t) 
-                    + \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                    + \varepsilon_2 
+                    + \varepsilon_2\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    + \varepsilon_1 
                     + \varepsilon_1 \varepsilon_2.
         \end{align}
         
-        Following the same reasoning but using the lower bounds on $\dot{V}^{N_n(s_{t+1},n)}(s_{t+1})$ and $N(s_{t+1},n)/N(s_t,a_t,n)$ gives:
+        Following the similar reasoning but using the lower bounds on $\dot{V}^{N_n(s_{t+1},n)}(s_{t+1})$ and $N(s_{t+1},n)/N(s_t,a_t,n)$ gives: \todo{There is some special cases when V is negative, having to use the other bound, but the upper and lower bound have a bit of leway which handles all four cases of using plus minus epsilon one and two.}
         \begin{align}
             \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) 
                 &\geq \dot{Q}^*(s_t,a_t) 
-                    - \varepsilon_1\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
-                    - \varepsilon_2 
-                    + \varepsilon_1 \varepsilon_2.
+                    - \varepsilon_2\left|\sum_{s_{t+1}\in\suc{s_t}{a_t}} \dot{V}^*(s_{t+1})\right| 
+                    - \varepsilon_1 
+                    - \varepsilon_1 \varepsilon_2.
         \end{align}
         
-        Now given an arbitrary $\varepsilon >0$, setting $\varepsilon_1 = \min(\varepsilon/3, \varepsilon/3|\sum_{s_{t+1}} \dot{V}^*(s_{t+1})|)$ and $\varepsilon_2 = \varepsilon/3$ then gives:
+        Now given an arbitrary $\varepsilon >0$, recalling that $\varepsilon_1,\varepsilon_2>0$ were arbitrary, set $\varepsilon_1 = \varepsilon/3$ and $\varepsilon_2 = \min(\varepsilon/3, \varepsilon/3|\sum_{s_{t+1}} \dot{V}^*(s_{t+1})|)$ to give:
         %
         \begin{align}
-            \dot{Q}^*(s_t,a_t) - \varepsilon \leq \dot{Q}^{N(s_t,a_t)}(s_t,a_t) \leq \dot{Q}^*(s_t,a_t) + \varepsilon.
+            \dot{Q}^*(s_t,a_t) - \varepsilon \leq \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) \leq \dot{Q}^*(s_t,a_t) + \varepsilon.
         \end{align}
         
         Using Lemma \ref{lem:union_bound} liberally, there is some $C_2,C_3,k_2,k_3>0$ such that:
         \begin{align}
             &\Pr\left(\left| \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| \leq \varepsilon \right) \\
-                >& \left(1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t))\right) \left(1-2\exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t) \right)\right) \\
-                =& \left(1-C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t) \right) \cdot \left(1-C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)\right) \\
-                =& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)) \notag \\
-                    &+ C_2C_3\exp(-(k_2+k_3)\varepsilon^2 N(s_t,a_t) ) \\
-                >& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t)).
+                >& \left(1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t,n))\right) 
+                    \left(1-2\exp\left(-\frac{1}{2}\varepsilon_2^2 N(s_t,a_t,n) \right)\right) \\
+                =& \left(1-C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t,n) \right) 
+                    \cdot \left(1-C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t,n)\right) \\
+                % =& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t,n)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t,n)) \notag \\
+                %     &+ C_2C_3\exp(-(k_2+k_3)\varepsilon^2 N(s_t,a_t,n) ) \\
+                >& 1 -C_2\exp(-k_2 \varepsilon^2 N(s_t,a_t,n)) -C_3\exp(-k_3 \varepsilon^2 N(s_t,a_t,n)).
         \end{align}
         
-        Finally, by negating and setting $C=C_2+C_3$ and $k=\min(k_2,k_3)$ the result follows:
+        Finally, by negating and setting $C=C_2+C_3$ and $k=\min(k_2,k_3)$ in Lemma \todo{ref} the result follows:
         \begin{align}
-                \Pr\left(\left| \dot{Q}^{N(s_t,a_t)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s_t,a_t)).
+                \Pr\left(\left| \dot{Q}^{N(s_t,a_t,n)}(s_t,a_t) - \dot{Q}^*(s_t,a_t) \right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(s_t,a_t,n)).
         \end{align}
     \end{proof}
 
@@ -1390,6 +1392,104 @@
 
 
 
+
+
+
+
+
+
+
+  
+\subsection{MENTS results} \label{app:ments_results}
+
+    This subsection provides results related to MENTS in the setting of that standard reinforcement learning objective. Concentration inequalities are given around the optimal soft values to start with, although this result is similar to soem of the results provided in \cite{ments} \todo{this is still provided to keep this thesis' proofs self contained. (although its not as we use lots of things like hoeffdings, and also use UCT style proofs prsumably later on.) We could say ``to keep the proofs compatible with the other results provided. Or we could just omit it and reference the MENTS paper...''} Afterwards, the concentration inequalities are combined with results about maximum entropy reinforcement learning \todo{ref the section where we did that} to provide bounds on the simple regret of MENTS, given constraints on the temperature.
+    
+
+
+
+
+
+
+
+
+    To prove the concentration inequality around the optimal soft values, start by showing an inductive step.
+
+    
+    \begin{lemma} \label{lem:ments_val_induction_step}
+        Consider a MENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ \todo{update for thtspp notation}. If for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ there is some $C_{s_{t+1}},k_{s_{t+1}}>0$ for any $\varepsilon_{s_{t+1}}>0$:
+        \begin{align}
+            \Pr\left(\left| \mVments{N(s_{t+1},n)}(s_{t+1}) - V_{\sft}^*(s_{t+1}) \right| > \varepsilon_{s_{t+1}} \right) 
+                &\leq C_{s_{t+1}}\exp\left( -k_{s_{t+1}}\varepsilon_{s_{t+1}}^2 N(s_{t+1},n) \right), 
+        \end{align}
+        then there is some $C,k>0$, for any $\varepsilon>0$:
+        \begin{align}
+            \Pr\left(\left| \mVments{N(s_{t},n)}(s_t) - V_{\sft}^*(s_{t}) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 N(s_{t},n) \right).
+        \end{align}
+    \end{lemma}
+    
+    \begin{proof}
+        Given the assumptions and by Lemmas \ref{lem:stochastic_step}, \ref{lem:sa_to_s} and \ref{lem:union_bound}, there is some $C,k>0$ such that for any $\varepsilon>0$:
+        \begin{align}
+            \Pr\left(\forall a_t\in\cl{A}. \left|\mQments{N(s_t,a_t,n)}(s_t,a_t)-Q_{\sft}^*(s_t,a_t)\right|\leq \varepsilon\right) &> 1-C \exp(-k \varepsilon^2 N(s_t,n)).
+        \end{align}
+        
+        So with probability at least $1-C \exp(-k \varepsilon^2 N(s_t,n))$, for any $a_t$, the following holds:
+        \begin{align}
+            Q_{\sft}^*(s_t,a_t) - \varepsilon \leq \mQments{N(s_t,a_t,n)}(s_t,a_t) \leq Q_{\sft}^*(s_t,a_t) + \varepsilon. 
+        \end{align}
+        
+        Using the upper bound on $\mQments{N(s_t,a_t,n)}(s_t,a_t)$ in the soft backup equation for $\mVments{N(s_t,n)}(s_t)$ (Equation (\ref{appeq:soft_v_backup}) gives:
+        \begin{align}
+            \mVments{N(s_t,n)}(s_t) &= \alpha \log \sum_{a\in\cl{A}} 
+                    \exp\left(\frac{\mQments{N(s_t,a_t,n)}(s_t,a_t)}{\alpha}\right) \\
+                &\leq \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{Q_{\sft}^*(s_t,a_t)+\varepsilon}{\alpha}\right) \\
+                &= \left[\alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{Q_{\sft}^*(s_t,a_t)}{\alpha}\right)\right] 
+                    + \varepsilon \\
+                &= V_{\sft}^*(s_t) + \varepsilon,
+        \end{align}
+        noting that the \textit{softmax} function monotonically increases in its arguments. Then with similar reasoning using the lower bound on $\mQments{N(s_t,a_t,n)}(s_t,a_t)$ gives:
+        \begin{align}
+            \mVments{N(s_t,n)}(s_t) \geq V_{\sft}^*(s_t) - \varepsilon,
+        \end{align}
+        and hence:
+        \begin{align}
+            |\mVments{N(s_t,n)}(s_t)-V_{\sft}^*(s_t)| \leq \varepsilon.
+        \end{align}
+        
+        This therefore shows: \todo{some comment about how if A implies B then pr(B) more than pr(A)}
+        \begin{align}
+            \Pr\left(\left|\mVments{N(s_t,n)}(s_t)-V_{\sft}^*(s_t)\right| \leq \varepsilon_1\right) > 1-C \exp(-k \varepsilon^2 N(s_t,n)),
+        \end{align}
+        and negating probabilities gives the result.
+    \end{proof}
+
+
+
+
+
+
+
+
+
+        
+    
+    Then completing the induction gives the concentration inequalities desired for any state that MENTS might visit.
+    \begin{theorem} \label{thrm:ments_val_converge}
+        Consider a MENTS process, let $s_t\in\cl{S}$ then there is some $C,k>0$ for any $\varepsilon>0$:
+        \begin{align}
+            \Pr\left(\left| \mVments{N(s_{t},n)}(s_{t}) - V_{\sft}^*(s_{t}) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 N(s_{t},n) \right).
+        \end{align}
+        Moreover, at the root node $s_0$ we have:
+        \begin{align}
+            \Pr\left(\left| \mVments{N(s_{0},n)}(s_{0}) - V_{\sft}^*(s_{0}) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 n \right). \label{local:three}
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        Consider that the result holds for $t=H+1$, because $\mVments{N(s_{H+1})}(s_{H+1})=V_{\sft}^*(s_{H+1})=0$. Therefore the result holds for any $t=0,...,H+1$ by induction using Lemma \ref{lem:ments_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:three}). \todo{Double check the H stuf is consistent with the thtspp and MDP defns}
+    \end{proof}
 
 
 

@@ -5301,9 +5301,11 @@ These appendices are structured as follows:
     
     \subsection{MENTS results} \label{app:ments_results}
     
-        In this subsection we provide results related to MENTS. We begin by providing concentration inequalities for the estimated soft values at each node, around the optimal soft value. Note that this result is similar to some of the results provided in \citeapp{xiao2019maximum}, however to keep this paper more self contained we still provide a proof in our particular flavour. After, the concentration inequalities are then used to show bounds on the simple regret of MENTS, given constraints on the temperature.
+        % DONE
+
+        % In this subsection we provide results related to MENTS. We begin by providing concentration inequalities for the estimated soft values at each node, around the optimal soft value. Note that this result is similar to some of the results provided in \citeapp{xiao2019maximum}, however to keep this paper more self contained we still provide a proof in our particular flavour. After, the concentration inequalities are then used to show bounds on the simple regret of MENTS, given constraints on the temperature.
         
-        To prove the concentration inequality around the optimal soft values, start by showing an inductive step.
+        % To prove the concentration inequality around the optimal soft values, start by showing an inductive step.
 
 
 
@@ -5313,78 +5315,78 @@ These appendices are structured as follows:
 
 
 
-
+        % DONE
     
-        \begin{lemma} \label{lem:ments_val_induction_step}
-            Consider a MENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$. If for all $s_{t+1}\in\suc{s_t}$ there is some $C_{s_{t+1}},k_{s_{t+1}}>0$ for any $\varepsilon_{s_{t+1}}>0$:
-            \begin{align}
-                \Pr\left(\left| \Vst{s_{t+1}}{N(s_{t+1})} - \Vss{s_{t+1}} \right| > \varepsilon_{s_{t+1}} \right) 
-                    &\leq C_{s_{t+1}}\exp\left( -k_{s_{t+1}}\varepsilon_{s_{t+1}}^2 N(s_{t+1}) \right), 
-            \end{align}
-            then there is some $C,k>0$, for any $\varepsilon>0$:
-            \begin{align}
-                \Pr\left(\left| \Vst{s_{t}}{N(s_{t})} - \Vss{s_{t}} \right| > \varepsilon \right) 
-                    &\leq C\exp\left( -k\varepsilon^2 N(s_{t}) \right).
-            \end{align}
-        \end{lemma}
+        % \begin{lemma} \label{lem:ments_val_induction_step}
+        %     Consider a MENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$. If for all $s_{t+1}\in\suc{s_t}$ there is some $C_{s_{t+1}},k_{s_{t+1}}>0$ for any $\varepsilon_{s_{t+1}}>0$:
+        %     \begin{align}
+        %         \Pr\left(\left| \Vst{s_{t+1}}{N(s_{t+1})} - \Vss{s_{t+1}} \right| > \varepsilon_{s_{t+1}} \right) 
+        %             &\leq C_{s_{t+1}}\exp\left( -k_{s_{t+1}}\varepsilon_{s_{t+1}}^2 N(s_{t+1}) \right), 
+        %     \end{align}
+        %     then there is some $C,k>0$, for any $\varepsilon>0$:
+        %     \begin{align}
+        %         \Pr\left(\left| \Vst{s_{t}}{N(s_{t})} - \Vss{s_{t}} \right| > \varepsilon \right) 
+        %             &\leq C\exp\left( -k\varepsilon^2 N(s_{t}) \right).
+        %     \end{align}
+        % \end{lemma}
         
-        \begin{proof}
-            Given the assumptions and by Lemmas \ref{lem:stochastic_step}, \ref{lem:sa_to_s} and \ref{lem:union_bound}, there is some $C,k>0$ such that for any $\varepsilon>0$:
-            \begin{align}
-                \Pr\left(\forall a_t\in\cl{A}. \left|\Qst{s_t}{a_t}{N(s_t,a_t)}-\Qss{s_t}{a_t}\right|\leq \varepsilon\right) &> 1-C \exp(-k \varepsilon^2 N(s_t)).
-            \end{align}
+        % \begin{proof}
+        %     Given the assumptions and by Lemmas \ref{lem:stochastic_step}, \ref{lem:sa_to_s} and \ref{lem:union_bound}, there is some $C,k>0$ such that for any $\varepsilon>0$:
+        %     \begin{align}
+        %         \Pr\left(\forall a_t\in\cl{A}. \left|\Qst{s_t}{a_t}{N(s_t,a_t)}-\Qss{s_t}{a_t}\right|\leq \varepsilon\right) &> 1-C \exp(-k \varepsilon^2 N(s_t)).
+        %     \end{align}
             
-            So with probability at least $1-C \exp(-k \varepsilon^2 N(s_t))$, for any $a_t$, the following holds:
-            \begin{align}
-                \Qss{s_t}{a_t} - \varepsilon \leq \Qst{s_t}{a_t}{N(s_t,a_t)} \leq \Qss{s_t}{a_t} + \varepsilon. 
-            \end{align}
+        %     So with probability at least $1-C \exp(-k \varepsilon^2 N(s_t))$, for any $a_t$, the following holds:
+        %     \begin{align}
+        %         \Qss{s_t}{a_t} - \varepsilon \leq \Qst{s_t}{a_t}{N(s_t,a_t)} \leq \Qss{s_t}{a_t} + \varepsilon. 
+        %     \end{align}
             
-            Using the upper bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ in the soft backup equation for $\Vst{s_t}{N(s_t)}$ (Equation (\ref{appeq:soft_v_backup}) gives:
-            \begin{align}
-                \Vst{s_t}{N(s_t)} &= \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qst{s_t}{a}{N(s_t,a_t)}}{\alpha}\right) \\
-                    &\leq \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qss{s_t}{a}+\varepsilon}{\alpha}\right) \\
-                    &= \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qss{s_t}{a}}{\alpha}\right) + \varepsilon \\
-                    &= \Vss{s_t} + \varepsilon,
-            \end{align}
-            noting that the \textit{softmax} function monotonically increases in its arguments. Then with similar reasoning using the lower bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ gives:
-            \begin{align}
-                \Vst{s_t}{N(s_t)} \geq \Vss{s_t} - \varepsilon,
-            \end{align}
-            and hence:
-            \begin{align}
-                |\Vst{s_t}{N(s_t)}-\Vss{s_t}| \leq \varepsilon.
-            \end{align}
+        %     Using the upper bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ in the soft backup equation for $\Vst{s_t}{N(s_t)}$ (Equation (\ref{appeq:soft_v_backup}) gives:
+        %     \begin{align}
+        %         \Vst{s_t}{N(s_t)} &= \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qst{s_t}{a}{N(s_t,a_t)}}{\alpha}\right) \\
+        %             &\leq \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qss{s_t}{a}+\varepsilon}{\alpha}\right) \\
+        %             &= \alpha \log \sum_{a\in\cl{A}} \exp\left(\frac{\Qss{s_t}{a}}{\alpha}\right) + \varepsilon \\
+        %             &= \Vss{s_t} + \varepsilon,
+        %     \end{align}
+        %     noting that the \textit{softmax} function monotonically increases in its arguments. Then with similar reasoning using the lower bound on $\Qst{s_t}{a_t}{N(s_t,a_t)}$ gives:
+        %     \begin{align}
+        %         \Vst{s_t}{N(s_t)} \geq \Vss{s_t} - \varepsilon,
+        %     \end{align}
+        %     and hence:
+        %     \begin{align}
+        %         |\Vst{s_t}{N(s_t)}-\Vss{s_t}| \leq \varepsilon.
+        %     \end{align}
             
-            This therefore shows:
-            \begin{align}
-                \Pr\left(\left|\Vst{s_t}{N(s_t)}-\Vss{s_t}\right| \leq \varepsilon_1\right) > 1-C \exp(-k \varepsilon^2 N(s_t)),
-            \end{align}
-            and negating probabilities gives the result.
-        \end{proof}
+        %     This therefore shows:
+        %     \begin{align}
+        %         \Pr\left(\left|\Vst{s_t}{N(s_t)}-\Vss{s_t}\right| \leq \varepsilon_1\right) > 1-C \exp(-k \varepsilon^2 N(s_t)),
+        %     \end{align}
+        %     and negating probabilities gives the result.
+        % \end{proof}
 
 
 
 
 
 
-        
+        % DONE
     
-        Then completing the induction gives the concentration inequalities desired for any state that MENTS might visit.
-        \begin{theorem} \label{thrm:ments_val_converge}
-            Consider a MENTS process, let $s_t\in\cl{S}$ then there is some $C,k>0$ for any $\varepsilon>0$:
-            \begin{align}
-                \Pr\left(\left| \Vst{s_{t}}{N(s_{t})} - \Vss{s_{t}} \right| > \varepsilon \right) 
-                    &\leq C\exp\left( -k\varepsilon^2 N(s_{t}) \right).
-            \end{align}
-            Moreover, at the root node $s_0$ we have:
-            \begin{align}
-                \Pr\left(\left| \Vst{s_{0}}{N(s_{0})} - \Vss{s_{0}} \right| > \varepsilon \right) 
-                    &\leq C\exp\left( -k\varepsilon^2 n \right). \label{local:three}
-            \end{align}
-        \end{theorem}
-        \begin{proof}
-            Consider that the result holds for $t=H+1$, because $\Vst{s_{H+1}}{N(s_{H+1})}=\Vss{s_{H+1}}=0$. Therefore the result holds for any $t=1,...,H+1$ by induction using Lemma \ref{lem:ments_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:three}).
-        \end{proof}
+        % Then completing the induction gives the concentration inequalities desired for any state that MENTS might visit.
+        % \begin{theorem} \label{thrm:ments_val_converge}
+        %     Consider a MENTS process, let $s_t\in\cl{S}$ then there is some $C,k>0$ for any $\varepsilon>0$:
+        %     \begin{align}
+        %         \Pr\left(\left| \Vst{s_{t}}{N(s_{t})} - \Vss{s_{t}} \right| > \varepsilon \right) 
+        %             &\leq C\exp\left( -k\varepsilon^2 N(s_{t}) \right).
+        %     \end{align}
+        %     Moreover, at the root node $s_0$ we have:
+        %     \begin{align}
+        %         \Pr\left(\left| \Vst{s_{0}}{N(s_{0})} - \Vss{s_{0}} \right| > \varepsilon \right) 
+        %             &\leq C\exp\left( -k\varepsilon^2 n \right). \label{local:three}
+        %     \end{align}
+        % \end{theorem}
+        % \begin{proof}
+        %     Consider that the result holds for $t=H+1$, because $\Vst{s_{H+1}}{N(s_{H+1})}=\Vss{s_{H+1}}=0$. Therefore the result holds for any $t=1,...,H+1$ by induction using Lemma \ref{lem:ments_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:three}).
+        % \end{proof}
         
         
         
