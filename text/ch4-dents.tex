@@ -29,7 +29,7 @@
 
     Section \ref{sec:4-3-toyenvs} considers some theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms, and are used for constructive proofs of some theorems. 
 
-    Results on grid world and the game of Go are given in section \ref{sec:4-4-results}. 
+    Results on grid world environments and the game of Go are given in section \ref{sec:4-4-results}. 
 
     Finally, in Section \ref{sec:4-5-theory} the main theoretical analysis and proofs are given.
 
@@ -91,7 +91,16 @@
 
     Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (\todo{ref the equation below}). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
 
-    \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered}
+    \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered} \todo{Neurips paper says: ``In this work, we consider scenarios where MCTS methods are used with a simulator to plan how an
+    agent should act'' in intro, and ``UCB [1] is frequently used in MCTS methods to minimise cumulative regret during the tree search.
+    Cumulative regret is most appropriate in scenarios where the actions taken during tree search have an
+    associated real-world cost. However, MCTS methods often use a simulator during the tree search,
+    where the only significant real-world cost is associated with taking the recommended action after the
+    tree search. In such scenarios, simple regret [7, 8] is more appropriate for analysing the performance
+    of algorithms, as it only considers the cost of the actions that are actually executed. Under simple
+    regret, algorithms are not penalised for under-exploiting during the search, thus can explore more,
+    which leads to better recommendations by allowing algorithms to confirm that bad actions are indeed
+    of lower value.'' in the simple regret section}
 
     \begin{figure}
         \begin{tcolorbox}
@@ -264,12 +273,12 @@
             \item BTS is consistent and converges for any setting of parameters;
             \item if $\alphabts(x) \geq L > 0$: BTS converges with an theoretical exponential rate;
             % \item if $\alphabts(x) \rightarrow 0$: BTS converges still;
-            \item if $U \geq \alphaarbts(x)$ and $\alphaarbts(x) \rightarrow 0$: AR-BTS converges;
+            \item $\alphaarbts(x) \rightarrow 0$: AR-BTS converges;
         \end{itemize}
         %
-        noting that these results are independent of all of the other parameters, including which of the two recommendation policies are used.
+        noting that these results are independent of all of the other parameters, including which of the two recommendation policies are used. \todo{didnt bother with exponential convergence rate for most visited, and not 100 percent its true, but think it should be}
 
-        \todo{Add theorems here? Or just reference theorems?}
+        \todo{Add theorems here? Or just reference theorems? - later note: think summarise the properties in words, and reference the theorems in the theory section.}
 
         \todo{Is the upper bound needed for arbts? Revisit these after having written the proofs up.}
 
@@ -358,12 +367,12 @@
             \begin{itemize}
                 \item DENTS is consistent and converges for any setting of parameters;
                 \item if $\alphadents(x) \geq L > 0$: DENTS converges with an theoretical exponential rate;
-                \item if $U \geq \alphaardents(x)$ and $\alphaarbts(x) \rightarrow 0$: AR-BTS converges;
+                \item if $\alphaardents(x) \rightarrow 0$ and $\frac{\betaardents(x)}{\alphaardents(x)} \rightarrow 0$: AR-DENTS converges;
             \end{itemize}
-            \item When using the most visited recommendation policy, the same results hold, but additionally requires $\betadents(x)\rightarrow 0$.
+            \item When using the most visited recommendation policy, the same results hold, but additionally requires $\frac{\betaardents(x)}{\alphaardents(x)} \rightarrow 0$ if it was not already a requirement. \todo{didnt bother with exponential convergence rate for most visited, and not 100 percent its true, but think it should be}
         \end{itemize}
 
-        \todo{Add theorems here? Or just reference theorems?}
+        \todo{Add theorems here? Or just reference theorems? - later note: think summarise the properties in words, and reference the theorems in the theory section.}
 
         \todo{Double check these after having written up the proofs. Particularly the differences between using the two different recommendation policies.}
 
@@ -465,28 +474,64 @@
 \section{Toy Environments}
 \label{sec:4-3-toyenvs}
 
-    \todo{list}
-    \begin{itemize}
-        \item Define D-chain stuff from the paper
-        \item Define the D-chain with entropy trap
-        \item Front load some results still
-    \end{itemize}
+    \todo{Sometimes feel like I'm bashing on MENTS. Want to make it clearer that I'm not bashing on MENTS, but using MENTS (as the max entropy MCTS method) to demonstrate issues with the max entropy objective itself.}
 
-    \todo{(commented out below this), original writing in the motivation section, which talked about the d-chain environment.}
+    This subsection uses theoretical MDPs to further highlight and discuss the benefits and pitfalls of UCT and MENTS, \todo{and compares the performance of BTS and DENTS on these MDPs.} 
 
-    \todo{Want to do the following. First use the D-chain, as a demonstration that a small change in the MDP can lead to very different params required for the MDP. Then extend on this with the D-chain with entropy trap, to show that the MENTS algorithm has an example where it always performs poorly.}
+    The \textit{D-chain problem} introduced by \todo{cite} (Figure \ref{fig:modified_d_chain}), is a deterministic MDP for which \todo{UCT ``struggles'' (find better words, maybe here say that wont feasibly solve)}. From some state $d$ if the action $a_L$ is taken the trial ends and a reward of $(D-d)/D$ is received, and from the final state in the chain, $D$, if the action $a_R$ is taken then the maximum reward of $R_f=1$ is received. Hence, the optimal standard policy will always take action $a_R$ at every state achieve a return of $1$.
+    %
+    \todo{Make sure that notation is consistent with the new fig}
+    %
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.6]{figures/todo.jpg}
+        \caption[An illustration of the \textit{(modified) D-chain problem}.]{An illustration of the \textit{(modified) D-chain problem}, \todo{where 1 is the starting state, and values next to sink states represent the reward for arriving in that state. At the end of the chain a reward of } $R_f$ \todo{ is recieved, where in} \todo{cite} the reward at the end of the chain is set to $R_f=1$.}
+        \label{fig:modified_d_chain}
+    \end{figure}
 
+    \todo{cite} show that UCT requires $\Omega(\exp(...\exp(1)...))$ many trials (D composed exponential functions) to recommend the optimal actions $a_R$. \bd{Informally, this behaviour stems from the value estimate of state 2 remaining below D-1/D for a long time, and UCT repeatedly taking action aL on its trials once its confidence intervals become relatively concentrated. UCT will still always explore the aR action and eventually converge to the optimal value estimates (and recommendation policy), but in practise it would take longer than a human lifetime.}
+
+    Where in Section \todo{ref} UCT can be seen to perform well in the presence of an informative dense reward, and struggle when only given an uninformative sparse reward, this MDP sets the rewards to take advantage of this \bd{behaviour maximally. The MDPs rewards can be viewed from the perspective of the dense rewards along the chain that essentially suggest ``don't explore this way'', which are hiding the sparse reward of one at the end of the chain.}
+
+    In stark contrast, when MENTS is run on the D-chain problem, it quickly explores and finds the sparse reward of one at the end of the chain. This is largely because of the maximum entropy objective, where there \bd{is no entropy reward to be gained by traversing to a sink state, thus encouraging MENTS to follow the chain}. However, because the chain is explored largely due to the maximum entropy objective, consider what happens in the \textit{modified D-chain problem}, where the reward at the end of the chain is set to $R_f=1/2$. \todo{copy out the soft Q value computations with temp of one.}
+
+    These two cases $R_f \in {1/2,1}$ demonstrate that MENTS, and more generally whenever using the maximum entropy objective, the optimal temperature parameter to be used is dependent on the MDP, and can vary massively even with small changes in the MDP, as for example in this the value of a single reward was changed. \todo{Reference the result that for any temperature there is an MDP where MENTS will be inconsistent}
+
+    \todo{Generally write up a bit cleaner once have plots in}
+
+    BTS and DENTS improve on this theoretically as convergence can be guarunteed by parameter settings which are independent of the MDP. In practise, for example consider using a constant value for $\alphadents$ and $\betadents$, the search policy can behave similarly to MENTS, \bd{which could be an issue in more complex MDPs} \todo{some of this discussion more appropriate for entropy trap bit maybe?}
+
+
+
+    \todo{plots to add: the two plots from neurips, performance of MENTS/BTS/DENTS for varying settings of temperature parameters. Same plots for entropy trap D-chain. Also demonstrate that if temperatures decayed properly then DENTS will visit the optimal sink state in entropy D-chain lots, while if not decayed, then will recommend the correct thing, but not visit. Last one is of practical importance, where the sparse reward of one at the end isn't just a sink state but the rest of the MDP where you actually want to do something important.}
+
+
+    \bd{(Commented out old writing below this). It is often argued in the maximum entropy objective that the standard objective can be recovered by setting the temperature suffficiently small, however this looses the benefits of using entropy for exploration.} \todo{Ref the result about ments converging for a sufficiently small temperature here.}
     % In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). \todo{add quote}. 
     % %
     % \todo{Although this is theoretically true (TODO ref the result about MENTS), in practise it is desirable to use the largest temperature that doesn't lead to undesirable (random) behaviour. In other words, extermely small temperatures do not utilise entropy for exploration effectively, while extremely large temperatures encourage agents to act randomly rather (reword: optimise for the standard objective). MENTS is used in (TODO) to demonstrate this issue with the maximum-entropy objective empirically, and (TODO) provides a corresponding theoretical result around MENTS.}
     % %
     % Although this is true, the most benefit can be gained from using entropy as an exploration bonus by setting a larger value of $\alpha$. This is highlighted in Figure \todo{ref}, where the performance on MENTS on the modified D-chain environment can be seen to improve as $\alpha$ is made larger, until a sudden drop off when it surpasses a threshold (\todo{at the poing 0.142ish}).
-     
-    % Above the threshold, an agent can gain more ``reward'' by acting randomly and optimising for maximum-entropy, largely ignoring the rewards of the MDP. This example demonstrates an issue with using the maximum-entropy objective, where the temperature parameter needs to be finely tuned to a sweet-spot for it to be effective.
 
-    % This issue can be exasurbated further by editing the D-chain environment to contain an entropy trap. In the entropy trap environment \todo{ref fig}, an additional trap for maximum-entropy agents is added to the D-chain environment. In this environment, when the end of the chain is reached, there are two choices, to either collect the immediate reward of $1$, or to follow another path where high entropy can be obtained, but no reward can be obtained. The maximum entropy that can be obtained from following the chain is $\alpha K \log(2)$, and as such will mislead any maximum-entropy agents that have a temperature parameter of $\alpha > \frac{1}{k\log(2)}$. Setting \todo{k=what}, sets this threshold at \todo{todo say $\alpha > C$ for now}. However, for $\alpha \leq C$, the temperature parameter is low enough that not much benefit is gained from the entropy objective.
 
-    % Figure \todo{ref} shows the performance of ments on the entropy trap environment, highlighting that it doesn't perform well for any setting of $\alpha$. In contrast, the algorithms defined in this chapter are able to overcome these issues.
+    By making this observation that maximum entropy algorithms can be mislead by providing an opportunity to accrue the `entropy reward', the D-chain problem can be further adapted, such that neither UCT or MENTS will perform well for any parameter settings. To construct the \textit{D-chain with entropy trap} \bd{problem? MDP?}, the same chain of length $D$, or the \textit{UCT gauntlet}, is used from the D-chain problem, and as such UCT will also struggle on this problem. However, at the end of the chain this time, one more choice is left, to either take the immediate reward of one, or to enter the \textit{entropy trap}, which is a sequence of states with zero rewards that allows a policy to act randomly to gain an entropy reward.
+    %
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.6]{figures/todo.jpg}
+        \caption[An illustration of the \textit{(modified) D-chain problem with entropy trap}.]{An illustration of the \textit{(modified) D-chain problem with entropy trap}, \todo{write caption describing MDP after made it}.}
+        \label{fig:d_chain_entropy_trap}
+    \end{figure}
+
+    \todo{These claims made more concrete in (ref theorem)}
+
+    \todo{Some writing about what the plots show empirically once run this.}
+
+    \todo{Wrap up this section saying that although these are highly theoretical and constructed examples, it can help even in practise to think about these things and consider the performance on these envs to understand why these algorithms behave the way they do on real problems. For example, it may be the case that there are some subtle entropy traps, consider if instead that Rf was 10, and the entropy trap had a reward of 9 (including the entropy bit), such that the performance looked good but } \todo{Basically a bit of chatting to map back to these things in practise and why useful, maybe also add something like this at the top. Actually, add this at the top, and then point out the specifics at the end. Good sandwitch storytelling.}
+
+
+
+
 
 
 
@@ -526,6 +571,32 @@
 
     \todo{First thing to do in this section is write up the results for what we're showing (in the chapter). Then write up the results we're showing in the appendix. Then move the proofs needed to build the results showing in this chapter. Then dump all of the remainder in the appendix.}
 
+
+
+
+
+
+    \begin{table*}[]
+        \centering
+        \begin{tabular}{l|c|c|c}
+                    
+                & DENTS   
+                & AR-DENTS    
+                & MENTS   \\
+            \hline
+            \todo{}$\psi$ %Val estimate rec policy 
+                &    
+                & $\alphaardents(m)\rightarrow 0$, $\frac{\betaardents(m)}{\alphaardents(m)}\rightarrow 0$
+                & $\alphaments<\frac{\Delta_{\cl{M}}}{3H\log |\cl{A}|}$ \todo{H consistent with thtspp} \\
+            \hline
+            \todo{}$\texttt{mv}$ %Most visit rec policy 
+                & $\frac{\betadents(m)}{\alphadents(m)}\rightarrow 0$
+                & $\alphaardents(m)\rightarrow 0$, $\frac{\betaardents(m)}{\alphaardents(m)}\rightarrow 0$
+                & $\alphaments<\frac{\Delta_{\cl{M}}}{3H\log |\cl{A}|}$ \todo{H consistent with thtspp} \\
+        \end{tabular}
+        \caption{\todo{Summary of conditions for algorithms to be consistent.} 
+            \label{tab:4:summary_consistency_conditions}}
+    \end{table*}
 
 
 
@@ -1325,6 +1396,13 @@
 
     The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
     %
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
+        \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+        \label{fig:dkw_diag}
+    \end{figure}
+    %
     \begin{corollary} \label{cor:bound_transition_distribution}
         Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
         \begin{align}
@@ -1346,13 +1424,6 @@
 
 
     
-    \begin{figure}
-        \centering
-        \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-        \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
-        \label{fig:dkw_diag}
-    \end{figure}
-
 
 
 
@@ -1583,7 +1654,7 @@
     Provided MENTS's temperature parameter is set small enough, such that the optimal standard and soft values lead to identical recommendation policies \todo{ref the max entropy proof of this}, then MENTS is consistent and the expected simple regret tends to zero exponentially. This is shown in the following lemma.
         
     \begin{lemma} \label{lem:ments_imm_simple_regret}
-        Consider a MENTS process with $\alpha<\Delta_{\cl{M}}/3H\log |\cl{A}|$. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ then there is some $C',k'>0$ such that:
+        Consider a MENTS process with $\alphaments<\Delta_{\cl{M}}/3H\log |\cl{A}|$. \todo{Make sure replaced alpha with alphaments in ments theorems} Let $s_t\in\cl{S}$, with $1\leq t \leq H$ then there is some $C',k'>0$ such that:
         \begin{align}
             \bb{E} \sreg(s_{t},\mpsiments{n}) &\leq C'\exp\left( -k' N(s_{t},n) \right).
         \end{align}
@@ -2272,7 +2343,7 @@
     
 
 
-    \todo{Generally look into how to justify that we take limits in parts. Got the dominated convergence theorem from here: https://math.stackexchange.com/questions/15240/when-can-you-switch-the-order-of-limits/15296#15296. Probably just leave the places where we do it as handwavy proof outlines}
+    \todo{Generally look into how to justify that we take limits in parts. Got the dominated convergence theorem from here: https://math.stackexchange.com/questions/15240/when-can-you-switch-the-order-of-limits/15296\#15296. Probably just leave the places where we do it as handwavy proof outlines}
 
     \todo{Which on that note, make sure we're using proof outline in this section, not proof}
 
