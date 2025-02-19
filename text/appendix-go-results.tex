@@ -235,7 +235,7 @@
     
     
     
-    Finally, we considered entropy temperatures of the form $\beta(m)=\beta_{\text{init}}/\sqrt{m}$ for DENTS and AR-DENTS, and tuned the value of $\beta_{\text{init}}$, in Tables \ref{tab:w070} and \ref{tab:x070} for DENTS and AR-DENTS respectively.
+    Finally, we considered entropy temperatures of the form $\beta(m)=\beta_{\text{init}}\frac{1+\exp(-5)}{1+\exp(m-5)}$ for DENTS and AR-DENTS, and tuned the value of $\beta_{\text{init}}$, in Tables \ref{tab:w070} and \ref{tab:x070} for DENTS and AR-DENTS respectively.
     
     
     \begin{table*}[]
@@ -244,10 +244,10 @@
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
             \hline
                                     0.1            & - & 10-5 & 12-3 & 8-7 & 11-4  		\\
-                                    0.1            & 13-2 & - & 11-4 & 13-2  & 10-5   		\\
-                                    0.1            & 12-3 & 11-4 & - & 10-5 & 11-4  		\\
-                                    0.1            & 7-8 & 13-2 & 13-2 & - & 10-5  		\\
-                                    0.1            & 13-2 & 13-2 & 11-4 & 11-4 &  - 		\\
+                                    0.03            & 13-2 & - & 11-4 & 13-2  & 10-5   		\\
+                                    0.01            & 12-3 & 11-4 & - & 10-5 & 11-4  		\\
+                                    0.003            & 7-8 & 13-2 & 13-2 & - & 10-5  		\\
+                                    0.001           & 13-2 & 13-2 & 11-4 & 11-4 &  - 		\\
         \end{tabular}
         \caption{Results for round robin to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
     \end{table*}

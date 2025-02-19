@@ -459,6 +459,9 @@
 
 
 
+
+
+
 \section{Toy Environments}
 \label{sec:4-3-toyenvs}
 
@@ -471,6 +474,8 @@
 
     \todo{(commented out below this), original writing in the motivation section, which talked about the d-chain environment.}
 
+    \todo{Want to do the following. First use the D-chain, as a demonstration that a small change in the MDP can lead to very different params required for the MDP. Then extend on this with the D-chain with entropy trap, to show that the MENTS algorithm has an example where it always performs poorly.}
+
     % In the maximum entropy objective, it is argued that the standard objective can be recovered by setting $\alpha=0$ or setting $\alpha$ infitesimally small ($0<\alpha<<1$). \todo{add quote}. 
     % %
     % \todo{Although this is theoretically true (TODO ref the result about MENTS), in practise it is desirable to use the largest temperature that doesn't lead to undesirable (random) behaviour. In other words, extermely small temperatures do not utilise entropy for exploration effectively, while extremely large temperatures encourage agents to act randomly rather (reword: optimise for the standard objective). MENTS is used in (TODO) to demonstrate this issue with the maximum-entropy objective empirically, and (TODO) provides a corresponding theoretical result around MENTS.}
@@ -482,6 +487,12 @@
     % This issue can be exasurbated further by editing the D-chain environment to contain an entropy trap. In the entropy trap environment \todo{ref fig}, an additional trap for maximum-entropy agents is added to the D-chain environment. In this environment, when the end of the chain is reached, there are two choices, to either collect the immediate reward of $1$, or to follow another path where high entropy can be obtained, but no reward can be obtained. The maximum entropy that can be obtained from following the chain is $\alpha K \log(2)$, and as such will mislead any maximum-entropy agents that have a temperature parameter of $\alpha > \frac{1}{k\log(2)}$. Setting \todo{k=what}, sets this threshold at \todo{todo say $\alpha > C$ for now}. However, for $\alpha \leq C$, the temperature parameter is low enough that not much benefit is gained from the entropy objective.
 
     % Figure \todo{ref} shows the performance of ments on the entropy trap environment, highlighting that it doesn't perform well for any setting of $\alpha$. In contrast, the algorithms defined in this chapter are able to overcome these issues.
+
+
+
+
+
+
 
 \section{Empirical Results}
 \label{sec:4-4-results}
@@ -499,13 +510,38 @@
 
     \todo{ TWO: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
 
+
+
+
+
+
+
+
+
 \section{Theoretical Results}
 \label{sec:4-5-theory}
+
+
+
+
+    \todo{First thing to do in this section is write up the results for what we're showing (in the chapter). Then write up the results we're showing in the appendix. Then move the proofs needed to build the results showing in this chapter. Then dump all of the remainder in the appendix.}
+
+
+
+
+
 
     \todo{list}
     \begin{itemize}
         \item add theoretical results
     \end{itemize}
+
+
+
+    \todo{Here we should front load the ``main results'' of the theory section, and write them up in a story, for example showing that DENTS can always be made to converge, although you may have to tune results for good performance in practise. THEN give an outline of how the proofs are laid out, and if the proofs are in the appendix or the rest of this chapter.}
+
+
+
 
     Should we try to add a result about most visited? Where will be concentration bounds around the number of visits being proportional to the values. So think can bootstrap those proofs.
 
@@ -1591,7 +1627,7 @@
                 =& \sum_{a\in\cl{A}-\{a^*\}} 
                     \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mpsiments{n}(s_t) =a \right) \\
                 =& \sum_{a\in\cl{A}-\{a^*\}} 
-                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQments{N(s_t,a')}(s_t,a') \right) \\
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQments{N(s_t,a',n)}(s_t,a') \right) \\
                 \leq& \sum_{a\in\cl{A}-\{a^*\}} 
                     \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mQments{N(s_t,a,n)}(s_t,a) > \mQments{N(s_t,a^*,n)}(s_t,a^*)  \right) \\
                 \leq&  \sum_{a\in\cl{A}-\{a^*\}} 
@@ -1605,10 +1641,41 @@
 
 
 
+
+
+
     
+    In consequence to Lemma \ref{lem:ments_imm_simple_regret}, provided the sufficient conditions are met, MENTS is consistent and will converge to a simple regret of zero.
+    \begin{theorem} \label{thrm:ments_simple_regret_converge}
+        Consider a MENTS process with $\alphaments<\Delta_{\cl{M}}/3H\log |\cl{A}|$.\todo{H consistent with thtspp}  Let $s_t\in\cl{S}$, with $1\leq t \leq H$ \todo{H consistent with thtspp} then there is some $C',k'>0$ such that:
+        \begin{align}
+            \bb{E} \sreg(s_{t},\mpsiments{n}) &\leq C'\exp\left( -k' N(s_{t},n) \right).
+        \end{align}
+        And specifically, at the root node $s_0$:
+        \begin{align}
+            \bb{E} \sreg(s_{0},\mpsiments{n}) &\leq C'\exp\left( -k'n) \right).
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        This theorem holds as a consequence of Corollary \ref{cor:imm_to_full_simple_regret} and Lemma \ref{lem:ments_imm_simple_regret}, and noting that at the root node $N(s_0,n)=n$.
+    \end{proof}
 
 
-    \todo{HERE HERE HERE HERE HERE}
+
+
+
+
+
+
+
+    \todo{this was a theorem in the main neurips paper. Need to decide how writing this up, so this may go}
+    \todo{We} have now shown Theorem \ref{thrm:ments}:
+    \begin{customthm}{3.2} 
+        For any MDP $\cl{M}$, after running $n$ trials of the MENTS algorithm with $\alphaments \leq \Delta_{\cl{M}}/3H\log|\cl{A}|$, \todo{H consistent with thtspp} there exists constants $C,k>0$ such that: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{MENTS}})] \leq C\exp(-kn)$, where $\Delta_{\cl{M}}=\min \{Q^*(s,a,t)-Q^*(s,a',t)\vert Q^*(s,a,t) \neq Q^*(s,a',t),s\in\cl{S}, a,a'\in\cl{A},t\in\bb{N}\}$.
+    \end{customthm}
+    \begin{proof}
+        This is part of Theorem \ref{thrm:ments_simple_regret_converge}.
+    \end{proof}
 
 
 
@@ -1620,113 +1687,52 @@
 
 
 
-
-    %%%%
-    % THEORY - Consistency Of Boltzmann MCTS Processes
-    %%%%
-    
-    \subsection{Consistency Of Boltzmann MCTS Processes}
-
-        Because the search temperature is now decayed, we need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
+    \todo{Want to change this result (below) to be, for any temperature alpha, there is some MDP that MENTS is not consistent. Then for theory story it can be that there is always a way to set params in DENTS that it will converge, but for MENTS the parameters depends on the MDP. The MDP to do this has one initial choice, with a reward of one, and then the other option is an entropy chain again, where the length is long enough such that MENTS will chose the entropy chain option.}
 
 
-        \todo{This lemma restated means that Boltzmann search policies will select all actions infinitely often.}
-        \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
 
-        \begin{lemma} \label{lem:inf_often_action_select}
-            Let $\rho^m$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
-            \begin{align} 
-                \pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
-            \end{align} 
-            with $\lambda(m)=\min(1,\epsilon/\log(e+m))$, where $\epsilon\in(0,\infty)$. Let $a^m\sim \pi^m$ be the $m$th sampled action, and let $M(a,m)$ be the number of times action $a$ was selected in the first $m$ samples, i.e. $M(a,m)=\sum_{m=1}^m \one[a^m=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
-        \end{lemma}
-        \begin{proof}
-            First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell\in\bb{N}$ and $b\in\cl{A}$ such that:
-            \begin{align}
-                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b\right) > 0. \label{appeq:ioas_contradict}
-            \end{align}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.4\textwidth]{figures/todo.jpg}
+        \caption{\todo{Make fig and write caption for the MDP for the new proof.}}
+        \label{fig:ments_not_consistent_env}
+    \end{figure}
 
-            However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
-            \begin{align}
-                \Pr\left(a^m = b\right) \geq \frac{\lambda(m)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+m)}.
-            \end{align} 
-
-            And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
-            \begin{align}
-                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b \right)
-                    &= \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
-                        \Pr(a^m \neq b) \\
-                    &\leq \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
-                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
-                    &\leq \lim_{k\rightarrow\infty} 
-                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right)^{k-\ell} \label{appeq:ioas_one} \\
-                    &= 0, \label{appeq:ioas_two}
-            \end{align}
-            %
-            which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
-            \begin{align}
-                \lim_{x\rightarrow \infty} \log f(x) 
-                &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
-                &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \\
-                &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x\log(x)(\log(x)-1)}}{-x^{-2}} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{\log(x)(\log(x)-1)} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{2\log(x)-1} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{2} \\
-                &= -\infty.
-            \end{align} 
-            %
-            And thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
-
-            \todo{cut this down maybe, its a little excessive showing all of the working out?}
-
-            Hence, by contradiction, it must be the case that $\Pr(M(a,m)\not\rightarrow\infty) = 0$, or rather that $\Pr(M(a,m)\rightarrow\infty) = 1$ which is the desired result.
-        \end{proof}
-        %
-        \todo{Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used} 
 
         
-
-
-        \todo{Words about the consequences of this lemma?}
-
-        In direct consequence of Lemma \ref{lem:inf_often_action_select}, every reachable state (and state-action pair) will be visited infinitely often in a Boltzmann MCTS Process.
-
-        \begin{corollary} \label{cor:inf_often_action_select}
-            For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
-        \end{corollary}
-        \begin{proofoutline}
-            This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
-        \end{proofoutline}
-
-
-
-
-        \todo{Values in BTS and DENTS converge to V* (Dynamic Programming)}
-
-
-
-
-        \todo{Values in AR-BTS and AR-DENTS converge to V* (and what conditions need to be)}
-
-
-
-
-        \todo{Simple regrets. (Consequence from visit counts tending to infinity, and therefore policy converges)}
-
-
-        \todo{Theorem that show that values in AR-BTS and AR-DENTS converge}
-
-
-
-
-
-        \todo{Theorem that shows if backups converge to the optimal, then guaranteed to converge and simple regret tends to 0 which is the result.}
-
-
-        \todo{Theorem to show that most visited policy will also converge. Say that from the point of values converging it will add exp many additional trials for the. Essentially, if converges after K trials, then each action visited M(a) many times is a constant start. And then N(a) eq new(a) plus M(a) will converge by law of large numbers, and should do exp fast. Basically need to do some DKW and (strong?) law of large numbers stuff. Its just a bit bothersome because the sum is not identically distributed, as each action sampled from a diff distribution.} \todo{also see this llm chat: https://chatgpt.com/c/67ad143f-6374-8007-9126-e90eb9f42578 - I like the argument } \todo{I liked the argument that if xn converges to x then avg(x1,...,xm) also converges to x. I also like how I posed the question to llm}
-
-        %https://en.wikipedia.org/wiki/Dvoretzky%E2%80%93Kiefer%E2%80%93Wolfowitz_inequality
-        %https://en.wikipedia.org/wiki/Law_of_large_numbers
+    \begin{customprop}{3.1}
+        \todo{Adapt this argument, which is just c and p from the neurips appendix}
+        There exists an MDP $\cl{M}$ and temperature $\alpha$ such that $\bb{E}[\sreg(s_0,\mpsiments{n})] \not\to 0$ as $n\to\infty$. That is, MENTS is not consistent.
+    \end{customprop}
+    
+    \begin{proof}
+        \todo{Adapt this argument, which is just c and p from the neurips appendix}
+        We give a proof by construction. Recall the modified 10-chain problem, with $R_f=1/2$ in Figure \ref{fig:dchain_illustration_tres}, and consider a MENTS process (i.e. running MENTS) with a temperature $\alphaments=1$ for $n$ trials. By considering the optimal soft Bellman equations (\ref{eq:v_soft_bellman}) and (\ref{eq:q_soft_bellman}), one can verify that $Q_{\sft}^*(1,2)=0.9$ and $Q_{\sft}^*(1,1)=\log\left(\exp(1/2)+\sum_{i=0}^8\exp(i/10)\right)\approx 2.74$. 
+        
+        Theorem \ref{thrm:ments_val_converge}, Lemma \ref{lem:stochastic_step} and Lemma \ref{lem:sa_to_s} implies that there is some $C,k>0$ for any $\varepsilon > 0$:
+        \begin{align}
+            \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(1,n)) = C\exp(-k\varepsilon^2 n).
+        \end{align}
+        
+        Letting $\varepsilon=1$ and using $Q_{\sft}^*(1,1)>5/2$ gives:
+        \begin{align}
+            \Pr\left(\mQments{N(1,1,n)}(1,1) < 3/2 \right) 
+                \leq& \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > 1 \right) \\
+                \leq& C\exp(-kn).
+        \end{align}
+        
+        And hence:
+        \begin{align}
+            \Pr(\mpsidents{n}(1)=1) > 1 - C\exp(-kn)
+        \end{align}
+        
+        Consider that the best simple regret an agent can achieve after selecting action 1 from the starting state is $1/10$. Let $M=\log(2C)/k$, so that $C\exp(-kM)=1/2$. Then, for all $n>M$ we have $\Pr(\psi^n_{\text{MENTS}}(1)=1)> 1/2$, and hence:
+        \begin{align}
+            \bb{E}\sreg(1,\mpsiments{n}) &> \frac{1}{10} \cdot \Pr(\psi^n_{\text{MENTS}}(1)=1) \\
+                &> \frac{1}{20}.
+        \end{align}
+        Thus $\bb{E}\sreg(1,\mpsidents{n})\not\rightarrow 0$.
+    \end{proof}
 
 
 
@@ -1740,9 +1746,740 @@
 
 
 
-    %%%%
-    % THEORY - FIRST THING PROOV IN NEURIPS PAPERS
-    %%%%
+
+
+
+
+
+
+
+
+
+    
+    Finally for the MENTS proofs, an MDP can be constructed such that for any setting of $\alphaments$ MENTS will either not be consistent, or, will take exponentially long in the size of the state space of the MDP. This MDP is the \todo{whatever call the entropy trap env} first seen in \todo{ref to toy envs section figure}, where this phenominon was demonstrated empirically \todo{ref to graph in toy envs section}. This figure is repeated in Figure \ref{fig:adapted_chain} \todo{for ease of reading}.
+
+
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/todo.jpg}
+        \caption{\todo{haven't edited this from the neurips paper, need to reproduce the fig and comment with the new notation} An illustration of the \textit{adapted-chain problem}, where 1 is the starting state, all transitions are deterministic and values next to states represents the reward for arriving in that state. The MDP is split into two sections, firstly, the UCT gauntlet refers to the D-chain part of the MDP, which is difficult for UCT algorithms, and secondly, the entropy trap, where the agent has to chose between states $E$ and $F$. The entropy trap consists of two chains of $K$ states, all of which give a reward of $0$ for visiting, but allows an agent to follow a policy with up to $\log(2)K$ entropy. So the optimal values for $E$ and $F$ are $V_{\sft}^*(E)=\log(2)K$ and $V_{\sft}^*(F)=1$ respectively.}
+        \label{fig:adapted_chain}
+    \end{figure}
+    
+    
+    
+    \begin{theorem} \label{thrm:ments_bad_mdp}
+        Consider a MENTS process with arbitrary temperature $\alphaments$. There exists and MDP such that for any $\alphaments$ that MENTS is either not consistent, or requires an exponential number of trials in the size of the state space. More precisely, either $\mathbb{E}\sreg(s_0,\mpsiments{n})\not\rightarrow 0$ or $\mathbb{E}\sreg(1,\mpsiments{n}) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$, which implies that $\mathbb{E}\sreg(s_0,\psi^n_{MENTS})>0$ for $n<k^{|\cl{S}|}$. 
+    \end{theorem}
+    
+    \begin{proofoutline}
+        \todo{remember this one was written in a bit of a rush, so probably want to make it a little clearer. Also need to make it consistent with the states and actions notation} 
+
+        \todo{Also a bunch of N(s) instead of N(s,n) in the proof that need to be fixed}
+
+        Proof is by construction. Consider the adapted-chain MDP \todo{update name for name change?} defined in Figure \ref{fig:adapted_chain}, which is parameterised by $D$ the length of the UCT gauntlet, and $K$, half the number of states in the entropy trap. To prove the claim, two cases need to be considered: when the temperature is sufficiently high for MENTS to get `caught' in the entropy trap when it is inconsistent; and, when the temperature is lower than this threshold.
+        
+        Case 1: $\alphaments>\frac{1}{\log(2)K}$ (MENTS gets caught by the entropy trap).
+        
+        If $\alphaments>\frac{1}{\log(2)K}$, the soft value of E is greater than one for any policy over the actions, and $\phi$ is a uniform policy (note that because there are no MDP rewards after $E$, $\phi$ is both the initial policy for MENTS and the optimal soft policy \todo{only for the entropy trap section}): 
+        \begin{align}
+                V_{\sft}^*(E) & = 0 + \alphaments \cdot \mathcal{H}(\phi) \\
+                    & = \alphaments \cdot \log(2)  K \\
+                    & > 1 \\
+                    & = V_{\sft}^*(F).
+        \end{align}
+        
+        Hence the optimal soft values (which MENTS converges to) will recommend going to state $E$ and gathering $0$ reward. Hence in this case the simple regret will converge to $1$ as the optimal value is $V^*(1)=1$. That is $\mathbb{E}\sreg(1,\mpsiments{n}) \rightarrow 1 > 0$.
+        
+        Case 2: $\alpha\leq\frac{1}{\log(2)K}$ \todo{asnother comment on this case, or remove comment from other case}
+        
+        In this case it is argued that with a low $\alphaments$ that MENTS will only have a low probability of ever hitting state $D$, that is, it requires a lot of trials to garuntee that at least one trial has reached state $D$, which is necessary to get the reward of $1$ (and simple regret of $0$).
+        
+        First consider the composed and simplified soft backup on the adapted-chain problem for any $0<i<D$ to get:
+        \begin{align}
+                \mVments{N(i,n)}(i) & = \alpha \log\left( \frac{1}{\alpha} 
+                    \left( \frac{D-i}{D} + \mVments{N(i+1,n)}(i+1) \right)\right) \\
+                & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \alpha\log(2) \label{mbm:one} \\
+                & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \frac{1}{K}
+        \end{align}
+        
+        where inequality (\ref{mbm:one}) used the property of log-sum-exp that $\alpha \log \sum_{i=1}^\ell \exp (x_i/\alpha) \leq \max_i (x_i) + \alpha \log(\ell)$. Assume that $K \geq D$ and $\mVments{N(D)}(D)=0$ (it will be checked that these assumptions are valid later). Then, by induction, it holds that $\mVments{N(i)}(i)\leq \frac{D-(i-1)}{D}$:
+        \begin{align}
+            \mVments{N(i)}(i) 
+            & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1)}(i+1)\right) + \frac{\log(2)}{\log(K)} \\
+            & \leq \frac{D-i}{D} + \frac{1}{K} \\
+            & \leq \frac{D-i}{D} + \frac{1}{D} \\
+            & = \frac{D-(i-1)}{D}.
+        \end{align}
+        %
+        \todo{first line uses induction hypothesis, value at i plus one less than D-i/D.}
+        
+        Now let the event $Y(n)$ be that MENTS visits state $D$ in its $n$th trial. Again assuming that $\mVments{N(D,n)}(D)=0$, the probability of this event occuring is less than $2^{-D}$. Because given this assumption it has just been shown that $\mVments{N(i+1,n)}(i+1)\leq \frac{D-i}{D} = \mVments{N(G_{i},n)}(G_{i})$, \todo{we are considering the choice between Gi and i plus 1 from state i here, which isn't too clear right now} as there are only two actions and taking action $a_R$ to continue down the chain has a lower soft value estimate, it must be that $\mpiments{n}(a_R|i) < \frac{1}{2}$, and as such, it must be that $\Pr\left(Y(n) \middle| \mVments{N(D,n)}(D)=0\right) < \frac{1}{2^D}$. 
+         
+        Then let $Z(n)=\neg \bigcup_{j=1}^n Y(j)$ be the event that no trial of MENTS has visited state $D$ in any of the first $n$ trials. And note that $Z(n)$ implies that $\mVments{N(D,n)}(D)=0$: \todo{probably aught to say somewhere in the proofs section that all the initialisations are set to zero, and the theory is to analyse the algorithms by itself, without any informative prior knowledge of the mdp}
+        \begin{align}
+            \Pr(Z(n)) 
+                &= \Pr\left(Z(n) \cap \mVments{N(D,n)}(D)=0\right) \\
+                &= \Pr\left(\neg Y(n) \cap Z(n-1) \cap \mVments{N(D,n)}(D) = 0  \right) \\
+                &= \Pr\left(\neg Y(n) \middle| Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) 
+                    \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
+                &\geq (1-2^{-D}) \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
+                &= ... \\
+                &\geq (1-2^{-D})^n \Pr\left( Z(0) \cap \mVments{N(D)}(D)=0\right) \\
+                &= (1-2^{-D})^n \\
+                &\geq 1-n2^{-D},
+        \end{align}
+        where the penultimate line used $\Pr\left( Z(0) \cap \left(\mVments{N(D)}(D)=0\right)\right)=1$, as $Z(0)$ and $\mVments{N(D,n)}(D)=0$ are vacuously true at the start of running the algorithm, and in the final line used Bernoulli's inequality \todo{ref}.
+        
+        Informally, $Z(n)$ implies that $V^{\mpsiments{n}}(1) \leq \frac{9}{10}$, as no trial has even reached $D$ to be able to reach the reward of $1$ from $F$. And hence the expected simple regret in this environment of MENTS can be bounded below as follows:
+        \begin{align}
+            \mathbb{E}\sreg(1,\psi^n_{\text{MENTS}}) 
+                & \geq \left(1-\frac{9}{10}\right) \Pr(Z(n)) \\
+                & \geq \frac{1}{10} \left( 1-n2^{-D} \right).
+        \end{align}
+        
+        Finally, setting $K=D$, so that $|\cl{S}|=4D+3<5D$ for $D\in\bb{N}$ \todo{D more than 1} and so $D=\frac{|\cl{S}|-3}{4}>\frac{|S|}{5}$. Substituting this into the above inequality gives $\mathbb{E}\sreg(1,\mpsiments{n}) \geq 1 - \frac{n}{\sqrt[5]{2}^{|S|}}$, which is greater than $0$ for $n < \sqrt[5]{2}^{|S|}$. That is $c=\frac{1}{10}$ and $k=\sqrt[5]{2}$.
+    \end{proofoutline}
+
+
+    \todo{Some note about how DENTS can handle this case by using entropy and then ignoring it for the recommendations. Moreover, by allowing the entropy temperature (beta) to be decayed, allows the entropy trap estimates to correctly converge to the correct value of zero, and could handle a case where there is something more complex than a single state with a reward of one when not taking the entropy trap.}
+
+    \todo{Additionally, note that because the proofs for convergence for DENTS have constraints on parameters (or no constraints on params) that even on this case it will converge to the correct result.}
+
+
+
+
+
+
+
+
+\subsection{DENTS results} \label{appsec:dents_proofs}
+
+    \todo{This is mostly the exponential bound stuff, so can also probably be appendix stuff}
+
+    This subsection provides theoretical results that give exponential convergence of DENTS value estimates and simple regret. \todo{Some note on no constraints necessary on the parameters of DENTS?} 
+
+
+
+
+
+
+
+    \begin{lemma} \label{lem:dents_val_induction_step}
+        \todo{maybe should do directly from the Q values? Also same for the ments one?}
+        Consider a DENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$. \todo{make H consistent with thtspp} If for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ there is some $C_{s_{t+1}},k_{s_{t+1}}>0$ such that for any $\varepsilon_{s_{t+1}}>0$:
+        \begin{align}
+            \Pr\left(\left| \mVdents{N(s_{t+1},n)}(s_{t+1}) - V^*(s_{t+1}) \right| > \varepsilon_{s_{t+1}} \right) 
+                &\leq C_{s_{t+1}}\exp\left( -k_{s_{t+1}}\varepsilon_{s_{t+1}}^2 N(s_{t+1},n) \right), 
+        \end{align}
+        then there is some $C,k>0$, for any $\varepsilon>0$:
+        \begin{align}
+            \Pr\left(\left| \mVdents{N(s_{t},n)}(s_{t}) - V^*(s_t) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 N(s_{t},n) \right).
+        \end{align}
+    \end{lemma}
+    \begin{proof}
+        Given the assumptions and by Lemmas \ref{lem:stochastic_step}, \ref{lem:union_bound} and \ref{lem:sa_to_s}, for some $C,k>0$ and for any $\varepsilon_1>0$:
+        \begin{align}
+            \Pr\left(\forall a_t\in\cl{A}. \left|\mQdents{N(s_t,a_t,n)}(s_t,a_t)-Q^*(s_t,a_t)\right|
+                \leq \varepsilon_1\right) &> 1-C \exp(-k \varepsilon_1^2 N(s_t)).
+        \end{align}
+        
+        Let $\varepsilon >0$, and set $\varepsilon_1 = \min(\varepsilon,\Delta_{\cl{M}}/2)$. So with probability at least $1-C_1 \exp(-k_1 \varepsilon_1^2 N(s_t,n))$ for any $a_t$ it must be that:
+        \begin{align}
+            Q^*(s_t,a_t) - \varepsilon_1 \leq \mQdents{N(s_t,a_t,n)}(s_t,a_t) &\leq Q^*(s_t,a_t) + \varepsilon_1. 
+                \label{local:ten}
+        \end{align}
+        
+        Let $a^*=\max_{a\in\cl{A}} Q^*(s_t,a)$. Using $\varepsilon_1 \leq \Delta_{\cl{M}}/2$ in (\ref{local:ten}), then for any $a\in\cl{A}-\{ a^*\}$:
+        \begin{align}
+            \mQdents{N(s_t,a,n)}(s_t,a) \leq& Q^*(s_t,a) + \Delta_{\cl{M}}/2 \\
+                \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/2 \\
+                \leq& \mQdents{N(s_t,a^*,n)}(s_t,a^*),
+        \end{align}
+        and hence $\argmax_{a\in\cl{A}} \mQdents{N(s_t,a,n)}(s_t,a) = a^*$. As a consequence:
+        \begin{align}
+            \mVdents{N(s_t,n)}(s_t) &= \max_a \mQdents{N(s_t,a,n)}(s_t,a) = \mQdents{N(s_t,a^*,n)}(s_t,a^*). 
+                \label{local:editing_one}
+        \end{align}
+        
+        Then using (\ref{local:ten}) with $a_t=a^*$ (noting $V^*(s_t)=Q^*(s_t,a^*)$), using (\ref{local:editing_one}) and using $\varepsilon_1 \leq \varepsilon$ gives:
+        \begin{align}
+            V^*(s_t) - \varepsilon
+                \leq& V^*(s_t) - \varepsilon_1 \\
+                \leq& \mVdents{N(s_t,n)}(s_t) \\
+                \leq& V^*(s_t) + \varepsilon_1 \\
+                \leq& V^*(s_t) + \varepsilon. 
+        \end{align}
+        
+        Hence:
+        \begin{align}
+            \Pr\left(\left|\mVdents{N(s_t,n)}(s_t)-V^*(s_t)\right| > \varepsilon\right) 
+                &\leq C \exp(-k \varepsilon_1^2 N(s_t,n)) \\
+                &\leq C \exp(-k \varepsilon^2 N(s_t,n)),
+        \end{align}
+        which is the result.
+    \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    Similarly to the MENTS section, Lemma \ref{lem:dents_val_induction_step} provides an inductive step, which is used in Theorem \ref{thrm:dents_val_converge} to show concentration inequalities at all states that DENTS visits.
+        
+    \begin{theorem} \label{thrm:dents_val_converge}
+        Consider a DENTS process, let $s_t\in\cl{S}$ then there is some $C,k>0$ for any $\varepsilon>0$:
+        \begin{align}
+            \Pr\left(\left| \mVdents{N(s_{t},n)}(s_t) - V^*(s_{t}) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 N(s_{t},n) \right).
+        \end{align}
+        Moreover, at the root node $s_0$:
+        \begin{align}
+            \Pr\left(\left| \mVdents{N(s_{0},n)}(s_0) - V^*(s_0) \right| > \varepsilon \right) 
+                &\leq C\exp\left( -k\varepsilon^2 n \right). \label{local:four}
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        The result holds for $t=H+1$ \todo{consistent with thtspp. SHOULD JUST CTRL-F THIS and sort all of these out at once.} because $\mVdents{N(s_{H+1})}(s_{H+1})=V^*(s_{H+1})=0$. \todo{might be an off by one error here dep on how defined H, check over this whole paragraph.} Hence the result holds for all $t=1,...,H+1$ by induction using Lemma \ref{lem:dents_val_induction_step}. Noting that $N(s_0)=n$ gives (\ref{local:four}).
+    \end{proof}
+
+
+
+
+
+
+
+
+
+    \todo{is this just repeated? Can we merge two of the proofs?}
+
+    Again, the concentration inequalities are used to show that the simple regret tends to zero exponentially, and therefore that DENTS will be exponentially likely in the number of visits to recommend the optimal standard action at every node.
+        
+    \begin{lemma} \label{lem:dents_imm_simple_regret}
+        Consider a DENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ \todo{defn with thtspp for H agen} then there is some $C',k'>0$ such that:
+        \begin{align}
+            \bb{E} \ireg(s_{t},\mpsidents{n}) &\leq C'\exp\left( -k' N(s_{t},n) \right).
+        \end{align}
+    \end{lemma}
+    \begin{proof}
+        Let $a^*$ be the locally optimal standard action, so $a^*=\argmax_{a\in\cl{A}} Q^*(s_t,a)$. By Theorem \ref{thrm:dents_val_converge} and Lemmas \ref{lem:stochastic_step} and \ref{lem:sa_to_s} there exists $C_1,k_1>0$ such that for all $\varepsilon_1>0$:
+        \begin{align}
+            \Pr\left(\forall a_t\in\cl{A}. \left|\mQdents{N(s_t,a_t,n)}(s_t,a_t)-Q^*(s_t,a_t)\right|\leq \varepsilon_1\right) &> 1-C_1 \exp(-k_1 \varepsilon_1^2 N(s_t,n)).
+        \end{align}
+        
+        Setting $\varepsilon_1=\Delta_{\cl{M}}/2$ then gives with probability $1-C_1 \exp(-k_2N(s_t,n))$ (where $k_2=k_1\Delta_{\cl{M}}/2$) for all actions $a\in\cl{A}$ that:
+        \begin{align}
+            Q^*(s_t,a) - \Delta_{\cl{M}}/2 \leq \mQdents{N(s_t,a,n)}(s_t,a) \leq Q^*(s_t,a) + \Delta_{\cl{M}}/2.
+        \end{align}
+        
+        And hence, with probability $1-C_1 \exp(-k_2N(s_t))$, for all $a_t\in\cl{A}-\{a^*\}$ it must be that:
+        \begin{align}
+            \mQdents{N(s_t,a,n)}(s_t,a_t)
+                \leq& Q^*(s_t,a_t) + \Delta_{\cl{M}}/2 \\
+                \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/2 \\
+                \leq& \mQdents{N(s_t,a^*,n)}(s_t,a^*). \label{local:eleven}
+        \end{align}
+        
+        Negating the probability of (\ref{local:eleven}) then gives:
+        \begin{align}
+            \Pr\left(\mQdents{N(s_t,a,n)}(s_t,a) > \mQdents{N(s_t,a^*,n)}(s_t,a^*)\right) \leq C_1 \exp(-k_2N(s_t,n))
+        \end{align}
+        
+        Finally, the bound on the expected immediate regret follows:
+        \begin{align}
+            & \bb{E}\ireg(s_t,\mpsidents{n})  \\
+                =& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mpsidents{n}(s_t) =a \right) \\
+                =& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQdents{N(s_t,a,n)}(s_t,a) \right) \\
+                \leq& \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) 
+                    \Pr\left(\mQdents{N(s_t,a,n)}(s_t,a) > \mQdents{N(s_t,a^*,n)}(s_t,a^*)  \right) \\
+                \leq&  \sum_{a\in\cl{A}-\{a^*\}} 
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) C_1 \exp(-k_2N(s_t,n)),
+        \end{align}
+        and setting $k'=k_2$ and $C'=C_1\sum_{a\in\cl{A}-\{a^*\}} \left(V^*(s_t)-Q^*(s_t,a)\right)$ gives the result.
+    \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+    
+    Again similarly to before, by using Lemma \ref{lem:dents_imm_simple_regret}, the bound on the immediate simple regret can be converted to a bound on the simple regret.
+        
+    \begin{theorem} \label{thrm:dents_simple_regret_converge}
+        Consider a DENTS process. Let $s_t\in\cl{S}$, with $1\leq t \leq H$ \todo{thtspp consistent agen} then there is some $C',k'>0$ such that:
+        \begin{align}
+            \bb{E} \sreg(s_{t},\mpsidents{n}) &\leq C'\exp\left( -k' N(s_{t},n) \right).
+        \end{align}
+        
+        Moreover, at the root node $s_0$:
+        \begin{align}
+            \bb{E} \sreg(s_{0},\mpsidents{n}) &\leq C'\exp\left( -k'n \right). \label{local:five}
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        Theorem holds as a consequence of Corollary \ref{cor:imm_to_full_simple_regret} and Lemma \ref{lem:dents_imm_simple_regret}. To arrive at (\ref{local:five}) note that $N(s_0,n)=n$.
+    \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Finally, Theorem \ref{thrm:dents} follows \todo{this was the neurips main paper theorem, changing how doing the main results bit} from the results that we have just shown.
+
+
+    Finally, Theorem \ref{thrm:dents} hows as it is a subset of what has already been shown.
+    \begin{customthm}{4.2}
+        \todo{this was the neurips main paper theorem, only changed enough to get this compiling. Also need to change the results for correct conditions, dont think beta needs to be bounded actually}
+        For any MDP $\cl{M}$, after running $n$ trials of the DENTS algorithm with a root node of $s_0$, if $\betadents$ is bounded above and $\betadents(m)\geq 0$ for all $m\in\bb{N}$, then there exists constants $C,k>0$ such that for all $\varepsilon>0$ it holds that
+        $\bb{E}[\sreg(s_0,\mpsidents{n})] \leq C\exp(-kn)$, and also $\mVdents{N(s_0,n)}(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
+    \end{customthm}
+    \begin{proof}
+        The simple regret bound follows immediately from Theorem \ref{thrm:dents_simple_regret_converge}. Using Theorem \ref{thrm:dents_val_converge} it holds that $\Pr\left(\left| \mVdents{N(s_{0},n)}(s_0) - V^*(s_0) \right| > \varepsilon \right) \leq C\exp\left( -k\varepsilon^2 n \right) \rightarrow 0$ as $n\rightarrow \infty$, and hence $\mVdents{N(s_{0},n)}(s_0)$ converges in probability to $V^*(s_0)$.
+    \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+\subsection{BTS results} \label{appsec:bts_proofs}
+
+    Recall that the BTS process is a special case of the DENTS process, where the decay function is set to $\betadents(m)=0$. As such, all of the results for DENTS processes also hold for BTS processes, and specifically Theorem \ref{thrm:bts} \todo{neurips theorem} must hold.
+
+    \todo{probably want to delete this and be more clear in the intro to the theory section that BTS is just a special case of DENTS mathematically. Also want to say that BTS does have a purpose in being a standalone algorithm when entropy isn't useful and so doing the second backup is useless. Commented out below is the main BTS theorem from the neurips paper}
+
+    
+    % \begin{customthm}{4.1}
+    %     For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\reg(s_0,\psi^n_{\textnormal{BTS}})] \leq C\exp(-kn)$, and also $\Vt{s_0}{N(s_0)} \rap V^*(s_0)$ as $n\rightarrow\infty$.
+    % \end{customthm}
+    % \begin{proof}
+    %     Follows from setting $\beta(m)=0$ and using Theorem \ref{thrm:dents}.
+    % \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Results for using average returns in Boltzmann MCTS processes} \label{sec:ar_proofs}
+
+    \todo{SOME of this should be integrated into the main arguments I think}
+
+    \todo{N(s) to N(s,n) stuff}
+
+    In this section informal proof outlines for theoretical results for AR-BTS and AR-DENTS are given. To begin with define the average return $\bar{V}^{N(s)}(s)$ for a decision node at $s$, and recall the definition of $\bar{Q}^{N(s,a)}(s, a)$:
+
+    \begin{align}
+        \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(s_t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1},  \label{appeq:ar_v} \\
+        \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
+            + \frac{\bar{R}(s_t,a_t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1},  \label{appeq:ar_q}
+    \end{align}
+    %
+    where $\bar{R}(s_t)=\sum_{i=t}^H R(s_i,a_i)$ and $\bar{R}(s_t, a_t)=\sum_{i=t}^H R(s_i,a_i)$. Note that these average return values also satisfy the equations:
+    %
+    \begin{align}
+        \bar{V}^{N(s_t)}(s_t) &= \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)} \bar{Q}^{N(s_t,a_t)}(s_t, a_t), \label{appeq:ar_v_rel} \\
+        \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
+            &= R(s_t,a_t) + \sum_{a\in\cl{A}} \frac{N(s')}{N(s_t,a_t)} \bar{V}^{N(s')}(s'). \label{appeq:ar_q_rel}
+    \end{align}
+    %
+    \todo{should we do the rearrangement/working out for this?}
+
+
+
+
+
+
+
+
+
+
+    \todo{Sufficiency for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
+    Firstly, it can be shown that using a non-decaying search temperature with AR-BTS is not guaranteed to recommend the optimal policy.
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/todo.jpg}
+        \caption{\todo{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
+        \label{fig:ar_gen_mdp}
+    \end{figure}
+
+    \begin{customprop}{B.1}
+        \todo{Haven't touched this, just c and p from neurips paper}
+
+        For any $\alpha_{\textnormal{fix}}>0$, there is an MDP $\cl{M}$ such that AR-BTS with $\alpha(m)=\alpha_{\textnormal{fix}}$ is not consistent: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})] \not\to 0$ as $n\to\infty$. 
+    \end{customprop}
+    \begin{proofoutline}
+        \todo{Haven't touched this, just c and p from neurips paper}
+
+        Consider the MDP given in Figure \ref{fig:ar_gen_mdp}. We can show inductively that (as $n\rightarrow\infty$) the value of $\bb{E}\bar{V}^{N(k)}(k)\leq 2E^{D-k+1} < 2$, where $E=e^2/(1+e^2)$ for $2\leq k \leq D$. The inductive step is as follows:
+        \begin{align}
+            \bb{E}\bar{V}^{N(k)}(k) =& \frac{\exp\left(\bar{V}^{N(k+1)}(k+1)\right)}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \bb{E}\bar{V}^{N(k+1)}(k+1) 
+                + \frac{1}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \cdot 0 \\
+                \leq& E \cdot \bb{E} \bar{V}^{N(k+1)}(k+1) \\
+                \leq& E \cdot 2E^{D-k} \\
+                =& 2E^{D-k+1}.
+        \end{align}
+
+        where we know that $\exp\left(\bar{V}^{N(k+1)}(k+1)\right)/\left(1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)\right) < E$, because the function $e^x/(1+e^x)$ is monotonically increasing in $x$, and $\bar{V}^{N(k+1)}(k+1) < 2$. Hence, by choosing an integer $D$ such that $D-1 \geq \log(1/3) / \log(E)$, we have $\bb{E}\bar{V}^{N(2)}(2)=2E^{D-1}\leq 2/3 < 1 = \bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)$. 
+
+        A full proof should show that AR-BTS does indeed converge to these expected values, possibly through concentration bounds. 
+        \todo{(was camera ready todo) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
+
+        Hence, AR-BTS does not converge to a simple regret of zero, because the expected Q-values as $n\rightarrow\infty$ are $\bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)=1$ and $\bb{E}\bar{Q}^{N(1,a_1)}(1,a_1)<2/3$, so AR-BTS would incorrectly recommend action $a_2$ from the root node. 
+        \todo{(Was camera ready todo) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
+    \end{proofoutline}
+
+
+
+
+    \todo{Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
+
+    \todo{Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
+
+
+
+
+
+
+
+
+
+
+    \todo{This proof is re-written and improved on below, so this should be deleted.}
+    \begin{lemma} \label{oldlem:inf_often_action_select}
+        Let $\rho^k$ be an arbitrary policy, and let a search policy be $\pi^k(a)=(1-\lambda(k))\rho^k(a) + \lambda(k) / |\cl{A}|$, with $\lambda(k)=\min(1,\epsilon/\log(e+k))$, where $\epsilon\in(0,\infty)$. Let $a^k\sim \pi^k$, and let $M(a)$ be the number of times action $a$ was sampled out of $m$ samples, i.e. $M(a)=\sum_{i=1}^m \one[a^i=a]$. Then for all $a\in\cl{A}$ we have $M(a)\rightarrow\infty$ as $m\rightarrow \infty$.
+    \end{lemma}
+    \begin{proofoutline}
+        This lemma restated means that our search policies will select all actions infinitely often. To show this, we argue by contradiction, and suppose that there is some $b\in\cl{A}$ such that after $\ell$ samples that $b$ is never sampled again. The probability of this happening at the $m$th sample is then:
+        \begin{align}
+            \Pr\left(\bigcap_{i=\ell}^m a^i \neq b \right)
+                &= \prod_{i=\ell}^m \Pr(a^i \neq b) \\
+                &\leq \prod_{i=\ell}^m \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+i)} \right) \\
+                &\leq \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+m)} \right)^{m-\ell} \\
+                &\rightarrow 0,
+        \end{align}
+        as $m\rightarrow\infty$. Which is a contradiction. 
+    \end{proofoutline}
+
+
+
+
+
+
+
+    \todo{This proof is re-written and improved on below, so this should be deleted.}
+    \begin{customthm}{B.2} %\label{thrm:ar_bts}
+        For any MDP $\cl{M}$, if $\alpha(m)\rightarrow 0$ as $m\rightarrow\infty$ then $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})]\rightarrow 0$ as $n\rightarrow\infty$, where $n$ is the number of trials.
+    \end{customthm}
+    \begin{proofoutline}
+        We can argue that average returns converge in probability by induction similar to the previous proofs. Suppose that $\bar{Q}^{N(s_t,a_t)}(s_t, a_t) \rap Q^*(s_t,a_t)$ as $N(s_t,a_t)\rightarrow\infty$. From Lemma \ref{lem:inf_often_action_select}, we know that if $N(s_t)\rightarrow\infty$, then $N(s_t,a_t)\rightarrow\infty$.
+
+        All that remains to show that $\bar{V}^{N(s_t)}(s_t) \rap V^*(s_t)$ as $N(s_t)\rightarrow\infty$ is that $\frac{N(s_t,a)}{N(s_t)}\rightarrow \one[a=a^*]$. If that is true, then by considering Equation (\ref{appeq:ar_v_rel}), we can see that in the limit $\bar{V}^{N(s_t)}(s_t)$ tends to $\bar{Q}^{N(s_t,a*)}(s_t,a*)$. 
+        \todo{(old cr todo)formally prove that the distribution and value converges. Will need some epsilons and use the equation referenced for the value. the distribution bit needs to show that eventually the samples are dominated by the greedy boltzmann policy, and not the exploration part}
+
+        Intuitively we can see that $\frac{N(s_t,a)}{N(s_t)}\rightarrow \one[a=a^*]$ as the AR-BTS search policy converges to a greedy policy as $\alpha(m)\rightarrow 0$. 
+        \todo{(old cr todo)technically only the rho bit does, shrugs}
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+    \todo{Cut this one, also assumption is a bit off, and I think we're proving stuff correctly below in the additional section later}
+    \begin{customthm}{B.3} 
+        For any MDP $\cl{M}$, if $\alpha(m)\rightarrow 0$ and $\beta(m)\rightarrow 0$ as $m\rightarrow\infty$ then $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-DENTS}})]\rightarrow 0$ as $n\rightarrow\infty$, where $n$ is the number of trials.
+    \end{customthm}
+    \begin{proofoutline}
+        Proof is similar to the proof for Theorem \ref{thrm:ar_bts}.
+    \end{proofoutline}
+    
+    
+    
+    \todo{Probably delete this too}
+    As a final note, using BTS or DENTS with a decaying search temperature $\alpha(m)$ will lead to a consistent algorithm, although they would not admit an exponential regret bound. Proofs would be nearly identical to Theorems \ref{thrm:ar_bts} and \ref{thrm:ar_dents}.
+
+
+
+
+
+
+
+
+
+
+%%%%
+% THEORY - Consistency Of Boltzmann MCTS Processes
+%%%%
+
+\subsection{Consistency Of Boltzmann MCTS Processes}
+    
+
+
+    \todo{Generally look into how to justify that we take limits in parts. Got the dominated convergence theorem from here: https://math.stackexchange.com/questions/15240/when-can-you-switch-the-order-of-limits/15296#15296. Probably just leave the places where we do it as handwavy proof outlines}
+
+    \todo{Which on that note, make sure we're using proof outline in this section, not proof}
+
+    \todo{Generally clean up the writing here.}
+
+
+
+
+
+    \todo{Make this the main section showing consistency of Boltzmann MCTS processes and under what conditions. Have the missing proofs written up on ipad.}
+    
+    \todo{Also write up the general steps from the ipad notes (which I think need a bit of correction.)}
+
+    Because the search temperature is now decayed, \todo{we} need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
+
+
+    \todo{This lemma restated means that Boltzmann search policies will select all actions infinitely often.}
+    \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
+
+    \begin{lemma} \label{lem:inf_often_action_select}
+        Let $\rho^m$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
+        \begin{align} 
+            \pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
+        \end{align} 
+        with $\lambda(m)=\min(1,\epsilon/\log(e+m))$, where $\epsilon\in(0,\infty)$. Let $a^m\sim \pi^m$ be the $m$th sampled action, and let $M(a,m)$ be the number of times action $a$ was selected in the first $m$ samples, i.e. $M(a,m)=\sum_{m=1}^m \one[a^m=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
+    \end{lemma}
+    \begin{proof}
+        First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell\in\bb{N}$ and $b\in\cl{A}$ such that:
+        \begin{align}
+            \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b\right) > 0. \label{appeq:ioas_contradict}
+        \end{align}
+
+        However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
+        \begin{align}
+            \Pr\left(a^m = b\right) \geq \frac{\lambda(m)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+m)}.
+        \end{align} 
+
+        And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
+        \begin{align}
+            \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b \right)
+                &= \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
+                    \Pr(a^m \neq b) \\
+                &\leq \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
+                    \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
+                &\leq \lim_{k\rightarrow\infty} 
+                    \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right)^{k-\ell} \label{appeq:ioas_one} \\
+                &= 0, \label{appeq:ioas_two}
+        \end{align}
+        %
+        which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
+        \begin{align}
+            \lim_{x\rightarrow \infty} \log f(x) 
+            &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
+            &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \\
+            &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x\log(x)(\log(x)-1)}}{-x^{-2}} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{\log(x)(\log(x)-1)} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{2\log(x)-1} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{2} \\
+            &= -\infty.
+        \end{align} 
+        %
+        And thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
+
+        \todo{cut this down maybe, its a little excessive showing all of the working out?}
+
+        Hence, by contradiction, it must be the case that $\Pr(M(a,m)\not\rightarrow\infty) = 0$, or rather that $\Pr(M(a,m)\rightarrow\infty) = 1$ which is the desired result.
+    \end{proof}
+    %
+    \todo{Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used} 
+
+    
+
+
+
+
+
+
+    \todo{Words about the consequences of this lemma?}
+
+    In direct consequence of Lemma \ref{lem:inf_often_action_select}, every reachable state (and state-action pair) will be visited infinitely often in a Boltzmann MCTS Process.
+
+    \begin{corollary} \label{cor:inf_often_action_select}
+        For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
+    \end{corollary}
+    \begin{proofoutline}
+        This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+
+    \todo{DP backups converge in limit (Dynamic Programming cite)}
+
+    \todo{And corollary is that DENTS with DP backups converges}
+
+
+
+
+
+
+
+
+
+
+    \todo{Words about the below, which gives conditions for the search policy to tend to the optimal policy, and should add somewhere that can't have the search policy converge to the optimal policy and get exp simple regret convergence in theory}
+
+    \begin{lemma}
+        \todo{Write this up properly, and more generally, and use the indexed on num trials notation. Say that as long as the Q function converges to the optimal, beta is o(alpha) and alpha tends to zero, then search policy tends to optimal policy.}
+        If $\Qardents(s,a)\rap Q^*(s,a)$ then $\piardents \rap \pi^*$
+    \end{lemma}
+
+    \begin{proofoutline}
+        A full proof to show that these limits converge correctly needs to make use of the dominated convergence theorem \todo{cite}. 
+
+        The outline argument is that in $\piardents$ that firstly $\lambda \rightarrow 0$ and so the limit of $\piardents$ will be the same as the limit of $\rhoardents$. 
+        
+        \todo{Words about the below maths, and below is very informal writing up}
+        \begin{align}
+            \frac{1}{\alpha(n)}\dot{Q}(s,a) + \frac{\beta(n)}{\alpha(n)} \bar{\cl{H}}_Q(s,a) 
+                &\rightarrow \frac{1}{\alpha(n)}\dot{Q}(s,a) \\
+            \rho(a|s) &\rightarrow \frac{1}{Z} \exp\left(\frac{\dot{Q}(s,a)}{\alpha(n)}\right) \\
+                &\rightarrow \one[a=a^*]
+        \end{align}
+
+        \todo{Should probably show that softmax converges to max in limit}
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+    \todo{Another proof about visits. For most visit recommendations, use this to justify that alpha can be arbitrary, but need beta equal to o(alpha), (which is alpha doesnt go to zero just means that beta goes to zero) in the DP case, and for the AR case need the same conditions with alpha to zero}
+    \begin{lemma}
+        \todo{write this up properly}
+        If $\pi\rap\pi_{\lim}$ such that $\pi_{\lim}(a*|s)>\pi(a|s)$ for all $a,s$, then the most visited recommendation policy will converge. Specifically, $\frac{N(s,a,n)}{N(s,n)} \rap \pi_{\lim}(a|s)$.
+    \end{lemma}
+    \begin{proof}
+        \todo{write this up properly}
+        First use Kolmogorovs strong law \todo{cite the source downloaded}, which valid because $\sum\frac{\bb{E}\one[a^i=a]^2}{k^2} \leq \sum \frac{1}{k^2} < \infty$. Using this gives
+        \begin{align}
+            \frac{N(s,a,n)}{N(s,n)}
+                &= \frac{1}{N(s,n)} \sum_{i=1}^N(s,n) \one[a^i = a] \\
+                &\rightarrow \bb{E} \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
+                &= \lim_{n\rightarrow\infty} \bb{E} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
+                &= \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\pi^i(a|s)}{n} \\
+                &= \pi^i(a|s)
+        \end{align}
+
+        Where the last line uses if $x_n \rightarrow x$ then $\sum_{i=1}^n \frac{x_i}{n} \rightarrow x$. \todo{cite this somehow? Cesaro summation?}
+    \end{proof}
+
+    \todo{Write up results that use the above lemma to have consequence that most visited recommendation policy is consistent.}
+
+
+
+
+
+
+
+
+
+
+    \todo{AR-DENTS can use the generalised Q convergence result, via the equations above still.}
+
+    \todo{AR-DENTS needs three steps for the induction, with the extra step of if Q values converge then policy converges as given above}
+
+    \begin{lemma}
+        \todo{clean up this writing}
+        If $\piardents\rap\pi^*$ (i.e. \todo{conditions from above result}), and $\Qardents \rap Q^*$, then $\Vardents \rap V^*$.
+    \end{lemma}
+    \begin{proofoutline}
+        \todo{clean}
+        Using the result above \todo{ref}, it must be that $\piardents(a|s) \rightarrow \pi^*(a|s) = \one[a^*_{|s} = a]$. Then recalling equation \todo{ref} that related the average returns values:
+        \begin{align}
+            \bar{V}(s) &= \sum_{a} \frac{N(s,a,n)}{N(s,n)} \bar{Q}(s,a) \\
+                &\rap \sum_{a} \one[a^*_{|s}=a] \bar{Q}(s,a) \\
+                &= \bar{Q}(s,a^*_{|s}) \\
+                &\rap Q^*(s,a^*_{|s}) \\
+                &= V^*(s).
+        \end{align}
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
