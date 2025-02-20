@@ -163,11 +163,24 @@
         \item Discuss alias method variant (and complexity analysis) in a subsection?
     \end{itemize}
 
-    \todo{would like to read more about the exp3 stuff before submitting this ch}
-    \todo{https://tor-lattimore.com/downloads/book/book.pdf - bandits book}
-    \todo{exp3 paper: http://rob.schapire.net/papers/AuerCeFrSc01.pdf}
-    \todo{add to future work ideas to adapt BTS to use exp3 type stuff, and the thing gradient update covered in the Sutton and Barto book (todo get link and page ref to RL book where talk about that)}
-    \todo{moved already}
+    \htodo{would like to read more about the exp3 stuff before submitting this ch}
+    \htodo{https://tor-lattimore.com/downloads/book/book.pdf - bandits book}
+    \htodo{exp3 paper: http://rob.schapire.net/papers/AuerCeFrSc01.pdf}
+    \htodo{add to future work ideas to adapt BTS to use exp3 type stuff, and the thing gradient update covered in the Sutton and Barto book (todo get link and page ref to RL book where talk about that)}
+    \htodo{moved already}
+
+
+
+
+
+
+    \todo{Double check appendix B coverered properly here}
+
+    \todo{Double check appendix C coverered properly here (some disucssion around when to use different algorithms and multithreading in MCTS)}
+
+
+
+
 
     This section defines two algorithms Boltzmann Tree Search and Decaying ENtropy Tree Search in the \thtspp\ewe schema. 
     
@@ -398,6 +411,8 @@
 
         \subsubsection{The Alias Method in MCTS}
 
+        \todo{Double check appendix C coverered properly here (complexity stuff here)}
+
         When using the Alias Method in \thtspp\ewe an alias table \todo{capitalise?} is constructed at every decision node. This table can be updated every $\lambda|\cl{A}|$ visits to the node, for an arbitrary $\lambda\in\bb{R}_{>0}$, giving an amortised complexity of $O(1)$. \todo{just say constant amortised complexity?} $O(O(1)+\frac{|\cl{A}}{\lambda|\cl{A}|}) = O(O(1)+\frac{1}{\lambda}) = O(1)$. \todo{probably dont need to do that maths.} In \thtspp the value of the $\lambda$ can be varied to adjust the trade off between The value of lambda can be varied to adjust the trade off between up-to-dateness and sampling speed. For the remainder \todo{find a better way of saying this}, $\lambda=1$ will be considered \todo{but all of the results still hold}. Note that when a new decision node is constructed and added to the tree, there will still be a cost of $O(|\cl{A}|)$ to construct the new alias table.
         
         Although this will always lead to quite a significant computational speedup, in the case where \mctsmode, the computational speedup is also asymptotic. \todo{where this paragraph go?}
@@ -555,6 +570,630 @@
 
     \todo{ TWO: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
 
+    \todo{Copy over results section}
+
+    \todo{Copy over appendix D, add comments inline for what to edit, cut the superflous plots and Go param tuning. (And double check that the go param tuning is correctly copied.)}
+
+    \todo{Double check appendix D coverered properly here (all the extra result, make D-chain things much more compact, there's things like param sensitivity on frozen lake etc in there)}
+
+    \todo{Maybe use some of results to talk about the things in appendix B properties}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% delete this once done, because added another level of subsections to everything, and 2xsub section is max subbage
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+    \todo{Results section copied}
+
+
+
+
+%%%
+% Experiments
+%%%
+\subsection{Results} \label{sec:results}
+    This section compares the proposed BTS and DENTS against MENTS and UCT on a set of goal-based MDPs and in the game of Go. For additional baselines, we also compare with the RENTS and TENTS algorithms \todo{cite}%\cite{rents_your_tents}
+    , which use \textit{relative} and \textit{Tsalis} entropy in place of Shannon entropy respectively, and the H-MCTS algorithm \todo{cite}%\cite{karnin2013almost} 
+    which combines UCT and Sequential Halving.
+    
+    \subsubsection{Gridworlds} \label{sec:gridworlds}
+    		To evaluate an algorithm with search tree $\cl{T}$, we complete the partial recommendation policy $\psi_{\text{alg}}$ as follows:
+        % 
+        \begin{align}
+            \psi(a|s) =
+            \begin{cases}
+                1 & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s), \\
+                0 & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s), \\
+                \frac{1}{|\cl{A}|} & \text{ otherwise.}
+            \end{cases} \label{eq:full_Recommend}
+        \end{align}
+        % 
+        We sample a number of trajectories from $\psi$, and take the average return to estimate $V^{\psi}$. Although we are evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting where we interleave planning in simulation with letting the agent act. 
+%        \todo{We wanted to make clear that we use horizons that are long enough for the trials to terminate because the agent either reached the goal or fell into a hole, rather than terminating because the max horizon length was reached. We used planning horizons of 100 and 50 on the Frozen Lake and Sailing environments, respectively. We will edit the paper to make this clearer.}
+%        To utilise our finite-horizon approach we choose a large enough horizon so the agent can always reach a terminal/goal state. Let $\psi_{\text{alg}}$ be the partial recommendation policy output from an algorithm with search tree $\cl{T}$. To evaluate $\psi_{\text{alg}}$ we complete the policy as:
+
+    \subsubsubsection{Domains} \label{sec:gridworld_doms}
+        To validate our approach, we use the Frozen Lake environment \todo{cite}%\cite{brockman2016openai}
+        , and the Sailing Problem \todo{cite}%\cite{peret2004line}
+        , commonly used to evaluate tree search algorithms \todo{cite}%\cite{peret2004line,kocsis2006uct,mcts_simple_regret,brue1}
+        . We chose these environments to compare our algorithms in a domain with a sparse and dense reward respectively.
+        
+        The \emph{(Deterministic) Frozen Lake} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. Trap states exist where the agent falls into a hole and the trial ends. If the agent arrives at the goal state after $t$ timesteps, then a reward of $0.99^t$ is received.
+        
+        The \emph{Sailing Problem} is a grid world environment with one goal state, at the opposite corner to the starting location of the agent. The agent has 8 different actions to travel each of the 8 adjacent states. In each state, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. %See \cite{peret2004line} for more details.
+    
+    
+    \subsubsubsection{Results}
+        We used an 8x12 Frozen Lake environment and a 6x6 Sailing Problem for evaluation, more environment details are given in Appendix \ref{app:env_deets}. Parameters were selected using a hyper-parameter search (Appendix \ref{app:hps}). 
+        %using alternative environments. 
+        Each algorithm is run 25 times on each environment and evaluated every 250 trials using 250 trajectories. 
+        A horizon of 100 was used for Frozen Lake and 50 for the Sailing Problem.
+
+        In Frozen Lake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
+
+        In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
+        
+        Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
+        
+        \begin{figure*}
+            \centering
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/todo.jpg}
+                \caption{8x12 Frozen Lake.}
+                \label{fig:fl}
+            \end{subfigure}
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/todo.jpg}
+                \caption{6x6 Sailing Problem.}
+                \label{fig:sp}
+            \end{subfigure}
+            \caption{Results for gridworld environments. Further results are given in Appendix \ref{app:hps}.}
+            \label{fig:gridworld_results}
+        \end{figure*}
+    
+    
+    
+    \subsubsection{Go} \label{sec:go}
+        For a more challenging domain we ran a round-robin tournament using the game of Go, which has widely motivated the development of MCTS methods \todo{cite}%\cite{gelly2007combining,silver2016mastering,silver2017mastering}
+        . 
+        In each match, each algorithm played $50$ games as black and $50$ as white. \textit{Area scoring} is used to score the games, with a \textit{komi} (a score handicap for black) 
+        of $7.5$. 
+        %
+        We used an openly available value network $\tilde{V}$ and policy network $\tilde{\pi}$ from KataGo \todo{cite}%\cite{katago}
+        . Our baseline was the PUCT algorithm \todo{cite}%\cite{poly_uct2}
+        , as described in Alpha Go Zero \todo{cite}%\cite{silver2017mastering}
+         using prioritised UCB \todo{cite}%\cite{prioritised_ucb}
+          to utilise the policy neural network. Each algorithm was limited to $5$ seconds of compute time per move, allowed to use $32$ search threads per move, and had access to 80 Intel Xeon E5-2698V4 CPUs clocked at 2.2GHz, and a single Nvidia V100 GPU on a shared compute cluster.
+        
+        To use Boltzmann search in Go, we adapted the algorithms to account for an opponent that wishes to minimise the value of a two-player game. This is achieved by appropriately negating values used in the search policy and backups, which is described precisely in Appendix \ref{app:adapt_for_games}. 
+        
+        Additionally, we found that adapting the algorithms to use average returns (recall Equation (\ref{eq:uct_qbar})) outperformed using Bellman backups for Go (Appendix \ref{app:go_hps}). The Bellman backups were sensitive to and propogated noise from the neural network evaluations. We use the prefix `AR' to denote the algorithms using average returns, such as AR-DENTS. Full details for these algorithms are given in Appendix \ref{app:average_returns}.
+        
+        \subsubsubsection{Using neural networks with Boltzmann search}
+            This section describes how to use value and policy networks in BTS. Adapting MENTS and DENTS are similar (Appendix \ref{app:adapt_for_nets}). Values can be initialised with the neural networks as $\hat{Q}(s,a)\leftarrow\log \tilde{\pi}(a|s)+B$ and $\hat{V}(s)\leftarrow\tilde{V}(s)$, where $B$ is a constant (adapted from Xiao \etal \todo{cite}%\cite{xiao2019maximum})
+            . With such an initialisation, the initial BTS policy is 
+            $\rho_{\textnormal{BTS}}(a|s)\propto\tilde{\pi}(a|s)^{1/\alpha}$. For these experiments we set a value of $B=\frac{-1}{|\mathcal{A}|}\sum_{a\in\mathcal{A}} \log\tilde{\pi}(a|s)$. Additionally, the stochastic search policy naturally lends itself to mixing in a prior policy, so we can replace BTS search policy $\pi_{\textnormal{BTS}}$ (Equation (\ref{eq:bts_search_policy})) with $\pi_{\textnormal{BTS,mix}}$:
+            % 
+            \begin{align}
+                \pi_{\textnormal{BTS,mix}}(a|s) 
+                &= \lambda_{\tilde{\pi}}\tilde{\pi}(a|s) + (1-\lambda_{\tilde{\pi}}) \pi_{\textnormal{BTS}}(a|s) \\
+                &= \lambda_{\tilde{\pi}}\tilde{\pi}(a|s) + (1-\lambda_{\tilde{\pi}})(1-\lambda_s)\rho_{\textnormal{BTS}}(a|s) + \frac{(1-\lambda_{\tilde{\pi}})\lambda_s}{|\cl{A}|}, %\label{eq:ments_mixed_policy}
+            \end{align}
+            % 
+            where $\lambda_{\tilde{\pi}}=\min(1,\epsilon_{\tilde{\pi}}/\log(e+N(s)))$, and $\epsilon_{\tilde{\pi}} \in (0,\infty)$ controls the weighting for the prior policy. 
+
+        \subsubsubsection{Results}
+            Results of the round-robin are summarised in Table \ref{table:go_results}, and we discuss how parameters were selected in Appendix \ref{app:go_hps}. BTS was able to run the most trials per move and beat all of the other algorithms other than DENTS which it drew. We used the optimisations outlined in Appendix \ref{app:alias} which allowed the Boltzmann search algorithms to run significantly more trials per move than PUCT. 
+            BTS and DENTS were able to beat PUCT with results of 57-43 and 58-42 respectively. Using entropy did not seem to have much benefit in these experiments, as can be witnessed by MENTS only beating TENTS, and DENTS drawing 50-50 with BTS. This is likely because the additional exploration provided by entropy is vastly outweighed by utilising the information contained in the neural networks $\tilde{V}$ and $\tilde{\pi}$. %DENTS was able to take more games from PUCT as white, so Shannon entropy may be useful in obtaining an advantage as white.
+            Interestingly RENTS had the best performance out of the prior works, losing 43-57 to PUCT, and the use of relative entropy appears to take advantage of a heuristic for Go that the RAVE \todo{cite}%\cite{rave}
+             algorithm used: the value of a move is typically unaffected by other moves on the board.
+            
+            To validate the strength of our PUCT agent, we also compared it directly with KataGo \todo{cite}%\cite{katago}
+            , limiting each algorithm to 1600~trials per move. Our PUCT agent won 61-39 in 9x9 Go, and lost 35-65 in 19x19 Go, suggesting that our PUCT agent is strong enough to provide a meaningful comparison for our other general purpose algorithms. Finally, note that we did not fine-tune the neural networks, so the Boltzmann search algorithms directly used the networks that were trained for use in PUCT.
+            % The algorithms using $O(|\cl{A}|)$ entropy backups were still able to run a competitive number of trials per move, because in the multi-threaded search the additional exploration led to less contention over values, and hence threads could spend less time waiting.
+            %Overall, three algorithms were able to beat PUCT: RENTS won 60-40 and appears to take advantage of the value of a move typically being unaffected by other moves on the board, which the RAVE algorithm took advantage of \cite{rave}; BTS and DENTS had convincing wins of 81-19 and 89-11 over PUCT respectively and demonstrate the effectiveness of prioritising exploration more in planning. As DENTS was able to take more games from PUCT as white, Shannon entropy seems to be useful in obtaining an advantage as white. Unfortunately, DENTS wasn't able to outperform BTS with a match score of 47-53, which could be due to $\beta$ being difficult to tune, or potentially Shannon entropy is not helpful for Go. If we combined DENTS with relative entropy, the resulting algorithm likely would have beaten BTS.
+            
+          	
+
+        \begin{table*}[]
+        \centering   
+		    \begin{tabular}{l|cccccc|c} 
+		        \textbf{Black \textbackslash White}     & PUCT  & AR-M  & AR-R  & AR-T  & AR-B  & AR-D   & Trials/move\\ 
+		        \hline
+		                                PUCT            &   -   & 33-17 & 27-23 & 42-8  & 17-33 & 15-35  & 1054 \\
+		                                AR-MENTS        & 12-48 &   -   & 13-37 & 38-12 & 10-40 & 12-38  & 4851\\
+		                                AR-RENTS        & 20-30 & 24-26 &   -   & 39-11 & 18-32 & 14-36  & 3672 \\
+		                                AR-TENTS        &  8-42 & 11-39 &  9-41 &   -   &  6-44 & 10-40  & 5206 \\
+		                                AR-BTS          & 25-25 & 35-15 & 31-19 & 34-16 &   -   & 15-35  & 5375 \\
+		                                AR-DENTS        & 23-27 & 36-14 & 29-21 & 36-14 & 15-35 &   -    & 4677 \\         
+		    \end{tabular}
+            \caption{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, we abbreviate the algorithm names for space.\label{table:go_results}}
+        \end{table*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \todo{Apppendix D section copied}
+
+
+
+
+
+
+
+
+
+%%%
+% Additional results
+%%%
+\subsection{Additional results and discussion} \label{app:additional_results}
+
+    \FloatBarrier
+    
+
+
+
+
+    \subsubsection{Gridworld environment details} \label{app:env_deets}
+        
+        For space, the specific maps for the gridworlds are omitted from the results section in the main paper. In the gridworld maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
+        
+        In Figure \ref{fig:fl8} we give an 8x8 Frozen Lake environment that is used in Section \ref{app:param_sens} to demonstrate how the different algorithms perform with a variety of temperatures. Figure \ref{fig:fl12} gives the 8x12 Frozen Lake Environment that is used for hyperparameter selection in Section \ref{app:hps}. And in Figure \ref{fig:fl12test} we give the 8x12 Frozen Lake Environment that is used to test the algorithms in Section \ref{sec:results}. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location.
+
+        Aditionally, we give the map used in the 6x6 Sailing Problem, and the wind transition probabilities in Figure \ref{fig:sailing_deets}. In the Sailing domain, actions and wind directions can take values in $\{0,1,...,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. In Section \ref{app:hps} the wind direction was set to North (or $0$) in the initial state, and for testing in Section \ref{sec:results}, the initial wind direction was set to South-East (or $3$).
+    
+        \begin{figure}
+             \centering
+             \begin{subfigure}[b]{0.3\textwidth}
+                 \centering
+                 \texttt{SFFFFFHF} \\
+                 \texttt{FFFFFFFF} \\
+                 \texttt{FHFHFFFF} \\
+                 \texttt{FFFFFFHH} \\
+                 \texttt{FFFHFFFF} \\
+                 \texttt{FHHHFFFF} \\
+                 \texttt{FFFFFHFF} \\
+                 \texttt{FFFFFFFG} 
+                 \caption{8x8 Frozen Lake.}
+                 \label{fig:fl8}
+             \end{subfigure}
+             \hfill
+             \begin{subfigure}[b]{0.3\textwidth}
+                 \centering
+                 \texttt{SFHFFFHFFFFF} \\
+                 \texttt{FFFFFFFHFFFF} \\
+                 \texttt{HFFFFFHFFFFF} \\
+                 \texttt{FHFFHFFFFFFF} \\
+                 \texttt{HHFFFFFFFFFF} \\
+                 \texttt{FHFFFFHFFFFF} \\
+                 \texttt{FHFFFHHFHFFF} \\
+                 \texttt{FFFFFFFFFHHG} 
+                 \caption{8x12 Frozen Lake.}
+                 \label{fig:fl12}
+             \end{subfigure}
+             \hfill
+             \begin{subfigure}[b]{0.3\textwidth}
+                 \centering
+                 \texttt{SFHFFFFFFFHF} \\
+                 \texttt{FFFFFFFFFFFF} \\
+                 \texttt{FHFFFFHFFFFF} \\
+                 \texttt{FFFHFFFFFFHF} \\
+                 \texttt{FFFFFFFFFFFF} \\
+                 \texttt{FFFFHFFFHFFF} \\
+                 \texttt{FFHFFFFFFFFH} \\
+                 \texttt{FFFFFFFFFFFG} 
+                 \caption{8x12 Test Frozen Lake.}
+                 \label{fig:fl12test}
+            \end{subfigure}
+            \caption{Maps used for experiments using the Frozen Lake environment in Sections \ref{sec:results}, \ref{app:param_sens} and \ref{app:hps}. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location.}
+                \label{fig:maps}
+        \end{figure}
+    
+        \begin{figure}
+             \centering
+             \begin{subfigure}[b]{0.49\textwidth}
+                 \centering
+                 \texttt{FFFFFG} \\
+                 \texttt{FFFFFF} \\
+                 \texttt{FFFFFF} \\
+                 \texttt{FFFFFF} \\
+                 \texttt{FFFFFF} \\
+                 \texttt{SFFFFF} 
+                 \caption{6x6 Sailing Problem map.}
+             \end{subfigure}
+             \hfill
+             \begin{subfigure}[b]{0.49\textwidth}
+                 \centering
+                 \begin{align*}
+                     \begin{pmatrix}
+                        0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
+                        0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                        0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                        0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
+                        0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
+                        0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
+                        0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
+                        0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
+                     \end{pmatrix}
+                 \end{align*}
+                 \caption{Wind transition probabilities.}
+             \end{subfigure}
+                \caption{The map used for the 6x6 Sailing Problem and the wind transition probabilities. For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
+                \label{fig:sailing_deets}
+        \end{figure}
+
+
+    
+
+    
+    \subsubsection{Futher discussion on parameter sensitivity} \label{app:param_sens}
+        In this section we provide a more detailed discussion on sensitivity to the temperature parameter in MENTS \todo{cite}%\cite{xiao2019maximum}
+        , RENTS and TENTS \todo{cite}%\cite{rents_your_tents}
+        . We provide more thorough results on D-chain environments, with each algorithm, and varying both the temperature parameter and the $\epsilon$ exploration parameter. Additionally, we provide results using the 8x8 Frozen Lake environment (Figure \ref{fig:fl8}) using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain.
+
+
+        \subsubsection{Parameter sensitivity in D-Chain} \label{app:param_sens_dchain}
+            
+            \begin{figure}
+                \centering
+                \includegraphics[width=0.7\textwidth]{figures/todo.jpg}
+                \caption{An illustration of the \textit{(modified) D-chain problem}, where 1 is the starting state, transitions are deterministic and values next to states represent rewards for arriving in that state.}
+                \label{fig:dchain_illustration_2}
+            \end{figure}
+
+            We run each algorithm with a variety of $\alpha$ temperatures, and the $\epsilon$ exploration parameter on the 10-chain environments (Figure \ref{fig:dchain_illustration_2}). Additionally, we ran UCT with a variety of bias parameters. Figures \ref{fig:uct_10chain_hps}, \ref{fig:ments_10chain_hps}, \ref{fig:rents_10chain_hps}, \ref{fig:tents_10chain_hps}, \ref{fig:bts_10chain_hps} and \ref{fig:dents_10chain_hps} give results for the 10-chain environment, with algorithms UCT, MENTS, RENTS, TENTS, BTS and DENTS respectively. Figures \ref{fig:uct_10chain_half_hps}, \ref{fig:ments_10chain_half_hps}, \ref{fig:rents_10chain_half_hps}, \ref{fig:tents_10chain_half_hps}, \ref{fig:bts_10chain_half_hps} and \ref{fig:dents_10chain_half_hps} give results for the modified 10-chain environment, with algorithms UCT, MENTS, RENTS, TENTS, BTS and DENTS respectively. 
+
+            As expected with UCT, regardless of how the bias parameter is set, in both the 10-chain ($D=10$, $R_f=1.0$) and modified 10-chain ($D=10$, $R_f=0.5$) environments, it only achieves a value of $0.9$. See Figures \ref{fig:uct_10chain_hps} and \ref{fig:uct_10chain_half_hps} for plots.
+
+            As discussed in Section \ref{sec:limitations}, for higher temperatures in MENTS it will find the reward of $R_f$ in both the 10-chain and modified 10-chain environments. At a temperature of $\alpha=0.15$ MENTS is able to find the reward of $R_f=1$ on the 10-chain (Figure \ref{fig:ments_10chain_hps}), but will still recommend a policy that gives the reward of $R_f=0.5$ on the modified 10-chain (Figure \ref{fig:ments_10chain_half_hps}). At a temperature of $\alpha=0.1$ MENTS will struggle to find the reward of $R_f=1$ in the 10-chain, without the help of the exploration parameter, but this is the first temperature we tried that was able to recommend the optimal policy in the modified 10-chain (Figure \ref{fig:ments_10chain_half_hps}). For low temperatures, such as $\alpha=0.01$, MENTS was able to find the optimal policy, but in the case of the 10-chain with $R_f=1$ it can only do so with the help of a higher exploration parameter.
+
+            When we ran TENTS on the (modified) 10-chain, we see results that parallel MENTS, see Figures \ref{fig:tents_10chain_hps} and \ref{fig:tents_10chain_half_hps}. Interestingly, RENTS was only able to find the reward of $R_f=1$ on the 10-chain environment if we used a low temperature, $\alpha=0.01$ and a high exploration parameter, $\epsilon=10$. Otherwise, RENTS tended to behave similarly to UCT on these environments, see Figures \ref{fig:rents_10chain_hps} and \ref{fig:rents_10chain_half_hps}.
+
+            In contrast, BTS was able to find the reward of $R_f=1.0$ in the 10-chain when a high search temperature or high exploration parameter was used (Figure \ref{fig:bts_10chain_hps}). And, in the modified 10-chain, BTS always achieves a reward of $0.9$ regardless of how the parameters are set (Figure \ref{fig:bts_10chain_half_hps}). DENTS performance on the 10-chain (Figure \ref{fig:dents_10chain_hps}) and modified 10-chain (Figure \ref{fig:dents_10chain_half_hps}) was similar to BTS, but tended to find the reward of $R_f=1$ in the 10-chain marginally faster. For the decay function $\beta$ in DENTS, we always set $\beta(m)=\alpha/\log(e+m)$ for these experiments.
+
+            To demonstrate that the $\epsilon$ exploration parameter is insufficient to make up for a low temperature, we also consider the 20-chain ($D=20$, $R_f=1$) and modified 20-chain ($D=20$, $R_f=0.5$) problems. We don't give plots for all algorithms on both of the 20-chain environments like we do for 10-chain environments, but opt for the plots that demonstrate something interesting. 
+            
+            In Figure \ref{fig:ments_20chain_hps} we see MENTS on the 20-chain is able to find the reward of $R_f=1$ for higher temperatures. However, this time, the exploration parameter does not make much of an impact when using lower temperatures. Moreover, a large exploration parameter appears to negatively impact MENTS ability to find $R_f=1$. This makes sense considering that a uniformly random policy will find the reward at the end of the chain once every $2^{10}$ trials in the 10-chain, but only once every $2^{20}$ in the 20-chain. Again, on the modified 20-chain, MENTS is only able to recommend the optimal policy for low temperatures (see Figure \ref{fig:ments_20chain_half_hps}). 
+
+            When we ran BTS on the 20-chain, it was unsuccessful at finding the final reward of $R_f=1$, which makes sense as it is not using entropy for exploration, and it is unlikely to follow a random policy to the end of the chain (Figure \ref{fig:bts_20chain_hps}). For DENTS, we again used a decay function of $\beta(m)=\alpha/\log(e+m)$ for simplicity, and unfortunately it was only able to make slow progress towards finding the final reward of $R_f=1$ for high temperatures. However, if we independently set the values of $\alpha$ and 
+            
+            However, DENTS on the 20-chain begins to make slow progress towards finding the final reward of $R_f=1$, but requires a higher temperature to be used, as we decay the weighting of entropy over time (Figure \ref{fig:dents_20chain_hps}). Again we used a decay function of $\beta(m)=\alpha/\log(e+m)$ here for simplicity, and if we properly select them DENTS is more than capable of solving the 20-chain. For example we show that using DENTS with $\alpha=0.5$, $\beta(m)=10/\log(e+m)$ and $\epsilon=0.01$ in Figure \ref{fig:dents_20chain_tuned}, where $\alpha$ is set low enough that there is still a high probability of following the chain to the end, $\beta$ is set to be large initially to encourage exploring with the entropy reward and $\epsilon$ is set low to avoid random exploration ending trials before reaching the end of the chain. If we were to run DENTS and BTS on the modified 20-chain they would recommend the optimal policy giving a value of $0.95$ for all of the parameters we searched over (not shown).
+            
+            Finally, in Figure \ref{fig:dbments_20chain_hps} we also consider running DENTS, but instead setting $\beta(m)=\alpha$ to replicate MENTS. The main difference between DENTS in this case and MENTS is the recommendation policy, where DENTS uses the Bellman values for recommendations, rather than soft values. So even in cases where the MENTS search is more desirable, we can replicate it with DENTS while providing recommendations for the standard objective. Moreover, running DENTS with $\beta(m)=\alpha$ on the modified 20-chain would always yield the optimal value of $0.95$ because of the use of Bellman values for recommendations (not shown).
+
+
+            \todo{A MILLION FIGURES WERE HERE}
+
+
+
+            \subsubsubsection{Parameter sensitivity in Frozen Lake} \label{app:param_sens_fl}
+            We also ran MENTS, RENTS, TENTS, BTS and DENTS with a variety of temperatures on the 8x8 Frozen Lake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
+
+            In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} we can see that MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state at the temperatures that we considered.
+
+            In contrast, both BTS and DENTS were agnostic to the temperature parameter in this environment (with $\epsilon=1$) and were always able to find the goal state. We include the plots for BTS and DENTS in all of Figures \ref{fig:fl_param_sens_ments}, \ref{fig:fl_param_sens_tents} and \ref{fig:fl_param_sens_rents} for reference and as a comparison for MENTS, RENTS and TENTS.
+        
+            \FloatBarrier
+            
+            \begin{figure}
+                \centering
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=1$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.5$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.1$}
+                \end{subfigure}
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.05$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.01$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.005$}
+                \end{subfigure}
+                
+                \caption{MENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference.}
+                \label{fig:fl_param_sens_ments}
+            \end{figure}
+            
+            \begin{figure}
+                \centering
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=1$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.5$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.1$}
+                \end{subfigure}
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.05$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.01$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.005$}
+                \end{subfigure}
+                
+                \caption{RENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference.}
+                \label{fig:fl_param_sens_rents}
+            \end{figure}
+            
+            \begin{figure}
+                \centering
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=1$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.5$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.1$}
+                \end{subfigure}
+                
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.05$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.01$}
+                \end{subfigure}
+                \begin{subfigure}[b]{0.32\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{figures/todo.jpg}
+                    \caption{$\alpha=0.005$}
+                \end{subfigure}
+                
+                \caption{TENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference.}
+                \label{fig:fl_param_sens_tents}
+            \end{figure}
+
+
+            \FloatBarrier
+
+        
+
+
+
+
+    \subsubsection{Grid world hyper-parameter search and additional results} \label{app:hps}
+        To select hyper-parameters for the experiments detailed in Section \ref{sec:gridworlds}, we performed a hyper-parameter search. The search was run on the 8x12 Frozen Lake environment from Figure \ref{fig:fl12}, and the results in Section \ref{sec:gridworlds} were run on the 8x12 Frozen Lake envrionment from Figure \ref{fig:fl12test}. For the Sailing problem, we performed the search using an initial wind direction of North, and the result in Section \ref{sec:results} used an initial wind direction of South-East.
+
+        To avoid the search space from becoming too large, we set some parameters manually. A good rule of thumb for initial values is to assure that $Q^{\text{init}}_{\text{sft}}(s,a) < Q_{\sft}^*(s,a)$ and $Q^{\text{init}}(s,a) < Q^*(s,a)$. Explicitly this means that an initial value of zero is \textit{not} a good choice for the Sailing problem, as rewards are negative (i.e. it has costs). In the Sailing environment, we actually set the initial values to $-200$, so that they were equal to the lowest possible return from a trial (the trial length was set to $50$, and an agent can incur a cost of at most $-4$ per timestep). To simplify the search space, we initially set the decay function in DENTS to $\beta(m)=\alpha/\log(e+m)$ and tune it after. 
+
+        For the remaining parameters, we considered all combinations of the following values:
+        \begin{itemize}
+            \item \textit{UCT Bias}: \todo{cite}%\citeapp{prst}
+                , 100.0, 10.0, 1.0, 0.1;
+            \item \textit{MENTS exploration coefficient}: 2.0, 1.0, 0.3, 0.1, 0.03, 0.01;
+            \item \textit{Temperature}: 100.0, 10.0, 1.0, 0.1, 0.01, 0.001;
+            \item \textit{HMCTS UCT budget}: 100000, 30000, 10000, 3000, 1000, 300, 100, 30, 10.
+        \end{itemize}
+        
+         Where a UCT bias of \todo{cite}%\citeapp{prst}
+          refers to the adaptive bias introduced by Keller and Eyerich \todo{cite}%\citeapp{prst}
+          , and `temperature' refers to the relevant temperature for the algorithm (i.e. search temperature in BTS and DENTS, and the temperature for Shannon/Relative/Tsallis entropy in MENTS/RENTS/DENTS). After that search, for DENTS we considered the decay functions of the form $\beta(m)=\beta_{\text{init}}/\log(e+m)$ and considered the following values:
+        \begin{itemize}
+        		\item \textit{DENTS initial entropy temperature} ($\beta_{\text{init}}$): 100.0, 10.0, 1.0, 0.1.
+        \end{itemize}
+        The final set of hyperparameters is given in Tables \ref{table:hyper_fl} and \ref{table:hyper_s}, which were used in the gridworld experiments in Section \ref{sec:gridworlds}. Not included in the tables: \todo{cite}%\citeapp{prst}
+         was selected for the UCT bias in both Frozen Lake and the Sailing problem.
+    
+        \begin{table}[]
+            \centering
+            \begin{tabular}{r|ccc} 
+                Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
+                \hline
+                MENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
+                RENTS       & 2.0                                   & 0.001                     & 0                                                                     \\
+                TENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
+                BTS         & 2.0                                   & 0.1                       & 0                                                                     \\
+                DENTS       & 1.0                                   & 0.1                       & 0                                                                     \\
+            \end{tabular}
+            \caption[Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}]{Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
+             was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
+              was selected for the bias and 3000 for the UCT budget in HMCTS and $\beta_{\text{init}}=1.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_fl}}
+        \end{table}
+    
+        \begin{table}[]
+            \centering
+            \begin{tabular}{r|ccc} 
+                Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
+                \hline
+                MENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+                RENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+                TENTS       & 2.0                                   & 0.1                       & -200                                                                  \\
+                BTS         & 1.0                                   & 10.0                      & -200                                                                  \\
+                DENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+            \end{tabular}
+            \caption[Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}]{Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
+             was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
+             was selected for the bias and 30 for the UCT budget in HMCTS and $\beta_{\text{init}}=10.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_s}}
+        \end{table}
+        
+            
+            
+            
+            
+            
+
+	\subsubsection{DENTS with a constant $\beta$} \label{app:dents_mimic_ments}
+		To empirically demonstrate that DENTS search policy can mimic the search policy of MENTS, we ran DENTS with $\alpha=1.0,\beta(m)=\alpha$ on the 10-chain environment, and compared it to MENTS with $\alpha=1.0$. We also ran DENTS with $\alpha=0.001, \beta(m)=\alpha$ in the Frozen Lake environment, and compared it to MENTS with $\alpha=0.001$ which is what was selected in the hpyerparameter search (Appendix \ref{app:hps}). Results are given in Figure \ref{fig:dbments}. Note that in the 10-chain, only MENTS has a dip in performance initially, which is due to the two algorithms using different recommendation policies.
+		
+        
+        \begin{figure*}
+            \centering
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/todo.jpg}
+                \caption{10-chain.}
+            \end{subfigure}
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/todo.jpg}
+                \caption{Frozen Lake.}
+            \end{subfigure}
+            \caption{Comparing DENTS with MENTS, by setting $\beta_{\text{DENTS}}(m)=\alpha_{\text{MENTS}}, \alpha_{\text{DENTS}}=\alpha_{\text{MENTS}}$, where $\alpha_{\text{MENTS}}$ is the temperature used for MENTS, and $\alpha_{\text{DENTS}},\beta_{\text{DENTS}}$ are the temperatures used by DENTS. }
+            \label{fig:dbments}
+        \end{figure*}
+
+
+
+
+
+
+
+
+
+
+        \todo{Go hyperparameter tuning was here}
+
+        \todo{Should clean up go hyperparameter tuning writing in appendix}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -570,6 +1209,10 @@
 
 
     \todo{First thing to do in this section is write up the results for what we're showing (in the chapter). Then write up the results we're showing in the appendix. Then move the proofs needed to build the results showing in this chapter. Then dump all of the remainder in the appendix.}
+
+
+
+    \todo{Double check appendix B coverered properly here}
 
 
 
@@ -597,15 +1240,11 @@
         \caption{\todo{Summary of conditions for algorithms to be consistent.} 
             \label{tab:4:summary_consistency_conditions}}
     \end{table*}
+    
 
 
 
 
-
-    \todo{list}
-    \begin{itemize}
-        \item add theoretical results
-    \end{itemize}
 
 
 
@@ -613,6 +1252,7 @@
 
 
 
+    \todo{Below until end of list is some notes pre writing up theory and bit copied from the neurips paper directly}
 
     Should we try to add a result about most visited? Where will be concentration bounds around the number of visits being proportional to the values. So think can bootstrap those proofs.
 
@@ -630,8 +1270,6 @@
         \item Seventh, in Sections \ref{appsec:dents_proofs} and \ref{appsec:bts_proofs} we also provide concentration inequalities around the optimal standard values for BTS and DENTS, and give simple regret bounds, irrespective of the temperature paramters;
         \item Finally, in Section \ref{sec:ar_proofs} we consider results that are relavant for the algorithms using average returns from Section \ref{app:average_returns}.
     \end{enumerate}
-
-    \todo{above is note taking and below is me starting to write the proofs stuff}
 
 
 
@@ -2569,7 +3207,25 @@
 
 
 
-\section{Full Results}
+\section{Bookend}
 \label{sec:4-6-fullresults}
 
-    \todo{there's a lot of figures for the D-chain environment, work out how to best fit them in? Or put them in this seperate section?}
+    \todo{Something to bookend the chapter. Conclusion?}
+
+    \todo{At end of cleaning all this up, do a proof read of this chapter (and any appendices), and then go through Neurips paper one more time to see if any info in paper that want to cover isn't in there. (Can probably skip over the theory part of appendix.)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{To Move To Appendix}
+
+    \todo{A space to move things temorarily before moving it all to an appendix.}
