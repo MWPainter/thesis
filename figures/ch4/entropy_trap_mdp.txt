@@ -1,0 +1,17 @@
+$s^1_\mathcal{M}$
+$r=\frac{D-1}{D}$
+
+$s^2_\mathcal{M}$
+$r=\frac{D-2}{D}$
+
+$s^{D-1}_\mathcal{M}$
+$r=\frac{1}{D}$
+
+$s^D_\mathcal{M}$
+$r=0$
+
+$r=1$
+$r=R_f$
+
+$a^L_\mathcal{M}$
+$a^R_\mathcal{M}$
