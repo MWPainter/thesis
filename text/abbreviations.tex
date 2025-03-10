@@ -1,9 +1,11 @@
 % List of abbreviations
 \begin{mclistof}{List of Abbreviations}{3.2cm}
+    \item[BTS] Boltzmann Tree Search.
     \item[CHVI] Convex Hull Value Iteration.
     \item[CHVS] Convex Hull Value Set.
     \item[CMAB] Contextual Multi-Armed Bandit (problem).
     \item[CZ] Contextual Zooming. 
+    \item[DENTS] Decaying ENtropy Tree Search
     \item[EMAB] Exploring Multi-Armed Bandit (problem).
     \item[MAB] Multi-Armed Bandit (problem). 
     \item[MCTS] Monte Carlo Tree Search.
@@ -43,7 +45,7 @@
     \item[$\bb{E}$] 
         The expectation operator. $\bb{E}[f]$ denotes the expectation of a distribution $f$, and $\bb{E}_{x\sim f}[g(x)]$ denotes the expected value of $g(x)$ under the distribution $f$.
     \item[$x\sim f$] 
-        If $f:X\rightarrow[0,1]$ specifies a probability distribution, then $x\sim f$ denotes that the variable $x$ is sampled the distribution $f$.
+        If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled the distribution $f$.
     \\
     %%%%%
     % (MO)MDPs
@@ -276,28 +278,30 @@
     %
     %
     % \\
-    % %%%%%
-    % % MENTS
-    % %%%%%
-    % \item[{\parbox[t]{\textwidth}{
-    %     \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-3-ments})}\hfill\hfill
-    % }}]
-    % \item[$\alpha_{\ments}$] 
-    %     The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
-    % \item[$\epsilon$]
-    %     An exploration parameter used in MENTS.
-    % \item[$\lambda_s$] 
-    %     An exploration parameter used in MENTS.
-    % \item[$\tilde{\pi}$] 
-    %     A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
-    % \item[$\piments$] 
-    %     The search policy used in MENTS.
-    % \item[$\Qments(s,a)$] 
-    %     A soft Q-value estimate at the chance node $(s,a)$ in MENTS.
-    % \item[$\tilde{V}$] 
-    %     A function approximation to $V^*$.
-    % \item[$\Vments(s)$] 
-    %     A soft value estimate at the decision node $s$ in MENTS.
+    %%%%%
+    % MENTS
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-3-ments})}\hfill\hfill
+    }}]
+    \item[TODO]
+        \todo{Clean up notation used for maximum entropy tree search}
+    \item[$\alpha_{\ments}$] 
+        The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
+    \item[$\epsilon$]
+        An exploration parameter used in MENTS.
+    \item[$\lambda_s$] 
+        An exploration parameter used in MENTS.
+    \item[$\tilde{\pi}$] 
+        A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
+    \item[$\piments$] 
+        The search policy used in MENTS.
+    \item[$\Qments(s,a)$] 
+        A soft Q-value estimate at the chance node $(s,a)$ in MENTS.
+    \item[$\tilde{V}$] 
+        A function approximation to $V^*$.
+    \item[$\Vments(s)$] 
+        A soft value estimate at the decision node $s$ in MENTS.
 \end{mclistof} 
 
 \todo{add MENTS, UCT, BTS, DENTS, and all of ch4 stuff}

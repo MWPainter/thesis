@@ -9,33 +9,27 @@
 
     \minitoc
 
-    This chapter discusses MCTS algorithms for planning in single-objective environments whose search policies take the form of Boltzmann distributions. Primarily, this chapter aims to answer question \entropyq, while laying the foundation to answer \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    This chapter considers MCTS algorithms for planning in single-objective environments, where the algorithm may consider a secondary entropy objective for exploration. In the maximum entropy setting the optimal soft policy takes the form of a Boltzmann distribution \todo{ref}, and the chapter will predominantly discuss MCTS algorithms whose search policies take the form of Boltzmann distributions. Question \entropyq, about how entropy can be used soundly in MCTS planning algorithms is answered here, and the foundations are laid for answering \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    
+    The discussion will focus on the exploration setting for reinforcement learning (Figure \ref{fig:4:rl_overview}), where agents are assessed purely on the recommendations it makes, rather than what actions it explored in simulation. \todo{ref back to this discription, and double check this is properly motivated in the ch2.}
     
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
-        \caption[Exploration setting in reinforcement learning.]{\todo{update fig to just be the blue version.} Exploration setting in reinforcement learning (\todo{reproduced and edited from fig 2.5}), \bd{where the agent aims to discover the optimal policy and has a larger emphasis on exploration to find better solutions rather than exploiting.}}
+        \caption[Exploration setting in reinforcement learning.]{\todo{update fig to just be the blue version.} Exploration setting in reinforcement learning (\todo{reproduced and edited from fig 2.5}), \bd{where the agent aims to discover the optimal policy and has a larger emphasis on exploration to find better solutions rather than exploiting.} \todo{Cut this from main text: where the agent is only assessed on the recommendations that it provides, and is not penalised for considering poor actions in the simulator. }}
         \label{fig:4:rl_overview}
     \end{figure}
-
-    Figure \ref{fig:4:rl_overview} gives the exploration setting for reinforcement learning, where the agent is only assessed on the recommendations that it provides, and is not penalised for considering poor actions in the simulator. 
-
-    This chapter will also consider how entropuy can be used as an auxilary secondary objective to encourage exploration. Entropy is already used widely in the reinforcement literature \todo{cites, ppo, sac etc, ref ch3}, and is often cited for its \bd{exploration, and robustness to uncertainty, and robustness to simulator/environment differences, and robustness to noise.} 
-
-    When considering the maximum entropy reinforcement learning objective (\todo{ref}), the optimal policy (equation (\todo{ref})) naturally takes the form of a Boltzmann policy. Notably, MENTS (Section \ref{sec:2-4-3-ments}), and RENTS and TENTS (Section \todo{ref litrev}) are existing MCTS algorithms for the maximum entropy setting (Section \ref{sec:2-3-1-merl}), so will be discussed further in this chapter, along with UCT (Section \todo{ref}), and used as baseline algorithms.
-
-    Section \ref{sec:4-1-intro} discusses limitations of existing MCTS algorithms in this exploration setting, motivating the work covered in the remainder of the chapter. Additionally, the planning framework is defined so that the algorithms can be theoretically analysed using \textit{simple regret}.
     
-    In Section \ref{sec:4-2-boltzmannsearch} the \textit{Boltzmann Tree Search} and \textit{Decaying ENtropy Tree Search} algorithms are defined.
+    Entropy is widely used in the reinforcement learning literature, commonly introduced to promote exploration and discourage convergence to suboptimal deterministic policies \todo{cite REINFORCE/MENT, A3C, PPO}. MENTS (Section \ref{sec:2-4-3-ments}), RENTS and TENTS (Section \todo{ref litrev}) are all MCTS algoritms that optimise for maximum entropy objectives. While RENTS and TENTS will be considered as baselines in empirical experiments, MENTS will be used to facilitate and provide discussion around the use of entropy and maximum entropy objective.
 
-    Section \ref{sec:4-3-toyenvs} considers some theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms, and are used for constructive proofs of some theorems. 
+    Section \ref{sec:4-1-intro} discusses limitations of existing MCTS algorithms in the exploration setting, motivating the work covered in the remainder of the chapter. Additionally, the planning framework is formally defined so that the algorithms can be theoretically analysed using \textit{simple regret}.
+    
+    In Section \ref{sec:4-2-boltzmannsearch} the \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS) algorithms are defined. Section \ref{sec:4-2-3-stoch_search_policies} additionally discusses some useful properties of using a stochastic search policy in MCTS, such as naturally including prior knowledge through mixed policies, and how the Alias method \todo{ref} can be used to improve on computational complexity to answer \complexityq.
+
+    Section \ref{sec:4-3-toyenvs} considers some theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms, and are additionally used to provide discussion around \entropyq.
 
     Results on grid world environments and the game of Go are given in section \ref{sec:4-4-results}. 
 
-    Finally, in Section \ref{sec:4-5-theory} the main theoretical analysis and proofs are given.
-
-    \todo{add sect 4.6 if actually use that.}
-
-    \todo{one paragraph for ch overview? Or make other descriptions longer? Or make it bullet points?}
+    Finally, in Section \ref{sec:4-5-theory} the main theoretical analysis and proofs are given. Convergence properties of MENTS, BTS and DENTS are proven to answer \entropyq.
 
     \todo{After finished writing, do another pass through neurips paper and check no results/writing missing from thesis that really should be included. (Thinking about some of the frozen lake plots in the appendix when writing this.)}
     

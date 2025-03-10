@@ -47,6 +47,22 @@
 
         \todo{talk about some deep learning methods here}
 
+        \todo{Talk about entropy in (deep) RL methods too. Say that it is primarily introduced primarily for an exploration benifit. A3C ``prevent converging to deterministic suboptimal behaviour''. While there is some additional. Intro in the soft Q learning provides some alternative motivations, "In some cases, we might actually prefer to learn stochastic
+        behaviors. In this paper, we explore two potential reasons
+        for this: exploration in the presence of multimodal objectives, and compositionality attained via pretraining. Otherbenefits include robustness in the face of uncertain dynamics (Ziebart, 2010), imitation learning (Ziebart et al., 2008), and improved convergence and computational properties (Gu et al., 2016a). Multi-modality also has application in real robot tasks, as demonstrated in (Daniel et al., 2012). However, in order to learn such policies, we must define an objective that promotes stochasticity.". ANd also talks about adversarital pertobations. So basically: good for meta learning/pretraining/foundation models, good for robustness against uncertain dynamics. BASICALLY, HERE we want to talk about the other reasons why we might want to use maximum entropy.}
+        % - Soft Q-learning original: https://arxiv.org/pdf/1702.08165 
+        % - SAC: https://arxiv.org/pdf/1801.01290 
+        % - SAC paper 2: https://arxiv.org/pdf/1801.01290 
+        % - SAC paper 3: https://arxiv.org/abs/1812.11103 
+        % - Some theory paper about bias in natural actor critic algorithms: https://proceedings.mlr.press/v32/thomas14.html (just want to know what a natural actor critic algorithm is)
+        % - Equivalence from soft Q learning to a policy gradient method: https://arxiv.org/pdf/1704.06440 (has some of the ideas we had about how if you have a soft V and policy, then you have soft Q idea, which is why keeping link)
+        % - A3C uses entropy in experiments (minor ref to it): https://arxiv.org/pdf/1602.01783 
+        % - OG use of entropy in policy gradient: ""Function Optimization Using Connectionist Reinforcement Learning Algorithms"" 
+        % -- https://www.researchgate.net/publication/2703232_Function_Optimization_Using_Connectionist_Reinforcement_Learning_Algorithms "
+
+        % - should also include the other recent popularisation of the idea from a mixture of maximum entropy inverse reinforcement learning etc
+        % -- basically see the related work bit talking about max entropy in SAC (https://arxiv.org/pdf/1801.01290)
+
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
 \label{sec:3-3-thts}
 
