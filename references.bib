@@ -187,11 +187,11 @@
 }
 
 %%%%%
-% Max Entr RL stuff
+% Max Entr/Entropy Exploration RL stuff
 %%%%%
 
 %haarnoja2017reinforcement
-% as far as I'm concerned, the original max entropy RL paper
+% popularised Max Ent for policy gradient
 @inproceedings{deep_energy_policies,
   title={Reinforcement learning with deep energy-based policies},
   author={Haarnoja, Tuomas and Tang, Haoran and Abbeel, Pieter and Levine, Sergey},
@@ -200,6 +200,40 @@
   year={2017},
   organization={PMLR}
 }
+
+%mnih2016asynchronous,
+% uses entropy for exploration too
+@inproceedings{a3c,
+  title={Asynchronous methods for deep reinforcement learning},
+  author={Mnih, Volodymyr and Badia, Adria Puigdomenech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
+  booktitle={International conference on machine learning},
+  pages={1928--1937},
+  year={2016},
+  organization={PmLR}
+}
+
+%williams1991function
+% OG policy gradients (REINFORCE), also have variant using entropy
+@article{reinforce_ment,
+  title={Function optimization using connectionist reinforcement learning algorithms},
+  author={Williams, Ronald J and Peng, Jing},
+  journal={Connection Science},
+  volume={3},
+  number={3},
+  pages={241--268},
+  year={1991},
+  publisher={Taylor \& Francis}
+}
+
+%schulman2017proximal
+% PPO uses entropy for exploration too
+@article{ppo,
+  title={Proximal policy optimization algorithms},
+  author={Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+  journal={arXiv preprint arXiv:1707.06347},
+  year={2017}
+}
+
 
 %%%%%
 % POMDPs
