@@ -695,6 +695,12 @@ def sample_outcome($s$, $a$, ctx):
             \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
         \end{align}
         where $\buct$ is a \textit{bias} parameter that controls the amount of exploration UCT will perform. In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once to obtain an initial value estimate, and as such, setting $\Qinit$ is unnecessary for UCT.   
+
+        \todo{Added this quickly when writing ch4}
+        Because the best setting of the bias parameter will depend on the scale of the reward function, \citet{thts} suggest setting the bias parameter $\buct$ adaptively to $\Vuct(s)$, which is defined in Equation (\ref{eq:2:uct_backup_v}) below. In this thesis UCT can be considered to have a boolean parameter \texttt{adaptive\_bias}, where an additional factor of $\Vuct(s)$ is added to the confidence interval term as follows:
+        \begin{align}
+            \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \Vuct(s) \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:adaptive_uct_policy}
+        \end{align}
         
         There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c} \hide{\todo{find another paper or two that is just an application of alphazero?}}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,rave,prost,bus}. When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$.
 
