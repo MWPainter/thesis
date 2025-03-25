@@ -19,12 +19,20 @@
   type = {Software},
 	note = {Available at \url{https://github.com/MWPainter/thts-plus-plus}},
 	url = {https://github.com/MWPainter/thts-plus-plus},
-	version = {0.0}
+	version = {0.0},
+  year={2025}
+}
+
+@techreport{martinez2014bayesopt,
+  title={Bayesopt: A bayesian optimization library for nonlinear optimization, experimental design and bandits},
+  author={Martinez-Cantin, Ruben},
+  year={2014}
 }
 
 %%%%%
 % RL
 %%%%%
+
 %sutton2018reinforcement
 % rl book
 @article{sutton,
@@ -104,6 +112,32 @@
   year={2019}
 }
 
+% gelly2011monte
+% rave
+@article{rave,
+  title={Monte-Carlo tree search and rapid action value estimation in computer Go},
+  author={Gelly, Sylvain and Silver, David},
+  journal={Artificial Intelligence},
+  volume={175},
+  number={11},
+  pages={1856--1875},
+  year={2011},
+  publisher={Elsevier}
+}
+
+% silver2016mastering
+% alpha go
+@article{alpha_go,
+  title={Mastering the game of Go with deep neural networks and tree search},
+  author={Silver, David and Huang, Aja and Maddison, Chris J and Guez, Arthur and Sifre, Laurent and Van Den Driessche, George and Schrittwieser, Julian and Antonoglou, Ioannis and Panneershelvam, Veda and Lanctot, Marc and others},
+  journal={nature},
+  volume={529},
+  number={7587},
+  pages={484--489},
+  year={2016},
+  publisher={Nature Publishing Group}
+}
+
 %silver2017mastering
 %alpha go zero
 @article{alpha_go_zero,
@@ -130,6 +164,15 @@
   publisher={American Association for the Advancement of Science}
 }
 
+% wu2019accelerating
+% kata go
+@article{katago,
+  title={Accelerating self-play learning in go},
+  author={Wu, David J},
+  journal={arXiv preprint arXiv:1902.10565},
+  year={2019}
+}
+
 %moerland2018a0c
 %a0c
 @article{a0c,
@@ -151,6 +194,7 @@
 
 % keller2012prost
 % PROST - variable bias param
+% prost planner - eg of using rollout
 @inproceedings{prost,
   title={PROST: Probabilistic planning based on UCT},
   author={Keller, Thomas and Eyerich, Patrick},
@@ -160,9 +204,99 @@
   year={2012}
 }
 
-%%%
-%
-%%%
+% coquelin2007bandit
+% D-Chain
+@article{dchain,
+  title={Bandit algorithms for tree search},
+  author={Coquelin, Pierre-Arnaud and Munos, R{\'e}mi},
+  journal={arXiv preprint cs/0703062},
+  year={2007}
+}
+
+% karnin2013almost
+% hmcts
+@inproceedings{hmcts,
+  title={Almost optimal exploration in multi-armed bandits},
+  author={Karnin, Zohar and Koren, Tomer and Somekh, Oren},
+  booktitle={International conference on machine learning},
+  pages={1238--1246},
+  year={2013},
+  organization={PMLR}
+}
+
+% dam2021convex
+% rents and tents
+@inproceedings{rentsmytents,
+  title={Convex regularization in monte-carlo tree search},
+  author={Dam, Tuan Q and D’Eramo, Carlo and Peters, Jan and Pajarinen, Joni},
+  booktitle={International Conference on Machine Learning},
+  pages={2365--2375},
+  year={2021},
+  organization={PMLR}
+}
+
+% sailing env evaluator
+@article{peret2004line,
+  title={On-line search for solving Markov decision processes via heuristic sampling},
+  author={P{\'e}ret, Laurent and Garcia, Fr{\'e}d{\'e}rick},
+  journal={learning},
+  volume={16},
+  pages={2},
+  year={2004}
+}
+
+% sailing env evaluator + simple regret method 
+@inproceedings{tolpin2012mcts,
+  title={MCTS based on simple regret},
+  author={Tolpin, David and Shimony, Solomon},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={26},
+  number={1},
+  pages={570--576},
+  year={2012}
+}
+
+% brue1
+% simple regret
+% sailing env enjoyer
+@article{brue1,
+  title={Monte-Carlo planning: Theoretically fast convergence meets practical efficiency},
+  author={Feldman, Zohar and Domshlak, Carmel},
+  journal={arXiv preprint arXiv:1309.6828},
+  year={2013}
+}
+
+@inproceedings{gelly2007combining,
+  title={Combining online and offline knowledge in UCT},
+  author={Gelly, Sylvain and Silver, David},
+  booktitle={Proceedings of the 24th international conference on Machine learning},
+  pages={273--280},
+  year={2007}
+}
+
+% auger2013continuous
+% polynomial uct
+@inproceedings{poly_uct,
+  title={Continuous upper confidence trees with polynomial exploration--consistency},
+  author={Auger, David and Couetoux, Adrien and Teytaud, Olivier},
+  booktitle={Machine Learning and Knowledge Discovery in Databases: European Conference, ECML PKDD 2013, Prague, Czech Republic, September 23-27, 2013, Proceedings, Part I 13},
+  pages={194--209},
+  year={2013},
+  organization={Springer}
+}
+
+% rosin2011multi
+% prioritised ucb
+@article{prio_ucb,
+  title={Multi-armed bandits with episode context},
+  author={Rosin, Christopher D},
+  journal={Annals of Mathematics and Artificial Intelligence},
+  volume={61},
+  number={3},
+  pages={203--230},
+  year={2011},
+  publisher={Springer}
+}
 
 %%%%%
 % MORL stuff
@@ -267,6 +401,7 @@
 %%%%%
 % MABs
 %%%%%
+
 %robbins1952some
 %mab original
 @article{mab_og,
@@ -380,17 +515,6 @@ $ucb
   booktitle={12th international IEEE conference on intelligent transportation systems},
   volume={340345},
   year={2009}
-}
-
-% keller2012prost
-% prost planner - eg of using rollout
-@inproceedings{prost,
-  title={PROST: Probabilistic planning based on UCT},
-  author={Keller, Thomas and Eyerich, Patrick},
-  booktitle={Proceedings of the International Conference on Automated Planning and Scheduling},
-  volume={22},
-  pages={119--127},
-  year={2012}
 }
 
 %abramson1990expected

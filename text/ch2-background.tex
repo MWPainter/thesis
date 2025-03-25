@@ -335,7 +335,7 @@
         \label{def:2:q_value}
         The \textnormal{value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t \Bigg| s_t=s \right]. \label{eq:2:value_fn_def}
+            V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i \Bigg| s_t=s \right]. \label{eq:2:value_fn_def}
         \end{align} 
 
         The \textnormal{Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:

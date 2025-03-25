@@ -5,12 +5,126 @@
 %  \qauthor{--- William Harvey \cite{harvey_exercitatio_1628}}
 %\end{savequote}
 
-\chapter{\label{app:go-results}Go Parameter Tuning}
-
-\todo{Edit this down correctly for thesis and change ch title?}
+\chapter{\label{app:go-results}\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
 
 
-\subsection{Additional Go details, results and discussion} \label{app:go_results}
+
+
+\section{Grid world hyper-parameter search and additional results} 
+\label{appsec:hps}
+
+    \todo{This is copy and pasted from neurips at the moment. It doesn't account for the changes made to the algorithms or now using BayesOpt. Need to describe the parameter space searched over for each algorithm, how many Bayes trials were used and how each bayes tirla evaluated. And also give the final values used in tables. Manually setting Qinit function, but no prior knowledge used other than this.}
+
+    To select hyper-parameters for the experiments detailed in Section \ref{sec:gridworlds}, we performed a hyper-parameter search. The search was run on the 8x12 Frozen Lake environment from Figure \ref{fig:fl12}, and the results in Section \ref{sec:gridworlds} were run on the 8x12 Frozen Lake envrionment from Figure \ref{fig:fl12test}. For the Sailing problem, we performed the search using an initial wind direction of North, and the result in Section \ref{sec:results} used an initial wind direction of South-East.
+
+    To avoid the search space from becoming too large, we set some parameters manually. A good rule of thumb for initial values is to assure that $Q^{\text{init}}_{\text{sft}}(s,a) < Q_{\sft}^*(s,a)$ and $Q^{\text{init}}(s,a) < Q^*(s,a)$. Explicitly this means that an initial value of zero is \textit{not} a good choice for the Sailing problem, as rewards are negative (i.e. it has costs). In the Sailing environment, we actually set the initial values to $-200$, so that they were equal to the lowest possible return from a trial (the trial length was set to $50$, and an agent can incur a cost of at most $-4$ per timestep). To simplify the search space, we initially set the decay function in DENTS to $\beta(m)=\alpha/\log(e+m)$ and tune it after. 
+
+    For the remaining parameters, we considered all combinations of the following values:
+    \begin{itemize}
+        \item \textit{UCT Bias}: \todo{cite}%\citeapp{prst}
+            , 100.0, 10.0, 1.0, 0.1;
+        \item \textit{MENTS exploration coefficient}: 2.0, 1.0, 0.3, 0.1, 0.03, 0.01;
+        \item \textit{Temperature}: 100.0, 10.0, 1.0, 0.1, 0.01, 0.001;
+        \item \textit{HMCTS UCT budget}: 100000, 30000, 10000, 3000, 1000, 300, 100, 30, 10.
+    \end{itemize}
+
+    Where a UCT bias of \todo{cite}%\citeapp{prst}
+    refers to the adaptive bias introduced by Keller and Eyerich \todo{cite}%\citeapp{prst}
+    , and `temperature' refers to the relevant temperature for the algorithm (i.e. search temperature in BTS and DENTS, and the temperature for Shannon/Relative/Tsallis entropy in MENTS/RENTS/DENTS). After that search, for DENTS we considered the decay functions of the form $\beta(m)=\beta_{\text{init}}/\log(e+m)$ and considered the following values:
+    \begin{itemize}
+            \item \textit{DENTS initial entropy temperature} ($\beta_{\text{init}}$): 100.0, 10.0, 1.0, 0.1.
+    \end{itemize}
+    The final set of hyperparameters is given in Tables \ref{table:hyper_fl} and \ref{table:hyper_s}, which were used in the gridworld experiments in Section \ref{sec:gridworlds}. Not included in the tables: \todo{cite}%\citeapp{prst}
+    was selected for the UCT bias in both Frozen Lake and the Sailing problem.
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{r|ccc} 
+            Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
+            \hline
+            MENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
+            RENTS       & 2.0                                   & 0.001                     & 0                                                                     \\
+            TENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
+            BTS         & 2.0                                   & 0.1                       & 0                                                                     \\
+            DENTS       & 1.0                                   & 0.1                       & 0                                                                     \\
+        \end{tabular}
+        \caption[Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}]{Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
+        was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
+        was selected for the bias and 3000 for the UCT budget in HMCTS and $\beta_{\text{init}}=1.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_fl}}
+    \end{table}
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{r|ccc} 
+            Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
+            \hline
+            MENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+            RENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+            TENTS       & 2.0                                   & 0.1                       & -200                                                                  \\
+            BTS         & 1.0                                   & 10.0                      & -200                                                                  \\
+            DENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
+        \end{tabular}
+        \caption[Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}]{Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
+        was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
+        was selected for the bias and 30 for the UCT budget in HMCTS and $\beta_{\text{init}}=10.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_s}}
+    \end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+\section{DENTS with a constant $\beta$} 
+\label{appsec:dents_mimic_ments}
+
+\htodo{this subsubsection currently just a c and p from neurips}
+
+\todo{Place this better? Or maybe just remove from thesis?}
+
+To empirically demonstrate that DENTS search policy can mimic the search policy of MENTS, we ran DENTS with $\alpha=1.0,\beta(m)=\alpha$ on the 10-chain environment, and compared it to MENTS with $\alpha=1.0$. We also ran DENTS with $\alpha=0.001, \beta(m)=\alpha$ in the Frozen Lake environment, and compared it to MENTS with $\alpha=0.001$ which is what was selected in the hpyerparameter search (Appendix \ref{app:hps}). Results are given in Figure \ref{fig:dbments}. Note that in the 10-chain, only MENTS has a dip in performance initially, which is due to the two algorithms using different recommendation policies.
+
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/temp/dbments/dbments_dchain.png}
+        \caption{10-chain.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/temp/dbments/dbments_fl.png}
+        \caption{Frozen Lake.}
+    \end{subfigure}
+    \caption{Comparing DENTS with MENTS, by setting $\beta_{\text{DENTS}}(m)=\alpha_{\text{MENTS}}, \alpha_{\text{DENTS}}=\alpha_{\text{MENTS}}$, where $\alpha_{\text{MENTS}}$ is the temperature used for MENTS, and $\alpha_{\text{DENTS}},\beta_{\text{DENTS}}$ are the temperatures used by DENTS.  \todo{Update fig?}}
+    \label{fig:dbments}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Additional Go details, results and discussion} 
+\label{appsec:go_hps}
+    \todo{Everything in this section this in this appendix is C and P from NeruIPS Go parameter tuning section.}
+
+    \htodo{Just change the form of beta decay back to the inv sqrt used before. We tried lots of entropy things and nothing really worked.}
+
     Recall from Appendix \ref{app:adapt_for_games} that we initialised values with the neural networks as $Q^{\text{init}}(s,a)=\log \tilde{\pi}(a|s)+B$ and $V^{\text{init}}(s)=\tilde{V}(s)$, where $B$ is a constant (adapted from Xiao \todo{fixcites} %\etal \cite{xiao2019maximum}). 
     For these experiments we set a value of $B=\frac{-1}{|\mathcal{A}|}\sum_{a\in\mathcal{A}} \log\tilde{\pi}(a|s)$. Initialising the values in such a way tends to lead to the values of $Q^{\text{init}}(s,a)$ being in the range $[-20,20]$, to account for this, we scaled the results of the game to $100$ and $-100$, which means that any parameters selected are about $100$ times larger than they would be if we had not have used this scaling.
     
@@ -25,7 +139,7 @@
 
 
 
-\subsubsection{Parameter selection for Go and supplimentary results} \label{app:go_hps}
+\subsection{Parameter selection for Go and supplimentary results} \label{app:go_hps}
 
     In this section we work through the process used to select parameters for the Go round robin tournament used in Section \ref{sec:go}. Predominantly parameters were chosen by playing out games of Go between agents. The parameters used for PUCT were copied from Kata Go and Alpha Go Zero \todo{fix cites} %\citeapp{katago,silver2017mastering}. 
     

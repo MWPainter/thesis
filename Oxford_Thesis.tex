@@ -200,10 +200,9 @@
 \newcommand{\bd}[1]{\hl{BD: #1}}
 \newcommand{\quest}[1]{\hl{Question: #1}}
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
-\newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
-% \newcommand{\htodo}[1]{}
-\newcommand{\htodo}[1]{\hl{TODO: #1}}
+\newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
+% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
+\newcommand{\htodo}[1]{\hide{\todo{#1}}}
 
 % Maffs operators that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
@@ -356,7 +355,7 @@
 % Sec 4.2.2 - DENTS
 % \newcommand{\dents}{{\textnormal{DENTS}}}
 % \newcommand{\dents}{{\textnormal{D}_{\textnormal{ENTS}}}}
-\newcommand{\dents}{{\textnormal{D}}}
+\newcommand{\dents}{{\textnormal{DNTS}}}
 \newcommand{\HQdents}{{\bar{\cl{H}}_{Q,\dents}}}
 \newcommand{\mHQdents}[1]{{\bar{\cl{H}}^{(#1)}_{Q,\dents}}}
 \newcommand{\HVdents}{{\bar{\cl{H}}_{V,\dents}}}
@@ -381,7 +380,8 @@
 \newcommand{\mmvdents}[1]{{\textup{\texttt{mv}}^{#1}_{\dents}}}
 % Sec 4.2.2 - AR-DENTS
 % \newcommand{\ardents}{{\textnormal{AR-DENTS}}}
-\newcommand{\ardents}{{\textnormal{AR-D}}}
+% \newcommand{\ardents}{{\textnormal{AR-D}}}
+\newcommand{\ardents}{{\textnormal{AR-DNTS}}}
 \newcommand{\HQardents}{{\bar{\cl{H}}_{Q,\ardents}}}
 \newcommand{\HVardents}{{\bar{\cl{H}}_{V,\ardents}}}
 \newcommand{\piardents}{{\pi_{\ardents}}}
@@ -430,7 +430,7 @@
 % do.  Throughout, 0 = chapter; 1 = section; 2 = subsection; 3 = subsubsection, 4 = paragraph...
 
 % The level that gets a number:
-\setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{3}
 % The level that shows up in the ToC:
 \setcounter{tocdepth}{2}
 
@@ -533,8 +533,9 @@
 \startappendices
 % Add or remove any appendices you'd like here:
 \include{text/appendix}
-\include{text/appendix-ar-algorithms}
-\include{text/appendix-go-results}
+\include{text/appendix-ch4-alg-deets}
+\include{text/appendix-ch4-expr-deets}
+\include{text/appendix-ch4-theory}
 
 
 %%%%% REFERENCES
