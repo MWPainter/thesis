@@ -10,6 +10,22 @@
     \minitoc
 
 
+
+    \bd{list, brain dumping it out.}
+    
+    This chapter\dots
+
+    \begin{itemize}
+        \item Sec 5.1, introduction. Starting with existing MOMCTS methods discussed in Ch3 \todo{ref}. These algorithms come in two flavours. One where a point estimate is maintained, and one where a convex hull is maintained. This section demonstrates why point estimates are not sufficient, and 
+        \item Sec 5.2, contextual tree search. Motivates 
+        \item Sec 5.3, contextual zooming for trees
+        \item Sec 5.4, convex hull monte carlo tree search
+        \item Sec 5.5, results
+    \end{itemize}
+
+    \todo{link back to questions and how we're answering them here}
+
+
 \section{Introduction}
 \label{sec:5-1-intro}
 
@@ -20,6 +36,26 @@
         \item moving into multi-objective land now
         \item Comment about CHVI and prior MOMCTS work motivating this
     \end{itemize}  
+
+    \bd{In prior methods that use a convex hull} \todo{ref} \bd{, the environment is assumed to be deterministic, and backups can be seen to be a special case of Convex Hull backups from Chapter 2} \todo{ref}. \bd{As such, in this chapter, most }
+
+    \bd{Point estimates insufficient can be copies from CHMCTS paper}
+
+    \todo{Demonstrate the need for consistent action selection according to objectives. This paper talks about the same issue: https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf, so should read, cite and discuss. They essentially use some policy tracking}
+
+    \todo{Consider making contextual tree search a subsection of this section?}
+
+    \todo{Talk about how values can be extracted from the convex hull objects given a context, and how this can be used to solve this consistent action problem. Refer back to section 2, and say that for decision support, when a policy is chosen, it implies a weight vector, which can be used to extract the policies.}
+
+    \todo{use this to highlight that the intuition, of maximising the hypervolume or trying to find an optimal convex hull at every node is unnecessary. And leads to suboptimal behaviour and exploration.}
+
+    \todo{Use the simple example of reward in dim 1 for action 1 and reward in dim 2 for action 2}
+
+    \todo{Also make a simple 3 step example demonstrating what the vanmoffaert paper does, where there is a joint state on the two optimal paths. Which is an example of just picking actions from even the optimal convex hull at each step does not mean that you are following an optimal policy.}
+
+    \bd{So the main things to highlight with these two examples. One, that taking the objective to compute each local convex hull (the full convex hulls at not root node) is not necessary, and leads to suboptimal exploration. Two, that even if you are given all of the optimal convex hulls at every state, that some form of context or history is required to follow a globally optimal policy.}
+
+    \todo{Argue that in the case of decision support, if a context/weight vector can be obtained from the selection of a policy by the user, then the weight vector is a natural choice (and sufficient) for the context. As once given a context, the optimal choice is defined at every step. (And reference the theory section (and quote the result here).)}
 
 \section{Contextual Tree Search}
 \label{sec:5-2-context}
@@ -35,6 +71,50 @@
         \item Introduce contextual regret here
     \end{itemize}
 
+    
+    \todo{}
+
+
+
+
+
+
+    \todo{Below is brain dumping this section on 22 feb. Didn't look at CHMCTS paper at all when writing it.} 
+
+
+    This subsection discusses the use of \textit{contextual tree search} for planning in multi-objective settings. \bd{And highlights why any multi-objective tree search algorithm needs to be contextual to run effectively through an example MOMDP.}
+
+    \todo{Example MOMDP where the rewards are a circle. Have an image of the rewards, have an example of the 2 action 2D, and 3 action 2D envioronments. Also want to cite the EUM point generation that we used to generate points uniformly on a hypersphere, which allows the environment to be generate for an arbitrary (num actions, dimension) pair}
+
+    In previous work \todo{refs back to litrev}, the rough intuition used is at every node in the tree that a full convex hull is desirable, and maps action selection in a variety of ways to try and achieve this.
+
+    Using this example MOMDP \todo{reffering to the 3d one?}, where there are $M$ actions, it is quite clear from inspection what policies form the Convex Hull. $\phi^i(s)=a_{\cl{M}(i)}$ is the optimal policy for the \bd{weight vector} $\bff{w}^i=\bff{R}(\cdot,a_{\cl{M}(i)})$ \todo{probably want to fix up notation}. The convex hull is from inspection $\{\phi^i | 1\leq i \leq M\}$. 
+
+    \bd{The point of this MOMDP is that really is that its easy to know optimal CH from inspection, and should be relatively easy to solve for any tree search algorithm.}
+
+    To motivate why contextual tree search is a necessary component of MOMCTS, consider $s_0\rightarrow a_0 \rightarrow s_1$ \todo{clean notation} and that from state $s_1$ onwards, we know that the optimal action must be to continue taking $a_0$ until the trial ends. In some sense, the actions for the remainder of the trial should be consistent with any actions previously taken in the trial. Otherwise, the search policy will be essentially flipping between trying to optimse for different combinations of objectives and in effect optimising for none of them. \todo{This paragraph very brain dump}.
+    
+    The proposal in this thesis is for every trial to sample a \textit{context} weight vector, where for now it will be assumed that $\bff{w}^i \sim U(\Delta^D)$ \todo{just realised the Delta in BTS section might be overloaded notation? ALSO double check what notation used for simplex. ALso clean this equation up.} This context is then used to allow algorithms to follow a consistent objective over all actions in a trial. \todo{There may be other ways to achieve this, but the proposal of contextual tree search solves this problem relatively simply}
+
+    \todo{Some experiments showing that the prior work on MOMCTS fails horribly on this MOMDP.}
+
+
+
+    \bd{As the work in this chapter will follow the typical pattern of taking a multi-armed bandit problem and applying it to a sequential decision making problem, the theoretical quantity that will be considered in this chapter is contextual (cumulative) regret.}
+
+    \todo{Define the typical MAB problem figure, and contextual regret equation.}
+
+
+
+
+
+
+    \todo{HERE HERE HERE HERE. NExt = write up the typical MAB problem figure and defn contextual regret. With new command local. Then move onto defining contextual zooming for trees and CHMCTS. Doesn't matter if the notation is a bit off, as long as the equations which are slow to type out are typed out.}
+
+    
+
+
+    
 \section{Contextual Zooming for Trees}
 \label{sec:5-3-czt}
 
@@ -44,8 +124,14 @@
         \item Discussion on the contextual MAB to non-stationary contextual MAB stuff (CZT is to CZ what UCT is to UCB) (and what theory carry over)
     \end{itemize}
 
+    \bd{taking a slight tangent from the exploration reinforcment learning setting, this section introduces Contextual Zooming for Trees, which will be used as a baseline contextual algorithm in experiments and considered for an action selection mechanism.}
+
+    \bd{Following a similar methodology to UCT --- which runs UCB on a non-stationary multi-armed bandit problem at each node in the search tree --- \textit{Contextual Zooming for Trees} (CZT) runs \textit{Contextual Zooming} (Chapter 2, TODO REF) on a non-stationary contextual multi-armed bandit problem at each node in the search tree.}
+
+    
+
 \section{Convex Hull Monte Carlo Tree Search}
-\label{sec:5-4-theory}
+\label{sec:5-4-chmcts}
 
     \todo{list}
     \begin{itemize}
@@ -55,6 +141,19 @@
 
     \todo{Repeat definition of cprune, and add to abbreviations there}
 
+    \todo{Repeat the definitions of convex hull backups, say that this section is going to use these for each algorithm.}
+
+    \todo{Discuss property of extracting from convex hull}
+
+    \todo{A range of action selection methods will be used.}
+
+
+\section{CH-UCT}
+
+    \todo{Why doesnt a CH-UCT withe confidence bounds around the DP values you get from the convex hulls still work? Couldn't we do a k-d tree of visit counts for contexts, or some other way of counting how often a context has been searched for? There would be some lemma that the number of visits, is correct, for some epsilon ball around the weight, which the epsilon gives a small enough error in the value to be fine, except for the visit from the nodes above it in the kd tree. ANd then require exp many more trials to count for each level of the tree.}
+
+    \todo{Add to ORIMenu to just submit some arxiv shit for something like ``an addendum to convex hull monte carlo tree search'', where we basically copy past this chapter. Actually, I think just take this chapter and publish it with the definitions cut down. Say for litreview either look at the CHMCTS or Thesis literature reviews.}
+
 \section{Results}
 \label{sec:5-5-results}
 
@@ -63,3 +162,28 @@
         \item Results from CHMCTS paper
         \item Get same plots from C++ code, but compare expected utility, rather than the confusing hypervolume ratio stuff
     \end{itemize}
+
+    \bd{A range of algorithms will be considered in this experimental section. Firstly, for baselines, the convex hull backup versions of algorithms from Ch3 (REF) will be used. Additionally, CZT, CH-CZT, CH-UCT, CH-BTS and CH-DENTS will be considered}
+
+\section{Theory}
+\label{sec:5-6-theory}
+
+    \todo{See if with chatgpt help can crack out a rough proof outline? Because assuming no noise in the reward function, the leaf nodes clearly converge with same rate. Just really need the induction step. Feel like it should be very do-able, by bootstrapping on the CZT proofs.}
+
+    \todo{Can easily show that CH converges, by using every action sampled infinitly often still, and bootstrap off the convex hull convergence proof.}
+
+    \todo{One thing need to prove is that our form of backups converges, because we're using the sample averages our backups are slightly different. Should}
+
+    \todo{Remainder of properties bootstrap off the proofs in Ch4. Every action is sampled inf often, hence the convex hull backups converge. Don't bother showing convergence rates. Just show that they are consistent.}
+
+    \todo{Also want to show that given any convex hull value estimates, that following the policy extracted from convex hulls does give the same multi-objective value.}
+
+    basically this would say
+    \begin{align}
+        \pi(s;w) &= \argmax_{a\in\cl{A}} \circ{\bff{Q}}(s,a;w) \\
+        w^\top\bff{V}^\pi(s;w) &= w^\top \bb{E}_{a\sim\pi}[ \bff{Q}^\pi(s,a;w)] \\
+            &= \circ{\bff{Q}}(s,a;w) \\
+        w^\top\bff{Q}^\pi(s,a;w) &= ...    
+    \end{align}
+
+    So say that the value of the policy by taking the maimum from value estimates, will achieve the value estimates. We've been handwavy around empirical distriubtion vs actual transition distribution. But basically the argument is inductive, and holds trivially for leaf nodes.
