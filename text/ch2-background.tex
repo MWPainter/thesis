@@ -963,6 +963,8 @@ def sample_outcome($s$, $a$, ctx):
             \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q_{\bff{w}}(s,a;t). \label{eq:2:chvi_policy}
         \end{align}
 
+        \todo{make scalarised value notation consistent with how defined in ch5}
+
         If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, one can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
         \begin{align}
             (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
