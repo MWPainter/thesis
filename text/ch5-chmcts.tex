@@ -172,7 +172,15 @@
 
     \todo{should just write up the ch3 stuff before writing this tidbit}
 
-    \todo{write up the policies for the ch3 algorithms}
+    The algorithms described in Chapter 3 \todo{ref} can be realised using the above backups, with the search policies taking the following form:
+    \begin{align}
+        \pialg(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+            \zetaalg(\bfcl{Q}(s,a)) + \calg \sqrt{\frac{\log(N(s))}{N(s,a)}} \right]
+    \end{align}
+
+    \todo{write up the policies for the ch3 algorithms by defining zeta for the different algorithms.}
+
+    \todo{correct that pareto ucb uses a different search policy too}
 
 
 
@@ -206,12 +214,46 @@
 
 
 
-    \section{CH-UCT}
+    \subsection{CH-UCT}
     \label{sec:5-2-1-chuct}
 
         \todo{part 1: give action selection for CH-UCT and talk about it}
 
         \todo{part 2: discuss more?}
+
+
+
+
+
+        A natural way to extend the UCT search policy for contextual tree search is to use the contextual value estimates \eqref{eq:5:contextual_value} and \eqref{eq:5:contextual_qvalue} in the UCT search policy. Call this algorithm \textit{UCT with Convex Hulls} (CH-UCT). This gives the following search policy:
+        \begin{align}
+            \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+                \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(N(s))}{N(s,a)}} \right].
+        \end{align}
+
+        \bd{One issue is that the confidence interval terms are shared between all possible context objectives, and may assign a high confident, or tight bound, for contexts that haven't been explored down this path much.} A hueristic way to solve this is to a vectorised visit counts $\bff{M}(s)$, $\bff{M}(s,a)$. These values are backed up after a trial for context $\bff{w}$ as follows:
+        \begin{align}
+            \bff{M}(s) \leftarrow \bff{M}(s) + \bff{w}, \\
+            \bff{M}(s,a) \leftarrow \bff{M}(s,a) + \bff{w}.
+        \end{align}
+
+        Then a contextual visit count can be defined, and used in the search policy as follows:
+        \begin{align}
+            M(s;\bff{w}) &= \bff{w}^\top \bff{M}(s) \\
+            M(s,a;\bff{w}) &= \bff{w}^\top \bff{M}(s,a) \\
+            \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+                \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(M(s;\bff{w}))}{M(s,a;\bff{w})}} \right].
+        \end{align}
+
+        Note that the original value of $N(s)$ is still needed in the convex hull backups for Q-value sets, to empirically estimate the transition distribution $p(s'|s,a)\approx \frac{N(s')}{N(s,a)}$, however this can be recovered from the vectorised visit count by summing over the values of the vector:
+        \begin{align}
+            N(s) &= \sum_{i=1}^D M(s)_i \\
+            N(s,a) &= \sum_{i=1}^D M(s,a)_i.
+        \end{align}
+
+        \todo{notation above isn't clean.}
+        
+
 
 
 
@@ -225,7 +267,7 @@
 
 
 
-    \section{CH-DENTS}
+    \subsection{CH-DENTS}
     \label{sec:5-2-2-chdents}
 
         \todo{part 1: give action selection for CH-DENTS and talk about it}
@@ -258,6 +300,23 @@
     \todo{part 5: subsection on CH-CZT, which is just using the convex hull backups for the recommendation policy.}
 
 
+
+
+
+
+
+
+
+    \todo{this should mostly be copying out from the chmcts paper.}
+
+
+
+
+
+
+
+
+
     Below is old writing on this section
 
     \todo{list}
@@ -284,6 +343,8 @@
     \todo{part 0: discuss the evaluation prodceedure, and how the results are evaluated.}
 
     \todo{part 1: run algorithms on the tree envs that show the context dependent stuff better}
+
+    \todo{part 1a: run algorithms with and without vectorised visit counts and show this helps with exploration?}
 
     \todo{part 2: run on suite of mo-gym environments}
 
