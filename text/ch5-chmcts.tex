@@ -367,6 +367,95 @@
 
 
 
+    This section provides an empirical evalutation of the algorithms developed in this chapter. The baseline algorithms considered will also be CHMCTS algorithms, using the action selection methods outline in Sections \todo{ref litrev and above}. 
+    
+
+
+
+    \subsection{Evaluation Proceedure} 
+
+        Firstly, given a context $\bff{w}$ and CHMCTS search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\text{alg}}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
+        % 
+        \begin{align}
+            \texttt{complete}(\psi_{\text{alg}})(a|s;\bff{w}) =
+            \begin{cases}
+                1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s;\bff{w}), \\
+                0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s;\bff{w}), \\
+                \frac{1}{|\cl{A}|}      & \text{ otherwise.}
+            \end{cases} \label{eq:full_Recommend}
+        \end{align}
+        % 
+        \todo{should reword to account for CZT and how it does the same thing}
+
+        The Convex Hull (of policies) can then be written as 
+        \begin{align}
+            \Psi_{\text{alg}} = \{\texttt{complete}(\psi_{\text{alg}})\ |\ \bff{w}\in\Delta^D \}.
+        \end{align}
+
+        This Convex Hull of policies is then evaluated using the \textit{Expected Utility Metric} (\eum), which is defined as:
+        \begin{align}
+            \eum(\Psi_{\text{alg}}) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
+                \max_{\psi\in\Psi_{\text{alg}}} \bff{w}^\top \bff{V}^{\psi}(s_0)
+             \right],
+        \end{align}
+        %
+        where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, to evaluate the algorithms:
+        \begin{align}
+            \eum(\Psi_{\text{alg}}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{V}^{\tau(\bff{w})},
+        \end{align}
+        %
+        where $E(\Delta^D)$ is an evenly spaced set of points in $\Delta^D$, $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
+
+        For the results given in \todo{ref}, the number of sampled used to approximate the \eum\ewe was XXX. That is $|E(\Delta^D)| = XXX$.
+
+        \todo{double check this is consistent with the litrev paper on MORL and also cite it. Also what are the other metrics?}
+
+        Experiments are run with \mctsmode\ewe turned off, as no memory issues were encountered during the evalutation.
+
+        Similarly to the gridworld environments in Chapter \todo{ref}, the BayesOpt package \cite{bayesopt} was used to tune the hyperparameters of all algorithms in this chapter. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \todo{new appendix? join the appendix?}.
+
+    
+
+    \subsection{Environments}
+
+        The MO-Gymnasium \todo{cite} suite of environments was used to evaluate the algorithms. 
+
+        \todo{Pick a couple envs to describe in more detail, and refer to cite for full details}
+
+        Additionally, the Deep Sea Treasure is used, and the \todo{extended? (whatever the updated one is)} are used. \todo{Also mention that we can generate maps of varying size to perform a scalability analysis}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        \todo{have noticed that inproceedings etc in references.bib not works. Need to fix.}
+        
+        \todo{Also double declared rave. Should look where that's cited, change the combining online and offline knowledge in UCT to another name, and update the refs that are intended to point to that entry. ALSO, think combining online and offline is what using to cite mctsmode as a development? }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
