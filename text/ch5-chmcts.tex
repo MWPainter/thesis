@@ -37,7 +37,7 @@
         \item Comment about CHVI and prior MOMCTS work motivating this
     \end{itemize} 
     
-    First prior multi-objective MCTS (MOMCTS) algorithms are discussed.
+    First prior multi-objective MCTS (MOMCTS) algorithms are discussed. Specifically, 
 
     \bd{Point estimates insufficient can be copies from CHMCTS paper}
 
@@ -114,6 +114,59 @@
     
     
         \todo{HERE HERE HERE HERE. NExt = write up the typical MAB problem figure and defn contextual regret. With new command local. Then move onto defining contextual zooming for trees and CHMCTS. Doesn't matter if the notation is a bit off, as long as the equations which are slow to type out are typed out.}
+
+
+
+        \todo{make defn}
+        Given that the multi-objective problem is now being posed as a contextual problem, it is necessary to allow for policies to depend on the context weight. Given a weight $\bff{w}\in\Delta^D$, the probability of samping action $a$ from policy $\pi$ at state $s$ will now be written $\pi(a|s;\bff{w})$.
+
+        Additionally, \textit{context dependent} policy will refer to policies that can vary for different weights, and \textit{context independent} policies are ones that give the same distribution for all weights. That is, a policy $\pi$ is context independent if $\pi(a|s;\bff{w}) = \pi(a|s;\bff{w}')$ for all $\bff{w},\bff{w}'\in\Delta^D$. \todo{How to handle that context dependent could learn a context independent? Maybe rephrase?}
+
+
+
+
+
+
+
+    
+
+
+    
+\section{Contextual Zooming for Trees}
+\label{sec:5-3-czt}
+
+    \todo{part 1: say that a common approach from tree search is to think about each node as solving a (non-stationary) multi-armed bandit problem}
+
+    \todo{part 2: following a similar approach, contextual zooming is an approach for contextual bandits }
+
+    \todo{part 3: have a diagram of a box, UCB right to UCT, UCB down to CZ, UCT down to CZT, CZ right arrow to CZT}
+
+    \todo{part 4: describe the algorithm. say that it's for a fixed number of trials. talk about doubling trick and how it can be used to bound contextual regret for unknown number of trials. In practise just use the equations without thinking about it.}
+
+    \todo{part 5: subsection on CH-CZT, which is just using the convex hull backups for the recommendation policy.}
+
+
+
+
+
+
+
+    A common design choice in tree search for sequential decision making is to use a relevant multi-armed bandit algoroithm at each deicison node of the tree. For example, the UCT algorithm adapts the UCB algorithm at each node, to run on a non-stationary MAB problem at each node. 
+
+    Since Section \ref{sec:5-1-1-context} motivated viewing multi-objective MCTS from a contextual viewpoint. This Section considers utilising the \textit{Contextual Zooming} alogirithm \todo{ref in ch2} for contextual multi-armed bandits to give the \textit{Contextual Zooming for Trees} (CZT) algorithm.
+
+    \bd{Following a similar methodology to UCT --- which runs UCB on a non-stationary multi-armed bandit problem at each node in the search tree --- \textit{Contextual Zooming for Trees} (CZT) runs \textit{Contextual Zooming} (Chapter 2, TODO REF) on a non-stationary contextual multi-armed bandit problem at each node in the search tree.}
+
+    It's worth noting that because the CZT algorithm is following the ``UCT formula'', and that the contextual zooming algorithm is motivated in the \bd{standard} reinforcement learning setting, as opposed to the exploration setting. \bd{As such CZT in some sense is not designed with the exploration setting in mind.}
+
+    \todo{Consdier this algo for two reasons: follow same design as UCT and contextual search policy baseline (as non  exist really).}
+
+    % (This para was at the start, but dont want to start with it anymore)
+    % \bd{taking a slight tangent from the exploration reinforcment learning setting, this section introduces Contextual Zooming for Trees, which will be used as a baseline contextual algorithm in experiments and considered for an action selection mechanism.}
+
+    \todo{Box diagram}
+
+    \todo{Revise contextual zooming algorithm}
         
 
 
@@ -130,7 +183,7 @@
 
 
 \section{Convex Hull Monte Carlo Tree Search}
-\label{sec:5-2-chmcts}
+\label{sec:5-3-chmcts}
 
     \todo{part 1: give generalised CHMCTS backups}
 
@@ -178,7 +231,7 @@
             \zetaalg(\bfcl{Q}(s,a)) + \calg \sqrt{\frac{\log(N(s))}{N(s,a)}} \right]
     \end{align}
 
-    \todo{write up the policies for the ch3 algorithms by defining zeta for the different algorithms.}
+    \todo{write up the policies for the ch3 algorithms by defining zeta for the different algorithms. And highlight the context independence from not depending on the weight}
 
     \todo{correct that pareto ucb uses a different search policy too}
 
@@ -211,11 +264,34 @@
 
 
 
+    The algorithms considered in \todo{ref ch4} can be converted into contextual multi-objective algorithms by using the contextual values $\Valgctx{\bff{w}}(s)$ and $\Qalgctx{\bff{w}}(s,a)$ for decision making.
+
+
+
+
+
+
+
+    \subsection{CH-CZT}
+    \label{sec:5-3-1-chczt}
+
+        \todo{move }
+
+
+        Additionally, there is nothing preventing CZT from keeping convex hull value set estimates at each of it's nodes. This algorithm is referred to as Contextual Zooming for Trees with Convex Hull backups (CH-CZT). In such a case, the backups from \todo{ref eqns} are included, to update the value set estimates \todo{notation}, which are then used for recommnedations \todo{as follows}. In essence, this algorithm runs CZT, but adds an aditional convex hull backup which is used for recommendations.
+
+
+
+
+
+
+        \todo{this should mostly be copying out from the chmcts paper.}
+
 
 
 
     \subsection{CH-UCT}
-    \label{sec:5-2-1-chuct}
+    \label{sec:5-3-2-chuct}
 
         \todo{part 1: give action selection for CH-UCT and talk about it}
 
@@ -261,14 +337,31 @@
 
         \todo{Add to ORIMenu to just submit some arxiv shit for something like ``an addendum to convex hull monte carlo tree search'', where we basically copy past this chapter. Actually, I think just take this chapter and publish it with the definitions cut down. Say for litreview either look at the CHMCTS or Thesis literature reviews.}
 
+        \todo{Quote theory results}
 
 
+
+
+
+
+
+    \subsection{CH-BTS}
+    \label{sec:5-3-3-chbts}
+
+        \todo{part 1: give action selection for CH-DENTS and talk about it}
+
+        \todo{part 2: say CH-BTS is same without entropy backup}
+
+        \todo{part 2: discuss entropy, say that it's just an approximate exploration bonus now}
+
+
+        
 
 
 
 
     \subsection{CH-DENTS}
-    \label{sec:5-2-2-chdents}
+    \label{sec:5-3-4-chdents}
 
         \todo{part 1: give action selection for CH-DENTS and talk about it}
 
@@ -282,54 +375,6 @@
 
 
 
-    
-
-
-    
-\section{Contextual Zooming for Trees}
-\label{sec:5-3-czt}
-
-    \todo{part 1: say that a common approach from tree search is to think about each node as solving a (non-stationary) multi-armed bandit problem}
-
-    \todo{part 2: following a similar approach, contextual zooming is an approach for contextual bandits }
-
-    \todo{part 3: have a diagram of a box, UCB right to UCT, UCB down to CZ, UCT down to CZT, CZ right arrow to CZT}
-
-    \todo{part 4: describe the algorithm. say that it's for a fixed number of trials. talk about doubling trick and how it can be used to bound contextual regret for unknown number of trials. In practise just use the equations without thinking about it.}
-
-    \todo{part 5: subsection on CH-CZT, which is just using the convex hull backups for the recommendation policy.}
-
-
-
-
-
-
-
-
-
-    \todo{this should mostly be copying out from the chmcts paper.}
-
-
-
-
-
-
-
-
-
-    Below is old writing on this section
-
-    \todo{list}
-    \begin{itemize}
-        \item Give contextual zooming for trees algorithm
-        \item Discussion on the contextual MAB to non-stationary contextual MAB stuff (CZT is to CZ what UCT is to UCB) (and what theory carry over)
-    \end{itemize}
-
-    \todo{Old todo from contextual tree search section, but more appropriate here: Discuss how UCT = running a non-stationary UCB at each node, so given above discussion, there is work in contextual MAB  }
-
-    \bd{taking a slight tangent from the exploration reinforcment learning setting, this section introduces Contextual Zooming for Trees, which will be used as a baseline contextual algorithm in experiments and considered for an action selection mechanism.}
-
-    \bd{Following a similar methodology to UCT --- which runs UCB on a non-stationary multi-armed bandit problem at each node in the search tree --- \textit{Contextual Zooming for Trees} (CZT) runs \textit{Contextual Zooming} (Chapter 2, TODO REF) on a non-stationary contextual multi-armed bandit problem at each node in the search tree.}
 
 
 
@@ -368,11 +413,17 @@
 
 
     This section provides an empirical evalutation of the algorithms developed in this chapter. The baseline algorithms considered will also be CHMCTS algorithms, using the action selection methods outline in Sections \todo{ref litrev and above}. 
+
+    \bd{This para is very braindump.} It is worth noting that in multi-objective MCTS algorithms that the accuracy and quality of the convex hull at the root node is the primary concern, even when a multi-objective MCTS algorithm is used in an \textit{online} manor, where tree search is interleaved between actions taken by the agent. Once a policy has been selected at the initial state it implicitly defines a weighting over the objectives as detailed in Section \todo{ref sec 2}. And following the discussion from \todo{ref above}, to follow an optimal policy the actions need to be taken consistently with respect to the same objective weights. As such, a more efficient online algorithm will be to run the multi-objective tree search from the initial state, and run a single-objective MCTS algorithm in a scalarised single-objective MDP for the remaining actions. Where in the scalarised reward is $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
     
 
 
 
     \subsection{Evaluation Proceedure} 
+
+        To evaluate the quality of the convex hull at the root node, the following metrics from the multi-objective literature \cite{morl_survey} are considered: \textit{Expected Utility Metric}, \textit{Hypervolume Metric} and a \textit{Sparsity Metric}. \todo{Add EUM and HV and Sparsity here or in ch2? }
+
+        To evaluate the quality of the convex hull at the root node, where the optimal convex hull is not known a-priori, the \textit{Expected Utility Metric}, \textit{}
 
         Firstly, given a context $\bff{w}$ and CHMCTS search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\text{alg}}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
         % 
@@ -399,12 +450,12 @@
              \right],
         \end{align}
         %
-        where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, to evaluate the algorithms:
+        where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
         \begin{align}
             \eum(\Psi_{\text{alg}}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{V}^{\tau(\bff{w})},
         \end{align}
         %
-        where $E(\Delta^D)$ is an evenly spaced set of points in $\Delta^D$, $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
+        where $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
 
         For the results given in \todo{ref}, the number of sampled used to approximate the \eum\ewe was XXX. That is $|E(\Delta^D)| = XXX$.
 
@@ -413,6 +464,8 @@
         Experiments are run with \mctsmode\ewe turned off, as no memory issues were encountered during the evalutation.
 
         Similarly to the gridworld environments in Chapter \todo{ref}, the BayesOpt package \cite{bayesopt} was used to tune the hyperparameters of all algorithms in this chapter. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \todo{new appendix? join the appendix?}.
+
+
 
     
 
@@ -425,6 +478,15 @@
         Additionally, the Deep Sea Treasure is used, and the \todo{extended? (whatever the updated one is)} are used. \todo{Also mention that we can generate maps of varying size to perform a scalability analysis}
 
 
+    
+
+
+
+    
+    \subsection{Results and Discussion}
+
+        \todo{Paste in results and talk about them}
+    
 
 
 
@@ -438,9 +500,8 @@
 
 
 
-        \todo{have noticed that inproceedings etc in references.bib not works. Need to fix.}
-        
-        \todo{Also double declared rave. Should look where that's cited, change the combining online and offline knowledge in UCT to another name, and update the refs that are intended to point to that entry. ALSO, think combining online and offline is what using to cite mctsmode as a development? }
+
+
 
 
 
@@ -478,6 +539,12 @@
     \todo{part 4: mention that CZT proofs would be much more complex, and given the other algorithms do better. Mention a lower bound which comes from the CZ regret bound. And that this algorithm could be preferable in not in exploring context.}
 
     \todo{part 4a: similar with CH-UCT to CZT}
+
+    \todo{part 5: any proofs for CH-UCT and/or CZT? Which wouldn't be a disaster trying to proove?
+    
+    
+    
+    }
 
 
 
