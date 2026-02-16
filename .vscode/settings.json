@@ -1,0 +1,115 @@
+{
+  // ----- LaTeX Workshop: compile and view PDF -----
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.rootFile": "Oxford_Thesis.tex",
+  "latex-workshop.latex.outDir": "%DIR%",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "pdflatex ➞ bibtex ➞ pdflatex × 2",
+      "tools": ["pdflatex", "bibtex", "pdflatex", "pdflatex"]
+    },
+    {
+      "name": "latexmk (thesis)",
+      "tools": ["latexmk"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": ["%DOCFILE%"],
+      "env": {}
+    }
+  ],
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+
+  // ----- Spell checker: English (UK) -----
+  "cSpell.language": "en-GB",
+  "cSpell.enabled": true,
+  "cSpell.enableFiletypes": ["latex", "plaintext"],
+  "cSpell.flagWords": [
+    "realize: realise",
+    "realized: realised",
+    "realizes: realises",
+    "realizing: realising",
+    "color: colour",
+    "colors: colours",
+    "colored: coloured",
+    "behavior: behaviour",
+    "behaviors: behaviours",
+    "center: centre",
+    "centers: centres",
+    "favor: favour",
+    "favors: favours",
+    "favorable: favourable",
+    "honor: honour",
+    "honors: honours",
+    "honorable: honourable",
+    "labor: labour",
+    "neighbor: neighbour",
+    "neighbors: neighbours",
+    "organize: organise",
+    "organized: organised",
+    "organizes: organises",
+    "organizing: organising",
+    "recognize: recognise",
+    "recognized: recognised",
+    "recognizes: recognises",
+    "recognizing: recognising",
+    "analyze: analyse",
+    "analyzed: analysed",
+    "analyzes: analyses",
+    "analyzing: analysing",
+    "optimize: optimise",
+    "optimized: optimised",
+    "optimizes: optimises",
+    "optimizing: optimising",
+    "emphasize: emphasise",
+    "emphasized: emphasised",
+    "finalize: finalise",
+    "finalized: finalised",
+    "authorize: authorise",
+    "authorized: authorised",
+    "characterize: characterise",
+    "characterized: characterised",
+    "maximize: maximise",
+    "maximized: maximised",
+    "minimize: minimise",
+    "minimized: minimised",
+    "defense: defence",
+    "offense: offence",
+    "traveled: travelled",
+    "traveling: travelling",
+    "canceled: cancelled",
+    "canceling: cancelling",
+    "modeling: modelling",
+    "fulfill: fulfil",
+    "fulfilled: fulfilled",
+    "enrollment: enrolment",
+    "installment: instalment"
+  ]
+}
