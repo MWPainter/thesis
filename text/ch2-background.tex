@@ -11,7 +11,19 @@
 
     \minitoc
 
-    This chapter introduces the fundamental concepts that will be used throughout this thesis, in particular the \thtspp\ewe schema is introduced in Section \ref{sec:2-4-1-thts}, in which monte carlo tree search algorithms will be defined. Section \ref{sec:2-1-mab} begins with multi-armed bandit problems and decision theory, which provides a fundamental building block used in monte carlo tree search methods (Section \ref{sec:2-4-thts}). Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl} provide a framework for sequential decision making under uncertainty. Section \ref{sec:2-4-thts} introduces monte carlo tree search methods methods that can be used for solving problems in sequential decision making under uncertainty. Section \ref{sec:2-5-morl} extends the frameworks to include multiple objectives. And Section \ref{sec:2-6-sampling} discusses sampling from categorical distributions efficiently.
+    This chapter introduces the fundamental concepts that will be used throughout this thesis, in particular Section \ref{sec:2-4-1-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
+
+    Section \ref{sec:2-1-mab} briefly covers Multi-Armed Bandit problems, which are commonly used to study decision making algorithms and as a building block in Monte Carlo Tree Search methods. In particular, \textit{Contextual} Multi-Armed Bandit problems (Section \ref{sec:2-1-2-contextual-mab}) are covered, which will be relevant in the design and analysis of the multi-objective algorithms discussed in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. 
+    
+    Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl} outline the sequential decision-making framework used in this thesis. Additionally, the Maximum Entropy Reinforcement Learning framework is covered (Section \ref{sec:2-3-1-merl}) which is a major topic discussed in Chapter \ref{ch:4-dents}.
+    
+    Section \ref{sec:2-4-thts} covers the Monte Carlo Tree Search framework which will be used for solving sequential decision-making problems. 
+
+    Section \ref{sec:2-5-morl} covers the Multi-Objective Reinforcement Learning framework, which is used to study sequential decision-making algorithms with multiple objectives.
+
+    \todo{maybe move Alias method to be a section in Chapter 4? All of the other background sections are relevant to at least an entire Chapter, whereas the Alias method is only relevant in a small subsection of Chapter 4}
+
+    Finally, Section \ref{sec:2-6-sampling} discusses sampling from categorical distributions efficiently.
 
 
 
@@ -28,13 +40,22 @@
 \section{Multi-Armed Bandits}
 \label{sec:2-1-mab}
 
-    This section introduces the $K$-armed bandit problem \cite{mab_og}, which is a foundational problem considered in decision theory. In the multi-armed bandit (MAB) problem, an agent is tasked with deciding to pull one of $K$ arms, and the decision typically needs to be made multiple times. For example, the MAB problem could be used in the context of clinical trials, where each ``arm'' corresponds to a treatment option. As such, the MAB problem is presented in rounds, where an arm is selected each round. In each round an random outcome is observed in form of a reward.
-
-    The distribution of rewards is unknown ahead of time, and so an agent needs to explore to gather information about what rewards can be obtained by pulling each arm, and if an agent does not explore then it may miss out on discovering the best strategy. Conversely, the agent should want to exploit, using the information that it has obtained, so that it gather high rewards. In the clinical trials example, exploitation is desirable so that patients receive the best treatment. The problem of balancing these two aspects is known as the \textit{exploration-exploitation trade off}.
+    The Multi-Armed Bandit (MAB) problem \todo{mab book cite} is a foundational problem considered in decision theory. In the $K$-armed bandit problem, an agent must choose which of the $K$ arms to pull over multiple rounds. On each round, after pulling an arm, the agent receives a reward which is sampled from a probability distribution associated with the arm.
     
-    The remainder of this section will formalise the MAB problem, and give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}. Sections \ref{sec:2-1-1-exploring-mab} and \ref{sec:2-1-2-contextual-mab} considers two variations on the MAB problem that will be relevant in this thesis.
+    The MAB problem was first considered by \citet{mab_og} in 1952, in the context of clinical trials. In a clinical trial, each patient is treated with one of two possible treatments, where the effectiveness of each treatment is unknown. In this setting, it is essential that the best treatment is given to as many patients as possible, while each treatment needs to be considered to determine its effectiveness. The balance between \textit{exploring} to find the best treatment (arm) and \textit{exploiting} the best treatment (arm) is known as the \textit{exploration-exploitation trade-off}.
 
-    Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Formally, let $f(1),...,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),...,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,...,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ is over $\{1,...,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
+    The remainder of this section will formalise the MAB problem, give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}, and consider two variations on the MAB problem (Sections \ref{sec:2-1-1-exploring-mab} and \ref{sec:2-1-2-contextual-mab}) that will be relevant in this thesis.
+
+
+
+
+
+
+
+\subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm}
+\label{sec:2-1-0-ucb}
+
+    Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Let $f(1),...,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),...,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,...,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ over $\{1,...,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
 
     \begin{figure}
         \begin{tcolorbox}
@@ -52,19 +73,19 @@
         \label{fig:2:mab_problem}
     \end{figure}
     
-    To assess algorithmic strategies for MAB problems, a quantity known as \textit{regret} is commonly used, which compares the cumulative reward obtained, compared to the maximal expected reward that could be obtained with full knowledge of $\{f(i)\}$.
+    \textit{Regret} is a common metric used to assess the performance of algorithms for MAB problems, which is the difference between the cumulative reward obtained and the maximal expected reward that could be obtained with full knowledge of $\{f(i)\}$.
 
     \begin{defn}
         The \textnormal{(cumulative) regret} of strategy $\sigma$ after $n$ rounds in the MAB process is:
         \begin{align}
             \creg_{\mab}(n,\sigma) = n\mu^* - \sum_{m=1}^n y^m, \label{eq:2:cumulative_regret_def}
         \end{align}
-        where $\mu^* = max_i \mu(i)$.
+        where $\mu^* = \max_i \mu(i)$.
     \end{defn}
 
-    To theoretically analyse algorithms for MAB problems, the quantity of expected regret, $\bb{E}[\creg_{\mab}(n,\sigma)]$ is considered. \citet{mab_lower_bound} show using information theory that there is a lower bound on the expected regret that an agent can achieve of $\Omega(\log n)$. And \citet{ucb} introduces the Upper Confidence Bound (UCB) algorithm, which achieves a matching upper bound of $O(\log n)$ on the expected regret. 
+    The expected regret, $\bb{E}[\creg_{\mab}(n,\sigma)]$, is often used to analyse the performance of algorithms for MAB problems. \citet{mab_lower_bound} show a general lower bound of $\Omega(\log n)$ on the expected regret that an agent can achieve. \citet{ucb} introduces the Upper Confidence Bound (UCB) algorithm, which achieves a matching upper bound of $O(\log n)$ on the expected regret. 
 
-    To define the UCB strategy for pulling the arms, a few quantities need to be defined first. Let $N^m(x)$ be the number of times that arm $x$ has been pulled after $m$ rounds. And let $\bar{y}^m(x)$ be the average reward that has been received as a result of pulling arm $x$ after $m$ rounds. Mathematically:
+    To define the UCB strategy, let $N^m(x)$ be the number of times that arm $x$ has been pulled after $m$ rounds, and let $\bar{y}^m(x)$ be the average reward obtained by pulling arm $x$ after $m$ rounds:
     \begin{align}
         N^m(x) &= \sum_{i=1}^m \one[x^i = x], \label{eq:2:mab_num_arm_pulls_def} \\
         \bar{y}^m(x) &= \frac{1}{N^m(x)} \sum_{i=1}^m y^i \one[x^i = x]. \label{eq:2:mab_arm_sample_avg} 
@@ -75,150 +96,160 @@
         x^m_{\ucb} &= \argmax_{i\in\{1,..,K\}} \bar{y}^{m-1}(i) + b_{\ucb} \sqrt{\frac{\log(m)}{N^{m-1}(i)}}, \label{eq:2:ucb_arm} \\
         \sigma^m_{\ucb}(x) &= \one[x=x^m_{\ucb}], \label{eq:2:ucb_strategy}
     \end{align}
-    where $b_{\ucb}$ is a bias parameter used to control how much the strategy explores. Additionally, each arm is pulled once in the first $K$ rounds by the UCB strategy, to avoid division by zero in Equation \ref{eq:2:ucb_arm}. Alternatively, the division by zero can be considered to give a value of $\infty$, to give the same effect.
-
-
-
-
-    \subsection{Exploring Bandits}
-    \label{sec:2-1-1-exploring-mab}
-
-        In the pure exploration problem for $K$-armed bandits \cite{exploring_bandit}, the format of each round is changed slightly. The agent still gets to pull an arm each round (according to the \textit{exploration strategy} $\sigma$), but after it recieves a reward on each round it is given the opportunity to output a \textit{recommendation strategy} $\psi$. On the $m$th round, the recommendation strategy takes the form of $\psi^m$, a probability distribution over the $K$ arms. In exploring multi-armed bandit (EMAB) problems, the emphasis is now on the algorithm being able to provide the best recommendations possible, rather than trying to exploit pulling the best arm each round. In essence, this separates the needs to explore and exploit, the agent needs to explore with its arm pulls, and output an exploiting recommendation at the end of each round. Figure \ref{fig:2:emab_problem} gives an overview of the EMAB problem. 
-
-        \begin{figure}
-            \begin{tcolorbox}
-                Parameters: $K$ probability distributions for the rewards of each arm $f(1),...,f(K)$.
-                \begin{itemize}
-                    \item For each round $m=1,2,...$:
-                    \begin{itemize}
-                        \item the agent selects an arm $x^m\sim\sigma^m$ to pull;
-                        \item the agent receives a reward $y^m \sim f(x^m)$ from the environment;
-                        \item the agent outputs a recommendation distribution $\psi^m$, over the arms $\{1,...,K\}$;
-                        \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
-                    \end{itemize} 
-                \end{itemize}
-            \end{tcolorbox}
-            \caption{The procedure of an exploring multi-armed bandit problem, following an exploration strategy $\sigma$, and recommendation strategy $\psi$.}
-            \label{fig:2:emab_problem}
-        \end{figure}
-
-        The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,...,K\}$ is given by:
-        \begin{align}
-            \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
-        \end{align}
-        where again $\mu^* = max_i \mu(i)$.
-        
-        Under the exploring regime of EMABs, the performance of an algorithm can be analysed by considering the quantity of \textit{simple regret} of the recommendation policy. The simple regret is the expected value of the instantaneous regret which would come from following the recommendation policy.
-
-        \begin{defn}
-            \label{def:2:simple_regret}
-            The \textnormal{simple regret} of following the exploration strategy $\sigma$ and recommending a distribution $\psi^m$ on the $m$th round is:
-            \begin{align}
-                \sreg_{\emab}(m,\sigma,\psi^m) = \bb{E}_{i\sim\psi^m}[\mu^* - \mu(i)]. \label{eq:2:simple_regret_def}
-            \end{align}
-        \end{defn}
-
-        \citet{exploring_bandit} analyse a range of exploration and recommendation strategies in their work. Two of the recommendation strategies considered are the \textit{empirical best arm} (EBA) and \textit{most played arm} (MPA):
-        \begin{align}
-            x^m_{\eba} &= \argmax_{i\in\{1,..,K\}} \bar{y}^m(i), \label{eq:2:eba_arm} \\
-            \psi^m_{\eba}(x) &= \one[x=x^m_{\eba}], \label{eq:2:eba_recommendation_strategy} \\
-            x^m_{\mpa} &= \argmax_{i\in\{1,..,K\}} N^m(i), \label{eq:2:mpa_arm} \\
-            \psi^m_{\mpa}(x) &= \one[x=x^m_{\mpa}]. \label{eq:2:mpa_recommendation_strategy} 
-        \end{align}
-
-        In addition to the UCB strategy, a \textit{uniform exploration strategy} is considered:
-        \begin{align}
-            x^m_{\uniform} &= \left(m\mod K\right)+1, \label{eq:2:uniform} \\
-            \sigma^m_{\uniform}(x) &= \one[x=x^m_{\uniform}]. \label{eq:2:uniform_strategy}
-        \end{align}
-
-        It is shown that exploring with UCB leads to a polynomial simple regret bound for both recommendation strategies: $\sreg_{\emab}(m,\sigma_{\ucb},\psi^m_{\eba}) = O(m^{-k_{\ucb,\eba}})$ and $\sreg_{\emab}(m,\sigma_{\ucb},\psi^m_{\mpa}) = O(m^{-k_{\ucb,\mpa}})$ for some appropriate constants $k_{\ucb,\eba},k_{\ucb,\mpa}>0$. It is also shown that exploring with the uniform strategy (and recommendating the empirical best arm) leads to an exponential simple regret bound, $\sreg_{\emab}(m,\sigma_{\ucb},\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$.
-
-
-
+    where $b_{\ucb}$ is a bias parameter used to control how much the strategy explores. In the first $K$ rounds, UCB pulls each arm once to obtain an initial sample for each arm. Alternatively, the division by zero in Equation \ref{eq:2:ucb_arm} can be considered to give a value of $\infty$, to give the same effect.
     
-    \subsection{Contextual Bandits}
-    \label{sec:2-1-2-contextual-mab}
 
-        In the contextual multi-armed bandit (CMAB) problem \cite{cz,cz_long}, before an arm is chosen, the agent is provided with a context $w$. In the CMAB problem the set of arms, now $\cl{X}$, and the set of contexts, $\cl{W}$ are compact sets (i.e. the sets are closed and bounded). The distribution of rewards now also depends on the context $w$ and arm pulled $x$, and is written $f(w,x)$, with mean $\mu(w,x)$. The distribution of arms pulled on the $m$th round can now depend on the context: $\sigma^m(w)$. Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
 
-        \begin{figure}
-            \begin{tcolorbox}
-                Parameters: the set of arms $\cl{X}$, the set of contexts $\cl{W}$ and a mapping from $\cl{W}\times\cl{X}$ to probability distributions: $f(w,x)$.
+
+
+
+\subsection{Exploring Bandits}
+\label{sec:2-1-1-exploring-mab}
+
+    \todo{update litrev table for all of the ch2 cites, and update writing about them if necessary (might be worth writing the theory results for exploring bandits)}
+
+    In the pure exploration problem for $K$-armed bandits \cite{exploring_bandit}, the format of each round is changed slightly. The agent still pulls an arm each round and receives a reward from the environment, but after, the agent is given an opportunity to recommend which arms are the best. This better reflects scenarios where time is spent planning before any action is taken in the real world. Because the agent is only assessed on the quality of the recommendations, the agent is free to purely explore using its arm pulls and only needs to exploit when providing a recommendation. 
+
+    Figure \ref{fig:2:emab_problem} gives an overview of the Exploring Multi-Armed Bandit (EMAB) problem. The agent follows an \textit{exploration strategy} $\sigma$ to pull an arm each round, and receives a reward from the environment. Then the agent provides a recommendation in the form of a probability distribution, or \textit{recommendation strategy} $\psi$, over the $K$ arms.  
+
+    \begin{figure}
+        \begin{tcolorbox}
+            Parameters: $K$ probability distributions for the rewards of each arm $f(1),...,f(K)$.
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
                 \begin{itemize}
-                    \item For each round $m=1,2,...$:
-                    \begin{itemize}
-                        \item the agent recieves a context $w^m\in\cl{W}$ from the environment;
-                        \item the agent selects an arm $x^m\sim\sigma^m(w^m)$ to pull;
-                        \item the agent receives a reward $y^m \sim f(w^m,x^m)$ from the environment;
-                        \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
-                    \end{itemize} 
-                \end{itemize}
-            \end{tcolorbox}
-            \caption{The procedure of a contextual multi-armed bandit problem, following a strategy $\sigma$.}
-            \label{fig:2:cmab_problem}
-        \end{figure}
+                    \item the agent selects an arm $x^m\sim\sigma^m$ to pull;
+                    \item the agent receives a reward $y^m \sim f(x^m)$ from the environment;
+                    \item the agent outputs a recommendation distribution $\psi^m$, over the arms $\{1,...,K\}$;
+                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
+                \end{itemize} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption{The procedure of an exploring multi-armed bandit problem, following an exploration strategy $\sigma$, and recommendation strategy $\psi$.}
+        \label{fig:2:emab_problem}
+    \end{figure}
 
-        Given this setup some further assumptions are required for the problem to be more tractable. \citet{cz_long} make a fairly general assumption that some \textit{metric} $d$ over the \textit{similarity space} $\cl{W}\times\cl{X}$ is known and is such that the following Lipschitz condition holds:
+    Algorithms for EMAB problems can be assessed by considering the expected regret of following the recommendation policy for one round, known as \textit{simple regret}.
+    \begin{defn}
+        \label{def:2:simple_regret}
+        The \textnormal{simple regret} of the recommendation strategy $\psi$ is:
         \begin{align}
-            |\mu(x,y) - \mu(x',y')| \leq d((x,y),(x',y')). \label{eq:2:zooming_lipschitz_condition}
-        \end{align} 
-
-        For $d$ to be a metric, the following conditions must hold for some arbitrary $z=(x,y), z'=(x',y'), z''=(x'',y'')$ with $z\neq z'\neq z''$:
-        \begin{align}
-            d(z,z) &= 0, \label{eq:2:metric_def_1} \\
-            d(z,z') &> 0, \label{eq:2:metric_def_2} \\
-            d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
-            d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
+            \sreg_{\emab}(\psi) = \bb{E}_{i\sim\psi}[\mu^* - \mu(i)]. \label{eq:2:simple_regret_def}
         \end{align}
+    \end{defn}
 
-        Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \cite{cz,cz_long}, while taking into account the contexts drawn.
-        \begin{defn}
-            \label{def:2:contextual_regret}
-            The \textnormal{(cumulative) contextual regret} of the strategy $\sigma$ in the process given in Figure \ref{fig:2:cmab_problem} is defined as:
-            \begin{align}
-                \ctxreg_{\cmab}(\pi,n) = \sum_{m=1}^n \mu^*(w^m) - y^m, \label{eq:2:contextual_regret_def}
-            \end{align}
-            where $\mu^*(w) = \sup_i \mu(w,i)$.
-        \end{defn}
-        
-        \citet{cz_long} also introduces the Contextual Zooming (CZ) algorithm. CZ runs over a fixed number of rounds $T$, and achieves the contextual regret of $O(T^{\frac{1+c}{2+c}}\log(T))$, where $c$ is the \textit{(Lebesgue)covering dimension} of the similarity space $\cl{W}\times\cl{X}$. For the purpose of this thesis the covering dimension (a notion about topological spaces), will always be equal to the typical notion of dimension. That is, if $\cl{W}\times\cl{X}$ has covering dimension $c$, then $\cl{W}\times\cl{X}$ can be mapped to a subspace of $\bb{R}^{c}$.
+    \todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
+    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,...,K\}$ is given by:
+    % \begin{align}
+    %     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
+    % \end{align}
+    % where again $\mu^* = \max_i \mu(i)$.
 
-        Throughout the CZ algorithm, a set of balls in the similarity space is maintained, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with center $(w,x)$ and radius $r$ is given by $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
+    \citet{exploring_bandit} analyse a range of exploration and recommendation strategies in their work. Two of the recommendation strategies considered are the \textit{empirical best arm} (EBA) and \textit{most played arm} (MPA):
+    \begin{align}
+        x^m_{\eba} &= \argmax_{i\in\{1,..,K\}} \bar{y}^m(i), \label{eq:2:eba_arm} \\
+        \psi^m_{\eba}(x) &= \one[x=x^m_{\eba}], \label{eq:2:eba_recommendation_strategy} \\
+        x^m_{\mpa} &= \argmax_{i\in\{1,..,K\}} N^m(i), \label{eq:2:mpa_arm} \\
+        \psi^m_{\mpa}(x) &= \one[x=x^m_{\mpa}]. \label{eq:2:mpa_recommendation_strategy} 
+    \end{align}
 
-        The CZ algorithm operates using two rules each round $m$: the \textit{selection rule} is used to select a relevant ball $B^m$ from the set of active balls $A^m$; then, an \textit{activation rule} is optionally applied that adds a new ball with smaller radius.
+    In addition to the UCB exploration strategy (Equation \ref{eq:2:ucb_strategy}), a \textit{uniform exploration strategy} is considered:
+    \begin{align}
+        x^m_{\uniform} &= \left(m\mod K\right)+1, \label{eq:2:uniform} \\
+        \sigma^m_{\uniform}(x) &= \one[x=x^m_{\uniform}]. \label{eq:2:uniform_strategy}
+    \end{align}
 
-        Now the selection rule is described in more detail. Firstly, let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received after $m$ rounds when selecting ball $B$. 
+    It is shown that exploring with UCB leads to a polynomial upper bound on the simple regret for both recommendation strategies. That is, when $\psi^m_{\eba}$ and $\psi^m_{\mpa}$ are computed using visit counts and sample averages from following $\sigma_{\ucb}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(m^{-k_{\ucb,\eba}})$ and $\sreg_{\emab}(\psi^m_{\mpa}) = O(m^{-k_{\ucb,\mpa}})$ for some appropriate constants $k_{\ucb,\eba},k_{\ucb,\mpa}>0$.
+
+    When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$.
+
+
+
+
+\subsection{Contextual Bandits}
+\label{sec:2-1-2-contextual-mab}
+
+    \todo{clean up this section, I'm too eepy right now to handle contextual brandits}
+
+    In the contextual multi-armed bandit (CMAB) problem \cite{cz,cz_long}, before an arm is chosen, the agent is provided with a context $w$. In the CMAB problem the set of arms, now $\cl{X}$, and the set of contexts, $\cl{W}$ are compact sets (i.e. the sets are closed and bounded). The distribution of rewards now also depends on the context $w$ and arm pulled $x$, and is written $f(w,x)$, with mean $\mu(w,x)$. The distribution of arms pulled on the $m$th round can now depend on the context: $\sigma^m(w)$. Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
+
+    \begin{figure}
+        \begin{tcolorbox}
+            Parameters: the set of arms $\cl{X}$, the set of contexts $\cl{W}$ and a mapping from $\cl{W}\times\cl{X}$ to probability distributions: $f(w,x)$.
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
+                \begin{itemize}
+                    \item the agent receives a context $w^m\in\cl{W}$ from the environment;
+                    \item the agent selects an arm $x^m\sim\sigma^m(w^m)$ to pull;
+                    \item the agent receives a reward $y^m \sim f(w^m,x^m)$ from the environment;
+                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
+                \end{itemize} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption{The procedure of a contextual multi-armed bandit problem, following a strategy $\sigma$.}
+        \label{fig:2:cmab_problem}
+    \end{figure}
+
+    Given this setup some further assumptions are required for the problem to be more tractable. \citet{cz_long} make a fairly general assumption that some \textit{metric} $d$ over the \textit{similarity space} $\cl{W}\times\cl{X}$ is known and is such that the following Lipschitz condition holds:
+    \begin{align}
+        |\mu(x,y) - \mu(x',y')| \leq d((x,y),(x',y')). \label{eq:2:zooming_lipschitz_condition}
+    \end{align} 
+
+    For $d$ to be a metric, the following conditions must hold for some arbitrary $z=(x,y), z'=(x',y'), z''=(x'',y'')$ with $z\neq z'\neq z''$:
+    \begin{align}
+        d(z,z) &= 0, \label{eq:2:metric_def_1} \\
+        d(z,z') &> 0, \label{eq:2:metric_def_2} \\
+        d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
+        d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
+    \end{align}
+
+    Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \cite{cz,cz_long}, while taking into account the contexts drawn.
+    \begin{defn}
+        \label{def:2:contextual_regret}
+        The \textnormal{(cumulative) contextual regret} of the strategy $\sigma$ in the process given in Figure \ref{fig:2:cmab_problem} is defined as:
         \begin{align}
-            N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
-            \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
+            \ctxreg_{\cmab}(\pi,n) = \sum_{m=1}^n \mu^*(w^m) - y^m, \label{eq:2:contextual_regret_def}
         \end{align}
+        where $\mu^*(w) = \sup_i \mu(w,i)$.
+    \end{defn}
+    
+    \citet{cz_long} also introduces the Contextual Zooming (CZ) algorithm. CZ runs over a fixed number of rounds $T$, and achieves the contextual regret of $O(T^{\frac{1+c}{2+c}}\log(T))$, where $c$ is the \textit{(Lebesgue)covering dimension} of the similarity space $\cl{W}\times\cl{X}$. For the purpose of this thesis the covering dimension (a notion about topological spaces), will always be equal to the typical notion of dimension. That is, if $\cl{W}\times\cl{X}$ has covering dimension $c$, then $\cl{W}\times\cl{X}$ can be mapped to a subspace of $\bb{R}^{c}$.
 
-        Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius, or:
-        \begin{align}
-            \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
-        \end{align}
+    Throughout the CZ algorithm, a set of balls in the similarity space is maintained, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with center $(w,x)$ and radius $r$ is given by $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
 
-        The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
-        \begin{align}
-            \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
-        \end{align}
+    The CZ algorithm operates using two rules each round $m$: the \textit{selection rule} is used to select a relevant ball $B^m$ from the set of active balls $A^m$; then, an \textit{activation rule} is optionally applied that adds a new ball with smaller radius.
 
-        Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
-        \begin{align}
-            \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
-        \end{align}
+    Now the selection rule is described in more detail. Firstly, let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received after $m$ rounds when selecting ball $B$. 
+    \begin{align}
+        N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
+        \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
+    \end{align}
 
-        The ball $B^m$ selected on the $m$th round with context $w^m$ can now be given as:
-        \begin{align}
-            I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
-            B^m &= \max_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
-        \end{align}
-        where $d(B,B')$ is the distance between the centers of balls $B,B'$ according to the metric $d$. 
+    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius, or:
+    \begin{align}
+        \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
+    \end{align}
 
-        Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$), which concludes the selection rule.
+    The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
+    \begin{align}
+        \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
+    \end{align}
 
-        The activation rule is then used if the confidence radius from Equation (\ref{eq:2:cz_conf_radius}) has shrunk to smaller than the radius of ball selected this round, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and center $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
+    Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
+    \begin{align}
+        \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
+    \end{align}
+
+    The ball $B^m$ selected on the $m$th round with context $w^m$ can now be given as:
+    \begin{align}
+        I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
+        B^m &= \max_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
+    \end{align}
+    where $d(B,B')$ is the distance between the centers of balls $B,B'$ according to the metric $d$. 
+
+    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$), which concludes the selection rule.
+
+    The activation rule is then used if the confidence radius from Equation (\ref{eq:2:cz_conf_radius}) has shrunk to smaller than the radius of ball selected this round, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and center $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
 
 
 
@@ -238,13 +269,15 @@
 \section{Markov Decision Processes}
 \label{sec:2-2-mdps}
 
-    In this section \textit{Markov decision processes} (MDPs) are introduced, along with related definitions of \textit{policies} and \textit{trajectories}. MDPs give a mathematical framework for problems concerning sequential decision making under uncertainty, and in this thesis will be the framework used to model the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depends on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent receives an instantaneous reward, according to a reward function that depends on the state and action taken.
+    \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision making problems. This section provides definitions and notation related to MDPs that will be used throughout this thesis.
+    
+    This thesis will use MDPs to describe the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depend only on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent receives an instantaneous reward, according to a reward function that also depends on the current state and action taken.
 
-    This thesis is concerned with discrete, finite, fully-observable and finite-horizon Markov decision processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. 
+    This thesis is concerned with discrete, finite-horizon Markov decision processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. Unless otherwise stated, MDPs will be assumed to be discrete and finite-horizon.
 
     \begin{defn}
         \label{def:2:mdp}
-        A \textnormal{Markov decision process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+        A \textnormal{(Finite-Horizon) Markov decision process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
     \end{defn}
 
     \begin{figure}
@@ -253,7 +286,7 @@
         \label{fig:2:mdp_eg}
     \end{figure}
 
-    An example MDP is shown in Figure \ref{fig:2:mdp_eg}. Notationally, it is convenient to define the set of successor states, that is the set of states that could be reached after taking an action from the current state of the MDP:
+    An example MDP is shown in Figure \ref{fig:2:mdp_eg}. The set of \textit{successor states} is the set of states that can be reached after taking an action from the current state of the MDP:
     \begin{defn}
         \label{def:2:succ}
         The set of \textnormal{successor states} $\suc{s}{a}$ of a state-action pair $(s,a)$, with respect to an MDP, is defined as: 
@@ -262,17 +295,17 @@
         \end{align}
     \end{defn}
 
-    Additionally, throughout this thesis, MDPs will be defined with \textit{terminal states}, which are states that once reached will never be left, and no more reward can be obtained. 
+    Throughout this thesis MDPs will be defined with \textit{terminal states}, which are states that, once reached. can never be left.
     \begin{defn}
         \label{def:2:terminal}
-        A state $s\in\cl{S}$ is a \textnormal{terminal} state (or a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which will be used to denote if a state $s$ is terminal or not.
+        A state $s\in\cl{S}$ is a \textnormal{terminal} state (or a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which will be used to denote if a state $s$ is terminal or not.
     \end{defn}
 
-    To define a strategy that an agent will follow in an MDP, and agent defines a \textit{policy}. A policy maps each state in the state space to a probability distribution over the action space. To ``follow'' a policy, actions are sampled from the distribution. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
+    To define a strategy that an agent will follow in an MDP, an agent defines a \textit{policy}. A \textit{policy} maps each state to a probability distribution over the action space. A policy serves as the strategy that an agent or algorithm follows when acting in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
 
     \begin{defn}
         \label{def:2:policy}
-        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distributions over actions and $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy the conditions: for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and for all actions $a\in\cl{A}$ that $\pi(a|s)\geq 0$ . 
+        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distribution over actions and $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy the conditions: for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and for all actions $a\in\cl{A}$ that $\pi(a|s)\geq 0$ . 
         
         Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic iff it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
 
@@ -285,26 +318,42 @@
         \end{itemize}
     \end{defn}
     
-    Given an MDP $\cl{M}$ and a policy $\pi$ it is then possible to sample a sequence of states, actions and rewards, known as a \textit{trajectory}. A trajectory \textit{simulates} one possible sequence that could occur if an agent follows policy $\pi$ in $\cl{M}$, and in Section \ref{sec:2-4-thts} these simulations are used to incrementally build a search tree.
+    Given an MDP $\cl{M}$ and a policy $\pi$, a \textit{trajectory} is a sampled sequence of states, actions and rewards, where the policy is used to sample actions and the MDP is used to sample the next state. A trajectory simulates one possible sequence that could occur if an agent follows policy $\pi$ in $\cl{M}$.
     
     \begin{defn}
         \label{def:2:trajectory}
-        A \textnormal{trajectory} $\tau$, is a sequence of state, action and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+        A \textnormal{trajectory} $\tau$, is a sequence of states, actions and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The following notations will also be used for trajectories:
         %
         \begin{itemize}
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
             \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
-            \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is trunacted on only one end,
-            \item given a trajectory $\tau$, the following set notation is used, $s\in \tau$, $(s,a)\in\tau$ as a shorthand for $s\in\{s_i|i=0,...,H\}$ and $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$ respectively, 
+            \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is truncated on only one end;
+            \item given a trajectory $\tau$, the following set notation is used, $s\in \tau$, $(s,a)\in\tau$ as a shorthand for $s\in\{s_i|i=0,...,H\}$ and $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$ respectively;
+            \item and finally, when states, actions and rewards are timestep indexed (i.e. $s_t,a_t,r_t$), they will always correspond to a trajectory.
         \end{itemize}
-        and finally, when states, actions and rewards a timestep indexed (i.e. $s_t,a_t,r_t$), they will always correspond to a trajectory.
     \end{defn}
 
 
 
 
+
+
+
+
+
+\todo{THU: Check section 2.2 is cleanly in notation, use claude for help too. Do contextual bandits and RL sections.}
+\todo{FRI: Sections 2.4-end chapter and todos (litrev consistent).}
+
+
+
+
+
+
+
+
+    
 
 
 
@@ -317,7 +366,7 @@
         \label{fig:2:rl_overview}
     \end{figure}
 
-    This section serves as a brief introduction to fundamental concepts in reinforcement learning, and motivates an alternative lens on reinforcement learning that this thesis will consider. The field of reinforcement learning considers an agent that has to learn how to make decisions by interacting with its environment (Figure \ref{fig:2:rl_overview}). The agent can take actions in the environment, recieving in return \textit{observations} and \textit{rewards}, which can be used to update internal state and used to make further decisions, and the goal of the agent is to maximise the rewards that it recieves.
+    This section serves as a brief introduction to fundamental concepts in reinforcement learning, and motivates an alternative lens on reinforcement learning that this thesis will consider. The field of reinforcement learning considers an agent that has to learn how to make decisions by interacting with its environment (Figure \ref{fig:2:rl_overview}). The agent can take actions in the environment, receiving in return \textit{observations} and \textit{rewards}, which can be used to update internal state and used to make further decisions, and the goal of the agent is to maximise the rewards that it receives.
 
     Classically the agent is considered to interact with its environment directly \cite{sutton}, and thus must make a trade-off between exploring new strategies and exploiting learned strategies. That is, reinforcement learning agents must consider the \textit{exploration-exploitation trade-off} discussed in Section \ref{sec:2-1-mab} too. 
     %If an agent were to try to only exploit, then it may not discover better strategies, and if an agent only explores, then it may miss out on the opportunity to exploit the best known strategy and obtain greater rewards.
@@ -491,6 +540,8 @@
 
 \section{Trial-Based Heuristic Tree Search and Monte Carlo Tree Search}
 \label{sec:2-4-thts}
+
+FROM SEC 2.2: , and in Section \ref{sec:2-4-thts} these simulations are used to incrementally build a search tree.
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/mcts_trial.pdf} 
