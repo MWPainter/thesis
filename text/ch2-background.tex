@@ -7,6 +7,48 @@
 %   \qauthor{--- Johann Wolfgang von Goethe \cite{von_goethe_wilhelm_1829}}
 % \end{savequote}
 
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [X] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \chapter{\label{ch:2-background}Background}
 
     \minitoc
@@ -36,7 +78,17 @@
 
 
 
-
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [X] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Multi-Armed Bandits}
 \label{sec:2-1-mab}
 
@@ -52,6 +104,17 @@
 
 
 
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [X] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm}
 \label{sec:2-1-0-ucb}
 
@@ -103,6 +166,17 @@
 
 
 
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [X] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \subsection{Exploring Bandits}
 \label{sec:2-1-1-exploring-mab}
 
@@ -166,6 +240,17 @@
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \subsection{Contextual Bandits}
 \label{sec:2-1-2-contextual-mab}
 
@@ -266,6 +351,17 @@
     
 
 
+% [X] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [X] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Markov Decision Processes}
 \label{sec:2-2-mdps}
 
@@ -295,13 +391,13 @@
         \end{align}
     \end{defn}
 
-    Throughout this thesis MDPs will be defined with \textit{terminal states}, which are states that, once reached. can never be left.
+    In this thesis, MDPs will contain \textit{trap states}, which are states that, once reached, can never be left, and no more reward can be obtained.
     \begin{defn}
         \label{def:2:terminal}
-        A state $s\in\cl{S}$ is a \textnormal{terminal} state (or a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which will be used to denote if a state $s$ is terminal or not.
+        A state $s\in\cl{S}$ is a \textnormal{terminal} state (or a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which will be used to denote if a state $s$ is terminal or not.
     \end{defn}
 
-    To define a strategy that an agent will follow in an MDP, an agent defines a \textit{policy}. A \textit{policy} maps each state to a probability distribution over the action space. A policy serves as the strategy that an agent or algorithm follows when acting in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
+    A \textit{policy} maps each state to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
 
     \begin{defn}
         \label{def:2:policy}
@@ -330,7 +426,8 @@
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
             \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
             \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is truncated on only one end;
-            \item given a trajectory $\tau$, the following set notation is used, $s\in \tau$, $(s,a)\in\tau$ as a shorthand for $s\in\{s_i|i=0,...,H\}$ and $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$ respectively;
+            \item $s\in \tau$ is used as a shorthand for $s\in\{s_i|i=0,...,H\}$;
+            \item $(s,a)\in\tau$ is used as a shorthand for $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$;
             \item and finally, when states, actions and rewards are timestep indexed (i.e. $s_t,a_t,r_t$), they will always correspond to a trajectory.
         \end{itemize}
     \end{defn}
@@ -343,6 +440,18 @@
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\todo{Add checklists to each section}
 \todo{THU: Check section 2.2 is cleanly in notation, use claude for help too. Do contextual bandits and RL sections.}
 \todo{FRI: Sections 2.4-end chapter and todos (litrev consistent).}
 

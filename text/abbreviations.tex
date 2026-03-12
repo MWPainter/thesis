@@ -48,6 +48,35 @@
         If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled the distribution $f$.
     \item[$O(f(x))$]
         \todo{Big-O and Big-Omega notation?} 
+    % \\
+    % %%%%%
+    % % MABs - notation is local to background section + 
+    % %%%%%
+    % \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
+    % \item[$x$] \todo{define here and move into correct place in the list}
+    % \item[$y$] \todo{define here and move into correct place in the list}
+    % \item[$f_i$] \todo{define here and move into correct place in the list}
+    % \item[$x^m$] \todo{define here and move into correct place in the list}
+    % \item[$y^m$] \todo{define here and move into correct place in the list}
+    % \item[$\bar{y}_i^m$] \todo{define here and move into correct place in the list}
+    % \item[$N$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_i$] \todo{define here and move into correct place in the list}
+    % \item[$\mu^*$] \todo{define here and move into correct place in the list}
+    % \item[$\creg_{\mab}$] \todo{define here and move into correct place in the list}
+    % \item[$\pi(m)$] \todo{define here and move into correct place in the list. Maybe keep it as this and ask question}
+    % \item[$m$] \todo{define here and move into correct place in the list}
+    % \item[$\pi_{\ucb}(m)$] \todo{define here and move into correct place in the list}
+    % \item[$\pi^m$] \todo{define here and move into correct place in the list}
+    % \item[$\psi^m$] \todo{define here and move into correct place in the list}
+    % \item[$w$] \todo{define here and move into correct place in the list}
+    % \item[$w^m$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_{w,i}$] \todo{define here and move into correct place in the list}
+    % \item[$\mu_{w}^*$] \todo{define here and move into correct place in the list}
+    % \item[$W$] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
+    % \item[$ $] \todo{define here and move into correct place in the list}
     \\
     %%%%%
     % (MO)MDPs
@@ -68,14 +97,14 @@
     \item[$\bfcl{M}$] 
         A Multi-Objective Markov Decision Process, which is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$.
     \item[$p$] 
-        The next-state transition distribution of an MDP.  $p(s' | s,a) : \cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$.
+        The next-state transition distribution of an MDP. $p(s' | s,a)$ is the probability of transitioning to state $s'$ from state $s$ by taking action $a$.
     \item[$\pi$]:
-        A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$.
+        A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$. That is, $\pi(a|s)$ is the probability of taking action $a$ at state $s$. $\pi(s)=a'$ is used a shorthand for $\pi(a|s)=\one[a=a']$.
         % \todo{probably dont need this, not going to use non-locally}
     \item[$R$] 
-        The reward function of an MDP: $R(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}$.
+        The reward function of an MDP: $R(s,a)$ is the reward received from taking action $a$ at state $s$.
     \item[$\bff{R}$] 
-        The $D$ dimensional reward function of a MOMDP: $\bff{R}(s,a) : \cl{S}\times \cl{A}\rightarrow \bb{R}^D$.
+        The $D$ dimensional reward function of a MOMDP: $\bff{R}(s,a)\in\bb{R}^D$ is the vector of rewards received from taking action $a$ at state $s$.
     \item[$r_t$]
         The reward at the $t$th timestep of a trajectory.
     \item[$\cl{S}$]
@@ -227,35 +256,6 @@
     %
     %
     %
-    % \\
-    % %%%%%
-    % % MABs
-    % %%%%%
-    % \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
-    % \item[$x$] \todo{define here and move into correct place in the list}
-    % \item[$y$] \todo{define here and move into correct place in the list}
-    % \item[$f_i$] \todo{define here and move into correct place in the list}
-    % \item[$x^m$] \todo{define here and move into correct place in the list}
-    % \item[$y^m$] \todo{define here and move into correct place in the list}
-    % \item[$\bar{y}_i^m$] \todo{define here and move into correct place in the list}
-    % \item[$N$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_i$] \todo{define here and move into correct place in the list}
-    % \item[$\mu^*$] \todo{define here and move into correct place in the list}
-    % \item[$\creg_{\mab}$] \todo{define here and move into correct place in the list}
-    % \item[$\pi(m)$] \todo{define here and move into correct place in the list. Maybe keep it as this and ask question}
-    % \item[$m$] \todo{define here and move into correct place in the list}
-    % \item[$\pi_{\ucb}(m)$] \todo{define here and move into correct place in the list}
-    % \item[$\pi^m$] \todo{define here and move into correct place in the list}
-    % \item[$\psi^m$] \todo{define here and move into correct place in the list}
-    % \item[$w$] \todo{define here and move into correct place in the list}
-    % \item[$w^m$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_{w,i}$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_{w}^*$] \todo{define here and move into correct place in the list}
-    % \item[$W$] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
     %
     %
     %
