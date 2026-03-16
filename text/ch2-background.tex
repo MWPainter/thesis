@@ -92,7 +92,7 @@
 \section{Multi-Armed Bandits}
 \label{sec:2-1-mab}
 
-    The Multi-Armed Bandit (MAB) problem \todo{mab book cite} is a foundational problem considered in decision theory. In the $K$-armed bandit problem, an agent must choose which of the $K$ arms to pull over multiple rounds. On each round, after pulling an arm, the agent receives a reward which is sampled from a probability distribution associated with the arm.
+    The Multi-Armed Bandit (MAB) problem \cite{mab_book} is a foundational problem considered in decision theory. In the $K$-armed bandit problem, an agent must choose which of the $K$ arms to pull over multiple rounds. On each round, after pulling an arm, the agent receives a reward which is sampled from a probability distribution associated with the arm.
     
     The MAB problem was first considered by \citet{mab_og} in 1952, in the context of clinical trials. In a clinical trial, each patient is treated with one of two possible treatments, where the effectiveness of each treatment is unknown. In this setting, it is essential that the best treatment is given to as many patients as possible, while each treatment needs to be considered to determine its effectiveness. The balance between \textit{exploring} to find the best treatment (arm) and \textit{exploiting} the best treatment (arm) is known as the \textit{exploration-exploitation trade-off}.
 
@@ -136,7 +136,7 @@
         \label{fig:2:mab_problem}
     \end{figure}
     
-    \textit{Regret} is a common metric used to assess the performance of algorithms for MAB problems, which is the difference between the cumulative reward obtained and the maximal expected reward that could be obtained with full knowledge of $\{f(i)\}$.
+    \textit{Regret} is a common metric used to analyse the performance of algorithms for MAB problems, which is the difference between the cumulative reward obtained and the maximal expected reward that could be obtained with full knowledge of $\{f(i)\}$.
 
     \begin{defn}
         The \textnormal{(cumulative) regret} of strategy $\sigma$ after $n$ rounds in the MAB process is:
@@ -180,7 +180,7 @@
 \subsection{Exploring Bandits}
 \label{sec:2-1-1-exploring-mab}
 
-    \todo{update litrev table for all of the ch2 cites, and update writing about them if necessary (might be worth writing the theory results for exploring bandits)}
+    \todo{update litrev table for all of the ch2 cites, and update writing about them if necessary (might be worth writing the theory results for exploring bandits) - at least would like to make sure know what the simple regret and cumulative regret results are}
 
     In the pure exploration problem for $K$-armed bandits \cite{exploring_bandit}, the format of each round is changed slightly. The agent still pulls an arm each round and receives a reward from the environment, but after, the agent is given an opportunity to recommend which arms are the best. This better reflects scenarios where time is spent planning before any action is taken in the real world. Because the agent is only assessed on the quality of the recommendations, the agent is free to purely explore using its arm pulls and only needs to exploit when providing a recommendation. 
 
@@ -203,7 +203,7 @@
         \label{fig:2:emab_problem}
     \end{figure}
 
-    Algorithms for EMAB problems can be assessed by considering the expected regret of following the recommendation policy for one round, known as \textit{simple regret}.
+    Algorithms for EMAB problems can be analysed by considering the expected regret of following the recommendation policy for one round, known as \textit{simple regret}.
     \begin{defn}
         \label{def:2:simple_regret}
         The \textnormal{simple regret} of the recommendation strategy $\psi$ is:
@@ -251,12 +251,10 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Contextual Bandits}
+\subsection{Contextual Bandits and Contextual Zooming}
 \label{sec:2-1-2-contextual-mab}
 
-    \todo{clean up this section, I'm too eepy right now to handle contextual brandits}
-
-    In the contextual multi-armed bandit (CMAB) problem \cite{cz,cz_long}, before an arm is chosen, the agent is provided with a context $w$. In the CMAB problem the set of arms, now $\cl{X}$, and the set of contexts, $\cl{W}$ are compact sets (i.e. the sets are closed and bounded). The distribution of rewards now also depends on the context $w$ and arm pulled $x$, and is written $f(w,x)$, with mean $\mu(w,x)$. The distribution of arms pulled on the $m$th round can now depend on the context: $\sigma^m(w)$. Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
+    The Contextual Multi-Armed Bandit (CMAB) problem \cite{cz,cz_long} is another extension of the MAB problem, where the agent is provided with a context $w\in\cl{W}$ at the start of each round. After the arm $x\in\cl{X}$ is selected, the reward is sampled from a distribution, $f(w,x)$ (with mean $\mu(w,x)$), that also depends on the context. For each round $m$, strategies for CMAB problems provide a mapping from contexts to arms, $\sigma^m(w)$. The set of contexts $\cl{W}$ and the set of arms $\cl{X}$ are compact sets (i.e. the sets are closed and bounded). Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
 
     \begin{figure}
         \begin{tcolorbox}
@@ -275,42 +273,47 @@
         \label{fig:2:cmab_problem}
     \end{figure}
 
-    Given this setup some further assumptions are required for the problem to be more tractable. \citet{cz_long} make a fairly general assumption that some \textit{metric} $d$ over the \textit{similarity space} $\cl{W}\times\cl{X}$ is known and is such that the following Lipschitz condition holds:
+    To make the problem more tractable, \citet{cz_long} consider the case where $\mu$ is Lipschitz continuous. That is, there is a metric $d$ over the \textit{similarity space} $\cl{W}\times\cl{X}$ which satisfies the Lipschitz condition:
     \begin{align}
         |\mu(x,y) - \mu(x',y')| \leq d((x,y),(x',y')). \label{eq:2:zooming_lipschitz_condition}
-    \end{align} 
-
-    For $d$ to be a metric, the following conditions must hold for some arbitrary $z=(x,y), z'=(x',y'), z''=(x'',y'')$ with $z\neq z'\neq z''$:
-    \begin{align}
-        d(z,z) &= 0, \label{eq:2:metric_def_1} \\
-        d(z,z') &> 0, \label{eq:2:metric_def_2} \\
-        d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
-        d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
     \end{align}
 
-    Similar to MABs and EMABs, the notion of regret is used to analyse CMABs. Specifically, \textit{contextual regret} is defined similarly to cumulative regret \cite{cz,cz_long}, while taking into account the contexts drawn.
+    \begin{defn}
+        \label{def:2:metric}
+        $d$ is a \textnormal{metric} over the similarity space $\cl{W}\times\cl{X}$ if it satisfies the following conditions for any $z,z',z''\in\cl{W}\times\cl{X}$ with $z\neq z'\neq z''$:
+        \begin{align}
+            d(z,z) &= 0, \label{eq:2:metric_def_1} \\
+            d(z,z') &> 0, \label{eq:2:metric_def_2} \\
+            d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
+            d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
+        \end{align}
+    \end{defn}
+
+    \textit{Contextual regret} is used to analyse the performance of algorithms for CMAB problems, which incorporates the contexts drawn.
     \begin{defn}
         \label{def:2:contextual_regret}
-        The \textnormal{(cumulative) contextual regret} of the strategy $\sigma$ in the process given in Figure \ref{fig:2:cmab_problem} is defined as:
+        The \textnormal{(cumulative) contextual regret} of the strategy $\sigma$ over $n$ rounds in the process given in Figure \ref{fig:2:cmab_problem} is defined as:
         \begin{align}
-            \ctxreg_{\cmab}(\pi,n) = \sum_{m=1}^n \mu^*(w^m) - y^m, \label{eq:2:contextual_regret_def}
+            \ctxreg_{\cmab}(n,\sigma) = \sum_{m=1}^n \mu^*(w^m) - y^m, \label{eq:2:contextual_regret_def}
         \end{align}
         where $\mu^*(w) = \sup_i \mu(w,i)$.
     \end{defn}
+
+    \todo{Move this to a Ch5 section or Ch5 appendix? Its only used in CZT}
     
-    \citet{cz_long} also introduces the Contextual Zooming (CZ) algorithm. CZ runs over a fixed number of rounds $T$, and achieves the contextual regret of $O(T^{\frac{1+c}{2+c}}\log(T))$, where $c$ is the \textit{(Lebesgue)covering dimension} of the similarity space $\cl{W}\times\cl{X}$. For the purpose of this thesis the covering dimension (a notion about topological spaces), will always be equal to the typical notion of dimension. That is, if $\cl{W}\times\cl{X}$ has covering dimension $c$, then $\cl{W}\times\cl{X}$ can be mapped to a subspace of $\bb{R}^{c}$.
+    \citet{cz_long} introduce the Contextual Zooming (CZ) algorithm to solve CMAB problems. CZ runs over a fixed number of rounds $T$, and achieves the contextual regret of $O(T^{\frac{1+c}{2+c}}\log(T))$, where $c$ is the \textit{(Lebesgue) covering dimension} of the similarity space $\cl{W}\times\cl{X}$. Within the scope of this thesis, the covering dimension is equal to the typical notion of dimension. That is, $\cl{W}\times\cl{X}$ has covering dimension $c$, if and only if $\cl{W}\times\cl{X}$ can be mapped to a subspace of $\bb{R}^{c}$.
 
-    Throughout the CZ algorithm, a set of balls in the similarity space is maintained, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with center $(w,x)$ and radius $r$ is given by $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
+    The CZ algorithm uses a set of balls in the similarity space, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with center $(w,x)$ and radius $r$ is given by $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
 
-    The CZ algorithm operates using two rules each round $m$: the \textit{selection rule} is used to select a relevant ball $B^m$ from the set of active balls $A^m$; then, an \textit{activation rule} is optionally applied that adds a new ball with smaller radius.
+    Contextual Zooming operates using two rules each round $m$: the \textit{selection rule} is used to select a relevant ball $B^m$ from the set of active balls $A^m$; then, an \textit{activation rule} is optionally applied that adds a new ball with smaller radius.
 
-    Now the selection rule is described in more detail. Firstly, let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received after $m$ rounds when selecting ball $B$. 
+    Now the selection rule is described in more detail. Let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received from the first $m$ when selecting ball $B$. 
     \begin{align}
         N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
         \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
     \end{align}
 
-    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius, or:
+    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius:
     \begin{align}
         \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
     \end{align}
@@ -332,9 +335,9 @@
     \end{align}
     where $d(B,B')$ is the distance between the centers of balls $B,B'$ according to the metric $d$. 
 
-    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$), which concludes the selection rule.
+    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$).
 
-    The activation rule is then used if the confidence radius from Equation (\ref{eq:2:cz_conf_radius}) has shrunk to smaller than the radius of ball selected this round, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and center $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
+    The activation rule is applied when the confidence radius of the selected ball $B^m$ is smaller than its radius, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and center $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
 
 
 
