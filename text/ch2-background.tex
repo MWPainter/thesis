@@ -240,8 +240,8 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations
@@ -253,6 +253,8 @@
 % [ ] Final revision
 \subsection{Contextual Bandits and Contextual Zooming}
 \label{sec:2-1-2-contextual-mab}
+
+    \todo{Add a more general CMAB ref?}
 
     The Contextual Multi-Armed Bandit (CMAB) problem \cite{cz,cz_long} is another extension of the MAB problem, where the agent is provided with a context $w\in\cl{W}$ at the start of each round. After the arm $x\in\cl{X}$ is selected, the reward is sampled from a distribution, $f(w,x)$ (with mean $\mu(w,x)$), that also depends on the context. For each round $m$, strategies for CMAB problems provide a mapping from contexts to arms, $\sigma^m(w)$. The set of contexts $\cl{W}$ and the set of arms $\cl{X}$ are compact sets (i.e. the sets are closed and bounded). Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
 
