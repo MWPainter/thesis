@@ -11,6 +11,86 @@
 
 
 
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations
+% [X] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+    \todo{Move into correct place and update notation appropriately for the chapter. Add pre-amble saying about how its an algorithm for CMAB, but only introduce here because used in one place only}
+
+    \citet{cz} introduce the Contextual Zooming (CZ) algorithm to solve CMAB problems. CZ achieves a contextual regret of $O(n^{\frac{1+c}{2+c}}\log(T))$ over the first $n$ rounds, using the \textit{doubling trick} \cite{doubling_trick}, where $c$ is the \textit{(Lebesgue) covering dimension} of the similarity space $\cl{W}\times\cl{X}$. Within this thesis, the covering dimension coincides with the standard notion of dimension: $\cl{W}\times\cl{X}$ has covering dimension $c$, if it embeds into $\bb{R}^{c}$.
+    
+    The CZ algorithm uses a set of balls in the similarity space, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with centre $(w,x)$ and radius $r$ is defined as $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
+
+    Each round, CZ applies two rules: a \textit{selection rule}, which selects a ball $B^m$ from $A^m$; and an \textit{activation rule} which optionally adds a ball with smaller radius to $A^m$. 
+
+    Given a context $w^m$, the selection rule proceeds as follows: let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received over the first $m$ rounds when ball $B$ was selected.
+    \begin{align}
+        N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
+        \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
+    \end{align}
+
+    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius:
+    \begin{align}
+        \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
+    \end{align}
+
+    The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
+    \begin{align}
+        \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
+    \end{align}
+
+    Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
+    \begin{align}
+        \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
+    \end{align}
+
+    The ball $B^m$ selected on the $m$th round with context $w^m$ is chosen as follows:
+    \begin{align}
+        I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
+        B^m &= \argmax_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
+    \end{align}
+    where $d(B,B')$ is the distance between the centres of balls $B,B'$ according to the metric $d$. 
+
+    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$).
+
+    The activation rule is applied when the confidence radius of the selected ball $B^m$ is smaller than its radius, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and centre $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     \bd{list, brain dumping it out.}
     
     This chapter\dots

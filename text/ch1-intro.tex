@@ -32,46 +32,42 @@
 \section{Contributions}
 \label{sec:1-2-contributions}
 
-    \todo{Inline acronyms used, or make sure that they're defined before hand}
+    \todo{Extra pre-amble before questions?}
 
-    Throughout this thesis, we will consider the following questions related to Monte Carlo Tree Search and Multi-Objective Reinforcement Learning:
+    The following questions, related to Monte Carlo Tree Search and multi-objective reinforcement learning, are considered throughout this thesis:
     \begin{enumerate}[start=1, label={\textbf{Q\arabic* -}}]
         % \item \hypertarget{q1}{\textbf{Time-Limited Planning:}} How do we ensure that MCTS algorithms make good decisions when limited planning time is available?
-        \item \hypertarget{q1}{\textbf{Exploration:}} When planning in a simulator with limited time, how can MCTS algorithms best explore to make good decisions?
+        \item \hypertarget{q1}{\textbf{Exploration:}} When planning in a simulator with limited time, how can Monte Carlo Tree Search algorithms prioritise exploration to make effective decisions?
         
         \begin{enumerate}[start=1, label={\textbf{Q1.\arabic* -}}]
-            \item \hypertarget{q11}{\textbf{Entropy:}} Entropy is often used as an exploration objective in RL, but can it be used soundly in MCTS?
-            \item \hypertarget{q12}{\textbf{Multi-Objective Exploration:}} How can Multi-Objective MCTS methods explore to find optimal actions for different objectives? 
+            \item \hypertarget{q11}{\textbf{Entropy:}} Entropy is used as an exploration objective in reinforcement learning --- under what conditions is it compatible with optimal decision-making?
+            \item \hypertarget{q12}{\textbf{Multi-Objective Exploration:}} Can the exploration insights from (maximum-entropy) single-objective Monte Carlo Tree Search algorithms be applied to multi-objective domains?
         \end{enumerate}
 
-        \item \hypertarget{q2}{\textbf{Scalability:}} How can the scalability of (multi-objective) MCTS methods be improved?
+        \item \hypertarget{q2}{\textbf{Stochastic Multi-Objective Domains:}} Multi-objective Monte Carlo Tree Search has been studied in deterministic domains --- can these methods be generalised to stochastic settings?
 
-        \begin{enumerate}[start=1, label={\textbf{Q2.\arabic* -}}]
-            \item \hypertarget{q21}{\textbf{Complexity:}} MCTS algorithms typically run in $O(nAH)$, but are there algorithms that can improve upon this?
-            \item \hypertarget{q22}{\textbf{Multi-Objective Scalability:}} With respect to the size of environments, how scalable are Multi-Objective MCTS methods?
-            \item \hypertarget{q23}{\textbf{Curse of Dimensionality:}} With respect to the number of objectives, to what extent do Multi-Objective MCTS methods suffer from the curse of dimensionality?
-        \end{enumerate}
+        \item \hypertarget{q3}{\textbf{Scalability:}} How can the scalability of Monte Carlo Tree Search methods be improved, in both single- and multi-objective settings?
 
-
-        \item \hypertarget{q3}{\textbf{Evaluation:}} How can we best evaluate a search tree produced by a Monte Carlo Tree Search algorithm?
-        
         \begin{enumerate}[start=1, label={\textbf{Q3.\arabic* -}}]
-            \item \hypertarget{q31}{\textbf{Tree Policies:}} Does it suffice to extract a policy from a single search tree for evaluation? \todo{going to have to run some extra experiments for that, but I probably should do that for completeness anyway}
-            \item \hypertarget{q32}{\textbf{Multi-Objective Evaluation:}} Can we apply methods from the MORL literature to theoretically and empirically evaluate Multi-Objective MCTS?
+            \item \hypertarget{q31}{\textbf{Complexity:}} Monte Carlo Tree Search algorithms typically run linearly in the number of trials, actions and decision horizon --- can this computational complexity be reduced?
+            \item \hypertarget{q32}{\textbf{Multi-Objective Scalability:}} With respect to the size of environments, how scalable are multi-objective Monte Carlo Tree Search methods?
+            \item \hypertarget{q33}{\textbf{Curse of Dimensionality:}} With respect to the number of objectives, to what extent do multi-objective Monte Carlo Tree Search methods suffer from the curse of dimensionality?
         \end{enumerate}
     \end{enumerate}
+
+    \todo{paragraphs pointing at the different chapters and how they answer the research questions}.
 
     \todo{some words about how below is the contributions we're making in this thesis and expand these bullets a bit more}
     \begin{itemize}
         \item Max Entropy can be misaligned with reward maximisation (\entropyq)
-        \item Boltzmann Search Policies - BTS and DENTS (\entropyq, and with extra results \treepolicyq)
+        \item Boltzmann Search Policies - BTS and DENTS (\entropyq)
         \item Use the alias method to make faster algorithms (\complexityq)
+        \item Ch5 will answer \stochq
         \item Simple regret (\exploreq)
         \item Use of contexts in THTS to make consistent decisions in each trial (\contextq)
-        \item Contextual regret introduced in CHMCTS (\moscalabilityq, \moevalq)
-        \item Contextual Zooming and CHMCTS (designed for \contextq, runtimes cover \dimq, results \moevalq)
+        \item Contextual regret introduced in CHMCTS (\moscalabilityq)
+        \item Contextual Zooming and CHMCTS (designed for \contextq, runtimes cover \dimq)
         \item Simplex maps (\contextq, \moscalabilityq, \dimq)
-        \item Contextual Simple Regret (\moevalq)
     \end{itemize}
 
     \hide{\todo{Would like to do the comparing different types of eval, even if not listing it as a research question 

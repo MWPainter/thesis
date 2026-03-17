@@ -17,7 +17,7 @@
 % [ ] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Proofread
@@ -42,7 +42,7 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
@@ -82,7 +82,7 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
@@ -108,7 +108,7 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
@@ -170,7 +170,7 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
@@ -244,19 +244,34 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
-% [ ] LitRev sync
+% [ ] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Contextual Bandits and Contextual Zooming}
+\subsection{Contextual Bandits} % and Contextual Zooming}
 \label{sec:2-1-2-contextual-mab}
 
-    \todo{Add a more general CMAB ref?}
+    The Contextual Multi-Armed Bandit (CMAB) problem \cite{cz,cmab_alt,cz_long} is another extension of the MAB problem, where the agent is provided with a context $w\in\cl{W}$ at the start of each round. After the arm $x\in\cl{X}$ is selected, the reward is sampled from the distribution $f(w,x)$, with mean $\mu(w,x)$, which also depends on the context. For each round $m$, a strategy maps contexts to arms via $\sigma^m(w)$. Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
 
-    The Contextual Multi-Armed Bandit (CMAB) problem \cite{cz,cz_long} is another extension of the MAB problem, where the agent is provided with a context $w\in\cl{W}$ at the start of each round. After the arm $x\in\cl{X}$ is selected, the reward is sampled from a distribution, $f(w,x)$ (with mean $\mu(w,x)$), that also depends on the context. For each round $m$, strategies for CMAB problems provide a mapping from contexts to arms, $\sigma^m(w)$. The set of contexts $\cl{W}$ and the set of arms $\cl{X}$ are compact sets (i.e. the sets are closed and bounded). Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
+    It is assumed that the \textit{similarity space} $\cl{W}\times\cl{X}$ is \textit{compact}, and the mean reward function $\mu$ is Lipschitz continuous. This requires a \textit{metric} $d$ over the similarity space.
+    \begin{defn}
+        \label{def:2:metric}
+        $d$ is a \textnormal{metric} over the similarity space $\cl{W}\times\cl{X}$ if it satisfies the following conditions for any $z,z',z''\in\cl{W}\times\cl{X}$ with $z\neq z'\neq z''$:
+        \begin{align}
+            d(z,z) &= 0, \label{eq:2:metric_def_1} \\
+            d(z,z') &> 0, \label{eq:2:metric_def_2} \\
+            d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
+            d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
+        \end{align}
+    \end{defn}
+
+    $\mu$ is then Lipschitz continuous if the following condition holds:
+    \begin{align}
+        |\mu(x,y) - \mu(x',y')| \leq d((x,y),(x',y')). \label{eq:2:zooming_lipschitz_condition}
+    \end{align}
 
     \begin{figure}
         \begin{tcolorbox}
@@ -275,23 +290,7 @@
         \label{fig:2:cmab_problem}
     \end{figure}
 
-    To make the problem more tractable, \citet{cz_long} consider the case where $\mu$ is Lipschitz continuous. That is, there is a metric $d$ over the \textit{similarity space} $\cl{W}\times\cl{X}$ which satisfies the Lipschitz condition:
-    \begin{align}
-        |\mu(x,y) - \mu(x',y')| \leq d((x,y),(x',y')). \label{eq:2:zooming_lipschitz_condition}
-    \end{align}
-
-    \begin{defn}
-        \label{def:2:metric}
-        $d$ is a \textnormal{metric} over the similarity space $\cl{W}\times\cl{X}$ if it satisfies the following conditions for any $z,z',z''\in\cl{W}\times\cl{X}$ with $z\neq z'\neq z''$:
-        \begin{align}
-            d(z,z) &= 0, \label{eq:2:metric_def_1} \\
-            d(z,z') &> 0, \label{eq:2:metric_def_2} \\
-            d(z,z') &= d(z',z), \label{eq:2:metric_def_3} \\
-            d(z,z'') &\leq d(z,z') + d(z',z''). \label{eq:2:metric_def_4} 
-        \end{align}
-    \end{defn}
-
-    \textit{Contextual regret} is used to analyse the performance of algorithms for CMAB problems, which incorporates the contexts drawn.
+    The performance of CMAB algorithms is analysed with \textit{contextual regret}, a notion of regret that accounts for the contexts drawn.
     \begin{defn}
         \label{def:2:contextual_regret}
         The \textnormal{(cumulative) contextual regret} of the strategy $\sigma$ over $n$ rounds in the process given in Figure \ref{fig:2:cmab_problem} is defined as:
@@ -301,45 +300,9 @@
         where $\mu^*(w) = \sup_i \mu(w,i)$.
     \end{defn}
 
-    \todo{Move this to a Ch5 section or Ch5 appendix? Its only used in CZT}
+    \todo{Add a note referencing Contextual Zooming and it is provided in ch5.}
     
-    \citet{cz_long} introduce the Contextual Zooming (CZ) algorithm to solve CMAB problems. CZ runs over a fixed number of rounds $T$, and achieves the contextual regret of $O(T^{\frac{1+c}{2+c}}\log(T))$, where $c$ is the \textit{(Lebesgue) covering dimension} of the similarity space $\cl{W}\times\cl{X}$. Within the scope of this thesis, the covering dimension is equal to the typical notion of dimension. That is, $\cl{W}\times\cl{X}$ has covering dimension $c$, if and only if $\cl{W}\times\cl{X}$ can be mapped to a subspace of $\bb{R}^{c}$.
-
-    The CZ algorithm uses a set of balls in the similarity space, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with center $(w,x)$ and radius $r$ is given by $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
-
-    Contextual Zooming operates using two rules each round $m$: the \textit{selection rule} is used to select a relevant ball $B^m$ from the set of active balls $A^m$; then, an \textit{activation rule} is optionally applied that adds a new ball with smaller radius.
-
-    Now the selection rule is described in more detail. Let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received from the first $m$ when selecting ball $B$. 
-    \begin{align}
-        N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
-        \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
-    \end{align}
-
-    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius:
-    \begin{align}
-        \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
-    \end{align}
-
-    The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
-    \begin{align}
-        \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
-    \end{align}
-
-    Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
-    \begin{align}
-        \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
-    \end{align}
-
-    The ball $B^m$ selected on the $m$th round with context $w^m$ can now be given as:
-    \begin{align}
-        I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
-        B^m &= \max_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
-    \end{align}
-    where $d(B,B')$ is the distance between the centers of balls $B,B'$ according to the metric $d$. 
-
-    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$).
-
-    The activation rule is applied when the confidence radius of the selected ball $B^m$ is smaller than its radius, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and center $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
+    
 
 
 
@@ -357,10 +320,10 @@
 
 
 % [X] First Draft
-% [ ] AI proofread/grammar check
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
+% [ ] Citations + Refs
 % [ ] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
@@ -370,15 +333,15 @@
 \section{Markov Decision Processes}
 \label{sec:2-2-mdps}
 
-    \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision making problems. This section provides definitions and notation related to MDPs that will be used throughout this thesis.
+    \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision making problems \cite{kolobov}. This section provides definitions and notation related to MDPs used throughout this thesis.
     
-    This thesis will use MDPs to describe the environment that agents act in. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution which depend only on the current state and current action being taken (the Markov assumption). Any time an action is taken from a state the agent receives an instantaneous reward, according to a reward function that also depends on the current state and action taken.
+    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action.
 
-    This thesis is concerned with discrete, finite-horizon Markov decision processes, meaning that the state and action spaces are discrete and finite, and any \textit{trajectories} (sequences of states, actions and rewards) are of a finite length. Unless otherwise stated, MDPs will be assumed to be discrete and finite-horizon.
+    In this thesis, unless otherwise stated, MDPs are assumed to have finite state and action spaces, and \textit{trajectories} (sequences of states, actions and rewards) are of finite length.
 
     \begin{defn}
         \label{def:2:mdp}
-        A \textnormal{(Finite-Horizon) Markov decision process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is a reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+        A \textnormal{(Finite-Horizon) Markov decision process} (MDP) is a tuple $\cl{M}=(\cl{S},s_0,\cl{A},R,p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $R(s,a)$ is the reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}$, $p(s' | s,a)$ is a next-state transition distribution $\cl{S} \times \cl{A} \rightarrow (\cl{S} \rightarrow [0,1])$ and $H\in\bb{N}$ is the time horizon.
     \end{defn}
 
     \begin{figure}
@@ -396,26 +359,26 @@
         \end{align}
     \end{defn}
 
-    In this thesis, MDPs will contain \textit{trap states}, which are states that, once reached, can never be left, and no more reward can be obtained.
+    In this thesis, MDPs may contain \textit{trap states}, which are states that, once reached, can never be left, and no further reward is obtained.
     \begin{defn}
         \label{def:2:terminal}
-        A state $s\in\cl{S}$ is a \textnormal{terminal} state (or a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which will be used to denote if a state $s$ is terminal or not.
+        A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which denotes whether a state $s$ is terminal.
     \end{defn}
 
     A \textit{policy} maps each state to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
 
     \begin{defn}
         \label{def:2:policy}
-        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distribution over actions and $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy the conditions: for all $s \in \cl{S}$ we have $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and for all actions $a\in\cl{A}$ that $\pi(a|s)\geq 0$ . 
+        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distribution over actions. $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy: $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and $\pi(a|s)\geq 0$ for all $s\in\cl{S}$ and $a\in\cl{A}$. 
         
-        Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic iff it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
+        Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic if it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
 
         Moreover, the following notations are used for policies:
         %
         \begin{itemize}
             \item $a\sim\pi(\cdot|s)$ denotes sampling an action $a$ from the distribution $\pi(\cdot|s)$;
-            \item $\pi(s)=a'$ is used as a shorthand to define the deterministic policy $\pi(a|s)=\one[a=a']$; 
-            \item $\pi(s)$ is used as a shorthand for the action $a'\sim\pi(\cdot|s)$ in the case of a deterministic policy.
+            \item $\pi(s)=a'$ is a shorthand to define the deterministic policy $\pi(a|s)=\one[a=a']$;
+            \item $\pi(s)$ denotes the action $a'$ of the deterministic policy $\pi(a|s)=\one[a=a']$.
         \end{itemize}
     \end{defn}
     
@@ -423,9 +386,9 @@
     
     \begin{defn}
         \label{def:2:trajectory}
-        A \textnormal{trajectory} $\tau$, is a sequence of states, actions and rewards, that is induced by a policy $\pi$ and MDP $\cl{M}$ pair. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+        A \textnormal{trajectory} $\tau$ is a sequence of states, actions and rewards that is induced by a policy $\pi$ and MDP $\cl{M}$. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., \allowbreak s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
-        The following notations will also be used for trajectories:
+        The following notation is also used for trajectories:
         %
         \begin{itemize}
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
@@ -433,7 +396,7 @@
             \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is truncated on only one end;
             \item $s\in \tau$ is used as a shorthand for $s\in\{s_i|i=0,...,H\}$;
             \item $(s,a)\in\tau$ is used as a shorthand for $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$;
-            \item and finally, when states, actions and rewards are timestep indexed (i.e. $s_t,a_t,r_t$), they will always correspond to a trajectory.
+            \item and finally, when states, actions and rewards are timestep-indexed (i.e. $s_t,a_t,r_t$), they always correspond to a trajectory.
         \end{itemize}
     \end{defn}
 
@@ -445,17 +408,6 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
 \todo{Add checklists to each section}
 \todo{THU: Check section 2.2 is cleanly in notation, use claude for help too. Do contextual bandits and RL sections.}
 \todo{FRI: Sections 2.4-end chapter and todos (litrev consistent).}
@@ -471,8 +423,21 @@
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Reinforcement Learning}
 \label{sec:2-3-rl}
+
+    \todo{Add Sutton reff}
 
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
@@ -485,7 +450,7 @@
     Classically the agent is considered to interact with its environment directly \cite{sutton}, and thus must make a trade-off between exploring new strategies and exploiting learned strategies. That is, reinforcement learning agents must consider the \textit{exploration-exploitation trade-off} discussed in Section \ref{sec:2-1-mab} too. 
     %If an agent were to try to only exploit, then it may not discover better strategies, and if an agent only explores, then it may miss out on the opportunity to exploit the best known strategy and obtain greater rewards.
 
-    Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equiped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occassionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research quesitons around exploration: \exploreq. 
+    Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research quesitons around exploration: \exploreq. 
 
     In this thesis, the environment will always take the form of an MDP (Defintion \ref{def:2:mdp}), and observations will always be \textit{fully-observable}, meaning that the agent is provided with full access to the states of the MDP. 
 
@@ -564,78 +529,89 @@
 
 
 
-    \subsection{Maximum Entropy Reinforcement Learning}
-    \label{sec:2-3-1-merl}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Maximum Entropy Reinforcement Learning}
+\label{sec:2-3-1-merl}
 
-        In \textit{maximum-entropy reinforcement learning}, the objective function is altered to include the addition of an entropy term. The addition of an entropy term is motivated by wanting to learn stochastic behaviours, that better explore large state spaces, and learn more robust behaviours under uncertainty by potentially learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
-        
-        Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
+    In \textit{maximum-entropy reinforcement learning}, the objective function is altered to include the addition of an entropy term. The addition of an entropy term is motivated by wanting to learn stochastic behaviours, that better explore large state spaces, and learn more robust behaviours under uncertainty by potentially learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
+    
+    Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
+    \begin{align}
+        \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)] = \sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:2:shannon_entropy_def}
+    \end{align}
+
+    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}.
+
+    \begin{defn}
+        \label{def:2:sft_value}
+        \label{def:2:sft_q_value}
+        The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)] = \sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:2:shannon_entropy_def}
-        \end{align}
-
-        In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}.
-
-        \begin{defn}
-            \label{def:2:sft_value}
-            \label{def:2:sft_q_value}
-            The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
-            \begin{align}
-                V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
-            \end{align} 
-
-            The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
-            \begin{align}
-                Q_{\sft}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^{\pi}(s';t+1)]. \label{eq:2:sft_q_value_fn_def}
-            \end{align} 
-        \end{defn}
-
-        The optimal soft (Q-)values can be defined by taking the maximum over policies, similarly to the standard objective:
-        \begin{defn}
-            \label{def:2:optimal_sft_value}
-            \label{def:2:optimal_sft_q_value}
-            The \textnormal{optimal soft (Q-)Value} of a state(-action pair) is defined as:
-            \begin{align}
-                V_{\sft}^*(s;t) &= \max_{\pi} V_{\sft}^{\pi}(s;t), \label{eq:2:opt_soft_value_fn_def} \\
-                Q_{\sft}^*(s,a;t) &= \max_{\pi} Q_{\sft}^{\pi}(s,a;t). \label{eq:2:opt_soft_q_value_fn_def}
-            \end{align}
-        \end{defn}
-
-        In maximum entropy reinforcement learning, the objective is to find a policy with maximal soft value.
-        \begin{defn}
-            \label{def:2:soft_rl_obj_fn}
-            The \textnormal{maximum entropy (or soft) reinforcement learning objective function} $J_{\sft}(\pi)$ is defined as:
-            \begin{align}
-                J_{\sft}(\pi) = V_{\sft}^{\pi}(s_0;0). \label{eq:2:soft_rl_obj_fn_def}
-            \end{align}
-
-            The objective of maximum entropy (or soft) reinforcement learning can then be stated as finding $\max_{\pi} J_{\sft}(\pi)$.
-        \end{defn}
-
-        The optimal soft policy is defined as the policy that maximises the soft objective function $J_{\sft}$, and it can be computed from the optimal soft (Q-)values.
-        \begin{defn}
-            \label{def:2:opt_sft_policy}
-            The \textnormal{optimal soft policy} $\pi_{\sft}^*$ is the policy maximising the soft objective function:
-            \begin{align}
-                \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:2:opt_sft_policy_def}
-            \end{align}
-            Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft police is known to take the form \cite{deep_energy_policies}:
-            \begin{align}
-                \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:2:opt_sft_policy_from_opt_value_fns}
-            \end{align}
-        \end{defn}
-
-        Equations similar to the Bellman equations, aptly named the \textit{soft Bellman equations}, can be defined for maximum entropy reinforcement learning. These equations differ to equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
-        \begin{align}
-            V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / \alpha \right), \label{eq:2:sft_bellman_opt_v} \\
-            Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^*(s';t+1)]. \label{eq:2:sft_bellman_opt_q}
+            V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
         \end{align} 
 
-        Analogous to standard reinforcement learning, the soft Bellman equations can be used in \textit{soft Bellman backups} for a \textit{Soft Value Iteration} algorithm \cite{deep_energy_policies}:
+        The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
-            \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \frac{1}{\alpha} \hat{Q}_{\sft}^{k+1}(s,a;t) \right), \label{eq:2:soft_value_iter_v_backup} \\
-            \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:2:soft_value_iter_q_backup}
+            Q_{\sft}^{\pi}(s,a;t) = R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^{\pi}(s';t+1)]. \label{eq:2:sft_q_value_fn_def}
+        \end{align} 
+    \end{defn}
+
+    The optimal soft (Q-)values can be defined by taking the maximum over policies, similarly to the standard objective:
+    \begin{defn}
+        \label{def:2:optimal_sft_value}
+        \label{def:2:optimal_sft_q_value}
+        The \textnormal{optimal soft (Q-)Value} of a state(-action pair) is defined as:
+        \begin{align}
+            V_{\sft}^*(s;t) &= \max_{\pi} V_{\sft}^{\pi}(s;t), \label{eq:2:opt_soft_value_fn_def} \\
+            Q_{\sft}^*(s,a;t) &= \max_{\pi} Q_{\sft}^{\pi}(s,a;t). \label{eq:2:opt_soft_q_value_fn_def}
         \end{align}
+    \end{defn}
+
+    In maximum entropy reinforcement learning, the objective is to find a policy with maximal soft value.
+    \begin{defn}
+        \label{def:2:soft_rl_obj_fn}
+        The \textnormal{maximum entropy (or soft) reinforcement learning objective function} $J_{\sft}(\pi)$ is defined as:
+        \begin{align}
+            J_{\sft}(\pi) = V_{\sft}^{\pi}(s_0;0). \label{eq:2:soft_rl_obj_fn_def}
+        \end{align}
+
+        The objective of maximum entropy (or soft) reinforcement learning can then be stated as finding $\max_{\pi} J_{\sft}(\pi)$.
+    \end{defn}
+
+    The optimal soft policy is defined as the policy that maximises the soft objective function $J_{\sft}$, and it can be computed from the optimal soft (Q-)values.
+    \begin{defn}
+        \label{def:2:opt_sft_policy}
+        The \textnormal{optimal soft policy} $\pi_{\sft}^*$ is the policy maximising the soft objective function:
+        \begin{align}
+            \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:2:opt_sft_policy_def}
+        \end{align}
+        Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft police is known to take the form \cite{deep_energy_policies}:
+        \begin{align}
+            \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:2:opt_sft_policy_from_opt_value_fns}
+        \end{align}
+    \end{defn}
+
+    Equations similar to the Bellman equations, aptly named the \textit{soft Bellman equations}, can be defined for maximum entropy reinforcement learning. These equations differ to equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
+    \begin{align}
+        V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / \alpha \right), \label{eq:2:sft_bellman_opt_v} \\
+        Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^*(s';t+1)]. \label{eq:2:sft_bellman_opt_q}
+    \end{align} 
+
+    Analogous to standard reinforcement learning, the soft Bellman equations can be used in \textit{soft Bellman backups} for a \textit{Soft Value Iteration} algorithm \cite{deep_energy_policies}:
+    \begin{align}
+        \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \frac{1}{\alpha} \hat{Q}_{\sft}^{k+1}(s,a;t) \right), \label{eq:2:soft_value_iter_v_backup} \\
+        \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:2:soft_value_iter_q_backup}
+    \end{align}
 
         
 
@@ -652,6 +628,17 @@
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Trial-Based Heuristic Tree Search and Monte Carlo Tree Search}
 \label{sec:2-4-thts}
 
@@ -687,121 +674,145 @@ FROM SEC 2.2: , and in Section \ref{sec:2-4-thts} these simulations are used to 
 
 
 
-    \subsection{Notation}
-    \label{sec:2-4-0-notation}
-        To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondance with nodes in the search tree. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold. 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Notation}
+\label{sec:2-4-0-notation}
+    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondance with nodes in the search tree. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold. 
 
-        Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$.
+    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$.
 
 
 
 
 
 
-    \subsection{Trial Based Heuristic Tree Search}
-    \label{sec:2-4-1-thts}
 
-        This subsection introduces \thtspp\ewe, which extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts}, and aims to provide a modular library which can implement any MCTS algorithm. The changes made to the original schema allow algorithms following the four-phase \mctsone\ewe trials described previously to be encorporated. Additionally, the notion of a per-trial \textit{context} is added, which will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms. Additionally, beyond the scope of this thesis, contexts allow \thtspp\ewe to implement algorithms for \textit{partially-observable} environments, such as Partially Observable Monte Carlo Planning \cite{pomcp}. The remainder of this section will be presented in the context of planning for fully-observable MDPs, but \thtspp\ewe generalises to partially-observable environments if \textit{observation-action histories} are used in place of states.
 
-        In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes sample actions that can be taken by the agent, and chance nodes sample \textit{outcomes} (MDP states) that depend on the action taken and the transition function of the MDP. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. Figure \ref{fig:2:tree_notation} shows how decision and chance nodes will be depicted as circles and diamonds in diagrams.
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Trial Based Heuristic Tree Search}
+\label{sec:2-4-1-thts}
 
-        \begin{figure}
-            \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
-            \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
-            \label{fig:2:tree_notation}
-        \end{figure}
+    This subsection introduces \thtspp\ewe, which extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts}, and aims to provide a modular library which can implement any MCTS algorithm. The changes made to the original schema allow algorithms following the four-phase \mctsone\ewe trials described previously to be encorporated. Additionally, the notion of a per-trial \textit{context} is added, which will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms. Additionally, beyond the scope of this thesis, contexts allow \thtspp\ewe to implement algorithms for \textit{partially-observable} environments, such as Partially Observable Monte Carlo Planning \cite{pomcp}. The remainder of this section will be presented in the context of planning for fully-observable MDPs, but \thtspp\ewe generalises to partially-observable environments if \textit{observation-action histories} are used in place of states.
 
-        A search tree $\cl{T}$ is built using Monte Carlo \textit{trials} and an overview of one trial in \thtspp\ewe is given in Figure \ref{fig:2:thts}. Each \thtspp\ewe trial is also split into four phases: 
-        \begin{enumerate}
-            \item  
-                \textit{Context sampling} - a \textit{context} is sampled for the trial;
-            \item 
-                \textit{Selection phase} - a trajectory is sampled using a \textit{search policy}, any newly visited states (and state-action pairs) are added to $\cl{T}$ as decision nodes (and chance nodes);
-            \item 
-                \textit{Heuristic phase} - any new leaf nodes added in the selection phase are initialised using a \textit{heuristic function}; 
-            \item 
-                \textit{Backup phase} - value estimates in the search tree are updated, along the path sampled in the selection phase. 
-        \end{enumerate}
+    In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes sample actions that can be taken by the agent, and chance nodes sample \textit{outcomes} (MDP states) that depend on the action taken and the transition function of the MDP. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. Figure \ref{fig:2:tree_notation} shows how decision and chance nodes will be depicted as circles and diamonds in diagrams.
 
-        Note that the selection and expansion phases of \mctsone\ewe are encapsulated by the selection phase of \thtspp.
+    \begin{figure}
+        \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
+        \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
+        \label{fig:2:tree_notation}
+    \end{figure}
 
-        \begin{figure}
-            \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-            \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree to update the values in the nodes (triangles).}
-            \label{fig:2:thts}
-        \end{figure}
+    A search tree $\cl{T}$ is built using Monte Carlo \textit{trials} and an overview of one trial in \thtspp\ewe is given in Figure \ref{fig:2:thts}. Each \thtspp\ewe trial is also split into four phases: 
+    \begin{enumerate}
+        \item  
+            \textit{Context sampling} - a \textit{context} is sampled for the trial;
+        \item 
+            \textit{Selection phase} - a trajectory is sampled using a \textit{search policy}, any newly visited states (and state-action pairs) are added to $\cl{T}$ as decision nodes (and chance nodes);
+        \item 
+            \textit{Heuristic phase} - any new leaf nodes added in the selection phase are initialised using a \textit{heuristic function}; 
+        \item 
+            \textit{Backup phase} - value estimates in the search tree are updated, along the path sampled in the selection phase. 
+    \end{enumerate}
 
-        \begin{defn}
-            \label{def:2:search_tree}
-            A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
-        \end{defn}
+    Note that the selection and expansion phases of \mctsone\ewe are encapsulated by the selection phase of \thtspp.
 
-        % \begin{defn}
-        %     \label{def:2:cnode}
-        %     \label{def:2:dnode}
-            A \textit{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textit{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textit{node} is used to refer to any decision or chance node in the tree. Sometimes the notation $\node(s)$ and $\node(s,a)$ will be used to make it clear that a node is being discussed, rather than a state or state-action pair.
+    \begin{figure}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree to update the values in the nodes (triangles).}
+        \label{fig:2:thts}
+    \end{figure}
 
-            $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials.
+    \begin{defn}
+        \label{def:2:search_tree}
+        A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
+    \end{defn}
 
-            Each decision and chance node will generally store value estimates that are algorithm dependent. $\dnodedata{s}$ is used to denote the set of values stored at node $\node(s)$, and $\cnodedata{s,a}$ for the set of values stored at node $\node(s,a)$. 
+    % \begin{defn}
+    %     \label{def:2:cnode}
+    %     \label{def:2:dnode}
+        A \textit{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textit{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textit{node} is used to refer to any decision or chance node in the tree. Sometimes the notation $\node(s)$ and $\node(s,a)$ will be used to make it clear that a node is being discussed, rather than a state or state-action pair.
 
-            Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$.
-        % \end{defn}
+        $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials.
 
-        \thtspp\ewe introduces the idea of \mctsmode\ewe into the THTS schema. When \mctsmode\ewe is True, a single decision node is added to the search tree on each trial, similarly to \mctsone. When it is False, the trajectory is sampled until a terminal state or the planning horizon is reached. These two modes of operation are depicted in blue and orange respectively in Figure \ref{fig:2:thts}.
-        \begin{defn}
-            \label{def:2:mctsmode}
-            When running in \mctsmode, the trajectory sampled in the selection phase is truncated, and will end if a state not in the search tree $\cl{T}$ is reached, similarly to \mctsone\ewe \cite{mcts_survey}. When not running in \mctsmode, the trajectory is sampled until a terminal state is reached, or the planning horizon is reached, similarly to THTS \cite{thts}. 
-        \end{defn} 
+        Each decision and chance node will generally store value estimates that are algorithm dependent. $\dnodedata{s}$ is used to denote the set of values stored at node $\node(s)$, and $\cnodedata{s,a}$ for the set of values stored at node $\node(s,a)$. 
 
-        There are two main benefits to running an algorithm in \mctsmode. The first is that it uses significantly less memory, which can be a concern if using a large planning horizon $H$ and the tree search is going to run for a long time. The second is that if \mctsmode\ewe is used with an informative heuristic function, then it allows the algorithm to avoid wasting resouces (time and memory) on parts of the search tree that are not promising. 
-        
-        In contrast, when no informative heuristic is available, a random simulation is often used in \mctsone\ewe algorithms. In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because states that would have been visited in the simulation phase of \mctsone\ewe are added to the tree and avoids throwing away potentially useful information.
+        Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$.
+    % \end{defn}
 
-        \thtspp\ewe also introduces the notion of a \textit{context} that is sampled for each trial. The context is passed to every subsequent function call in a trial of \thtspp, and can be used to store temporary state. This context will go unused for the remainder of the chapter, but will be useful in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} when \textit{contextual tree search} is discussed.
-        \begin{defn}
-            \label{def:2:thts_context}
-            A \textnormal{context} is an arbitrary key-value store that is used to store any relevant data that varies from trial to trial.
-        \end{defn}  
+    \thtspp\ewe introduces the idea of \mctsmode\ewe into the THTS schema. When \mctsmode\ewe is True, a single decision node is added to the search tree on each trial, similarly to \mctsone. When it is False, the trajectory is sampled until a terminal state or the planning horizon is reached. These two modes of operation are depicted in blue and orange respectively in Figure \ref{fig:2:thts}.
+    \begin{defn}
+        \label{def:2:mctsmode}
+        When running in \mctsmode, the trajectory sampled in the selection phase is truncated, and will end if a state not in the search tree $\cl{T}$ is reached, similarly to \mctsone\ewe \cite{mcts_survey}. When not running in \mctsmode, the trajectory is sampled until a terminal state is reached, or the planning horizon is reached, similarly to THTS \cite{thts}. 
+    \end{defn} 
 
-        To specify an algorithm in the \thtspp\ewe schema, the following need to be specified:
-        \begin{description}
-            \item[Value Estimates:]
-                What value estimates will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined;
-            \item[Search policy:]
-                A policy $\pisearch$ used to sample a trajectory for the trial, which can use values in the current search tree $\cl{T}$, and values from the heuristic action function (below);
-            \item[Outcome Sampler:]
-                A function \sampleoutcome\ewe that samples outcomes according to the environment, given a current state and action. In this thesis, this will always sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$;
-            \item[Heuristic value function:]
-                A function $\Vinit$ used as a heuristic to initialise values for new decision nodes added to the tree;
-            \item[Heuristic action function:]
-                A function $\Qinit$ used as a heuristic for Q-values when a state-action pair is not in the current search tree;
-            \item[Backup functions:]
-                Two functions $\backupv$ and $\backupq$ which updates the values in decision and chance nodes respectively. These functions can use values from their children, from the sampled trajectory and from the heuristic value function;
-            \item[Context sampler:]
-                A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
-            \item[MCTS mode:]
-                A boolean (which will also be denoted \mctsmode) specifying if \thtspp\ewe should operate in \mctsmode;
-            \item[Planning horizon:]
-                 A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$.
-        \end{description}
-        
-        Figure \ref{fig:2:thts} depicts a trial in \thtspp, and psuedocode for running a trial is given in Listing \ref{lst:2:thts_trial}. At the beginning of runnning a \thtspp\ewe algorithm, the search tree is initialised to $\cl{T}\leftarrow\{s_0\}$. When the components detailed above are provided, the operation of a trial in \thtspp\ewe is as follows:
+    There are two main benefits to running an algorithm in \mctsmode. The first is that it uses significantly less memory, which can be a concern if using a large planning horizon $H$ and the tree search is going to run for a long time. The second is that if \mctsmode\ewe is used with an informative heuristic function, then it allows the algorithm to avoid wasting resouces (time and memory) on parts of the search tree that are not promising. 
+    
+    In contrast, when no informative heuristic is available, a random simulation is often used in \mctsone\ewe algorithms. In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because states that would have been visited in the simulation phase of \mctsone\ewe are added to the tree and avoids throwing away potentially useful information.
+
+    \thtspp\ewe also introduces the notion of a \textit{context} that is sampled for each trial. The context is passed to every subsequent function call in a trial of \thtspp, and can be used to store temporary state. This context will go unused for the remainder of the chapter, but will be useful in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} when \textit{contextual tree search} is discussed.
+    \begin{defn}
+        \label{def:2:thts_context}
+        A \textnormal{context} is an arbitrary key-value store that is used to store any relevant data that varies from trial to trial.
+    \end{defn}  
+
+    To specify an algorithm in the \thtspp\ewe schema, the following need to be specified:
+    \begin{description}
+        \item[Value Estimates:]
+            What value estimates will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined;
+        \item[Search policy:]
+            A policy $\pisearch$ used to sample a trajectory for the trial, which can use values in the current search tree $\cl{T}$, and values from the heuristic action function (below);
+        \item[Outcome Sampler:]
+            A function \sampleoutcome\ewe that samples outcomes according to the environment, given a current state and action. In this thesis, this will always sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$;
+        \item[Heuristic value function:]
+            A function $\Vinit$ used as a heuristic to initialise values for new decision nodes added to the tree;
+        \item[Heuristic action function:]
+            A function $\Qinit$ used as a heuristic for Q-values when a state-action pair is not in the current search tree;
+        \item[Backup functions:]
+            Two functions $\backupv$ and $\backupq$ which updates the values in decision and chance nodes respectively. These functions can use values from their children, from the sampled trajectory and from the heuristic value function;
+        \item[Context sampler:]
+            A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
+        \item[MCTS mode:]
+            A boolean (which will also be denoted \mctsmode) specifying if \thtspp\ewe should operate in \mctsmode;
+        \item[Planning horizon:]
+                A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$.
+    \end{description}
+    
+    Figure \ref{fig:2:thts} depicts a trial in \thtspp, and psuedocode for running a trial is given in Listing \ref{lst:2:thts_trial}. At the beginning of runnning a \thtspp\ewe algorithm, the search tree is initialised to $\cl{T}\leftarrow\{s_0\}$. When the components detailed above are provided, the operation of a trial in \thtspp\ewe is as follows:
+    \begin{itemize}
+        \item Firstly, a context is sampled using the $\samplecontext$ function, which is available to be used by any other function in the trial.
+        \item A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy (which may use $\Qinit$ as necessary) and \sampleoutcome.
         \begin{itemize}
-            \item Firstly, a context is sampled using the $\samplecontext$ function, which is available to be used by any other function in the trial.
-            \item A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy (which may use $\Qinit$ as necessary) and \sampleoutcome.
-            \begin{itemize}
-                \item If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,...,h-1$ and $s_h\not\in\cl{T}$, or $h=H_{\thtspp}$, or $s_h$ is terminal.
-                \item If not running in \mctsmode, then $h=H_{\thtspp}$, or $s_h$ is terminal.
-            \end{itemize}
-            \item The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$.
-            \item The heuristic value function is used to initialise the value of the new leaf node $\dnodedata{s_h}\leftarrow \Vinit(s_h)$.
-            \item Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,...,0$.
+            \item If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,...,h-1$ and $s_h\not\in\cl{T}$, or $h=H_{\thtspp}$, or $s_h$ is terminal.
+            \item If not running in \mctsmode, then $h=H_{\thtspp}$, or $s_h$ is terminal.
         \end{itemize}
-               
-        
-        \begin{Listing}
-            \begin{lstlisting}
+        \item The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$.
+        \item The heuristic value function is used to initialise the value of the new leaf node $\dnodedata{s_h}\leftarrow \Vinit(s_h)$.
+        \item Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,...,0$.
+    \end{itemize}
+            
+    
+    \begin{Listing}
+        \begin{lstlisting}
 def run_trial(search_tree: $\cl{T}$, 
               search_policy: $\pisearch$, 
               heuristic_fn: $\Vinit$,
@@ -839,10 +850,10 @@ def sample_trajectory(search_tree: $\cl{T}$,
 def sample_outcome($s$, $a$, ctx):
     $s' \sim p(\cdot | s, a)$
     return $s'$
-            \end{lstlisting}
-            \caption{Psuedocode for running a trial in \thtspp.}
-            \label{lst:2:thts_trial}
-        \end{Listing}
+        \end{lstlisting}
+        \caption{Psuedocode for running a trial in \thtspp.}
+        \label{lst:2:thts_trial}
+    \end{Listing}
 
 
     
@@ -850,71 +861,52 @@ def sample_outcome($s$, $a$, ctx):
 
 
     
-    \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
-    \label{sec:2-4-2-uct}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Upper Confidence Bounds Applied to Trees (UCT)}
+\label{sec:2-4-2-uct}
 
-        Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
+    Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
 
-        In UCT \mctsmode\ewe is set to True. And at each decision and node of UCT a sample average $\Vuct$ and $\Quct$ is used for a value estimate. The search policy that UCT then follows is given by:
-        \begin{align}
-            \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
-        \end{align}
-        where $\buct$ is a \textit{bias} parameter that controls the amount of exploration UCT will perform. In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once to obtain an initial value estimate, and as such, setting $\Qinit$ is unnecessary for UCT.   
+    In UCT \mctsmode\ewe is set to True. And at each decision and node of UCT a sample average $\Vuct$ and $\Quct$ is used for a value estimate. The search policy that UCT then follows is given by:
+    \begin{align}
+        \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
+    \end{align}
+    where $\buct$ is a \textit{bias} parameter that controls the amount of exploration UCT will perform. In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once to obtain an initial value estimate, and as such, setting $\Qinit$ is unnecessary for UCT.   
 
-        \todo{Added this quickly when writing ch4}
-        Because the best setting of the bias parameter will depend on the scale of the reward function, \citet{thts} suggest setting the bias parameter $\buct$ adaptively to $\Vuct(s)$, which is defined in Equation (\ref{eq:2:uct_backup_v}) below. In this thesis UCT can be considered to have a boolean parameter \texttt{adaptive\_bias}, where an additional factor of $\Vuct(s)$ is added to the confidence interval term as follows:
-        \begin{align}
-            \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \Vuct(s) \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:adaptive_uct_policy}
-        \end{align}
-        
-        There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c} \hide{\todo{find another paper or two that is just an application of alphazero?}}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,offlineonlineuct,prost,bus}. When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$.
+    \todo{Added this quickly when writing ch4}
+    Because the best setting of the bias parameter will depend on the scale of the reward function, \citet{thts} suggest setting the bias parameter $\buct$ adaptively to $\Vuct(s)$, which is defined in Equation (\ref{eq:2:uct_backup_v}) below. In this thesis UCT can be considered to have a boolean parameter \texttt{adaptive\_bias}, where an additional factor of $\Vuct(s)$ is added to the confidence interval term as follows:
+    \begin{align}
+        \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \Vuct(s) \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:adaptive_uct_policy}
+    \end{align}
+    
+    There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c} \hide{\todo{find another paper or two that is just an application of alphazero?}}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,offlineonlineuct,prost,bus}. When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$.
 
-        Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, meaning that a decision node for $s_h$ is added to the search tree, and needs to be initialised with $\Vinit$. When using a rollout policy, the truncated trajectory is completed using the rollout policy, $\tau_{h:H}\sim\pirollout$, to provide the Monte Carlo estimate at $s_h$:
-        \begin{align}
-            \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{H-1} r_i. \label{eq:2:rollout_value_estimate}
-        \end{align}
+    Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, meaning that a decision node for $s_h$ is added to the search tree, and needs to be initialised with $\Vinit$. When using a rollout policy, the truncated trajectory is completed using the rollout policy, $\tau_{h:H}\sim\pirollout$, to provide the Monte Carlo estimate at $s_h$:
+    \begin{align}
+        \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{H-1} r_i. \label{eq:2:rollout_value_estimate}
+    \end{align}
 
-        If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}.
+    If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}.
 
-        In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates. Letting heuristic value for the leaf node be $\tilde{r} = \Vinit(s_h)$, they are computed as follows:
-        \begin{align}
-            \Quct(s_t,a_t) &\leftarrow 
-                \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
-                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_q} \\
-            \Vuct(s_t) &\leftarrow 
-                \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
-                    + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
-        \end{align}  
-
-
-
-
-
-
-
-
-    \subsection{Maximum Entropy Tree Search}
-    \label{sec:2-4-3-ments}
-
-        Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
-        \begin{align}
-            \piments(a|s) &= 
-                (1-\lambdaments)\rhoments^k(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
-            \rhoments(a|s) &= 
-                \exp\left(\frac{1}{\alphaments}\left(\Qments(s,a)-\Vments(s)\right)\right), \\
-            \lambda(s,x) &= \min\left(1,\frac{x}{\log(e+N(s))}\right).
-        \end{align}
-        where $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alphaments$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})).
-
-        In MENTS the backups $\backupv$ and $\backupq$ update the soft value estimates and are updated using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows:
-        \begin{align}
-            \Qments(s_t,a_t) &\leftarrow 
-                R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:2:ments_backup_q} \\
-            \Vments(s_t) &\leftarrow 
-                \alpha \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alpha}\Qments(s_t,a) \right). \label{eq:2:ments_backup_v} 
-        \end{align}
-
-        In \cite{ments}, the heuristic value function left as an arbitrary evaluation function, but is set using a function approximation $\Vinit=\tilde{V}$ in experiments. The heuristic action function is set to zero, $\Qinit(s,a)=0$, but they also suggest that if \textit{policy network} $\tilde{\pi}$ is available, then the heuristic action function can alternatively be set to $\Qinit(s,a)=\log \tilde{\pi}(s|a)$. 
+    In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates. Letting heuristic value for the leaf node be $\tilde{r} = \Vinit(s_h)$, they are computed as follows:
+    \begin{align}
+        \Quct(s_t,a_t) &\leftarrow 
+            \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
+                + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_q} \\
+        \Vuct(s_t) &\leftarrow 
+            \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
+                + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
+    \end{align}  
 
 
 
@@ -923,6 +915,39 @@ def sample_outcome($s$, $a$, ctx):
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Maximum Entropy Tree Search}
+\label{sec:2-4-3-ments}
+
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
+    \begin{align}
+        \piments(a|s) &= 
+            (1-\lambdaments)\rhoments^k(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
+        \rhoments(a|s) &= 
+            \exp\left(\frac{1}{\alphaments}\left(\Qments(s,a)-\Vments(s)\right)\right), \\
+        \lambda(s,x) &= \min\left(1,\frac{x}{\log(e+N(s))}\right).
+    \end{align}
+    where $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alphaments$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})).
+
+    In MENTS the backups $\backupv$ and $\backupq$ update the soft value estimates and are updated using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows:
+    \begin{align}
+        \Qments(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:2:ments_backup_q} \\
+        \Vments(s_t) &\leftarrow 
+            \alpha \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alpha}\Qments(s_t,a) \right). \label{eq:2:ments_backup_v} 
+    \end{align}
+
+    In \cite{ments}, the heuristic value function left as an arbitrary evaluation function, but is set using a function approximation $\Vinit=\tilde{V}$ in experiments. The heuristic action function is set to zero, $\Qinit(s,a)=0$, but they also suggest that if \textit{policy network} $\tilde{\pi}$ is available, then the heuristic action function can alternatively be set to $\Qinit(s,a)=\log \tilde{\pi}(s|a)$. 
 
 
 
@@ -930,6 +955,25 @@ def sample_outcome($s$, $a$, ctx):
 
 
 
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-5-morl}
 
@@ -1095,60 +1139,69 @@ def sample_outcome($s$, $a$, ctx):
 
 
 
-    \subsection{Convex Hull Value Iteration}
-    \label{sec:2-5-1-chvi}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Convex Hull Value Iteration}
+\label{sec:2-5-1-chvi}
 
-        \todo{Should we also be defining undominated set/coverage sets for a given $(s;t)$? As in just add them as a param? As kind of using them in this sect as if we did}
+    \todo{Should we also be defining undominated set/coverage sets for a given $(s;t)$? As in just add them as a param? As kind of using them in this sect as if we did}
 
-        Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that will compute optimal convex hull value sets. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates will be denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
+    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that will compute optimal convex hull value sets. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates will be denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
-        Firstly, to define a multi-objective version of Value Iteration, an arithmetic over vector sets needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic} Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
-        \begin{align}
-            \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \label{eq:2:vector_set_arithmetic_one} \\
-            \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}. \label{eq:2:vector_set_arithmetic_two} 
-        \end{align}
+    Firstly, to define a multi-objective version of Value Iteration, an arithmetic over vector sets needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic} Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
+    \begin{align}
+        \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \label{eq:2:vector_set_arithmetic_one} \\
+        \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}. \label{eq:2:vector_set_arithmetic_two} 
+    \end{align}
 
-        \begin{figure}
-            \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_arithmetic.pdf} 
-            \caption[An example of arithmetic over vector sets.]{An example of arithmetic over vector sets. Two vector sets are shown in red and blue, which are multiplied by $\frac{1}{2}$ using Equation (\ref{eq:2:vector_set_arithmetic_one}), and then added using Equation (\ref{eq:2:vector_set_arithmetic_two}). On the right the resulting vector set is shown in purple, which are the sum of appropriately scaled red and blue vectors.}
-            \label{fig:2:vectorset_arithmetic}
-        \end{figure}
+    \begin{figure}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_arithmetic.pdf} 
+        \caption[An example of arithmetic over vector sets.]{An example of arithmetic over vector sets. Two vector sets are shown in red and blue, which are multiplied by $\frac{1}{2}$ using Equation (\ref{eq:2:vector_set_arithmetic_one}), and then added using Equation (\ref{eq:2:vector_set_arithmetic_two}). On the right the resulting vector set is shown in purple, which are the sum of appropriately scaled red and blue vectors.}
+        \label{fig:2:vectorset_arithmetic}
+    \end{figure}
 
-        Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
-        \begin{align}
-            \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \label{eq:2:chvi_v_backup} \\
-            \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:2:chvi_q_backup}
-        \end{align}
-        
-        This again parallels the Bellman backups use in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$: $\bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t)$.
-        
-        Once the algorithm has terminated, and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
-        \begin{align}
-            Q_{\bff{w}}(s,a;t) = \max_{\bff{q}\in\Qchvi(s,a;t)} \bff{w}^\top \bff{q}, \label{eq:2:chvi_scalar_q_fn} \\
-            \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q_{\bff{w}}(s,a;t). \label{eq:2:chvi_policy}
-        \end{align}
+    Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
+    \begin{align}
+        \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \label{eq:2:chvi_v_backup} \\
+        \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:2:chvi_q_backup}
+    \end{align}
+    
+    This again parallels the Bellman backups use in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$: $\bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t)$.
+    
+    Once the algorithm has terminated, and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
+    \begin{align}
+        Q_{\bff{w}}(s,a;t) = \max_{\bff{q}\in\Qchvi(s,a;t)} \bff{w}^\top \bff{q}, \label{eq:2:chvi_scalar_q_fn} \\
+        \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q_{\bff{w}}(s,a;t). \label{eq:2:chvi_policy}
+    \end{align}
 
-        \todo{make scalarised value notation consistent with how defined in ch5}
+    \todo{make scalarised value notation consistent with how defined in ch5}
 
-        If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, one can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
-        \begin{align}
-            (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
-        \end{align} 
+    If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, one can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
+    \begin{align}
+        (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
+    \end{align} 
 
-        The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as is demonstrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
-        \begin{align}
-            \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
-        \end{align}
+    The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as is demonstrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
+    \begin{align}
+        \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
+    \end{align}
 
-        and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}).
-        
-        \begin{figure}
-            \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
-            \caption[A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set.]{A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set. The hyperplane running through $\bff{v}_i$ with normal $\bff{w}_i=\frac{\bff{v}_i-\bff{v}_\bot}{\Vert\bff{v}_i-\bff{v}_\bot\Vert_2}$ is tangential to the geometric convex hull. Hence $\bff{v}_i$ is the optimal value for the weight $\bff{w}_i$ and following the CHVI policy in Equation (\ref{eq:2:chvi_policy}) will give the desired value $\bff{v}_i$.}
-            \label{fig:2:convex_hull_extract_policy_weight} 
-        \end{figure}
-
-
+    and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}).
+    
+    \begin{figure}
+        \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
+        \caption[A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set.]{A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set. The hyperplane running through $\bff{v}_i$ with normal $\bff{w}_i=\frac{\bff{v}_i-\bff{v}_\bot}{\Vert\bff{v}_i-\bff{v}_\bot\Vert_2}$ is tangential to the geometric convex hull. Hence $\bff{v}_i$ is the optimal value for the weight $\bff{w}_i$ and following the CHVI policy in Equation (\ref{eq:2:chvi_policy}) will give the desired value $\bff{v}_i$.}
+        \label{fig:2:convex_hull_extract_policy_weight} 
+    \end{figure}
 
 
 
@@ -1158,6 +1211,19 @@ def sample_outcome($s$, $a$, ctx):
 
 
 
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Sampling From Catagorical Distributions}
 \label{sec:2-6-sampling}
     
