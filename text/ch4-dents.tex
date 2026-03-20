@@ -40,6 +40,33 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Originally principle of maximum entropy (1957 by Jaynes cite) is motivated in statistical inference. Loosly, the principle says that given partial knowledge about a probability distribution, the least biased estimate of the probability distribution is the one that maximises the entropy. 
+
+    This justification can easily be applied to inverse reinforcement learning (Zeibart et al 2008 cite), where the goal is to learn the transition/reward functions from a set of expert trajectories.
+
+    In contrary, in maximum entropy reinforcement learning, entropy is rolled directly into the objective function, rather than being used as a constraint to disambiguate between multiple optimal policies. While maximum entropy reinforcement learning does yield a unique ``optimal'' policy (optimal with respect to the maximum entropy objective), whereas the standard objective does not. (cite the soft RL papers here)
+
+    This policy is not garunteed to align with the standard objective. While the coefficient of the entropy term can be made arbitrarily small to make the objectives align, this chapter will demonstrate that for the objectives to not be misaligned, that the temperature parameter needs to be set to a prohibitively small value that does not effectively utilise the entropy exploration.
+
+    This thesis treats the entropy objective as a secondary (exploration) objective.
+
+
+
+
+
 \section{Introduction and Motivation}
 \label{sec:4-1-intro}
 

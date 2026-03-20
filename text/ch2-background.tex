@@ -118,13 +118,13 @@
 \subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm}
 \label{sec:2-1-0-ucb}
 
-    Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Let $f(1),...,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),...,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,...,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ over $\{1,...,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
+    Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Let $f(1),\ldots,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),\ldots,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,\ldots,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ over $\{1,\ldots,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
 
     \begin{figure}
         \begin{tcolorbox}
-            Parameters: $K$ probability distributions for the rewards of each arm $f(1),...,f(K)$.
+            Parameters: $K$ probability distributions for the rewards of each arm $f(1),\ldots,f(K)$.
             \begin{itemize}
-                \item For each round $m=1,2,...$:
+                \item For each round $m=1,2,\ldots$:
                 \begin{itemize}
                     \item the agent selects an arm $x^m\sim\sigma^m$ to pull;
                     \item the agent receives a reward $y^m \sim f(x^m)$ from the environment;
@@ -188,13 +188,13 @@
 
     \begin{figure}
         \begin{tcolorbox}
-            Parameters: $K$ probability distributions for the rewards of each arm $f(1),...,f(K)$.
+            Parameters: $K$ probability distributions for the rewards of each arm $f(1),\ldots,f(K)$.
             \begin{itemize}
-                \item For each round $m=1,2,...$:
+                \item For each round $m=1,2,\ldots$:
                 \begin{itemize}
                     \item the agent selects an arm $x^m\sim\sigma^m$ to pull;
                     \item the agent receives a reward $y^m \sim f(x^m)$ from the environment;
-                    \item the agent outputs a recommendation distribution $\psi^m$, over the arms $\{1,...,K\}$;
+                    \item the agent outputs a recommendation distribution $\psi^m$, over the arms $\{1,\ldots,K\}$;
                     \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
                 \end{itemize} 
             \end{itemize}
@@ -213,7 +213,7 @@
     \end{defn}
 
     \todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
-    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,...,K\}$ is given by:
+    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,\ldots,K\}$ is given by:
     % \begin{align}
     %     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
     % \end{align}
@@ -277,7 +277,7 @@
         \begin{tcolorbox}
             Parameters: the set of arms $\cl{X}$, the set of contexts $\cl{W}$ and a mapping from $\cl{W}\times\cl{X}$ to probability distributions: $f(w,x)$.
             \begin{itemize}
-                \item For each round $m=1,2,...$:
+                \item For each round $m=1,2,\ldots$:
                 \begin{itemize}
                     \item the agent receives a context $w^m\in\cl{W}$ from the environment;
                     \item the agent selects an arm $x^m\sim\sigma^m(w^m)$ to pull;
@@ -324,7 +324,7 @@
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] LitRev sync
 % [X] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
@@ -386,31 +386,19 @@
     
     \begin{defn}
         \label{def:2:trajectory}
-        A \textnormal{trajectory} $\tau$ is a sequence of states, actions and rewards that is induced by a policy $\pi$ and MDP $\cl{M}$. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, ..., \allowbreak s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+        A \textnormal{trajectory} $\tau$ is a sequence of states, actions and rewards that is induced by a policy $\pi$ and MDP $\cl{M}$. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, \ldots, \allowbreak s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The following notation is also used for trajectories:
         %
         \begin{itemize}
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
-            \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
+            \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, \ldots, s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
             \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is truncated on only one end;
-            \item $s\in \tau$ is used as a shorthand for $s\in\{s_i|i=0,...,H\}$;
-            \item $(s,a)\in\tau$ is used as a shorthand for $(s,a)\in\{(s_i,a_i)|i=0,...,H-1\}$;
+            \item $s\in \tau$ is used as a shorthand for $s\in\{s_i|i=0,\ldots,H\}$;
+            \item $(s,a)\in\tau$ is used as a shorthand for $(s,a)\in\{(s_i,a_i)|i=0,\ldots,H-1\}$;
             \item and finally, when states, actions and rewards are timestep-indexed (i.e. $s_t,a_t,r_t$), they always correspond to a trajectory.
         \end{itemize}
     \end{defn}
-
-
-
-
-
-
-
-
-
-\todo{Add checklists to each section}
-\todo{THU: Check section 2.2 is cleanly in notation, use claude for help too. Do contextual bandits and RL sections.}
-\todo{FRI: Sections 2.4-end chapter and todos (litrev consistent).}
 
 
 
@@ -423,12 +411,12 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
@@ -437,24 +425,21 @@
 \section{Reinforcement Learning}
 \label{sec:2-3-rl}
 
-    \todo{Add Sutton reff}
-
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
-        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. In black depicts the standard agent-environment interface for reinforcement learning \cite{sutton}, where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. In blue the environment is replaced by a simulated environment which the agent can use for planning, and is queried by a user for recommendations on how to act in the real environment.}
+        \caption[An overview of reinforcement learning.]{An overview of reinforcement learning. Depicted in black is the standard agent-environment interface for reinforcement learning \cite{sutton}, where an agent can perform actions in an environment and is given feedback in the form of observations and rewards. In blue the environment is replaced by a simulated environment which the agent can use for planning, and is queried by a user for recommendations on how to act in the real environment.}
         \label{fig:2:rl_overview}
     \end{figure}
 
-    This section serves as a brief introduction to fundamental concepts in reinforcement learning, and motivates an alternative lens on reinforcement learning that this thesis will consider. The field of reinforcement learning considers an agent that has to learn how to make decisions by interacting with its environment (Figure \ref{fig:2:rl_overview}). The agent can take actions in the environment, receiving in return \textit{observations} and \textit{rewards}, which can be used to update internal state and used to make further decisions, and the goal of the agent is to maximise the rewards that it receives.
+    This section provides a brief introduction to fundamental concepts and definitions in reinforcement learning and motivates an alternative lens on reinforcement learning considered in this thesis. Typically reinforcement learning is presented as a sequence of agent-environment interactions, where the agent takes actions in an environment and receives \textit{observations} and \textit{rewards} for those actions \cite{sutton}. The objective of the agent is to maximise the rewards that it receives.
 
-    Classically the agent is considered to interact with its environment directly \cite{sutton}, and thus must make a trade-off between exploring new strategies and exploiting learned strategies. That is, reinforcement learning agents must consider the \textit{exploration-exploitation trade-off} discussed in Section \ref{sec:2-1-mab} too. 
-    %If an agent were to try to only exploit, then it may not discover better strategies, and if an agent only explores, then it may miss out on the opportunity to exploit the best known strategy and obtain greater rewards.
+    However, in the modern era of reinforcement learning, the agent is often equipped with a simulator in which it can plan, learn and explore. The ``target'' environment that the user cares about may be the same simulated environment, or a real-world environment where actions carry genuine costs, unlike interactions with the simulator. After the learning phase, one typically cares only about the policy that the agent recommends at the end, rather than the rewards accrued during planning. 
+    
+    Figure \ref{fig:2:rl_overview} depicts the classical reinforcement learning setting (in black) where the agent interacts with the environment directly, and this alternative setting (in blue) where the agent is equipped with a simulator to plan and explore, until a user queries the agent for a recommendation. This perspective shift changes the nature of the exploration-exploitation trade off, almost separating the two issues. During the learning phase there is a greater emphasis on exploring, while recommendations are concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
-    Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research quesitons around exploration: \exploreq. 
+    % Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research quesitons around exploration: \exploreq. 
 
-    In this thesis, the environment will always take the form of an MDP (Defintion \ref{def:2:mdp}), and observations will always be \textit{fully-observable}, meaning that the agent is provided with full access to the states of the MDP. 
-
-    Following on from Section \ref{sec:2-2-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning and covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning. Finally Section \ref{sec:2-3-1-merl} covers \textit{maximum-entropy reinforcement learning}.
+    Following on from Section \ref{sec:2-2-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning and covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning. Finally, Section \ref{sec:2-3-1-merl} covers \textit{maximum-entropy reinforcement learning}.
     
     The value of a policy $\pi$ is the expected cumulative reward that will be obtained by following the policy:
     %
@@ -472,7 +457,7 @@
         \end{align} 
     \end{defn}
 
-    From the definition of the values functions the optimal value functions can be defined by taking the maximum value over all policies:
+    From the definition of the value functions, the optimal value functions can be defined by taking the maximum value over all policies:
     \begin{defn}
         \label{def:2:optimal_value}
         \label{def:2:optimal_q_value}
@@ -501,7 +486,7 @@
         \begin{align}
             \pi^* = \argmax_\pi J(\pi) \label{eq:2:opt_policy_def}
         \end{align}
-        or equivalently, the optimal standard policy can be in terms of the optimal Q-value function:
+        or equivalently, the optimal standard policy can be expressed in terms of the optimal Q-value function:
         \begin{align}
             \pi^*(s) = \argmax_a Q^*(s,a). \label{eq:2:opt_policy_from_opt_q_value}
         \end{align}
@@ -513,13 +498,13 @@
         Q^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V^*(s';t+1)]. \label{eq:2:bellman_opt_q}
     \end{align} 
 
-    The Bellman equations admit a \textit{dynamic programming} approach which can be used to computer the optimal value functions, known as \textit{Value Iteration} \cite{dp,kolobov}. In Value Iteration, a table of value estimates $\hat{V}(s;t)$ are kept for each $s,t$. Given any initial estimate of the value function $\hat{V}^{0}$, the \textit{Bellman backup} operations are:
+    The Bellman equations admit a \textit{dynamic programming} approach which can be used to compute the optimal value functions, known as \textit{Value Iteration} \cite{dp,kolobov}. In Value Iteration, a table of value estimates $\hat{V}(s;t)$ is kept for each $s,t$. Given any initial estimate of the value function $\hat{V}^{0}$, the \textit{Bellman backup} operations are:
     \begin{align}
         \hat{V}^{k+1}(s;t) &= \max_{a\in\cl{A}} \hat{Q}^{k+1}(s,a;t), \label{eq:2:value_iter_v_backup} \\
         \hat{Q}^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [R(s,a) + \hat{V}^k(s';t+1)]. \label{eq:2:value_iter_q_backup}
     \end{align}
 
-    In each iteration of Value Iteration, these values are computed for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,1,...,H\}$. The value estimates computed from the Bellman backups will converge to the optimal values in a finite number of iterations: $V^{k}\rightarrow V^*$.
+    In each iteration of Value Iteration, these values are computed for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,1,\ldots,H\}$. The value estimates computed from the Bellman backups will converge to the optimal values in a finite number of iterations: $V^{k}\rightarrow V^*$.\footnote{Strictly speaking, if backups are performed in reverse order from $t=H$ to $t=0$, convergence is achieved in a single iteration. The iterative presentation here is adopted to more closely resemble the backup procedures used later in the thesis, where the transition distribution $p$ is unknown.}
 
 
 
@@ -529,12 +514,12 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
@@ -543,21 +528,21 @@
 \subsection{Maximum Entropy Reinforcement Learning}
 \label{sec:2-3-1-merl}
 
-    In \textit{maximum-entropy reinforcement learning}, the objective function is altered to include the addition of an entropy term. The addition of an entropy term is motivated by wanting to learn stochastic behaviours, that better explore large state spaces, and learn more robust behaviours under uncertainty by potentially learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
+    In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
     
     Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
     \begin{align}
-        \cl{H}(\pi(\cdot|s)) = \bb{E}_{a\sim\pi(\cdot|s)}[-\log \pi(a|s)] = \sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:2:shannon_entropy_def}
+        \cl{H}(\pi(\cdot|s)) = -\bb{E}_{a\sim\pi(\cdot|s)}[\log \pi(a|s)] = -\sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:2:shannon_entropy_def}
     \end{align}
 
-    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}.
+    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}. Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts.
 
     \begin{defn}
         \label{def:2:sft_value}
         \label{def:2:sft_q_value}
         The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
         \begin{align}
-            V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_t + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
+            V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
         \end{align} 
 
         The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
@@ -566,7 +551,7 @@
         \end{align} 
     \end{defn}
 
-    The optimal soft (Q-)values can be defined by taking the maximum over policies, similarly to the standard objective:
+    The optimal soft (Q-)values can be defined by taking the maximum over policies, similar to the standard setting:
     \begin{defn}
         \label{def:2:optimal_sft_value}
         \label{def:2:optimal_sft_q_value}
@@ -588,20 +573,20 @@
         The objective of maximum entropy (or soft) reinforcement learning can then be stated as finding $\max_{\pi} J_{\sft}(\pi)$.
     \end{defn}
 
-    The optimal soft policy is defined as the policy that maximises the soft objective function $J_{\sft}$, and it can be computed from the optimal soft (Q-)values.
+    The optimal soft policy is defined as the policy that maximises the soft objective function $J_{\sft}$, and it can be computed uniquely from the optimal soft (Q-)values.
     \begin{defn}
         \label{def:2:opt_sft_policy}
         The \textnormal{optimal soft policy} $\pi_{\sft}^*$ is the policy maximising the soft objective function:
         \begin{align}
             \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:2:opt_sft_policy_def}
         \end{align}
-        Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft police is known to take the form \cite{deep_energy_policies}:
+        Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft policy is known to take the form \cite{deep_energy_policies}:
         \begin{align}
             \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:2:opt_sft_policy_from_opt_value_fns}
         \end{align}
     \end{defn}
 
-    Equations similar to the Bellman equations, aptly named the \textit{soft Bellman equations}, can be defined for maximum entropy reinforcement learning. These equations differ to equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, and explain why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
+    The \textit{soft Bellman equations} are the maximum entropy analogues of the Bellman equations. These equations differ from equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
     \begin{align}
         V_{\sft}^*(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( Q_{\sft}^*(s,a;t) / \alpha \right), \label{eq:2:sft_bellman_opt_v} \\
         Q_{\sft}^*(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [V_{\sft}^*(s';t+1)]. \label{eq:2:sft_bellman_opt_q}
@@ -628,12 +613,12 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
@@ -642,29 +627,27 @@
 \section{Trial-Based Heuristic Tree Search and Monte Carlo Tree Search}
 \label{sec:2-4-thts}
 
-FROM SEC 2.2: , and in Section \ref{sec:2-4-thts} these simulations are used to incrementally build a search tree.
-
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/mcts_trial.pdf} 
         \caption[Overview of one trial of \mctsone.]{Overview of one trial of \mctsone, depicting the four commonly presented stages \cite{mcts_survey}. First, in the selection phase a search policy is used to sample a path down the tree. Next a new node is added to the search tree. Then the new node is initialised using a heuristic, often using a \textit{simulation} using a \textit{rollout policy} as depicted. Finally, values (triangles) are updated through \textit{backups} along the path sampled in the selection phase.}
         \label{fig:2:mcts}
     \end{figure}
 
-    When considering MDPs with large state-action spaces, using tabular dynamic programming methods becomes infeasibly slow. One approach for handling large state-action spaces is to use \textit{heuristic methods}, that consider a subset of the state-action space and utilise heuristic estimates for the value of states. Often these heuristic methods build a \textit{search tree} from the initial state of the MDP.
+    When considering MDPs with large state-action spaces, using tabular dynamic programming methods becomes infeasibly slow. One approach for handling large state-action spaces is to use \textit{heuristic methods} that consider a subset of the state-action space and utilise heuristic estimates for the value of states. Often these heuristic methods build a \textit{search tree} from the initial state of the MDP.
 
-    Monte Carlo Tree Search (MCTS) refers to heuristic algorithms that build a search tree using \textit{Monte Carlo Trials}, where nodes are added to the tree based off randomly sampled trajectories. Two advantages of using MCTS methods in the modern day are: that they allow for statistical analysis, which can provide \textit{probabilistic guarantees} for the performance of the algorithm; and they offer interpretability, as the search tree can be inspected post-hoc to identify why the algorithm made certain decisions. \hide{\todo{consider adding interperobility refs when litrev'ed}}
+    Monte Carlo Tree Search (MCTS) refers to heuristic algorithms that build a search tree using \textit{Monte Carlo Trials}, where nodes are added to the tree from randomly sampled trajectories. Two advantages of using MCTS methods in the modern day are: that they allow for statistical analysis, which may provide \textit{probabilistic guarantees} on the performance of the algorithm; and that they offer interpretability, as the search tree can be inspected post-hoc to identify why the algorithm made certain decisions. \hide{\todo{consider adding interperobility refs when litrev'ed}}
 
-    MCTS trials are commonly presented using four stages, selection, expansion, simulation/heuristic and backup phases \cite{mcts_survey}, which are depicted in Figure \ref{fig:2:mcts}. To avoid confusion with the above definition of MCTS, this thesis will refer to this specific form of MCTS as \mctsone. Each of the four phases of \mctsone\ewe are described in more detail below: 
+    MCTS trials are commonly presented using four stages, selection, expansion, simulation/heuristic and backup phases \cite{mcts_survey}, which are depicted in Figure \ref{fig:2:mcts}. To avoid confusion with the broader definition of MCTS above, this thesis refers to this specific form of MCTS as \mctsone. Each of the four phases of \mctsone\ewe are described in more detail below: 
     \begin{enumerate}
         \item \textit{Selection phase} - a \textit{search policy} is used to traverse the search tree from the root node until it reaches a state not contained in the search tree;
         \item \textit{Expansion phase} - a new child node is added to the search tree;
         \item \textit{Simulation/Heuristic phase} - the new child node's value is initialised using a \textit{heuristic}, often taking the form of a Monte Carlo return, obtained using a \textit{simulation} with a \textit{rollout policy}; 
-        \item \textit{Backup phase} - the value from the heuristic or simulation is used to backup values through the path traversed in the selection phase.
+        \item \textit{Backup phase} - the value from the heuristic or simulation is used to back up values through the path traversed in the selection phase.
     \end{enumerate}
 
-    Trial-Based Heuristic Tree Search (THTS) \cite{thts} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heurisitc phases are run, the trial ``switches back to the selection phase and alternate between those phases'', until the planning horizon is reached. This is similar to the trial depicted in blue in Figure \ref{fig:2:thts}.
+    Trial-Based Heuristic Tree Search (THTS) \cite{thts} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
 
-    \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-1-thts}, which is an open-source, parallelised extension of the THTS schema (including being able to implement \mctsone\ewe algorithms), and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-3-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
+    \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-1-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises \mctsone\ewe algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-3-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
     
     
 
@@ -674,22 +657,46 @@ FROM SEC 2.2: , and in Section \ref{sec:2-4-thts} these simulations are used to 
 
 
 
-% [ ] First Draft
+% [X] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
+% [X] TODOs
 % [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Notation}
 \label{sec:2-4-0-notation}
-    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondance with nodes in the search tree. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold. 
+    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold.
 
-    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$.
+    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-5-morl}, the timestep parameter is dropped for the remainder of this thesis.
+
+    \begin{figure}
+        \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
+        \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
+        \label{fig:2:tree_notation}
+    \end{figure}
+
+    \thtspp\ewe will operate by building a \textit{search tree} $\cl{T}$, built by running \textit{trials} from the root node until a stop signal is sent. Trees consist of \textit{decision nodes} that correspond to states in the search tree $s\in\cl{T}$, and \textit{chance nodes} that correspond to state-action pairs in the search tree $(s,a)\in\cl{T}$. Figure \ref{fig:2:tree_notation} shows how decision and chance nodes will be depicted as circles and diamonds in diagrams.
+    \begin{defn}
+        \label{def:2:search_tree}
+        A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
+    \end{defn}
+
+    Because of the assumption that states and state-action pairs have a one-to-one correspondence with nodes in the search tree (Section \ref{sec:2-4-0-notation}), this thesis will often use $s$ and $(s,a)$ to refer to decision and chance nodes respectively. When neccessary to disambiguate between states, state-action pairs and nodes, the notation $\node(s)$ and $\node(s,a)$ will be used to indicate nodes explicitly. 
+
+    % \begin{defn}
+    %     \label{def:2:cnode}
+    %     \label{def:2:dnode}
+    A \textit{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textit{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textit{node} is used to refer to any decision or chance node in the tree. Sometimes the notation $\node(s)$ and $\node(s,a)$ will be used to make it clear that a node is being discussed, rather than a state or state-action pair.
+
+    Each decision and chance node will store some algorithm-dependent data, typically a \textit{value estimate} and a \textit{visit count}. $N(s)$ and $N(s,a)$ will denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials. $\dnodedata{s}$ is used to denote the set of values stored at node $\node(s)$, and $\cnodedata{s,a}$ for the set of values stored at node $\node(s,a)$. 
+
+    Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$.
+    % \end{defn}
 
 
 
@@ -712,103 +719,91 @@ FROM SEC 2.2: , and in Section \ref{sec:2-4-thts} these simulations are used to 
 \subsection{Trial Based Heuristic Tree Search}
 \label{sec:2-4-1-thts}
 
-    This subsection introduces \thtspp\ewe, which extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts}, and aims to provide a modular library which can implement any MCTS algorithm. The changes made to the original schema allow algorithms following the four-phase \mctsone\ewe trials described previously to be encorporated. Additionally, the notion of a per-trial \textit{context} is added, which will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms. Additionally, beyond the scope of this thesis, contexts allow \thtspp\ewe to implement algorithms for \textit{partially-observable} environments, such as Partially Observable Monte Carlo Planning \cite{pomcp}. The remainder of this section will be presented in the context of planning for fully-observable MDPs, but \thtspp\ewe generalises to partially-observable environments if \textit{observation-action histories} are used in place of states.
+    \thtspp\ewe \cite{thtspp} is introduced in this subsection and provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates \mctsone\ewe algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alphago,alphago_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
 
-    In \thtspp\ewe trees consist of \textit{decision nodes} and \textit{chance nodes}. Decision nodes sample actions that can be taken by the agent, and chance nodes sample \textit{outcomes} (MDP states) that depend on the action taken and the transition function of the MDP. As such, each decision node has an associated \textit{state} and each chance node has an associated \textit{state-action pair}. Figure \ref{fig:2:tree_notation} shows how decision and chance nodes will be depicted as circles and diamonds in diagrams.
+    Each trial will have an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-3-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Beyond the scope of this thesis, contexts are necessary to be able to implement any MCTS algorithm that requires per-trial state, for example Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
+    \begin{defn}
+        \label{def:2:thts_context}
+        A \textnormal{context} is an arbitrary key-value store used to store any per-trial data.
+    \end{defn}  
 
     \begin{figure}
-        \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
-        \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
-        \label{fig:2:tree_notation}
+        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new nodes are initialised using the heuristic function $\Vinit$; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree to update the values in the nodes (triangles). \todo{Add a ORANGE dashed arrow back from heuristic to selection to show the alternation when mcts mode is false.} \todo{update Vinit to Vheuristic in line with text}}
+        \label{fig:2:thts}
     \end{figure}
 
-    A search tree $\cl{T}$ is built using Monte Carlo \textit{trials} and an overview of one trial in \thtspp\ewe is given in Figure \ref{fig:2:thts}. Each \thtspp\ewe trial is also split into four phases: 
+    The main four phases of a \thtspp\ewe trial are (depicted in Figure \ref{fig:2:thts}):
     \begin{enumerate}
         \item  
             \textit{Context sampling} - a \textit{context} is sampled for the trial;
         \item 
-            \textit{Selection phase} - a trajectory is sampled using a \textit{search policy}, any newly visited states (and state-action pairs) are added to $\cl{T}$ as decision nodes (and chance nodes);
+            \textit{Selection phase} - a trajectory is sampled using a \textit{search policy}, any newly visited states (and state-action pairs) are added to $\cl{T}$ as decision nodes (and chance nodes);\footnote{Note that the \thtspp\ewe selection phase encapsulates both the selection and expansion phases of \mctsone\ewe.}
         \item 
-            \textit{Heuristic phase} - any new leaf nodes added in the selection phase are initialised using a \textit{heuristic function}; 
+            \textit{Heuristic phase} - any new nodes added in the selection phase are initialised using a \textit{heuristic function}; 
         \item 
             \textit{Backup phase} - value estimates in the search tree are updated, along the path sampled in the selection phase. 
     \end{enumerate}
 
-    Note that the selection and expansion phases of \mctsone\ewe are encapsulated by the selection phase of \thtspp.
-
-    \begin{figure}
-        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new leaf nodes are initialised using the $\Vinit$ heuristic function; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree to update the values in the nodes (triangles).}
-        \label{fig:2:thts}
-    \end{figure}
-
-    \begin{defn}
-        \label{def:2:search_tree}
-        A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
-    \end{defn}
-
-    % \begin{defn}
-    %     \label{def:2:cnode}
-    %     \label{def:2:dnode}
-        A \textit{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textit{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textit{node} is used to refer to any decision or chance node in the tree. Sometimes the notation $\node(s)$ and $\node(s,a)$ will be used to make it clear that a node is being discussed, rather than a state or state-action pair.
-
-        $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials.
-
-        Each decision and chance node will generally store value estimates that are algorithm dependent. $\dnodedata{s}$ is used to denote the set of values stored at node $\node(s)$, and $\cnodedata{s,a}$ for the set of values stored at node $\node(s,a)$. 
-
-        Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$.
-    % \end{defn}
-
-    \thtspp\ewe introduces the idea of \mctsmode\ewe into the THTS schema. When \mctsmode\ewe is True, a single decision node is added to the search tree on each trial, similarly to \mctsone. When it is False, the trajectory is sampled until a terminal state or the planning horizon is reached. These two modes of operation are depicted in blue and orange respectively in Figure \ref{fig:2:thts}.
+    While the selection phase of THTS will sample a trajectory, alternating between selection and heuristic phases until a terminal state is reached, in \mctsone\ewe the selection phase ends once a a new decision node is added to the search tree. \thtspp\ewe uses a boolean flag \mctsmode\ewe to indicate which of these two criteria will be used to end the selection phase. Figure \ref{fig:2:thts} shows an example of a trial when \mctsmode\ewe is True (blue), and when it is False (orange).
     \begin{defn}
         \label{def:2:mctsmode}
-        When running in \mctsmode, the trajectory sampled in the selection phase is truncated, and will end if a state not in the search tree $\cl{T}$ is reached, similarly to \mctsone\ewe \cite{mcts_survey}. When not running in \mctsmode, the trajectory is sampled until a terminal state is reached, or the planning horizon is reached, similarly to THTS \cite{thts}. 
+        When \mctsmode\ewe is True, the selection phase will end once a new decision node is added to the search tree. When \mctsmode\ewe is False, the selection phase will continue until a terminal state is reached, or the planning horizon is reached.
     \end{defn} 
 
-    There are two main benefits to running an algorithm in \mctsmode. The first is that it uses significantly less memory, which can be a concern if using a large planning horizon $H$ and the tree search is going to run for a long time. The second is that if \mctsmode\ewe is used with an informative heuristic function, then it allows the algorithm to avoid wasting resouces (time and memory) on parts of the search tree that are not promising. 
+    There are two main benefits to running an algorithm in \mctsmode. The first is that it can use significantly less memory, which is a concern if using a large planning horizon and the tree search is going to run for a long time. The second is that if \mctsmode\ewe is used with an informative heuristic function, then it allows the algorithm to avoid wasting resources (time and memory) on parts of the search tree that are not promising. 
     
-    In contrast, when no informative heuristic is available, a random simulation is often used in \mctsone\ewe algorithms. In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because states that would have been visited in the simulation phase of \mctsone\ewe are added to the tree and avoids throwing away potentially useful information.
+    In contrast, a random simulation is often used in \mctsone\ewe algorithms when no informative heuristic is available. In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because states that would have been visited in the simulation phase of \mctsone\ewe are added to the tree and avoids throwing away potentially useful information. \todo{Add rollout add cite (see mcgs paper)}
 
-    \thtspp\ewe also introduces the notion of a \textit{context} that is sampled for each trial. The context is passed to every subsequent function call in a trial of \thtspp, and can be used to store temporary state. This context will go unused for the remainder of the chapter, but will be useful in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} when \textit{contextual tree search} is discussed.
-    \begin{defn}
-        \label{def:2:thts_context}
-        A \textnormal{context} is an arbitrary key-value store that is used to store any relevant data that varies from trial to trial.
-    \end{defn}  
+    %     @misc{graph_search,
+    %   author       = {Wu, David J.},
+    %   title        = {Monte-Carlo Graph Search from First Principles},
+    %   year         = {2023},
+    %   howpublished = {\url{https://github.com/lightvector/KataGo/blob/master/docs/GraphSearch.md}},
+    %   note         = {Accessed: 2026-03-19}
+    % }
+    \todo{write about graph mode and add cite}
+    - Graph mode
 
-    To specify an algorithm in the \thtspp\ewe schema, the following need to be specified:
+
+    To run an algorithm in the \thtspp\ewe schema, the following \textit{modules} and \textit{parameters} need to be specified. Algorithms specify the operation of each module:
     \begin{description}
         \item[Value Estimates:]
-            What value estimates will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined;
-        \item[Search policy:]
-            A policy $\pisearch$ used to sample a trajectory for the trial, which can use values in the current search tree $\cl{T}$, and values from the heuristic action function (below);
-        \item[Outcome Sampler:]
-            A function \sampleoutcome\ewe that samples outcomes according to the environment, given a current state and action. In this thesis, this will always sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$;
-        \item[Heuristic value function:]
-            A function $\Vinit$ used as a heuristic to initialise values for new decision nodes added to the tree;
-        \item[Heuristic action function:]
-            A function $\Qinit$ used as a heuristic for Q-values when a state-action pair is not in the current search tree;
-        \item[Backup functions:]
-            Two functions $\backupv$ and $\backupq$ which updates the values in decision and chance nodes respectively. These functions can use values from their children, from the sampled trajectory and from the heuristic value function;
-        \item[Context sampler:]
+            What data will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined;
+        \item[Context Sampler:]
             A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
-        \item[MCTS mode:]
-            A boolean (which will also be denoted \mctsmode) specifying if \thtspp\ewe should operate in \mctsmode;
-        \item[Planning horizon:]
-                A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$.
+        \item[Action Selection (Search Policy):]
+            \todo{add sample action function. Say that it will be specified as a}
+            A policy $\pisearch$ used to \textit{select} actions at decision nodes;
+        \item[(Optional) Outcome Sampler:]
+            A function \sampleoutcome\ewe that samples outcomes from chance nodes. By default, this will sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$ and this default will always be used in this thesis;
+        \item[Backup functions:]
+            Two functions $\backupv$ and $\backupq$ which specifies how to update $\dnodedata{s}$ and $\cnodedata{s,a}$ respectively.
     \end{description}
     
-    Figure \ref{fig:2:thts} depicts a trial in \thtspp, and psuedocode for running a trial is given in Listing \ref{lst:2:thts_trial}. At the beginning of runnning a \thtspp\ewe algorithm, the search tree is initialised to $\cl{T}\leftarrow\{s_0\}$. When the components detailed above are provided, the operation of a trial in \thtspp\ewe is as follows:
-    \begin{itemize}
+    Parameters are set on a per-environment basis:
+    \begin{description}
+        \item[(Optional) Heuristic functions:]
+            A functions $\Vinit$, $\Qinit$ and $\piinit$ are the heuristic functions. $\Vinit$ is used to initialise value estimates in $\dnodedata{s}$. $\Qinit$ and $\piinit$ can be used by the search policy to encorporate prior knowledge about unexplored actions;
+        \item[Single Node Expansion:]
+            A boolean (which will also be denoted \mctsmode) specifying if \thtspp\ewe should operate in \mctsmode;
+        \item[Planning horizon:]
+            A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$;
+    \end{description}
+
+    \todo{Add the weighting of heuristic funcitons in the backups}
+    
+    Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is given below. Additionally, psuedocode is given in Listing \ref{lst:2:thts_trial}. \todo{This is not consistent with the text above right now, also specifiy initial tree is } $\cl{T}\leftarrow\{s_0\}$ \todo{somewhere}.
+    \begin{enumerate}
         \item Firstly, a context is sampled using the $\samplecontext$ function, which is available to be used by any other function in the trial.
-        \item A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy (which may use $\Qinit$ as necessary) and \sampleoutcome.
+        \item A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy $\pisearch$ and \sampleoutcome. The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$.
         \begin{itemize}
-            \item If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,...,h-1$ and $s_h\not\in\cl{T}$, or $h=H_{\thtspp}$, or $s_h$ is terminal.
+            \item If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,\ldots,h-1$ and $s_h\not\in\cl{T}$, or $h=H_{\thtspp}$, or $s_h$ is terminal.
             \item If not running in \mctsmode, then $h=H_{\thtspp}$, or $s_h$ is terminal.
         \end{itemize}
-        \item The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$.
-        \item The heuristic value function is used to initialise the value of the new leaf node $\dnodedata{s_h}\leftarrow \Vinit(s_h)$.
-        \item Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,...,0$.
-    \end{itemize}
+        \item The heuristic value function $\Vinit$ is used to initialise the value of any new decision nodes added to the search tree.
+        \item Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,\ldots,0$.
+    \end{enumerate}
             
     
     \begin{Listing}
@@ -827,7 +822,7 @@ def run_trial(search_tree: $\cl{T}$,
     # heuristic phase
     node$(s_h)$.V $\leftarrow \Vinit(s_h$, ctx$)$
     # backup phase
-    for i in $\{h-1,h-2,...,1,0\}$:
+    for i in $\{h-1,h-2,\ldots,1,0\}$:
         node$(s_i,a_i)$.backup_q(node$(s_i,a_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, ctx)
         node$(s_i)$.backup_v(node$(s_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, ctx)
 
@@ -838,14 +833,14 @@ def sample_trajectory(search_tree: $\cl{T}$,
                       planning_horizon: $H_{\thtspp}$,
                       ctx):
     i = 0
-    while ((not mcts_mode or $s_{\texttt{i}}\in\cl{T}$) 
+    while (not mcts_mode or $s_{\texttt{i}}\in\cl{T}$) 
            and (i < $H_{\thtspp}$) 
            and (not terminal($s_{\texttt{i}}$)):
         $a_{\texttt{i}} \sim \pisearch(\cdot | s_{\texttt{i}},$ ctx$)$ 
         $r_{\texttt{i}} \leftarrow R(s_{\texttt{i}}, a_{\texttt{i}})$
         $s_{\texttt{i+1}} \leftarrow$ sample_outcome$(s_{\texttt{i}}$, $a_{\texttt{i}}$, ctx$)$
         i += 1
-    return $(s_0,a_0,r_0,s_1,...,s_{\texttt{i-1}}, a_{\texttt{i-1}},r_{\texttt{i-1}}, s_{\texttt{i}})$
+    return $(s_0,a_0,r_0,s_1,\ldots,s_{\texttt{i-1}}, a_{\texttt{i-1}},r_{\texttt{i-1}}, s_{\texttt{i}})$
 
 def sample_outcome($s$, $a$, ctx):
     $s' \sim p(\cdot | s, a)$
@@ -875,7 +870,7 @@ def sample_outcome($s$, $a$, ctx):
 \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
 \label{sec:2-4-2-uct}
 
-    Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
+    Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
 
     In UCT \mctsmode\ewe is set to True. And at each decision and node of UCT a sample average $\Vuct$ and $\Quct$ is used for a value estimate. The search policy that UCT then follows is given by:
     \begin{align}
@@ -1002,7 +997,7 @@ def sample_outcome($s$, $a$, ctx):
     Now multi-objective trajectories are defined:
     \begin{defn}
         \label{def:2:mo_trajectory}
-        A \textnormal{multi-objective trajectory} $\tau$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+        A \textnormal{multi-objective trajectory} $\tau$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
         
         The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories too. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
     \end{defn}
@@ -1022,7 +1017,7 @@ def sample_outcome($s$, $a$, ctx):
         \end{align} 
     \end{defn}
 
-    In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
+    In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
 
     \begin{defn}
         \label{def:2:simplex}
@@ -1169,7 +1164,7 @@ def sample_outcome($s$, $a$, ctx):
         \label{fig:2:vectorset_arithmetic}
     \end{figure}
 
-    Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,...,0)\in\bb{R}^D$. The CHVI backups are then:
+    Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,\ldots,0)\in\bb{R}^D$. The CHVI backups are then:
     \begin{align}
         \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \label{eq:2:chvi_v_backup} \\
         \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:2:chvi_q_backup}
@@ -1229,7 +1224,7 @@ def sample_outcome($s$, $a$, ctx):
     
     \quest{Maybe heres a good time to ask about some notation stuff. So I used $m$ in MABs section, and I reuse it here. Is that ok? I was trying to keep as much notation unique as possible, but noticed I've reused a couple variables. I was hoping its ok because I'm using them ``locally''.}
 
-    Some of the work in this thesis will involve sampling from catagorical distributions, and sometimes it will be helpful to do so efficiently, as in Chapter \ref{ch:4-dents}. Let $f:\{C_1,...,C_m\}\rightarrow[0,1]$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $c\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a continuous uniform random value is sampled, $u\sim\textnormal{Uniform}(0,1)$, and $f$ is linearly scanned until a probability mass of $u$ has been passed. See Listing \ref{lst:2:naive_sample} for psuedocode of the naive method.
+    Some of the work in this thesis will involve sampling from catagorical distributions, and sometimes it will be helpful to do so efficiently, as in Chapter \ref{ch:4-dents}. Let $f:\{C_1,\ldots,C_m\}\rightarrow[0,1]$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $c\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a continuous uniform random value is sampled, $u\sim\textnormal{Uniform}(0,1)$, and $f$ is linearly scanned until a probability mass of $u$ has been passed. See Listing \ref{lst:2:naive_sample} for psuedocode of the naive method.
 
     \begin{Listing}
         \begin{lstlisting}
@@ -1246,12 +1241,12 @@ def sample_catagorical($f$):
         \label{lst:2:naive_sample}
     \end{Listing}
 
-    However, the \textit{alias method} \cite{alias_method_one,alias_method_two} can instead be used to sample from a catagorical distribution. The alias method uses $O(m)$ preprocessing time to construct an \textit{alias table}, and after can sample from $f$, using the table, in $O(1)$ time. An alias table consists of $m$ entries, accounting for an $m$th of the probability mass of $f$. Each entry takes the form $(c_0,c_1,\thresh)$, where $c_0,c_1\in\{C_1,...,C_m\}$ are categories and $\thresh\in[0,1]$ gives the ratio of the $\frac{1}{m}$ probability mass to assign to $c_0$ and $c_1$. Sampling from the alias table can be performed by sampling two random numbers, one to index into the table and one to compare against $\thresh$, from which $c\sim f$ can be returned by looking it up in the table. Listing \ref{lst:2:alias_table_sample} gives psuedocode for sampling from an alias table, and Figure \ref{fig:2:alias_table_eg} visualises the construction and sampling of an alias table.
+    However, the \textit{alias method} \cite{alias_method_one,alias_method_two} can instead be used to sample from a catagorical distribution. The alias method uses $O(m)$ preprocessing time to construct an \textit{alias table}, and after can sample from $f$, using the table, in $O(1)$ time. An alias table consists of $m$ entries, accounting for an $m$th of the probability mass of $f$. Each entry takes the form $(c_0,c_1,\thresh)$, where $c_0,c_1\in\{C_1,\ldots,C_m\}$ are categories and $\thresh\in[0,1]$ gives the ratio of the $\frac{1}{m}$ probability mass to assign to $c_0$ and $c_1$. Sampling from the alias table can be performed by sampling two random numbers, one to index into the table and one to compare against $\thresh$, from which $c\sim f$ can be returned by looking it up in the table. Listing \ref{lst:2:alias_table_sample} gives psuedocode for sampling from an alias table, and Figure \ref{fig:2:alias_table_eg} visualises the construction and sampling of an alias table.
 
     \begin{Listing}
         \begin{lstlisting}
 def sample_from_alias_table(alias_table):
-    index $\sim \textnormal{Uniform}(\{1,...,m\})$
+    index $\sim \textnormal{Uniform}(\{1,\ldots,m\})$
     $(c_0,c_1,\thresh)$ = alias_table[index]
     $u \sim \textnormal{Uniform}(0,1)$
     if ($u <= \thresh$):
