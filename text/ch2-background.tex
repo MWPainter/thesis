@@ -362,7 +362,7 @@
     In this thesis, MDPs may contain \textit{trap states}, which are states that, once reached, can never be left, and no further reward is obtained.
     \begin{defn}
         \label{def:2:terminal}
-        A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The function $\terminal(s)$ returns a boolean in $\{\textnormal{True},\textnormal{False}\}$ which denotes whether a state $s$ is terminal.
+        A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The the set of terminal states is denoted $\terminal\subseteq\cl{S}$.
     \end{defn}
 
     A \textit{policy} maps each state to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
@@ -658,7 +658,7 @@
 
 
 % [X] First Draft
-% [ ] AI proofread/grammar check
+% [X] AI proofread/grammar check
 % [X] TODOs
 % [ ] Spell check
 % [X] Citations + Refs
@@ -670,33 +670,25 @@
 % [ ] Final revision
 \subsection{Notation}
 \label{sec:2-4-0-notation}
-    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This assumption is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to when this assumption does not hold.
+    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
     Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-5-morl}, the timestep parameter is dropped for the remainder of this thesis.
 
     \begin{figure}
         \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
-        \caption[Tree diagrams notation.]{Tree diagrams notation, circles will be used to denote \textit{decision nodes} that are associated with states, diamonds will be used to denote \textit{chance nodes} that are associated with state-action pairs and arrows are used to denote parent/child relationships in the tree.}
+        \caption[Tree diagrams notation.]{Tree diagrams notation, circles denote \textit{decision nodes} that are associated with states, diamonds denote \textit{chance nodes} that are associated with state-action pairs and arrows denote parent/child relationships in the tree.}
         \label{fig:2:tree_notation}
     \end{figure}
 
-    \thtspp\ewe will operate by building a \textit{search tree} $\cl{T}$, built by running \textit{trials} from the root node until a stop signal is sent. Trees consist of \textit{decision nodes} that correspond to states in the search tree $s\in\cl{T}$, and \textit{chance nodes} that correspond to state-action pairs in the search tree $(s,a)\in\cl{T}$. Figure \ref{fig:2:tree_notation} shows how decision and chance nodes will be depicted as circles and diamonds in diagrams.
+    \thtspp\ewe builds a \textit{search tree} $\cl{T}$ incrementally by running \textit{trials} from the root node and adding them to the tree until a stopping criterion is met. Trees consist of \textit{decision nodes} that correspond to states $s\in\cl{T}$, and \textit{chance nodes} that correspond to state-action pairs $(s,a)\in\cl{T}$. For brevity, $s$ refers to both states and decision nodes, and $(s,a)$ refers to both state-action pairs and chance nodes. Where necessary for clarity, the notation $\node(s)$ and $\node(s,a)$ is used to explicitly refer to nodes rather than states or state-action pairs. At the start of search, the search tree is initialised to contain only the root node, $\cl{T}\leftarrow\{s_0\}$. Figure \ref{fig:2:tree_notation} gives an example of how decision and chance nodes are depicted as circles and diamonds in diagrams throughout this thesis.
     \begin{defn}
         \label{def:2:search_tree}
-        A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, that is $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
+        A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau_{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
     \end{defn}
 
-    Because of the assumption that states and state-action pairs have a one-to-one correspondence with nodes in the search tree (Section \ref{sec:2-4-0-notation}), this thesis will often use $s$ and $(s,a)$ to refer to decision and chance nodes respectively. When neccessary to disambiguate between states, state-action pairs and nodes, the notation $\node(s)$ and $\node(s,a)$ will be used to indicate nodes explicitly. 
+    Each decision and chance node stores some algorithm-dependent data, typically including but not limited to a \textit{value estimate} and a \textit{visit count}. Let $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials. $\dnodedata{s}$ denotes the set of variables stored at the decision node $\node(s)$, and $\cnodedata{s,a}$ denotes the set of variables stored at the chance node $\node(s,a)$. For example $N(s)\in\dnodedata{s}$ and $N(s,a)\in\cnodedata{s,a}$.
 
-    % \begin{defn}
-    %     \label{def:2:cnode}
-    %     \label{def:2:dnode}
-    A \textit{decision node} refers to any state that is in the search tree: $s\in\cl{T}$. A \textit{chance node} refers to any state-action pair that is in the search tree: $(s,a)\in\cl{T}$. And a \textit{node} is used to refer to any decision or chance node in the tree. Sometimes the notation $\node(s)$ and $\node(s,a)$ will be used to make it clear that a node is being discussed, rather than a state or state-action pair.
-
-    Each decision and chance node will store some algorithm-dependent data, typically a \textit{value estimate} and a \textit{visit count}. $N(s)$ and $N(s,a)$ will denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials. $\dnodedata{s}$ is used to denote the set of values stored at node $\node(s)$, and $\cnodedata{s,a}$ for the set of values stored at node $\node(s,a)$. 
-
-    Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$.
-    % \end{defn}
+    Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$. For example, $\node(s)\dotchildren[a] = \node(s,a)$.
 
 
 
@@ -705,23 +697,23 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] Citations + Refs
+% [X] LitRev sync
 % [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Trial Based Heuristic Tree Search}
 \label{sec:2-4-1-thts}
 
-    \thtspp\ewe \cite{thtspp} is introduced in this subsection and provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates \mctsone\ewe algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alphago,alphago_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
+    \thtspp\ewe \cite{thtspp} provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates \mctsone\ewe algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alpha_go,alpha_go_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
 
-    Each trial will have an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-3-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Beyond the scope of this thesis, contexts are necessary to be able to implement any MCTS algorithm that requires per-trial state, for example Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
+    Each trial has an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-3-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Contexts allow algorithms to store additional information within a trial without altering the interface. Beyond the scope of this thesis, contexts enable algorithms that require additional per-trial state to be implemented in \thtspp, such as Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
     \begin{defn}
         \label{def:2:thts_context}
         A \textnormal{context} is an arbitrary key-value store used to store any per-trial data.
@@ -729,42 +721,44 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, where orange shows an example when \mctsmode\ewe is True, and blue shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes added; third shows that new nodes are initialised using the heuristic function $\Vinit$; and finally on the right, shows the backup phase, where the arrows directions are changed to show that information is being propogated back up the tree to update the values in the nodes (triangles). \todo{Add a ORANGE dashed arrow back from heuristic to selection to show the alternation when mcts mode is false.} \todo{update Vinit to Vheuristic in line with text}}
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, blue shows an example when \mctsmode\ewe is True, and orange shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes to be added; third shows that new nodes are initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, shows the backup phase, where the arrow directions are changed to show that information is being propagated back up the tree to update the values in the nodes (triangles).}
         \label{fig:2:thts}
     \end{figure}
 
-    The main four phases of a \thtspp\ewe trial are (depicted in Figure \ref{fig:2:thts}):
+    The main four steps performed during a \thtspp\ewe trial are (depicted in Figure \ref{fig:2:thts}):
     \begin{enumerate}
         \item  
-            \textit{Context sampling} - a \textit{context} is sampled for the trial;
+            \textit{Context Sampling} - a \textit{context} is sampled for the trial;
         \item 
-            \textit{Selection phase} - a trajectory is sampled using a \textit{search policy}, any newly visited states (and state-action pairs) are added to $\cl{T}$ as decision nodes (and chance nodes);\footnote{Note that the \thtspp\ewe selection phase encapsulates both the selection and expansion phases of \mctsone\ewe.}
+            \textit{Selection Step} - starting from a decision node $s$, an action is selected to reach a chance node $(s,a)$, and an outcome is sampled to reach the next decision node $s'$. $(s,a)$ and $s'$ are added to the search tree $\cl{T}$ if they were not already.
         \item 
-            \textit{Heuristic phase} - any new nodes added in the selection phase are initialised using a \textit{heuristic function}; 
+            \textit{Heuristic Step} - any new nodes added from the selection step are initialised using a \textit{heuristic function}; 
         \item 
-            \textit{Backup phase} - value estimates in the search tree are updated, along the path sampled in the selection phase. 
+            \textit{Backup Step} - value estimates in the search tree are updated, along the path sampled in the selection step(s). 
     \end{enumerate}
 
-    While the selection phase of THTS will sample a trajectory, alternating between selection and heuristic phases until a terminal state is reached, in \mctsone\ewe the selection phase ends once a a new decision node is added to the search tree. \thtspp\ewe uses a boolean flag \mctsmode\ewe to indicate which of these two criteria will be used to end the selection phase. Figure \ref{fig:2:thts} shows an example of a trial when \mctsmode\ewe is True (blue), and when it is False (orange).
+    Collectively, the selection and heuristic steps are referred to as the \textit{selection phase} of the trial, and the backup steps are collectively referred to as the \textit{backup phase}.
+
+    In \thtspp\ewe there are two options for when to progress from the selection phase to the backup phase, which is indicated by the boolean flag \mctsmode. The selection phase will always end if a terminal state is reached, which includes reaching the planning horizon. When \mctsmode\ewe is True, the selection phase will end earlier, once a new decision node is added to the search tree. Figure \ref{fig:2:thts} shows an example of a trial when \mctsmode\ewe is True (blue), and when it is False (orange).
     \begin{defn}
         \label{def:2:mctsmode}
-        When \mctsmode\ewe is True, the selection phase will end once a new decision node is added to the search tree. When \mctsmode\ewe is False, the selection phase will continue until a terminal state is reached, or the planning horizon is reached.
+        When \mctsmode\ewe is True, the selection phase will end once a new decision node is added to the search tree.
     \end{defn} 
 
-    There are two main benefits to running an algorithm in \mctsmode. The first is that it can use significantly less memory, which is a concern if using a large planning horizon and the tree search is going to run for a long time. The second is that if \mctsmode\ewe is used with an informative heuristic function, then it allows the algorithm to avoid wasting resources (time and memory) on parts of the search tree that are not promising. 
-    
-    In contrast, a random simulation is often used in \mctsone\ewe algorithms when no informative heuristic is available. In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because states that would have been visited in the simulation phase of \mctsone\ewe are added to the tree and avoids throwing away potentially useful information. \todo{Add rollout add cite (see mcgs paper)}
+    If the search is equipped with an informative heuristic function, then running with \mctsmode\ewe set to True can allow the algorithm to avoid wasting resources (time and memory) on parts of the search tree that are not promising. Moreover, if the search is using a large planning horizon or the search will run for a long time, then it may be necessary to run with \mctsmode\ewe set to True to avoid running out of memory.
 
-    %     @misc{graph_search,
-    %   author       = {Wu, David J.},
-    %   title        = {Monte-Carlo Graph Search from First Principles},
-    %   year         = {2023},
-    %   howpublished = {\url{https://github.com/lightvector/KataGo/blob/master/docs/GraphSearch.md}},
-    %   note         = {Accessed: 2026-03-19}
-    % }
-    \todo{write about graph mode and add cite}
-    - Graph mode
+    In contrast, a random \textit{rollout} is often used in \mctsone\ewe algorithms when no informative heuristic is available (for example Section \ref{sec:2-4-2-uct}). In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because it avoids throwing away potentially useful information from states visited during the rollout \cite{rollout_add,rollout_add_mcgs}.
 
+    \begin{figure}
+        % \centering\includegraphics[width=1.0\textwidth]{figures/ch2/transposition_table_example.pdf} 
+        \centering\includegraphics[width=1.0\textwidth]{figures/todo.jpg} 
+        \caption[A complication arising from the use of a transposition table.]{A complication arising from the use of a transposition table. Many MCTS algorithms use the ratio $\frac{N(s')}{N(s,a)}$ as an empirical estimate of transition probability $p(s'|s,a)$. Left: an example MDP with horizon $H=1$ where using this ratio to estimate transition probabilities gives the incorrect ratios. Right: the corresponding \textit{acyclic graph} created by running \thtspp\ewe on the MDP with \graphmode\ewe set to True and sampling actions uniformly. After 12 trials, the resulting visit counts at the leaf nodes are $N(s^1)=3,N(s^2)=6,N(s^3)=3$. The ratio of visit counts $\frac{N(s^1)}{N(s^0,a^1)}=\frac{1}{2}$ and $\frac{N(s^2)}{N(s^0,a^1)}=1$, which do not form an (empirical) probability distribution, and even if normalised do not give the correct uniform distribution over successor states. To fix this issue, the \textit{conditional visit counts} $N(s'|s,a)$ for $s'\in\suc(s,a)$ are needed instead, that keep track of the number of times $s'$ was sampled from the chance node $(s,a)$. In this example, the conditional visit counts at node $(s^0,a^0)$ would be $N(s^1|s^0,a^0)=3$ and $N(s^2|s^0,a^0)=3$, and give the correct ratios of $\frac{N(s^1|s^0,a^0)}{N(s^0,a^0)} = \frac{N(s^2|s^0,a^0)}{N(s^0,a^0)} = \frac{1}{2}$. That is, the ratios $\frac{N(s'|s,a)}{N(s,a)}$ correctly maintain an empirical estimate for the probability $p(s'|s,a)$, even when using a transposition table.}
+        \label{fig:2:transposition_table_example}
+    \end{figure}
+
+    If the unique state assumption (Section \ref{sec:2-4-0-notation}) is set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
+
+    Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} discusses the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
 
     To run an algorithm in the \thtspp\ewe schema, the following \textit{modules} and \textit{parameters} need to be specified. Algorithms specify the operation of each module:
     \begin{description}
@@ -773,37 +767,38 @@
         \item[Context Sampler:]
             A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
         \item[Action Selection (Search Policy):]
-            \todo{add sample action function. Say that it will be specified as a}
-            A policy $\pisearch$ used to \textit{select} actions at decision nodes;
+            A function $\selectaction$ which selects an action at a decision node. In this thesis, this will be specified as a function $\pisearch$, and \selectaction\ewe will return an action sampled from the search policy: $a\sim\pisearch(s)$;
         \item[(Optional) Outcome Sampler:]
-            A function \sampleoutcome\ewe that samples outcomes from chance nodes. By default, this will sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$ and this default will always be used in this thesis;
+            A function \sampleoutcome\ewe that samples outcomes from chance nodes. By default, this will sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$ and this default will always be used in this thesis\footnote{One may want to use a different \sampleoutcome\ewe function to implement \textit{double progressive widening} \cite{progressive_widen} for example.};
         \item[Backup functions:]
-            Two functions $\backupv$ and $\backupq$ which specifies how to update $\dnodedata{s}$ and $\cnodedata{s,a}$ respectively.
+            Two functions $\backupv$ and $\backupq$ which specify how to update $\dnodedata{s}$ and $\cnodedata{s,a}$ respectively.
     \end{description}
     
     Parameters are set on a per-environment basis:
     \begin{description}
         \item[(Optional) Heuristic functions:]
-            A functions $\Vinit$, $\Qinit$ and $\piinit$ are the heuristic functions. $\Vinit$ is used to initialise value estimates in $\dnodedata{s}$. $\Qinit$ and $\piinit$ can be used by the search policy to encorporate prior knowledge about unexplored actions;
+            The functions $\Vinit$, $\Qinit$ and $\piinit$ are the heuristic functions. $\Vinit$ is used to initialise value estimates in $\dnodedata{s}$. $\Qinit$ and $\piinit$ can be used by the search policy to incorporate prior knowledge about unexplored actions. If not specified then by default $\Vinit$ and $\Qinit$ are set to zero, and $\piinit$ is set to a uniform distribution;
         \item[Single Node Expansion:]
-            A boolean (which will also be denoted \mctsmode) specifying if \thtspp\ewe should operate in \mctsmode;
+            A boolean flag, \mctsmode, specifying whether \thtspp\ewe should only expand one decision node per trial;
+        \item[Transposition Table:]
+            A boolean flag, \graphmode, specifying whether \thtspp\ewe should use a transposition table to re-use nodes when the same state is reached via another path;
         \item[Planning horizon:]
-            A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$;
+            A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$\footnote{In this thesis, MDPs have a finite horizon $H$, so $H_{\thtspp}$ is somewhat redundant. However, it is useful in practice for environments with a long or infinite horizon, where a finite planning horizon is still required for the tree search.}.
     \end{description}
-
-    \todo{Add the weighting of heuristic funcitons in the backups}
     
-    Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is given below. Additionally, psuedocode is given in Listing \ref{lst:2:thts_trial}. \todo{This is not consistent with the text above right now, also specifiy initial tree is } $\cl{T}\leftarrow\{s_0\}$ \todo{somewhere}.
-    \begin{enumerate}
-        \item Firstly, a context is sampled using the $\samplecontext$ function, which is available to be used by any other function in the trial.
-        \item A trajectory is sampled $\tau_{:h}\sim\pisearch$ according to the search policy $\pisearch$ and \sampleoutcome. The search tree is updated to include any new nodes from the sampled trajectory, $\cl{T}\leftarrow\cl{T}\cup\tau_{:h}$.
-        \begin{itemize}
-            \item If running in \mctsmode, then $\tau_{:h}$ is such that $s_t\in\cl{T}$ for $t=0,\ldots,h-1$ and $s_h\not\in\cl{T}$, or $h=H_{\thtspp}$, or $s_h$ is terminal.
-            \item If not running in \mctsmode, then $h=H_{\thtspp}$, or $s_h$ is terminal.
-        \end{itemize}
-        \item The heuristic value function $\Vinit$ is used to initialise the value of any new decision nodes added to the search tree.
-        \item Finally, for the backup phase, the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_t,a_t}$ and $\dnodedata{s_t}$ for $t=h-1,\ldots,0$.
-    \end{enumerate}
+    Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
+    \begin{description}
+        \item[Sample Context:] At the start of the trial, a context is sampled using the $\samplecontext$ function, and the context is passed to all subsequent steps of the trial.
+        \item[Selection Phase:] A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $h=0$:
+        \begin{description}
+            \item[Selection Step:] Action $a_h$ is selected using $\selectaction(s_h)$, and an outcome $s_{h+1}$ is sampled using $\sampleoutcome(s_h,a_h)$.
+            \item[Heuristic Step:] If $s_{h+1}\not\in\cl{T}$, then $\dnodedata{s_{h+1}}$ is initialised using $\Vinit$, $\Qinit$, and $\piinit$. New nodes are added to the tree, $\cl{T}\leftarrow\cl{T}\cup\{(s_h,a_h),s_{h+1}\}$.
+            \item[] If $s_{h+1}\in\terminal$ or $h+1=H_{\thtspp}$, then proceed to the backup phase.
+            \item[] If $\mctsmode$ and $s_{h+1}$ was just added to the tree, then proceed to the backup phase.
+            \item[] Otherwise, increment $h$ and return to the selection step.
+        \end{description}
+        \item[Backup Phase:] The $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_i,a_i}$ and $\dnodedata{s_i}$ for $i=h,\ldots,0$.
+    \end{description}
             
     
     \begin{Listing}
@@ -812,41 +807,50 @@ def run_trial(search_tree: $\cl{T}$,
               search_policy: $\pisearch$, 
               heuristic_fn: $\Vinit$,
               heuristic_action_fn: $\Qinit$,
-              mcts_mode,
+              heuristic_policy: $\piinit$,
+              single_node_expansion,
               planning_horizon: $H_{\thtspp}$):
-    # context sampling
     ctx = sample_context()
-    # simulation phase
-    $\tau_{:h}$ = sample_trajectory($\cl{T}$, $\pisearch$, $\Qinit$, mcts_mode, $H_{\thtspp}$, ctx)
-    $\cl{T} \leftarrow \cl{T} \cup \tau_{:h}$
-    # heuristic phase
-    node$(s_h)$.V $\leftarrow \Vinit(s_h$, ctx$)$
-    # backup phase
-    for i in $\{h-1,h-2,\ldots,1,0\}$:
-        node$(s_i,a_i)$.backup_q(node$(s_i,a_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, ctx)
-        node$(s_i)$.backup_v(node$(s_i)\dotchildren$, $\tau_{:h}$, $\Vinit(s_h)$, ctx)
+    $\tau_{:h}$ = selection_phase($\cl{T}$, $\pisearch$, $\Vinit$, $\Qinit$, $\piinit$, single_node_expansion, $H_{\thtspp}$, ctx)
+    backup_phase($\tau_{:h}$, ctx)
 
 def sample_trajectory(search_tree: $\cl{T}$, 
                       search_policy: $\pisearch$, 
+                      heuristic_fn: $\Vinit$,
                       heuristic_action_fn: $\Qinit$,
-                      mcts_mode,
+                      heuristic_policy: $\piinit$,
+                      single_node_expansion,
                       planning_horizon: $H_{\thtspp}$,
                       ctx):
     i = 0
-    while (not mcts_mode or $s_{\texttt{i}}\in\cl{T}$) 
+    while (not single_node_expansion or $s_{\texttt{i}}\in\cl{T}$) 
            and (i < $H_{\thtspp}$) 
-           and (not terminal($s_{\texttt{i}}$)):
-        $a_{\texttt{i}} \sim \pisearch(\cdot | s_{\texttt{i}},$ ctx$)$ 
+           and ($s_{\texttt{i}} \not\in \terminal$):
+        # selection step
+        $a_{\texttt{i}} \leftarrow$ select_action($s_{\texttt{i}}$, $\Qinit$, $\piinit$, ctx) 
         $r_{\texttt{i}} \leftarrow R(s_{\texttt{i}}, a_{\texttt{i}})$
         $s_{\texttt{i+1}} \leftarrow$ sample_outcome$(s_{\texttt{i}}$, $a_{\texttt{i}}$, ctx$)$
+        # heuristic step
+        if $s_{\texttt{i+1}} \not\in \cl{T}$:
+            $\dnodedata{s_{\texttt{i+1}}} \leftarrow \Vinit(s_{\texttt{i+1}})$
+        $\cl{T} \leftarrow \cl{T} \cup \{(s_{\texttt{i}}, a_{\texttt{i}}), s_{\texttt{i+1}}\}$
         i += 1
     return $(s_0,a_0,r_0,s_1,\ldots,s_{\texttt{i-1}}, a_{\texttt{i-1}},r_{\texttt{i-1}}, s_{\texttt{i}})$
+
+def select_action($s$, $\Qinit$, $\piinit$, ctx):
+    $a \sim \pisearch(\cdot | s, \Qinit, \piinit, \texttt{ctx})$
+    return $a$
 
 def sample_outcome($s$, $a$, ctx):
     $s' \sim p(\cdot | s, a)$
     return $s'$
+
+def backup_phase($\tau_{:h}$, ctx)
+    for i in $\{h-1,h-2,\ldots,1,0\}$:
+        node$(s_i,a_i)$.backup_q(node$(s_i,a_i)\dotchildren$, $\tau_{i:h}$, ctx)
+        node$(s_i)$.backup_v(node$(s_i)\dotchildren$, $\tau_{i:h}$, $\Vinit(s_h)$, ctx)
         \end{lstlisting}
-        \caption{Psuedocode for running a trial in \thtspp.}
+        \caption{Pseudocode for running a trial in \thtspp.}
         \label{lst:2:thts_trial}
     \end{Listing}
 
@@ -856,7 +860,7 @@ def sample_outcome($s$, $a$, ctx):
 
 
     
-% [ ] First Draft
+% [X] First Draft
 % [ ] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
@@ -870,30 +874,24 @@ def sample_outcome($s$, $a$, ctx):
 \subsection{Upper Confidence Bounds Applied to Trees (UCT)}
 \label{sec:2-4-2-uct}
 
+    \todo{Add a paragraph on full backup necessary for UCT in graph mode, but just cite the reference for this?}
+
     Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
 
-    In UCT \mctsmode\ewe is set to True. And at each decision and node of UCT a sample average $\Vuct$ and $\Quct$ is used for a value estimate. The search policy that UCT then follows is given by:
-    \begin{align}
-        \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
-    \end{align}
-    where $\buct$ is a \textit{bias} parameter that controls the amount of exploration UCT will perform. In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once to obtain an initial value estimate, and as such, setting $\Qinit$ is unnecessary for UCT.   
+    The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. And the parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy. Typically \mctsmode\ewe is set to True for UCT, and this section will assume that is the case.
 
-    \todo{Added this quickly when writing ch4}
-    Because the best setting of the bias parameter will depend on the scale of the reward function, \citet{thts} suggest setting the bias parameter $\buct$ adaptively to $\Vuct(s)$, which is defined in Equation (\ref{eq:2:uct_backup_v}) below. In this thesis UCT can be considered to have a boolean parameter \texttt{adaptive\_bias}, where an additional factor of $\Vuct(s)$ is added to the confidence interval term as follows:
+    The search policy that UCT follows is given by:
     \begin{align}
-        \piuct(s) = \argmax_{a\in\cl{A}} \Quct(s,a) + \buct \Vuct(s) \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:adaptive_uct_policy}
+        \Quctnorm(s,a) &= 
+        \begin{cases}
+            \frac{\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)}{\max_{a\in\cl{A}}\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)} & \text{if } \normalisedq \\
+            \Quct(s,a) & \text{otherwise}
+        \end{cases} \\
+        \piuct(s) &= \argmax_{a\in\cl{A}} \Quctnorm(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
     \end{align}
+    In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once before any action is selected for a second time. The heuristic functions $\Qinit$ and $\piinit$ are not used by UCT.  
     
-    There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c} \hide{\todo{find another paper or two that is just an application of alphazero?}}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,offlineonlineuct,prost,bus}. When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$.
-
-    Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, meaning that a decision node for $s_h$ is added to the search tree, and needs to be initialised with $\Vinit$. When using a rollout policy, the truncated trajectory is completed using the rollout policy, $\tau_{h:H}\sim\pirollout$, to provide the Monte Carlo estimate at $s_h$:
-    \begin{align}
-        \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{H-1} r_i. \label{eq:2:rollout_value_estimate}
-    \end{align}
-
-    If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}.
-
-    In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates. Letting heuristic value for the leaf node be $\tilde{r} = \Vinit(s_h)$, they are computed as follows:
+    Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, and let $\tilde{r} = \Vinit(s_h)$. In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates incrementally. For $t=h,\ldots,0$:
     \begin{align}
         \Quct(s_t,a_t) &\leftarrow 
             \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
@@ -901,7 +899,29 @@ def sample_outcome($s$, $a$, ctx):
         \Vuct(s_t) &\leftarrow 
             \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
                 + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
-    \end{align}  
+    \end{align}   
+    
+    There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,offlineonlineuct,prost,bus}. 
+    
+    When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$. A rollout completes the trajectory from the selection phase, $\tau_{h:h'}\sim\pirollout$, where $h'=H_{\thtspp}$ or $s_{h'}\in\terminal$. The estimate used for the heuristic value function is then the sum of the rewards from the rollout:
+    \begin{align}
+        \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{h'-1} r_i. \label{eq:2:rollout_value_estimate}
+    \end{align}
+
+    If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}.
+
+    Note that when a decision node $s$ is first visited, the UCT policy in Equation (\ref{eq:2:uct_policy}) is uniformly random. As a result, if $\Vinit(s)=0$ is used with \mctsmode\ewe set to False, \bd{the resulting algorithm is equivalent to using a random rollout policy where nodes are also added to the search tree for states visited during the rollout.}
+
+    Finally, AlphaGo(Zero) \cite{alpha_go,alpha_go_zero} popularised a variant of UCT, often referred to as PUCT (Predictor-UCT) \todo{make sure this is in abbrv}. In PUCT, the logarithmic confidence interval term in Equation (\ref{eq:2:uct_policy}) is replaced by a polynomial term \cite{poly_uct}, and these terms are weights by the \textit{predictor} values $\piinit(a|s)$. That is the PUCT selection policy is given by:
+    \begin{align}
+        \piuct(s) &= \argmax_{a\in\cl{A}} \Quctnorm(s,a) + \buct \piinit(a|s) \frac{\sqrt{N(s)}}{N(s,a)+1}. \label{eq:2:puct_policy}
+    \end{align}
+
+    \todo{Update notation to use PUCT instead of UCT acronym}
+
+    Notably, by design, PUCT does not enforce every action to be selected at least once before any action is selected for a second time, and now the heuristic action function $\Qinit$ can be used in place of $\Quct(s,a)$ when $(s,a)$ is not yet in the search tree.
+
+    \todo{This entire section was written very tired and late at night, so probably needs to be revised quite a bit.}
 
 
 

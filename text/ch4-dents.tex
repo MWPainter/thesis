@@ -67,6 +67,14 @@
 
 
 
+
+
+    \todo{Add heuristic into backups with a weighting term for when using mcts mode.}
+
+
+
+
+
 \section{Introduction and Motivation}
 \label{sec:4-1-intro}
 
@@ -278,8 +286,7 @@
         \begin{align}
             \mvbts(s) = \argmax_{a\in\cl{A}} N(s,a). \label{eq:4:mvbts}
         \end{align}
-
-        \newcommand{\norm}{{\text{norm}}}
+        
         Similarly to UCT the best setting of the temperature function will be dependent on the reward scaling. Rather than adding a scaling factor to this parameter, BTS can operate in an \texttt{adaptive\_policy} mode, where the Q-values are normalised to the unit interval before they are used in the policy:
         \begin{align}
             \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbts^{\norm}(s,a)\right)\right). \\
