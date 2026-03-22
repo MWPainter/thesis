@@ -1,6 +1,7 @@
 % List of abbreviations
 \begin{mclistof}{List of Abbreviations}{3.2cm}
     \item[BTS] Boltzmann Tree Search.
+    \item[CCS] Convex Coverage Set.
     \item[CHVI] Convex Hull Value Iteration.
     \item[CHVS] Convex Hull Value Set.
     \item[CMAB] Contextual Multi-Armed Bandit (problem).
@@ -8,15 +9,19 @@
     \item[DENTS] Decaying ENtropy Tree Search
     \item[EMAB] Exploring Multi-Armed Bandit (problem).
     \item[MAB] Multi-Armed Bandit (problem). 
+    \item[MCCS] Minimal Convex Coverage Set.
     \item[MCTS] Monte Carlo Tree Search.
     \item[\mctsone] A specific and common presentation of Monte Carlo Tree Search, presented in Section \ref{sec:2-4-thts}.
     \item[MDP] Markov Decision Process.
     \item[MENTS] Maximum ENtropy Tree Search.
     \item[MOMDP] Multi-Objective Markov Decision Process.
-    \item[THTS] Trial-based Heuristic Tree Search.
+    \item[MORL] Multi-Objective Reinforcement Learning.
+    \item[PF] Pareto Front.
+    \item[PUCT] Predictor-UCT. 
+    \item[THTS] Trial-Based Heuristic Tree Search.
     \item[\thtspp] An extension of THTS used in this thesis.
     \item[UCB] Upper Confidence Bound (algorithm).
-    \item[UCT] Upper Confidence Bound applied to Trees.
+    \item[UCT] Upper Confidence Bound Applied to Trees.
 \end{mclistof} 
 
 
@@ -29,15 +34,15 @@
     \item[$\one$] 
         The indicator function, where $\one(A)=1$ when $A$ is true, and $\one(A)=0$ when $A$ is false. 
     \item[$\hat{A}$] 
-        The hat notation is used to denote an estimate, i.e. $\hat{A}$ is an estimate for some optimal value $A^*$
+        The hat notation is used to denote an estimate, i.e. $\hat{A}$ is an estimate for some value $A$ or some optimal value $A^*$
     \item[$\bar{A}$] 
-        The bar notation is used to denote sample averages, i.e. $\bar{A}$ is a sample average of a number of samples $A_1,...,A_k$. I.e. $\bar{A}=\frac{1}{n}\sum_{i=1}^k A_i$.
+        The bar notation is used to denote sample averages, $\bar{A}$ is a sample average of a number of samples $A_1,...,A_k$. i.e. $\bar{A}=\frac{1}{k}\sum_{i=1}^k A_i$.
     \item[$\tilde{A}$] 
-        The tilde notation is used to denote a function approximator, such as a neural network.
+        The tilde notation is used to denote a function approximation, such as a neural network.
     \item[$\cl{A}$] 
         Calligraphic font is used to denote variables that are sets or tuples (ordered sets).
     \item[$\bff{A}$] 
-        Bolt font is used to denote vectors, and $A_i$ is used to denote the $i$th component of the vector $\bff{A}$.
+        Bold font is used to denote vectors, and $A_i$ is used to denote the $i$th component of the vector $\bff{A}$.
     \item[$\texttt{A}$]
         Typewriter text is used to refer to variables relating to an algorithm (or the analysis of an algorithm).
     \item[$\bfcl{A}$] 
@@ -45,9 +50,9 @@
     \item[$\bb{E}$] 
         The expectation operator. $\bb{E}[f]$ denotes the expectation of a distribution $f$, and $\bb{E}_{x\sim f}[g(x)]$ denotes the expected value of $g(x)$ under the distribution $f$.
     \item[$x\sim f$] 
-        If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled the distribution $f$.
+        If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled from the distribution $f$.
     \item[$O(f(x))$]
-        \todo{Big-O and Big-Omega notation?} 
+        Big-O notation: $g(x) = O(f(x))$ if there exist constants $c > 0$ and $x_0$ such that $|g(x)| \leq c \cdot f(x)$ for all $x \geq x_0$. Used to describe an asymptotic upper bound on the growth rate of a function.
     % \\
     % %%%%%
     % % MABs - notation is local to background section + 
@@ -88,7 +93,7 @@
         A (finite) set of actions.
     \item[$a_t$]
         The action at the $t$th timestep of a trajectory.
-    \item[$D$]:
+    \item[$D$]
         The dimension of rewards in a MOMDP.
     \item[$H$]
         The finite-horizon time bound of an MDP.
@@ -98,7 +103,7 @@
         A Multi-Objective Markov Decision Process, which is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$.
     \item[$p$] 
         The next-state transition distribution of an MDP. $p(s' | s,a)$ is the probability of transitioning to state $s'$ from state $s$ by taking action $a$.
-    \item[$\pi$]:
+    \item[$\pi$]
         A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$. That is, $\pi(a|s)$ is the probability of taking action $a$ at state $s$. $\pi(s)=a'$ is used a shorthand for $\pi(a|s)=\one[a=a']$.
         % \todo{probably dont need this, not going to use non-locally}
     \item[$R$] 
@@ -115,8 +120,8 @@
         $s_0\in\cl{S}$ is the initial starting state of an MDP.
     \item[$s_t$]
         The state at the $t$th timestep of a trajectory.
-    \item[$\terminal(s)$]
-        Denotes if a state $s$ is terminal or not. That is, if the transition distribution and reward function of the MDP is such that once reached, the state will never be left and no more reward will be received.
+    \item[$\terminal$]
+        $\terminal\subseteq\cl{S}$ is the set of terminal states. A state is terminal if the transition distribution and reward function of the MDP are such that once reached, the state will never be left and no more reward will be received.
     \item[$\tau$]
         A trajectory, or sequence, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$: $\tau = (s_0, a_0, r_0, s_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$.
     \item[$\bff{\tau}$]
@@ -168,63 +173,26 @@
     \item[$\pi_{\sft}^*$]
         The optimal soft policy, that maximises the soft objective function $J_{\sft}(\pi)$.
     \item[$Q_{\sft}^*$]
-        The optimal soft Q-value function. $Q^*(s,a;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$ and taking action $a_t=a$. 
+        The optimal soft Q-value function. $Q_{\sft}^*(s,a;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$ and taking action $a_t=a$. 
     \item[$Q_{\sft}^{\pi}$]
         The soft Q-value function of a policy $\pi$. $Q_{\sft}^{\pi}(s,a;t)$ is the expected value of the policy from $s_t=s$, starting with action $a_t=a$, with an addition of the entropy of the policy weighted by the temperature $\alpha$.
     \item[$V_{\sft}^*$]
-        The optimal soft value function. $V^*(s;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$. 
+        The optimal soft value function. $V_{\sft}^*(s;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$. 
     \item[$V_{\sft}^{\pi}$]
         The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ is the expected value of the policy from $s_t=s$, with an addition of the entropy of the policy weighted by the temperature $\alpha$.
-    \\
-    %%%%%
-    % MORL
-    %%%%%
-    \item[{\parbox[t]{\textwidth}{
-        \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-5-morl})}\hfill\hfill
-      }}]
-    \item[$CCS(\Pi)$] 
-        A convex coverage set of policies, which contains at least one policy that maximises the linear utility $u_{\lin}(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
-    \item[$CCS_{\min}(\Pi)$]
-        The minimal convex coverage set of policies, which has no redundant policies and for each policy in $CCS_{\min}(\Pi)$ there is some weight that it uniquely (with respect to $CCS_{\min}(\Pi)$) obtains the optimal linear utility.
-    \item[$CH(\Pi)$] 
-        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the linear utility function $u_{\lin}$. $CH(\Pi)=U(\Pi;u_{\lin})$.
-    \item[$CS(\Pi;u)$] 
-        A coverage set of policies, which contains at least one policy that maximises the utility $u(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
-    \item[$\cprune$] 
-        An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
-    \item[$\Delta^D$] 
-        The $D$ dimensional simplex, or, the set of possible weightings over the $D$ objectives of a MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}$.
-    \item[$\Pi$] 
-        The set of all possible policies in a MOMDP.
-    \item[$\bff{Q}^{\pi}$]
-        The multi-objective Q-value function of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative vector reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
-    \item[$U(\Pi;u)$] 
-        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the utility function $u$. Each policy in $U(\Pi;u)$ achieves a maximal utility for some weighting over the objectives.
-    \item[$u$] 
-        A utility function, mapping multi-objective values to scalar values, that depends on a weighting over objectives. The multi-objective value $\bff{V}^{\pi}(s,a;t)$ is mapped to $u(\bff{V}^{\pi}(s,a;t);\bff{w})$, where $\bff{w}$ is a weighting over the objectives.
-    \item[$u_{\lin}$]
-        The linear utility function: $u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}$.
-    \item[$\bff{V}^{\pi}$]
-        The multi-objective value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
-    \item[$\valset(\Pi')$] 
-        The set of multi-objective values obtained by a set of policies $\Pi'$.
-    \item[$\bff{w}$] 
-        A weighting over objectives that quantifies preferences over the multiple objectives, to be used in a utility function.
-    \\
+        \\
     %%%%%
     % THTS
     %%%%%
     \item[{\parbox[t]{\textwidth}{
         \Large\textbf{Trial Based Heuristic Tree Search (Section \ref{sec:2-4-thts})}\hfill\hfill
-      }}]
+        }}]
     \item[$\backupv$]
         Updates the values at a decision node in the backup phase of a trial \thtspp, using the decision node's children, the trajectory sampled for the trial and the heuristic value function.
     \item[$\backupq$] 
         Updates the values at a chance node in the backup phase of a trial \thtspp, using the chance node's children, the trajectory sampled for the trial and the heuristic value function.
     \item[$H_{\thtspp}$]
         The planning horizon used in \thtspp, with $H_{\thtspp}\leq H$.
-    \item[\mctsmode] 
-        Specifies if \thtspp\ewe will sample a trajectory such that only one decision node is added to the search tree per trial. If not running in \mctsmode\ewe the \thtspp\ewe will sample a trajectory until the planning horizon $H_{\thtspp}$.
     \item[$N(s)$]
         The number of visits at the decision node corresponding to state $s$.
     \item[$N(s,a)$]
@@ -238,64 +206,67 @@
     \item[$\node(s,a)$] 
         The chance node corresponding to the state-action pair $(s,a)$.
     \item[$\node(s,a)\dotchildren$]
-        The set of decision nodes that are children of $\node(s,a)$.
+        \hspace{0.25cm} The set of decision nodes that are children of $\node(s,a)$.
     \item[$\cnodedata{s,a}$] 
-        The set of variables stored at decision node $\node(s,a)$, typically used for estimating Q-values.
+        The set of variables stored at chance node $\node(s,a)$, typically used for estimating Q-values.
+    \item[$\piinit$]
+        A heuristic policy, which can be used by the search policy to utilise prior knowledge of the environment.
     \item[$\pisearch$]
         The search policy used in \thtspp\ewe to sample a trajectory in the selection phase.
     \item[$\Qinit$]
         The heuristic action function used in \thtspp, used to provide a Q-value estimate for any state-action pairs that aren't in the search tree.
     \item[$\samplecontext$]
-        A function used in \thtspp\ewe that creates a context, or key-value story, and samples any initial values to be stored in the context.
+        A function used in \thtspp\ewe that creates a context, or key-value store, and samples any initial values to be stored in the context.
     \item[$\sampleoutcome$]
         A function used in \thtspp\ewe to sample outcomes (successor states) from the environment (MDP).
+    \item[$\selectaction$]
+        A function used in \thtspp\ewe to select an action at a decision node.
+    \item[\mctsmode] %single_node_expansion
+        \hspace{1.35cm} Specifies if \thtspp\ewe samples a trajectory such that only one decision node is added to the search tree per trial. If not running with \mctsmode\ewe set, \thtspp\ewe samples a trajectory until a terminal state or the planning horizon $H_{\thtspp}$ is reached.
     \item[$\cl{T}$] 
-        The \thtspp\ewe search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. 
+        The \thtspp\ewe search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. Initially it consists of the root node, and new nodes are added from the trajectories/trials sampled in the selection phase.
+    \item[\graphmode] %transposition_table
+        \hspace{1cm} Specifies if \thtspp\ewe uses a transposition table to store and re-use the decision nodes of the search tree when they are reached again via another path.
     \item[$\Vinit$]
         The heuristic value function used in \thtspp, used to initialise the value of a new decision node. 
-    %
-    %
-    %
-    %
-    %
-    %
-    % \\
-    % %%%%%
-    % % UCT
-    % %%%%%
-    % \item[{\parbox[t]{\textwidth}{
-    %     \Large\textbf{Upper Confidence Bound applied to Trees (Section \ref{sec:2-4-2-uct})}\hfill\hfill
-    % }}]
-    % \item[$\pirollout$] 
-    %     A policy used to sample a trajectory that is used to estimate the value of a state being added to a search tree.
-    % \item[$\piuct$] 
-    %     The search policy used in UCT.
-    % \item[$\Quct(s,a)$] 
-    %     The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.
-    % \item[$\hat{V}^{\pirollout}(s)$] 
-    %     An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialised the value of a state being added to the search tree.
-    % \item[$\Vuct(s)$] 
-    %     The sample-average value estimate used to estimate the value at a decision node $s$ in UCT. 
-    %
-    %
-    %
-    % \\
+    \\
+    %%%%%
+    % UCT
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Upper Confidence Bound applied to Trees (Section \ref{sec:2-4-2-uct})}\hfill\hfill
+    }}]
+    \item[$\buct$]
+        The bias parameter used in UCT to control exploration.
+    \item[$\normalisedq$]
+        Specifies if the Q-values are linearly normalised (between 0 and 1) by the UCT search policy to select actions.
+    \item[$\pirollout$] 
+        A policy used to sample a trajectory that is used to estimate the value of a state being added to a search tree.
+    \item[$\piuct$] 
+        The search policy used in UCT.
+    \item[$\Quct(s,a)$] 
+        The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.
+    \item[$\Quctnorm(s,a)$] 
+        The optionally linearly normalised (between 0 and 1) Q-value. Used by the UCT search policy to select actions. If $\normalisedq$ is False, then $\Quctnorm(s,a)=\Quct(s,a)$. 
+    \item[$\hat{V}^{\pirollout}(s)$] 
+        An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialise the value of a state being added to the search tree.
+    \item[$\Vuct(s)$] 
+        The sample-average value estimate used to estimate the value at a decision node $s$ in UCT. 
+    \\
     %%%%%
     % MENTS
     %%%%%
     \item[{\parbox[t]{\textwidth}{
         \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-3-ments})}\hfill\hfill
     }}]
-    \item[TODO]
-        \todo{Clean up notation used for maximum entropy tree search}
-    \item[$\alpha_{\ments}$] 
+    \item[$\alphaments$] 
         The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
-    \item[$\epsilon$]
+    \item[$\epsments$]
         An exploration parameter used in MENTS.
-    \item[$\lambda_s$] 
-        An exploration parameter used in MENTS.
+    \item[$\lambda(s,x)$] 
+        A decaying function used to control and anneal exploration in MENTS. $\lambda(s,x) = \min\left(1,\frac{x}{\log(e+N(s))}\right)$.
     \item[$\tilde{\pi}$] 
-        A policy (neural) network, used to initialise soft Q-value estimates in MENTS, if available. 
+        A policy neural network, used to initialise soft Q-value estimates in MENTS, if available. 
     \item[$\piments$] 
         The search policy used in MENTS.
     \item[$\Qments(s,a)$] 
@@ -304,6 +275,55 @@
         A function approximation to $V^*$.
     \item[$\Vments(s)$] 
         A soft value estimate at the decision node $s$ in MENTS.
+    \\
+    %%%%%
+    % MORL
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-5-morl})}\hfill\hfill
+      }}]
+    \item[$CCS(\Pi)$] 
+        A convex coverage set of policies, which contains at least one policy that maximises the linear utility $u_{\lin}(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
+    \item[$MCCS(\Pi)$]
+        The minimal convex coverage set of policies, which has no redundant policies and for each policy in $MCCS(\Pi)$ there is some weight that it uniquely (with respect to $MCCS(\Pi)$) obtains the optimal linear utility.
+    \item[$CH(\Pi)$] 
+        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the linear utility function $u_{\lin}$. $CH(\Pi)=U(\Pi;u_{\lin})$.
+    \item[$CS(\Pi;u)$] 
+        A coverage set of policies, which contains at least one policy that maximises the utility $u(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
+    \item[$\cprune$] 
+        An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
+    \item[$\Delta^D$] 
+        The $D$ dimensional simplex, or, the set of possible weightings over the $D$ objectives of a MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}$.
+    \item[$\Pi$] 
+        The set of all possible policies in a MOMDP.
+    \item[$PF(\Pi)$]
+        The Pareto front of the set of policies $\Pi$.
+    \item[$\bff{Q}^{\pi}$]
+        The multi-objective Q-value function of a policy $\pi$. $\bff{Q}^{\pi}(s,a;t)$ denotes the expected cumulative vector reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
+    \item[$U(\Pi;u)$] 
+        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the utility function $u$. Each policy in $U(\Pi;u)$ achieves a maximal utility for some weighting over the objectives.
+    \item[$u$] 
+        A utility function, mapping multi-objective values to scalar values, that depends on a weighting over objectives. The multi-objective value $\bff{V}^{\pi}(s;t)$ is mapped to $u(\bff{V}^{\pi}(s;t);\bff{w})$, where $\bff{w}$ is a weighting over the objectives.
+    \item[$u_{\lin}$]
+        The linear utility function: $u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}$.
+    \item[$\bff{V}^{\pi}$]
+        The multi-objective value of a policy $\pi$. $\bff{V}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
+    \item[$\valset(\Pi')$] 
+        The set of multi-objective values obtained by a set of policies $\Pi'$.
+    \item[$\bff{w}$] 
+        A weighting over objectives that quantifies preferences over the multiple objectives, to be used in a utility function.
+    % \\
+    % %%%%%
+    % % CHVI
+    % %%%%%
+    % \item[{\parbox[t]{\textwidth}{
+    %     \Large\textbf{Convex Hull Value Iteration \\(Section \ref{sec:2-5-1-chvi})}\hfill\hfill
+    %   }}]
+    % \item[Q value set]
+    % \item[Scalar Q value]
+    % \item[V value set]
+    % \item[pi chvi]
+    % \item[v bot, reference point] 
 \end{mclistof} 
 
 \todo{add MENTS, UCT, BTS, DENTS, and all of ch4 stuff}

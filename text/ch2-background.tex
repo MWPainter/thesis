@@ -1,25 +1,14 @@
-% \begin{savequote}[8cm]
-% Alles Gescheite ist schon gedacht worden.\\
-% Man muss nur versuchen, es noch einmal zu denken.
-
-% All intelligent thoughts have already been thought;\\
-% what is necessary is only to try to think them again.
-%   \qauthor{--- Johann Wolfgang von Goethe \cite{von_goethe_wilhelm_1829}}
-% \end{savequote}
 
 
 
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -40,12 +29,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
 % [X] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -53,7 +42,7 @@
 
     \minitoc
 
-    This chapter introduces the fundamental concepts that will be used throughout this thesis, in particular Section \ref{sec:2-4-1-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
+    This chapter introduces the fundamental concepts which are used throughout this thesis, in particular Section \ref{sec:2-4-1-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
 
     Section \ref{sec:2-1-mab} briefly covers Multi-Armed Bandit problems, which are commonly used to study decision making algorithms and as a building block in Monte Carlo Tree Search methods. In particular, \textit{Contextual} Multi-Armed Bandit problems (Section \ref{sec:2-1-2-contextual-mab}) are covered, which will be relevant in the design and analysis of the multi-objective algorithms discussed in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. 
     
@@ -61,11 +50,9 @@
     
     Section \ref{sec:2-4-thts} covers the Monte Carlo Tree Search framework which will be used for solving sequential decision-making problems. 
 
-    Section \ref{sec:2-5-morl} covers the Multi-Objective Reinforcement Learning framework, which is used to study sequential decision-making algorithms with multiple objectives.
+    Finally, Section \ref{sec:2-5-morl} covers the Multi-Objective Reinforcement Learning framework, which is used to study sequential decision-making algorithms with multiple objectives.
 
-    \todo{maybe move Alias method to be a section in Chapter 4? All of the other background sections are relevant to at least an entire Chapter, whereas the Alias method is only relevant in a small subsection of Chapter 4}
-
-    Finally, Section \ref{sec:2-6-sampling} discusses sampling from categorical distributions efficiently.
+    % Finally, Section \ref{sec:2-6-sampling} discusses sampling from categorical distributions efficiently.
 
 
 
@@ -80,12 +67,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
 % [X] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -96,7 +83,7 @@
     
     The MAB problem was first considered by \citet{mab_og} in 1952, in the context of clinical trials. In a clinical trial, each patient is treated with one of two possible treatments, where the effectiveness of each treatment is unknown. In this setting, it is essential that the best treatment is given to as many patients as possible, while each treatment needs to be considered to determine its effectiveness. The balance between \textit{exploring} to find the best treatment (arm) and \textit{exploiting} the best treatment (arm) is known as the \textit{exploration-exploitation trade-off}.
 
-    The remainder of this section will formalise the MAB problem, give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}, and consider two variations on the MAB problem (Sections \ref{sec:2-1-1-exploring-mab} and \ref{sec:2-1-2-contextual-mab}) that will be relevant in this thesis.
+    The remainder of this section will formalise the MAB problem, give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}, and consider two variations on the MAB problem (Sections \ref{sec:2-1-1-exploring-mab} and \ref{sec:2-1-2-contextual-mab}) that are relevant in this thesis.
 
 
 
@@ -106,12 +93,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
 % [X] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -168,19 +155,17 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
 % [X] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Exploring Bandits}
 \label{sec:2-1-1-exploring-mab}
-
-    \todo{update litrev table for all of the ch2 cites, and update writing about them if necessary (might be worth writing the theory results for exploring bandits) - at least would like to make sure know what the simple regret and cumulative regret results are}
 
     In the pure exploration problem for $K$-armed bandits \cite{exploring_bandit}, the format of each round is changed slightly. The agent still pulls an arm each round and receives a reward from the environment, but after, the agent is given an opportunity to recommend which arms are the best. This better reflects scenarios where time is spent planning before any action is taken in the real world. Because the agent is only assessed on the quality of the recommendations, the agent is free to purely explore using its arm pulls and only needs to exploit when providing a recommendation. 
 
@@ -212,13 +197,6 @@
         \end{align}
     \end{defn}
 
-    \todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
-    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,\ldots,K\}$ is given by:
-    % \begin{align}
-    %     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
-    % \end{align}
-    % where again $\mu^* = \max_i \mu(i)$.
-
     \citet{exploring_bandit} analyse a range of exploration and recommendation strategies in their work. Two of the recommendation strategies considered are the \textit{empirical best arm} (EBA) and \textit{most played arm} (MPA):
     \begin{align}
         x^m_{\eba} &= \argmax_{i\in\{1,..,K\}} \bar{y}^m(i), \label{eq:2:eba_arm} \\
@@ -243,11 +221,11 @@
 % [X] First Draft
 % [X] AI proofread/grammar check
 % [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
+% [X] Spell check
+% [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -300,7 +278,7 @@
         where $\mu^*(w) = \sup_i \mu(w,i)$.
     \end{defn}
 
-    \todo{Add a note referencing Contextual Zooming and it is provided in ch5.}
+    The \textit{contextual zooming} algorithm \cite{cz} is an algorithm for CMAB problems which is presented where relevant in \todo{ref to where it got updated and placed}.
     
     
 
@@ -321,12 +299,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
 % [X] LitRev sync
 % [X] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -413,12 +391,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
+% [X] TODOs
+% [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -437,11 +415,11 @@
     
     Figure \ref{fig:2:rl_overview} depicts the classical reinforcement learning setting (in black) where the agent interacts with the environment directly, and this alternative setting (in blue) where the agent is equipped with a simulator to plan and explore, until a user queries the agent for a recommendation. This perspective shift changes the nature of the exploration-exploitation trade off, almost separating the two issues. During the learning phase there is a greater emphasis on exploring, while recommendations are concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
-    % Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research quesitons around exploration: \exploreq. 
+    % Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
     Following on from Section \ref{sec:2-2-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning and covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning. Finally, Section \ref{sec:2-3-1-merl} covers \textit{maximum-entropy reinforcement learning}.
     
-    The value of a policy $\pi$ is the expected cumulative reward that will be obtained by following the policy:
+    The value of a policy $\pi$ is the expected cumulative reward that is obtained by following the policy:
     %
     \begin{defn}
         \label{def:2:value}
@@ -516,12 +494,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
+% [X] TODOs
+% [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -615,12 +593,12 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
+% [X] TODOs
+% [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
@@ -635,7 +613,7 @@
 
     When considering MDPs with large state-action spaces, using tabular dynamic programming methods becomes infeasibly slow. One approach for handling large state-action spaces is to use \textit{heuristic methods} that consider a subset of the state-action space and utilise heuristic estimates for the value of states. Often these heuristic methods build a \textit{search tree} from the initial state of the MDP.
 
-    Monte Carlo Tree Search (MCTS) refers to heuristic algorithms that build a search tree using \textit{Monte Carlo Trials}, where nodes are added to the tree from randomly sampled trajectories. Two advantages of using MCTS methods in the modern day are: that they allow for statistical analysis, which may provide \textit{probabilistic guarantees} on the performance of the algorithm; and that they offer interpretability, as the search tree can be inspected post-hoc to identify why the algorithm made certain decisions. \hide{\todo{consider adding interperobility refs when litrev'ed}}
+    Monte Carlo Tree Search (MCTS) refers to heuristic algorithms that build a search tree using \textit{Monte Carlo Trials}, where nodes are added to the tree from randomly sampled trajectories. Two advantages of using MCTS methods in the modern day are: that they allow for statistical analysis, which may provide \textit{probabilistic guarantees} on the performance of the algorithm; and that they offer interpretability, as the search tree can be inspected post-hoc to identify why the algorithm made certain decisions. 
 
     MCTS trials are commonly presented using four stages, selection, expansion, simulation/heuristic and backup phases \cite{mcts_survey}, which are depicted in Figure \ref{fig:2:mcts}. To avoid confusion with the broader definition of MCTS above, this thesis refers to this specific form of MCTS as \mctsone. Each of the four phases of \mctsone\ewe are described in more detail below: 
     \begin{enumerate}
@@ -660,10 +638,10 @@
 % [X] First Draft
 % [X] AI proofread/grammar check
 % [X] TODOs
-% [ ] Spell check
+% [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
+% [X] Abbreviations sync
 % [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
@@ -699,11 +677,11 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
+% [X] TODOs
+% [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
-% [ ] Abbreviations sync
+% [X] Abbreviations sync
 % [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
@@ -750,8 +728,7 @@
     In contrast, a random \textit{rollout} is often used in \mctsone\ewe algorithms when no informative heuristic is available (for example Section \ref{sec:2-4-2-uct}). In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because it avoids throwing away potentially useful information from states visited during the rollout \cite{rollout_add,rollout_add_mcgs}.
 
     \begin{figure}
-        % \centering\includegraphics[width=1.0\textwidth]{figures/ch2/transposition_table_example.pdf} 
-        \centering\includegraphics[width=1.0\textwidth]{figures/todo.jpg} 
+        \centering\includegraphics[width=0.9\textwidth]{figures/ch2/transposition_table_example.pdf} 
         \caption[A complication arising from the use of a transposition table.]{A complication arising from the use of a transposition table. Many MCTS algorithms use the ratio $\frac{N(s')}{N(s,a)}$ as an empirical estimate of transition probability $p(s'|s,a)$. Left: an example MDP with horizon $H=1$ where using this ratio to estimate transition probabilities gives the incorrect ratios. Right: the corresponding \textit{acyclic graph} created by running \thtspp\ewe on the MDP with \graphmode\ewe set to True and sampling actions uniformly. After 12 trials, the resulting visit counts at the leaf nodes are $N(s^1)=3,N(s^2)=6,N(s^3)=3$. The ratio of visit counts $\frac{N(s^1)}{N(s^0,a^1)}=\frac{1}{2}$ and $\frac{N(s^2)}{N(s^0,a^1)}=1$, which do not form an (empirical) probability distribution, and even if normalised do not give the correct uniform distribution over successor states. To fix this issue, the \textit{conditional visit counts} $N(s'|s,a)$ for $s'\in\suc(s,a)$ are needed instead, that keep track of the number of times $s'$ was sampled from the chance node $(s,a)$. In this example, the conditional visit counts at node $(s^0,a^0)$ would be $N(s^1|s^0,a^0)=3$ and $N(s^2|s^0,a^0)=3$, and give the correct ratios of $\frac{N(s^1|s^0,a^0)}{N(s^0,a^0)} = \frac{N(s^2|s^0,a^0)}{N(s^0,a^0)} = \frac{1}{2}$. That is, the ratios $\frac{N(s'|s,a)}{N(s,a)}$ correctly maintain an empirical estimate for the probability $p(s'|s,a)$, even when using a transposition table.}
         \label{fig:2:transposition_table_example}
     \end{figure}
@@ -861,24 +838,22 @@ def backup_phase($\tau_{:h}$, ctx)
 
     
 % [X] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] AI proofread/grammar check
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Upper Confidence Bounds Applied to Trees (UCT)}
+\subsection{Upper Confidence Bound Applied to Trees (UCT)}
 \label{sec:2-4-2-uct}
 
-    \todo{Add a paragraph on full backup necessary for UCT in graph mode, but just cite the reference for this?}
+    Upper Confidence Bound Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
 
-    Upper Confidence Bound applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
-
-    The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. And the parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy. Typically \mctsmode\ewe is set to True for UCT, and this section will assume that is the case.
+    The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. The parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy, which is useful if the Q-values can vary in magnitude throughout the search tree. Typically \mctsmode\ewe is set to True for UCT, and this section assumes that this is the case.
 
     The search policy that UCT follows is given by:
     \begin{align}
@@ -893,6 +868,8 @@ def backup_phase($\tau_{:h}$, ctx)
     
     Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, and let $\tilde{r} = \Vinit(s_h)$. In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates incrementally. For $t=h,\ldots,0$:
     \begin{align}
+        N(s_t,a_t) &\leftarrow N(s_t,a_t) + 1, \\
+        N(s_t) &\leftarrow N(s_t) + 1, \\
         \Quct(s_t,a_t) &\leftarrow 
             \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
                 + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_q} \\
@@ -900,28 +877,54 @@ def backup_phase($\tau_{:h}$, ctx)
             \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
                 + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
     \end{align}   
+
+    There are two common approaches for implementing $\Vinit$ in UCT. The first approach uses a function approximation $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c}, where $\tilde{V}$ is often a neural network that aims to approximate the optimal value function $V^*$. The second approach uses a \textit{rollout}, which completes the trajectory from the selection phase using a \textit{rollout policy} and uses the rewards from the rollout to give a heuristic value estimate \cite{mcts_survey,offlineonlineuct,prost,bus}. If no informative policy is available for $\pirollout$, then a uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}. 
     
-    There are two common approaches to implementing $\Vinit$ in UCT: the first consisting of using a function approximation $\tilde{V}$ and setting $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c}, where $\hat{V}$ aims to approximate the optimal value function $V^*$; the second approach consists of using a \textit{rollout policy} \cite{mcts_survey,offlineonlineuct,prost,bus}. 
-    
-    When a rollout policy $\pirollout$ is used, a Monte Carlo estimate $\hat{V}^{\pirollout}$ is used to estimate the value function $V^{\pirollout}$ and is used for $\Vinit$. A rollout completes the trajectory from the selection phase, $\tau_{h:h'}\sim\pirollout$, where $h'=H_{\thtspp}$ or $s_{h'}\in\terminal$. The estimate used for the heuristic value function is then the sum of the rewards from the rollout:
+    To use a rollout policy $\pirollout$ in \thtspp, a Monte Carlo estimate $\hat{V}^{\pirollout}$ of the value function $V^{\pirollout}$ is used for $\Vinit$. Let $\tau_{h:h'}\sim\pirollout$ be the rollout trajectory, where $h'=H_{\thtspp}$ or $s_{h'}\in\terminal$. The Monte Carlo estimate is then the sum of the rewards from the rollout:
     \begin{align}
         \hat{V}^{\pirollout}(s_h) = \sum_{i=h}^{h'-1} r_i. \label{eq:2:rollout_value_estimate}
     \end{align}
 
-    If no informative policy is available to be used for $\pirollout$, then uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}.
 
-    Note that when a decision node $s$ is first visited, the UCT policy in Equation (\ref{eq:2:uct_policy}) is uniformly random. As a result, if $\Vinit(s)=0$ is used with \mctsmode\ewe set to False, \bd{the resulting algorithm is equivalent to using a random rollout policy where nodes are also added to the search tree for states visited during the rollout.}
 
-    Finally, AlphaGo(Zero) \cite{alpha_go,alpha_go_zero} popularised a variant of UCT, often referred to as PUCT (Predictor-UCT) \todo{make sure this is in abbrv}. In PUCT, the logarithmic confidence interval term in Equation (\ref{eq:2:uct_policy}) is replaced by a polynomial term \cite{poly_uct}, and these terms are weights by the \textit{predictor} values $\piinit(a|s)$. That is the PUCT selection policy is given by:
+
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Predictor-UCT (PUCT)}
+\label{sec:2-4-2-puct}
+    AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{pucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
+
+    PUCT uses similar variables to UCT (Section \ref{sec:2-4-2-uct}), the sample average value estimates $\Vpuct(s)$ and $\Qpuct(s,a)$, visit counts $N(s)$ and $N(s,a)$, the bias parameter $\bpuct$, and the flag $\normalisedq$. 
+
+    The PUCT search policy is similar to the UCT search policy (Equation \ref{eq:2:uct_policy}), with the following changes:
+    \begin{itemize}
+        \item The logarithmic confidence interval term in Equation (\ref{eq:2:uct_policy}) is replaced by a polynomial term \cite{poly_uct};
+        \item The confidence interval term is weighted by the \textit{predictor values} $\piinit(a|s)$, inspired by predictor UCB \cite{pucb};
+        \item The $N(s,a)$ denominator is modified to $N(s,a)+1$, which allows actions to be selected more than once before all actions have been tried, making the policy better suited to large action spaces such as in Go.
+    \end{itemize}
+    
+    The operation of PUCT is otherwise identical to UCT, except for the changes to the search policy. The PUCT selection policy is given by:
     \begin{align}
-        \piuct(s) &= \argmax_{a\in\cl{A}} \Quctnorm(s,a) + \buct \piinit(a|s) \frac{\sqrt{N(s)}}{N(s,a)+1}. \label{eq:2:puct_policy}
+        \pipuct(s) &= \argmax_{a\in\cl{A}} \Qpuctnorm(s,a) + \bpuct \piinit(a|s) \frac{\sqrt{N(s)}}{N(s,a)+1}. \label{eq:2:puct_policy}
     \end{align}
 
-    \todo{Update notation to use PUCT instead of UCT acronym}
-
-    Notably, by design, PUCT does not enforce every action to be selected at least once before any action is selected for a second time, and now the heuristic action function $\Qinit$ can be used in place of $\Quct(s,a)$ when $(s,a)$ is not yet in the search tree.
-
-    \todo{This entire section was written very tired and late at night, so probably needs to be revised quite a bit.}
+    In \thtspp, the values of $\Qpuct(s,a)$ are initialised using the heuristic action value $\Qinit(s,a)$. When $\Qpuct(s,a)$ is updated via the backup (Equation (\ref{eq:2:uct_backup_q})), the heuristic initialisation is replaced by the sample average estimate. 
 
 
 
@@ -930,39 +933,49 @@ def backup_phase($\tau_{:h}$, ctx)
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-3-ments}
 
-    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
+    \todo{add normalised q values in ments and sync with notation section}
+
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
     \begin{align}
         \piments(a|s) &= 
-            (1-\lambdaments)\rhoments^k(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
+            (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
         \rhoments(a|s) &= 
             \exp\left(\frac{1}{\alphaments}\left(\Qments(s,a)-\Vments(s)\right)\right), \\
         \lambda(s,x) &= \min\left(1,\frac{x}{\log(e+N(s))}\right).
     \end{align}
-    where $\epsilon \in (0,\infty)$ is an exploration parameter, and $\alphaments$ is the temperature paramter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})).
+    where $\epsments \in (0,\infty)$ is an exploration parameter, $\alphaments$ is the temperature parameter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})), and $\lambda$ is a decay function that is also used in later chapters with different arguments.
 
-    In MENTS the backups $\backupv$ and $\backupq$ update the soft value estimates and are updated using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows:
+    Let $\tau_{:h}\sim\piments$, be the trajectory sampled in the selection phase of MENTS. The leaf node $s_h$ is initialised with the heuristic value function:
     \begin{align}
-        \Qments(s_t,a_t) &\leftarrow 
-            R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:2:ments_backup_q} \\
-        \Vments(s_t) &\leftarrow 
-            \alpha \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alpha}\Qments(s_t,a) \right). \label{eq:2:ments_backup_v} 
+        N(s_h) &= 1, \\
+        \Vments(s_h) &= \Vinit(s_h). \label{eq:2:ments_init_v}
     \end{align}
 
-    In \cite{ments}, the heuristic value function left as an arbitrary evaluation function, but is set using a function approximation $\Vinit=\tilde{V}$ in experiments. The heuristic action function is set to zero, $\Qinit(s,a)=0$, but they also suggest that if \textit{policy network} $\tilde{\pi}$ is available, then the heuristic action function can alternatively be set to $\Qinit(s,a)=\log \tilde{\pi}(s|a)$. 
+    The backups $\backupv$ and $\backupq$ then update the soft value estimates using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows for $t=h-1,\ldots,0$:
+    \begin{align}
+        N(s_t,a_t) &\leftarrow N(s_t,a_t) + 1, \\
+        N(s_t) &\leftarrow N(s_t) + 1, \\
+        \Qments(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s'\in\suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:2:ments_backup_q} \\
+        \Vments(s_t) &\leftarrow 
+            \alphaments \log \sum_{a\in\cl{A}} \exp \left(\frac{1}{\alphaments}\Qments(s_t,a) \right). \label{eq:2:ments_backup_v} 
+    \end{align}
+
+    In \cite{ments}, the heuristic value function is left as an arbitrary evaluation function, but is set using a function approximation $\Vinit=\tilde{V}$ in experiments. The heuristic action function is set to zero, $\Qinit(s,a)=0$, however the authors also suggest that if \textit{policy network} $\tilde{\pi}$ is available, then the heuristic action function can alternatively be set to $\Qinit(s,a)=\log \tilde{\pi}(a|s)$. 
 
 
 
@@ -978,201 +991,208 @@ def backup_phase($\tau_{:h}$, ctx)
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-5-morl}
 
-    This thesis follows a utility based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} which is depicted in Figure \ref{fig:2:mo_decision_support}. In the decision support scenario, an algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions, from which a user then picks their most preferred option to be used. This scenario is useful when a user's preferences over the multiple objectives is unknown or difficult to specify in advance. 
+This thesis follows a utility-based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} which is depicted in Figure \ref{fig:2:mo_decision_support}. In the decision support scenario, an algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions, from which a user then picks their most preferred option to be used. This scenario is useful when a user's preferences over the multiple objectives are unknown or difficult to specify in advance. 
 
-    \begin{figure}
-        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf} 
-        \caption{The decision-support scenario for multi-objective reinforcement learning \cite{morl_survey}.}
-        \label{fig:2:mo_decision_support}
-    \end{figure}
+\begin{figure}
+    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf} 
+    \caption{The decision-support scenario for multi-objective reinforcement learning \cite{morl_survey}.}
+    \label{fig:2:mo_decision_support}
+\end{figure}
 
-    This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context, however bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-5-1-chvi}, a multi-objective extension of Value Iteration is given.
+This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-5-1-chvi}, a multi-objective extension of Value Iteration is given.
 
-    To specify problems with multiple objectives, the reward function of an MDP changed to give a vector of rewards, rather than a scalar reward:
-    \begin{defn}
-        \label{def:2:mo_mdp}
-        A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{R}(s,a)$ is a vector reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
-    \end{defn}
+To specify problems with multiple objectives, the reward function of an MDP is changed to give a vector of rewards, rather than a scalar reward:
+\begin{defn}
+    \label{def:2:mo_mdp}
+    A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{R}(s,a)$ is a vector reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+\end{defn}
 
-    \begin{figure}
-        \centering\includegraphics[width=0.8\textwidth]{figures/ch2/example_momdp.pdf} 
-        \caption[An example MOMDP $\bfcl{M}$.]{An example MOMDP $\bfcl{M}$, where $s_0=s_{\cl{M}}^1$, the finite horizon is $H=2$ and terminal states are marked with thicker borders. This particular MOMDP is deterministic, so all transition probabilities are one.}
-        \label{fig:2:momdp_eg}
-    \end{figure}
+\begin{figure}
+    \centering\includegraphics[width=0.8\textwidth]{figures/ch2/example_momdp.pdf} 
+    \caption[An example MOMDP $\bfcl{M}$.]{An example MOMDP $\bfcl{M}$, where $s_0=s_{\cl{M}}^1$, the finite horizon is $H=2$ and terminal states are marked with thicker borders. This particular MOMDP is deterministic, so that action nodes are omitted and all transition probabilities are one.}
+    \label{fig:2:momdp_eg}
+\end{figure}
 
-    Now multi-objective trajectories are defined:
-    \begin{defn}
-        \label{def:2:mo_trajectory}
-        A \textnormal{multi-objective trajectory} $\tau$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
-        
-        The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories too. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
-    \end{defn}
-
-    Similarly, multi-objective variants of the (Q-)value of a policy are defined:    
-    \begin{defn}
-        \label{def:2:mo_value}
-        \label{def:2:mo_q_value}
-        The \textnormal{multi-objective value} of a policy $\pi$ from state $s$ at time $t$ is:
-        \begin{align}
-            \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_t \Bigg| s_t=s \right]. \label{eq:2:mo_value_fn_def}
-        \end{align} 
-
-        The \textnormal{multi-objective Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
-        \begin{align}
-            \bff{Q}^{\pi}(s,a;t) = \bff{R}(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{V}^{\pi}(s';t+1)]. \label{eq:2:mo_q_value_fn_def}
-        \end{align} 
-    \end{defn}
-
-    In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there maybe be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
-
-    \begin{defn}
-        \label{def:2:simplex}
-        \label{def:2:weight}
-        \label{def:2:context}
-        The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. More formally, the $D$ dimensional simplex is 
-        \begin{align}
-            \Delta^D = \{\bff{w}\in\bb{R}^D|w_i > 0, \sum_i w_i = 1\}. \label{eq:2:simplex_def}
-        \end{align}
-
-        The elements of the $D$-dimensional Simplex will be referred to as \textnormal{weight vectors} (or just \textnormal{weights}) in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
-    \end{defn}
-
-    \begin{defn}
-        \label{def:2:utility_fn}
-        \label{def:2:scalarisation_fn}
-        A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
-    \end{defn}
-
-    Of particular interest in this thesis is the \textit{linear utility function} where the scalar value takes the form of a dot-product:
-    \begin{defn}
-        \label{def:2:linear_utility_fn}
-        \label{def:2:linear_scalarisation_fn}
-        The \textnormal{linear utility function} $u_{\lin}$ is the utility function defined by:
-        \begin{align}
-            u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}. \label{eq:2:linear_utility_fn_def}
-        \end{align}
-    \end{defn}
-
-    Equipped with a utility function and a weight vector any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $w\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
+Multi-objective trajectories are defined analogously to single-objective trajectories (Definition \ref{def:2:trajectory}):
+\begin{defn}
+    \label{def:2:mo_trajectory}
+    A \textnormal{multi-objective trajectory} $\bff{\tau}$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
     
-    Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructing a solution set, a subset of $\Pi$, it makes sense that it should not contain any dominated policies. This leads to the first notion of a solution set, called an \textit{undominated set}, consisting of all undominated policies:
-    \begin{defn}
-        \label{def:2:undominated_set}
-        \label{def:2:convex_hull}
-        The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^D$ where the utility (scalarised value) is maximised: 
-        \begin{align}
-            U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}. \label{eq:2:undominated_set_def}
-        \end{align}
+    The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
+\end{defn}
 
-        In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
-    \end{defn}    
-
-    \quest{How do you feel about removing the timestep in the value functions in this section too? So it can be $\bff{V}^\pi(s)$ rather than $\bff{V}^\pi(s;t)$? I think it would make some definitions like undominated sets a bit cleaner. Alternatively, maybe I should write it $u_{\bff{w}}$.}
-    
-    When computing solutions sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy. This thesis will refer to the set of values obtained by a set of policies as a \textit{value set}:
-    \begin{defn}
-        \label{def:2:mo_value_set}
-        The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
-    \end{defn}
-
-    Undominated sets often have an infinite cardinality, and as such are infeasible to compute. However, in undominated sets there are often many reduntant policies that obtain the same scalarised values. Instead of computing an undominated set, it is more feasible to compute a \textit{coverage sets} which contain at least one policy that maximises the scalarised value given any weight vector $\bff{w}$:
-    \begin{defn}
-        \label{def:2:coverage_set}
-        \label{def:2:convex_coverage_set}
-        A set $CS(\Pi;u)\subseteq U(\Pi)$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
-        \begin{align}
-            \forall \bff{w}\in\Delta^D. \exists \pi\in CS(\Pi;u). \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:coverage_set}
-        \end{align}
-
-        Again, in particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
-    \end{defn}
-
-    Note that it is still possible for there to be multiple coverage sets. Algorithms that compute convex coverage sets typically compute a unique minimal convex coverage set that contains no redundant policies, that is, each policy has some weight for which it uniquely gives an optimal solution in the set.
-    \begin{defn}
-        \label{def:2:min_convex_coverage_set}
-        A set $CCS_{\min}(\Pi)\subseteq CH(\Pi)$ is minimal if the following holds
-        \begin{align}
-         \forall \pi\in CCS_{\min}(\Pi). \exists \bff{w}\in\Delta^D. \forall \pi'\in CCS_{\min}(\Pi)-\{\pi\}. u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}).
-        \end{align}
-    \end{defn} 
-
-    Now the geometry of convex coverage sets is considered, to see how something like $\valset(CCS_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:2:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(CH(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:2:convex_hull_geometry}). Moreover, any points in $\valset(CH(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:2:convex_hull_geometry}).
-
-    Because of the ambiguity between the convex hull of policies, and the geometric convex hulls of values, this thesis will refer to any value set that forms a geometric convex hull as a \textit{convex hull value set} (CHVS) and will refer to the set $\valset(CCS_{\min}(\Pi))$ as the \textit{optimal convex hull value set}. \quest{should I make this paragraph a definition to emphasise it a bit more?}
-
-    \begin{figure}
-        \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-        \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each images the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) circles correspond to values that are on the convex hull, so form the set $\valset(CH(\Pi'))$, the blue circles form the minimal convex coverage set, $\valset(CCS_{\min}(\Pi'))$, and triangles are not part of the convex hull. All of the unfilled shapes would be pruned by \cprune (Equation (\ref{eq:2:cprune_def})); (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, is shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$}
-        \label{fig:2:convex_hull_geometry} 
-    \end{figure}
-
-    Given a value set, the \cprune\ewe operation removes any vectors that are dominated or redundant. That is, for every vector that remains after the pruning operation, there is some weight for which it \textit{uniquely} gives the maximal utility for. Given set of vectors $\bfcl{V}$ it is defined as:
+Similarly, multi-objective variants of the (Q-)value of a policy are defined:    
+\begin{defn}
+    \label{def:2:mo_value}
+    \label{def:2:mo_q_value}
+    The \textnormal{multi-objective value} of a policy $\pi$ from state $s$ at time $t$ is:
     \begin{align}
-        \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:2:cprune_def}
+        \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_i \Bigg| s_t=s \right]. \label{eq:2:mo_value_fn_def}
+    \end{align} 
+
+    The \textnormal{multi-objective Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
+    \begin{align}
+        \bff{Q}^{\pi}(s,a;t) = \bff{R}(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{V}^{\pi}(s';t+1)]. \label{eq:2:mo_q_value_fn_def}
+    \end{align} 
+\end{defn}
+
+In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there may be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
+
+\begin{defn}
+    \label{def:2:simplex}
+    \label{def:2:weight}
+    The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. More formally, the $D$ dimensional simplex is 
+    \begin{align}
+        \Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}. \label{eq:2:simplex_def}
     \end{align}
 
-    Note that the \cprune\ewe operator computes the values of a minimal convex coverage set, that is, for some set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(CCS_{\min}(\Pi'))$. \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}, and an example of its operation on a set of vectors can be seen in (b) of Figure \ref{fig:2:convex_hull_geometry}, where \cprune\ewe would prune all points but the blue circles.
+    The elements of the $D$-dimensional Simplex will be referred to as \textnormal{weight vectors} (or just \textnormal{weights}) in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
+\end{defn}
 
-    \todo{Not sure where to put this PF stuff, cant see where to put it in to make it flow well. Also proof read}
-    \begin{mccorrection}
-        Another commonly used solution set is the \textit{Pareto front}, which is defined using a \textit{strict partial ordering} over vectors, known as \textit{Pareto domination}, as opposed to using utility. An example is shown in Figure \ref{fig:2:pareto_front}.
-        \begin{defn}
-            \label{def:2:pareto_front}
-            The \textnormal{Pareto front} $PF(\Pi)\subseteq\Pi$ is defined as:
-            \begin{align}
-                PF(\Pi) = \{\pi\in\Pi | \not\exists \pi'\in\Pi. \bff{V}^{\pi'}(s_0;0) \succ_P \bff{V}^{\pi}(s_0;0) \},
-            \end{align}
-            where the \textnormal{Pareto domination} relation is defined as:
-            \begin{align}
-                \bff{v} \succ_P \bff{v'} \iff (\forall i. v_i \geq v'_i) \land (\exists j. v_j > v'_j).
-            \end{align}
-        \end{defn}
+\begin{defn}
+    \label{def:2:utility_fn}
+    \label{def:2:scalarisation_fn}
+    A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
+\end{defn}
 
-        The Pareto front can be related to the previously defined solution sets if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
-    \end{mccorrection}
+Of particular interest in this thesis is the \textit{linear utility function} where the scalar value takes the form of a dot-product:
+\begin{defn}
+    \label{def:2:linear_utility_fn}
+    \label{def:2:linear_scalarisation_fn}
+    The \textnormal{linear utility function} $u_{\lin}$ is the utility function defined by:
+    \begin{align}
+        u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}. \label{eq:2:linear_utility_fn_def}
+    \end{align}
+\end{defn}
 
-    \begin{figure}
-        \centering\includegraphics[width=0.4\textwidth]{figures/ch2/pf_geometry.pdf} 
-        \caption[An example Pareto front.]{An example Pareto front, where the circles correspond to a convex coverage set, and the filled blue points denote the Pareto front. Two points are marked with their corresponding policies $\pi$ and $\pi'$, and a mixture policy is shown, denoted $\{\frac{1}{2}:\pi, \frac{1}{2}:\pi'\}$ that follows each of $\pi$ and $\pi'$ with probability $\frac{1}{2}$.}
-        \label{fig:2:pareto_front} 
-    \end{figure}
+Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $w\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
+
+Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructing a solution set, a subset of $\Pi$, it makes sense that it should not contain any dominated policies. This leads to the first notion of a solution set, called an \textit{undominated set}, consisting of all undominated policies:
+\begin{defn}
+    \label{def:2:undominated_set}
+    \label{def:2:convex_hull}
+    The \textnormal{undominated set} of policies $U(\Pi;u)\subseteq\Pi$, with respect to a utility function $u$,  is the set of policies for which there is a weight vector $\bff{w}\in\Delta^D$ where the utility (scalarised value) is maximised: 
+    \begin{align}
+        U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}. \label{eq:2:undominated_set_def}
+    \end{align}
+
+    In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
+\end{defn}    
+
+Undominated sets often have an infinite cardinality, and as such are infeasible to compute. However, in undominated sets there are often many redundant policies that obtain the same scalarised values. Instead of computing an undominated set, it is more feasible to compute a \textit{coverage set} that contains at least one policy that maximises the scalarised value given any weight vector $\bff{w}$:
+\begin{defn}
+    \label{def:2:coverage_set}
+    \label{def:2:convex_coverage_set}
+    A set $CS(\Pi;u)\subseteq U(\Pi)$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
+    \begin{align}
+        \forall \bff{w}\in\Delta^D.\ \exists \pi\in CS(\Pi;u).\ \forall \pi'\in\Pi: \nonumber \\ 
+        \quad u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:coverage_set}
+    \end{align}
+
+    In particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
+\end{defn}
+
+A convex coverage set may contain redundant policies and is not necessarily minimal. A minimal convex coverage set is a convex coverage set that contains no redundant policies. That is, for every policy in the minimal convex coverage set, there is some weight for which it uniquely maximises the utility within the set.
+
+\begin{defn}
+    \label{def:2:min_convex_coverage_set}
+    A set $MCCS(\Pi)\subseteq \Pi$ is a \textnormal{minimal convex coverage set} if it is a convex coverage set and if the following holds
+    \begin{align}
+     \forall \pi\in MCCS(\Pi).\ \exists \bff{w}\in\Delta^D.\ \forall \pi'\in MCCS(\Pi)-\{\pi\}: \nonumber \\
+     \quad u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:min_convex_coverage_set}
+    \end{align}
+\end{defn} 
+
+\begin{figure}
+    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
+    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) circles correspond to values that are on the convex hull, so form the set $\valset(CH(\Pi'))$, the blue circles form the minimal convex coverage set, $\valset(MCCS(\Pi'))$, and triangles are not part of the convex hull. All of the unfilled shapes would be pruned by \cprune\ewe (Equation (\ref{eq:2:cprune_def})); (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
+    \label{fig:2:convex_hull_geometry} 
+\end{figure}
+
+When computing solution sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy or solution set (for example, Convex Hull Value Iteration covered in Section \ref{sec:2-5-1-chvi}). This thesis will refer to the values obtained by a set of policies as a \textit{value set}:
+\begin{defn}
+    \label{def:2:mo_value_set}
+    The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
+\end{defn}
+
+Given a value set, the \cprune\ewe operation removes any vectors that are dominated or redundant. That is, for every vector that remains after the pruning operation, there is some weight for which it \textit{uniquely} gives the maximal linear utility. Given a set of vectors $\bfcl{V}$, the \cprune\ewe operation is defined as:
+\begin{align}
+    \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:2:cprune_def}
+\end{align}
+
+As illustrated in Figure \ref{fig:2:convex_hull_geometry}, the \cprune\ewe operation computes the \textit{extreme points} of a \textit{(partial) geometric convex hull}. As such, for some set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(MCCS(\Pi'))$, and \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}.
+
+% The geometry of convex coverage sets is now considered, to see how something like $\valset(CCS_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:2:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(CH(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:2:convex_hull_geometry}). Moreover, any points in $\valset(CH(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of the geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:2:convex_hull_geometry}).
+
+To distinguish between the convex hull of policies, and the geometric convex hulls of values, this thesis will refer to any value set that forms a geometric convex hull as a \textit{convex hull value set} (CHVS).
+
+\begin{defn}
+    \label{def:2:convex_hull_value_set}
+    The set of vectors $\bfcl{V}\subseteq\bb{R}^D$ is a \textnormal{convex hull value set} (CHVS) if its points form a partial geometric convex hull. More specifically, $\bfcl{V}$ is a convex hull value set if it satisfies the equation:
+    \begin{align}
+        \bfcl{V} = \cprune(\bfcl{V}). \label{eq:2:convex_hull_value_set_def}
+    \end{align}
+\end{defn}
+
+\begin{figure}
+    \centering\includegraphics[width=0.4\textwidth]{figures/ch2/pf_geometry.pdf} 
+    \caption[An example Pareto front.]{An example Pareto front, where the circles correspond to a convex coverage set, and the filled blue points denote the Pareto front. Two points are marked with their corresponding policies $\pi$ and $\pi'$, and a mixture policy is shown, denoted $\{\frac{1}{2}:\pi, \frac{1}{2}:\pi'\}$ that follows each of $\pi$ and $\pi'$ with probability $\frac{1}{2}$.}
+    \label{fig:2:pareto_front} 
+\end{figure}
+
+Whilst this thesis focuses on the linear utility setting, another commonly used solution set is the \textit{Pareto front}, which is defined using a \textit{strict partial ordering} over vectors, known as \textit{Pareto domination}, as opposed to using utility. An example is shown in Figure \ref{fig:2:pareto_front}.
+\begin{defn}
+    \label{def:2:pareto_front}
+    The \textnormal{Pareto front} $PF(\Pi)\subseteq\Pi$ is defined as:
+    \begin{align}
+        PF(\Pi) = \{\pi\in\Pi | \not\exists \pi'\in\Pi. \bff{V}^{\pi'}(s_0;0) \succ_P \bff{V}^{\pi}(s_0;0) \},
+    \end{align}
+    where the \textnormal{Pareto domination} relation is defined as:
+    \begin{align}
+        \bff{v} \succ_P \bff{v'} \iff (\forall i. v_i \geq v'_i) \land (\exists j. v_j > v'_j).
+    \end{align}
+\end{defn}
+
+The Pareto front can be related to the previously defined solution sets if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Convex Hull Value Iteration}
 \label{sec:2-5-1-chvi}
 
-    \todo{Should we also be defining undominated set/coverage sets for a given $(s;t)$? As in just add them as a param? As kind of using them in this sect as if we did}
+    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
-    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that will compute optimal convex hull value sets. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates will be denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
-
-    Firstly, to define a multi-objective version of Value Iteration, an arithmetic over vector sets needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic} Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
+    Firstly, to define a multi-objective version of Value Iteration, arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic}. Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
     \begin{align}
         \bff{x} + s\bfcl{V} &= \{\bff{x} + s\bff{v} | \bff{v}\in\bfcl{V} \} \label{eq:2:vector_set_arithmetic_one} \\
         \bfcl{U} + \bfcl{V} &= \{ \bff{u}+\bff{v} | \bff{u}\in\bfcl{U}, \bff{v}\in\bfcl{V} \}. \label{eq:2:vector_set_arithmetic_two} 
@@ -1190,27 +1210,15 @@ def backup_phase($\tau_{:h}$, ctx)
         \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:2:chvi_q_backup}
     \end{align}
     
-    This again parallels the Bellman backups use in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$: $\bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t)$.
+    This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$.
     
-    Once the algorithm has terminated, and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
+    Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
     \begin{align}
-        Q_{\bff{w}}(s,a;t) = \max_{\bff{q}\in\Qchvi(s,a;t)} \bff{w}^\top \bff{q}, \label{eq:2:chvi_scalar_q_fn} \\
-        \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q_{\bff{w}}(s,a;t). \label{eq:2:chvi_policy}
+        Q^{\bff{w}}_{\chvi}(s,a;t) = \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qchvi(s,a;t) \}, \label{eq:2:chvi_scalar_q_fn} \\
+        \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q^{\bff{w}}_{\chvi}(s,a;t). \label{eq:2:chvi_policy}
     \end{align}
-
-    \todo{make scalarised value notation consistent with how defined in ch5}
-
-    If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, one can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
-    \begin{align}
-        (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
-    \end{align} 
-
-    The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as is demonstrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
-    \begin{align}
-        \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
-    \end{align}
-
-    and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}).
+    
+    Note that if a policy is extracted for every weight vector $\bff{w}\in\Delta^D$, the resulting set of policies forms a convex coverage set.
     
     \begin{figure}
         \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
@@ -1218,117 +1226,17 @@ def backup_phase($\tau_{:h}$, ctx)
         \label{fig:2:convex_hull_extract_policy_weight} 
     \end{figure}
 
+    If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, an appropriate weight can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
+    \begin{align}
+        (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
+    \end{align} 
 
+    The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as illustrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
+    \begin{align}
+        \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
+    \end{align}
 
-
-
-
-
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\section{Sampling From Catagorical Distributions}
-\label{sec:2-6-sampling}
-    
-    \quest{Maybe heres a good time to ask about some notation stuff. So I used $m$ in MABs section, and I reuse it here. Is that ok? I was trying to keep as much notation unique as possible, but noticed I've reused a couple variables. I was hoping its ok because I'm using them ``locally''.}
-
-    Some of the work in this thesis will involve sampling from catagorical distributions, and sometimes it will be helpful to do so efficiently, as in Chapter \ref{ch:4-dents}. Let $f:\{C_1,\ldots,C_m\}\rightarrow[0,1]$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $c\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a continuous uniform random value is sampled, $u\sim\textnormal{Uniform}(0,1)$, and $f$ is linearly scanned until a probability mass of $u$ has been passed. See Listing \ref{lst:2:naive_sample} for psuedocode of the naive method.
-
-    \begin{Listing}
-        \begin{lstlisting}
-def sample_catagorical($f$):
-    threshold $\sim \textnormal{Uniform}(0,1)$
-    i = 0
-    accumulated_mass = 0
-    while (accumulated_mass < threshold):
-        i += 1
-        accumulated_mass += $f($i$)$
-    return i
-        \end{lstlisting}
-        \caption{Psuedocode for naively sampling from a catagorical distribution.}
-        \label{lst:2:naive_sample}
-    \end{Listing}
-
-    However, the \textit{alias method} \cite{alias_method_one,alias_method_two} can instead be used to sample from a catagorical distribution. The alias method uses $O(m)$ preprocessing time to construct an \textit{alias table}, and after can sample from $f$, using the table, in $O(1)$ time. An alias table consists of $m$ entries, accounting for an $m$th of the probability mass of $f$. Each entry takes the form $(c_0,c_1,\thresh)$, where $c_0,c_1\in\{C_1,\ldots,C_m\}$ are categories and $\thresh\in[0,1]$ gives the ratio of the $\frac{1}{m}$ probability mass to assign to $c_0$ and $c_1$. Sampling from the alias table can be performed by sampling two random numbers, one to index into the table and one to compare against $\thresh$, from which $c\sim f$ can be returned by looking it up in the table. Listing \ref{lst:2:alias_table_sample} gives psuedocode for sampling from an alias table, and Figure \ref{fig:2:alias_table_eg} visualises the construction and sampling of an alias table.
-
-    \begin{Listing}
-        \begin{lstlisting}
-def sample_from_alias_table(alias_table):
-    index $\sim \textnormal{Uniform}(\{1,\ldots,m\})$
-    $(c_0,c_1,\thresh)$ = alias_table[index]
-    $u \sim \textnormal{Uniform}(0,1)$
-    if ($u <= \thresh$):
-        return $c_0$ 
-    return $c_1$
-        \end{lstlisting}
-        \caption{Psuedocode for sampling from an alias table.}
-        \label{lst:2:alias_table_sample}
-    \end{Listing}
-
-        
-    \begin{figure}
-        \centering\includegraphics[width=0.9\textwidth]{figures/ch2/alias_table.pdf} 
-        \caption[Example of building and sampling from an alias table.]{Example of building and sampling from an alias table, on a distribution with four categories. Left: shows how the probability mass is split into the four entries of the table. Right: shows how two random variables can be used to sample from the table in $O(1)$ time, where $i$ is used to index into the table, and $u$ is used to compare with \thresh\ewe and decide which of the two arrows from the entry to follow.}
-        \label{fig:2:alias_table_eg} 
-    \end{figure}
-
-    \citet{alias_method_two} proves that an alias table can always be constructed from an arbitrary catagorical distribution, such that the probability of sampling any catagory from the alias table is identical to the probability of sampling it from the original probability mass function. 
-
-    Psuedocode for constructing an alias table is given in Listing \ref{lst:2:alias_table_construct}, following \cite{alias_method_one,alias_method_two}. An alias table can be constructed by keeping two sets of categories, one set for ``big'' categories that currently have more than $\frac{1}{m}$ mass to be added to the table, and one for ``small'' catagories that have at most $\frac{1}{m}$ mass left to be added to the table. To create a new entry in the table, take one category from the small set, and take a category from the big set to complete the remainder of the $\frac{1}{m}$ mass that the small set didn't fill. After creating a new entry, move the big category to the little set if it no longer has more than $\frac{1}{m}$ mass to be added. 
-
-    \begin{Listing}
-        \begin{lstlisting}
-def build_alias_table($f$):
-    # lists of categories and mass remaining
-    small = []
-    big = []
-    
-    # fill big and small lists
-    for $c$ in $f$:
-        if $f(c) > \frac{1}{m}$:
-            big.append($(c,f(c))$)
-        else:
-            small.append($(c,f(c))$)
-
-    # construct alias table
-    alias_table = []
-    while len(small) > 0:
-        # create entry
-        $c_0$, c0_mass_remaining = small.pop()
-        if mass_remaining == $\frac{1}{m}$:
-            alias_table.append($(c_0,\text{None},1.0)$)
-            continue
-        $c_1$, c1_mass_remaining = big.pop()
-
-        # add entry to table (accounting for 1/mth of total mass)
-        thrsh = $m$ * c0_mass_remaining
-        alias_table.append($(c_0,c_1,$thrsh$)$)
-
-        # put c1 back in lists appropriately
-        c1_mass_remaining -= c0_mass_remaining
-        if c1_mass_remaining > $\frac{1}{m}$:
-            big.append($(c_1,$c1_mass_remaining$)$)
-        else:
-            small.append($(c_1,$c1_mass_remaining$)$)
-        
-    return alias_table
-        \end{lstlisting}
-        \caption{Psuedocode for constructing an alias table.}
-        \label{lst:2:alias_table_construct}
-    \end{Listing}
-
+    and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}). 
 
 
 

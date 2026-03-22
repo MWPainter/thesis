@@ -5,9 +5,211 @@
 %   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
 % \end{savequote}
 
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \chapter{\label{ch:4-dents}Monte Carlo Tree Search With Boltzmann Exploration} 
 
     \minitoc
+
+
+
+
+
+
+
+
+
+    \todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
+    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,\ldots,K\}$ is given by:
+    % \begin{align}
+    %     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
+    % \end{align}
+    % where again $\mu^* = \max_i \mu(i)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Sampling From Catagorical Distributions}
+\label{sec:2-6-sampling}
+    
+    \quest{Maybe heres a good time to ask about some notation stuff. So I used $m$ in MABs section, and I reuse it here. Is that ok? I was trying to keep as much notation unique as possible, but noticed I've reused a couple variables. I was hoping its ok because I'm using them ``locally''.}
+
+    Some of the work in this thesis will involve sampling from catagorical distributions, and sometimes it will be helpful to do so efficiently, as in Chapter \ref{ch:4-dents}. Let $f:\{C_1,\ldots,C_m\}\rightarrow[0,1]$ be the probability mass function of a catagorical distribution with $m$ categories. Suppose that we want to sample $c\sim f$. A naive method to sample from $f$ will take $O(m)$ time, where a continuous uniform random value is sampled, $u\sim\textnormal{Uniform}(0,1)$, and $f$ is linearly scanned until a probability mass of $u$ has been passed. See Listing \ref{lst:2:naive_sample} for psuedocode of the naive method.
+
+    \begin{Listing}
+        \begin{lstlisting}
+def sample_catagorical($f$):
+    threshold $\sim \textnormal{Uniform}(0,1)$
+    i = 0
+    accumulated_mass = 0
+    while (accumulated_mass < threshold):
+        i += 1
+        accumulated_mass += $f($i$)$
+    return i
+        \end{lstlisting}
+        \caption{Psuedocode for naively sampling from a catagorical distribution.}
+        \label{lst:2:naive_sample}
+    \end{Listing}
+
+    However, the \textit{alias method} \cite{alias_method_one,alias_method_two} can instead be used to sample from a catagorical distribution. The alias method uses $O(m)$ preprocessing time to construct an \textit{alias table}, and after can sample from $f$, using the table, in $O(1)$ time. An alias table consists of $m$ entries, accounting for an $m$th of the probability mass of $f$. Each entry takes the form $(c_0,c_1,\thresh)$, where $c_0,c_1\in\{C_1,\ldots,C_m\}$ are categories and $\thresh\in[0,1]$ gives the ratio of the $\frac{1}{m}$ probability mass to assign to $c_0$ and $c_1$. Sampling from the alias table can be performed by sampling two random numbers, one to index into the table and one to compare against $\thresh$, from which $c\sim f$ can be returned by looking it up in the table. Listing \ref{lst:2:alias_table_sample} gives psuedocode for sampling from an alias table, and Figure \ref{fig:2:alias_table_eg} visualises the construction and sampling of an alias table.
+
+    \begin{Listing}
+        \begin{lstlisting}
+def sample_from_alias_table(alias_table):
+    index $\sim \textnormal{Uniform}(\{1,\ldots,m\})$
+    $(c_0,c_1,\thresh)$ = alias_table[index]
+    $u \sim \textnormal{Uniform}(0,1)$
+    if ($u <= \thresh$):
+        return $c_0$ 
+    return $c_1$
+        \end{lstlisting}
+        \caption{Psuedocode for sampling from an alias table.}
+        \label{lst:2:alias_table_sample}
+    \end{Listing}
+
+        
+    \begin{figure}
+        \centering\includegraphics[width=0.9\textwidth]{figures/ch2/alias_table.pdf} 
+        \caption[Example of building and sampling from an alias table.]{Example of building and sampling from an alias table, on a distribution with four categories. Left: shows how the probability mass is split into the four entries of the table. Right: shows how two random variables can be used to sample from the table in $O(1)$ time, where $i$ is used to index into the table, and $u$ is used to compare with \thresh\ewe and decide which of the two arrows from the entry to follow.}
+        \label{fig:2:alias_table_eg} 
+    \end{figure}
+
+    \citet{alias_method_two} proves that an alias table can always be constructed from an arbitrary catagorical distribution, such that the probability of sampling any catagory from the alias table is identical to the probability of sampling it from the original probability mass function. 
+
+    Psuedocode for constructing an alias table is given in Listing \ref{lst:2:alias_table_construct}, following \cite{alias_method_one,alias_method_two}. An alias table can be constructed by keeping two sets of categories, one set for ``big'' categories that currently have more than $\frac{1}{m}$ mass to be added to the table, and one for ``small'' catagories that have at most $\frac{1}{m}$ mass left to be added to the table. To create a new entry in the table, take one category from the small set, and take a category from the big set to complete the remainder of the $\frac{1}{m}$ mass that the small set didn't fill. After creating a new entry, move the big category to the little set if it no longer has more than $\frac{1}{m}$ mass to be added. 
+
+    \begin{Listing}
+        \begin{lstlisting}
+def build_alias_table($f$):
+    # lists of categories and mass remaining
+    small = []
+    big = []
+    
+    # fill big and small lists
+    for $c$ in $f$:
+        if $f(c) > \frac{1}{m}$:
+            big.append($(c,f(c))$)
+        else:
+            small.append($(c,f(c))$)
+
+    # construct alias table
+    alias_table = []
+    while len(small) > 0:
+        # create entry
+        $c_0$, c0_mass_remaining = small.pop()
+        if mass_remaining == $\frac{1}{m}$:
+            alias_table.append($(c_0,\text{None},1.0)$)
+            continue
+        $c_1$, c1_mass_remaining = big.pop()
+
+        # add entry to table (accounting for 1/mth of total mass)
+        thrsh = $m$ * c0_mass_remaining
+        alias_table.append($(c_0,c_1,$thrsh$)$)
+
+        # put c1 back in lists appropriately
+        c1_mass_remaining -= c0_mass_remaining
+        if c1_mass_remaining > $\frac{1}{m}$:
+            big.append($(c_1,$c1_mass_remaining$)$)
+        else:
+            small.append($(c_1,$c1_mass_remaining$)$)
+        
+    return alias_table
+        \end{lstlisting}
+        \caption{Psuedocode for constructing an alias table.}
+        \label{lst:2:alias_table_construct}
+    \end{Listing}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     This chapter considers MCTS algorithms for planning in single-objective environments, where the algorithm may consider a secondary entropy objective for exploration. In the maximum entropy setting the optimal soft policy takes the form of a Boltzmann distribution (Section \ref{sec:2-3-1-merl}), and the chapter will predominantly discuss MCTS algorithms whose search policies take the form of Boltzmann distributions. Question \entropyq, about how entropy can be used soundly in MCTS planning algorithms is answered here, and the foundations are laid for answering \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
     
@@ -286,7 +488,7 @@
         \begin{align}
             \mvbts(s) = \argmax_{a\in\cl{A}} N(s,a). \label{eq:4:mvbts}
         \end{align}
-        
+
         Similarly to UCT the best setting of the temperature function will be dependent on the reward scaling. Rather than adding a scaling factor to this parameter, BTS can operate in an \texttt{adaptive\_policy} mode, where the Q-values are normalised to the unit interval before they are used in the policy:
         \begin{align}
             \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbts^{\norm}(s,a)\right)\right). \\
