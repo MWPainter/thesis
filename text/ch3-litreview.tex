@@ -21,6 +21,13 @@
 
 
 
+
+
+
+
+
+
+
     \todo{currently this is a copy and paste of what I originally wrote for background chapter} \ref{ch:2-background}. Deleted parts which are irrelevant for litreview here (and vice versa for the background section).
 
     \todo{I'm also going to use this as a space to paste papers I should write about as they come up while writing later chapters}
@@ -73,6 +80,21 @@
         % - should also include the other recent popularisation of the idea from a mixture of maximum entropy inverse reinforcement learning etc
         % -- basically see the related work bit talking about max entropy in SAC (https://arxiv.org/pdf/1801.01290)
 
+
+        Entropy widely used in RL literature. Most commonly used for regularization when learning a policy \cite{ppo,a3c,reinforce_ment}. This is significantly different to the maximum entropy setting, where entropy is used in the loss function to prevent the policy from degenerating into a deterministic policy. While it is motivated similarly, promoting the policy to remain stochastic and enable exploration. 
+
+        The significant difference between \textit{entropy regularization} and \textit{maximum entropy reinforcement learning} is that the former is that from some state $s_t$, regularization only includes the entropy of the policy at $s_t$, while the latter includes the entropy of the policy at all states $s_t,s_{t+1},...$ in the objective/loss function.
+
+        Probably write this a bit better, say that entropy regularization dates back to the REINFORCE/MENT paper, but is consistently used to the modern day.
+
+
+        Old entropy stuff from ch4 before rewrite:
+        Loosely, the maximum entropy principle says that given partial knowledge about a probability distribution, the least biased estimate of the probability distribution is the one that maximises the entropy \cite{max_ent}. This principle can naturally be applied to inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}, where the goal is to learn the transition/reward functions from a set of expert trajectories.
+
+    In contrast, in maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}) entropy is added directly into the objective function to be optimised, rather than using entropy as a constraint to disambiguate between multiple optimal policies. While the maximum entropy objective does yield a unique optimal policy (with respect to the maximum entropy objective), the policy is not guaranteed to align with the standard objective.
+
+
+
 \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
 \label{sec:3-3-thts}
 
@@ -111,7 +133,7 @@
 
         \todo{Should make sure to talk about all of the MCTS algorithms designed around simple regret. Confirm the claim that they all are really just some mix of uniform and UCT}
 
-        
+
     \subsection{Maximum Entropy Tree Search}
     \label{sec:3-3-3-rents-some-tents}
 

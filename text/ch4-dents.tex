@@ -42,44 +42,12 @@
 
 
 
-
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\chapter{\label{ch:4-dents}Monte Carlo Tree Search With Boltzmann Exploration} 
-
-    \minitoc
-
-
-
-
-
-
-
-
-
-    \todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
-    % The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,\ldots,K\}$ is given by:
-    % \begin{align}
-    %     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
-    % \end{align}
-    % where again $\mu^* = \max_i \mu(i)$.
-
-
-
-
+\todo{Find where we use instantaneous regret (defn commented out here) and define it locally there.}
+% The \textit{(expected) instantaneous regret} for pulling an arm $x\in\{1,\ldots,K\}$ is given by:
+% \begin{align}
+%     \ireg(x) = \mu^* - \mu(x), \label{eq:2:instantaneous_regret_def}
+% \end{align}
+% where again $\mu^* = \max_i \mu(i)$.
 
 
 
@@ -202,6 +170,8 @@ def build_alias_table($f$):
 
 
 
+    \todo{introduce RENTS and TENTS outside of the introduction}
+    Entropy is widely used in the reinforcement learning literature, commonly introduced to promote exploration and discourage convergence to suboptimal deterministic policies \cite{ppo,deep_energy_policies,a3c,reinforce_ment}. MENTS (Section \ref{sec:2-4-3-ments}), RENTS and TENTS (Section \ref{sec:3-3-3-rents-some-tents}) are all MCTS algoritms that optimise for maximum entropy objectives. While RENTS and TENTS will be considered as baselines in empirical experiments, MENTS will be used to facilitate and provide discussion around the use of entropy and maximum entropy objective.
 
 
 
@@ -209,99 +179,66 @@ def build_alias_table($f$):
 
 
 
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\chapter{\label{ch:4-dents}Monte Carlo Tree Search With Boltzmann Exploration} 
 
-
-    This chapter considers MCTS algorithms for planning in single-objective environments, where the algorithm may consider a secondary entropy objective for exploration. In the maximum entropy setting the optimal soft policy takes the form of a Boltzmann distribution (Section \ref{sec:2-3-1-merl}), and the chapter will predominantly discuss MCTS algorithms whose search policies take the form of Boltzmann distributions. Question \entropyq, about how entropy can be used soundly in MCTS planning algorithms is answered here, and the foundations are laid for answering \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
-    
-    The discussion will focus on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where agents are assessed purely on the recommendations it makes, rather than what actions it explored in simulation.
+    \minitoc
     
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch4/rl_overview.pdf} 
-        \caption[Exploration setting in reinforcement learning.]{Exploration setting in reinforcement learning (edited from Figure \ref{fig:2:rl_overview}), where the agent is only assessed on the recommendations that it provides, and is not penalised for considering poor actions in the simulator. So this setting places greater emphasis on exploration over exploitation.}
+        \caption[Exploration setting in reinforcement learning.]{Exploration setting in reinforcement learning (edited from Figure \ref{fig:2:rl_overview}), where the agent is only assessed on the recommendations that it provides, and is not penalised for considering poor actions in the simulator. This setting therefore places greater emphasis on exploration than exploitation.}
         \label{fig:4:rl_overview}
     \end{figure}
+
+    This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a secondary objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
     
-    Entropy is widely used in the reinforcement learning literature, commonly introduced to promote exploration and discourage convergence to suboptimal deterministic policies \cite{ppo,deep_energy_policies,a3c,reinforce_ment}. MENTS (Section \ref{sec:2-4-3-ments}), RENTS and TENTS (Section \ref{sec:3-3-3-rents-some-tents}) are all MCTS algoritms that optimise for maximum entropy objectives. While RENTS and TENTS will be considered as baselines in empirical experiments, MENTS will be used to facilitate and provide discussion around the use of entropy and maximum entropy objective.
+    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the objective function rather than used as a constraint to remove ambiguity between multiple optimal policies, as in inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}. Whilst the maximum entropy objective yields a unique optimal policy, it is not guaranteed to align with the standard objective. This chapter demonstrates that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, which in practice can negate the benefit of entropy-based exploration.
 
-    Section \ref{sec:4-1-intro} discusses limitations of existing MCTS algorithms in the exploration setting, motivating the work covered in the remainder of the chapter. Additionally, the planning framework is formally defined so that the algorithms can be theoretically analysed using \textit{simple regret}.
-    
-    In Section \ref{sec:4-2-boltzmannsearch} the \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS) algorithms are defined. Section \ref{sec:4-2-3-stoch_search_policies} additionally discusses some useful properties of using a stochastic search policy in MCTS, such as naturally including prior knowledge through mixed policies, and how the Alias method (Section \ref{sec:2-6-sampling}) can be used to improve on computational complexity to answer \complexityq.
+    This motivates the investigation of \entropyq in this chapter, and lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
 
-    Section \ref{sec:4-3-toyenvs} considers some theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms, and are additionally used to provide discussion around \entropyq.
-
-    Results on grid world environments and the game of Go are given in section \ref{sec:4-4-results}. 
-
-    Finally, in Section \ref{sec:4-5-theory} the main theoretical analysis and proofs are given. Convergence properties of MENTS, BTS and DENTS are proven to answer \entropyq.
-
-    \htodo{After finished writing, do another pass through neurips paper and check no results/writing missing from thesis that really should be included. (Thinking about some of the frozen lake plots in the appendix when writing this.)}
-    
-
+    The remainder of this chapter is organised as follows:
+    \begin{itemize}
+        \item Section \ref{sec:4-1-intro} discusses limitations of existing MCTS algorithms in the exploration setting of reinforcement learning. \textit{Simple regret} is defined in the context of sequential decision making, to theoretically analyse the performance of MCTS algorithms in the exploration setting.
+        \item Section \ref{sec:4-2-boltzmannsearch} defines the \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS) algorithms.
+        \item Section \ref{sec:4-2-3-stoch_search_policies} discusses some properties of using a stochastic search policy in MCTS, and examines how the \textit{Alias Method} can be used to address \complexityq.
+        \item Section \ref{sec:4-3-toyenvs} introduces two theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms.
+        \item Section \ref{sec:4-4-results} presents experimental results on grid world environments and the game of Go.
+        \item Section \ref{sec:4-5-theory} presents the main theoretical analysis and proofs. Convergence properties of MENTS, BTS and DENTS are proven to answer \entropyq.
+    \end{itemize}
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    Originally principle of maximum entropy (1957 by Jaynes cite) is motivated in statistical inference. Loosly, the principle says that given partial knowledge about a probability distribution, the least biased estimate of the probability distribution is the one that maximises the entropy. 
-
-    This justification can easily be applied to inverse reinforcement learning (Zeibart et al 2008 cite), where the goal is to learn the transition/reward functions from a set of expert trajectories.
-
-    In contrary, in maximum entropy reinforcement learning, entropy is rolled directly into the objective function, rather than being used as a constraint to disambiguate between multiple optimal policies. While maximum entropy reinforcement learning does yield a unique ``optimal'' policy (optimal with respect to the maximum entropy objective), whereas the standard objective does not. (cite the soft RL papers here)
-
-    This policy is not garunteed to align with the standard objective. While the coefficient of the entropy term can be made arbitrarily small to make the objectives align, this chapter will demonstrate that for the objectives to not be misaligned, that the temperature parameter needs to be set to a prohibitively small value that does not effectively utilise the entropy exploration.
-
-    This thesis treats the entropy objective as a secondary (exploration) objective.
-
-
-
-
-
-
-
-    \todo{Add heuristic into backups with a weighting term for when using mcts mode.}
-
-
-
-
-
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Introduction and Motivation}
 \label{sec:4-1-intro}
 
-\newcommand{\secfouronestate}{s^{(2,2)}}.
+    \newcommand{\secfouronestate}{s^{(2,2)}}.
 
-    In this section a grid world shortest path problem will be used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms. In this grid world the agent may move deterministically in any cardinal direction, North/East/South/West, provided it stays on the grid. The agent starts at the origin $(0,0)$ and the goal is to reach the other side of the grid, at $(G-1,G-1)$, where $G$ is the grid size. The cost of a path is equal to its length, and an optimal policy will always select actions that move the agent \texttt{UP} or \texttt{RIGHT}. 
+    \todo{Change labelled state for a colour, so can refer to it by colour in the text without defining the entire MDP formally. Or just tag it somehow.}
 
-    This MDPs can be defined formally:
-    \begin{align}
-        \cl{S} &= \{(x,y)\in\bb{N}^2 | x,y \in [0,G]\} \\
-        s_0 &= (0,0) \\
-        \cl{A} &= \{(1,0),(0,-1),(-1,0),(0,1)\} = \{\texttt{UP},\texttt{LEFT},\texttt{DOWN},\texttt{RIGHT}\} \\
-        \text{clip}((x,y)) &= \left(\max(\min(x,G-1),0), \max(\min(y,G-1),0)\right) \\
-        p(s'|s,a) &= \begin{cases}
-            \one[s'=s] & \text{if } s=(G-1,G-1) \\
-            \one[s'=\text{clip}(s+a)] & \text{otherwise}
-        \end{cases} \\
-        H &= 6G \\
-        R(s,a) &= -1 
-    \end{align}
-
-    In Section \ref{sec:4-4-results} similar grid world problems will be considered with greater complexities, such as sparse rewards and stochastic transition distributions.
-
-    
-    
     \begin{figure}
         \centering
         \begin{subfigure}[b]{0.49\textwidth}
@@ -320,7 +257,13 @@ def build_alias_table($f$):
         \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) shows three possible paths, that could be explored by UCT. The red path shows one possible optimal path from the start to finish (cost of 10). The blue path shows a near optimal path (cost of 12), and the green path shows a suboptimal path (cost of 16). Supposing UCT has searched the blue and green paths, when the UCT search policy selects actions at state $\secfouronestate$, it will often pick action \texttt{DOWN} over action \texttt{UP}, as the Q-value estimates it has are $\Quct(\secfouronestate,\texttt{DOWN})=-8$ and $\Quct(\secfouronestate,\texttt{UP})=-12$. (b) shows the probability of sampling actions from the optimal soft policy for varying temperature $\alpha$. Red corresponds to a small value of $\alpha$, and is close to the optimal standard policy. Blue corresponds to a mid-range value of $\alpha$ where the optimal policy will still try to reach the goal, but still act randomly to obtain entropy reward. Green corresponds to a large value of $\alpha$, where obtaining entropy reward outweighs ever reaching the goal, and the optimal soft policy is nearly uniform. For large values of entropy the optimal soft policy actively avoids reaching the goal that will end the trial, and will have a slight preference to stay near the middle of the grid, as there are fewer available actions at the edges and corners (less entropy available). \todo{clean up alignment of arrows in figs and make state label clearer in fig a}}
         \label{fig:4:shortest_path_intro}
     \end{figure}
-    
+
+    This section considers a grid world shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms.
+
+    In this grid world, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (6 times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. 
+
+    In Section \ref{sec:4-4-results} similar grid world problems will be considered with greater complexities including terminal states, sparse rewards and stochastic transition distributions.
+
     \begin{figure}
         \centering
         \includegraphics[width=0.6\textwidth]{figures/ch4/grid_world_sec_1_results.png}
@@ -329,100 +272,133 @@ def build_alias_table($f$):
     \end{figure}
 
 
-    \subsection{UCT}
 
-        The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade off between exploration and exploitation during it trials, and as such will frequently choose the same action to exploit, which can result in it getting stuck in local optima when rewards are sparse or not informative. 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{UCT}
 
-        A sparse reward is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but relatively uninformative, as the immediate cost of taking any action is the same. 
+    The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade off between exploration and exploitation during it trials, and as such will frequently choose the same action to exploit, which can result in it getting stuck in local optima when rewards are sparse or not informative. 
 
-        In Figure \ref{fig:4:shortest_path_intro_a} the shortest path problem is depicted, with an optimal path shown in red, and two paths that UCT may have explored in blue and green. When UCT is selecting an action to take from state $\secfouronestate$, it will consider the value estimates $\Quct(\secfouronestate,\texttt{DOWN})\approx -8$ and $ \Quct(\secfouronestate,\texttt{UP})\approx -12$ (note that at state $\secfouronestate$ the agent has already taken 4 steps along the path). As the Q-value estimate for taking the suboptimal action \texttt{DOWN} is higher, UCT will most frequently select this action from state $\secfouronestate$. 
+    A sparse reward is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but relatively uninformative, as the immediate cost of taking any action is the same. 
 
-        UCT will select every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and in theory will eventually converge to the optimal policy. However, in practise this could take a long time. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is considered where UCT needs much more than $\exp(|\cl{S}|)$ trials for the search policy to converge to the optimal policy.
+    In Figure \ref{fig:4:shortest_path_intro_a} the shortest path problem is depicted, with an optimal path shown in red, and two paths that UCT may have explored in blue and green. When UCT is selecting an action to take from state $\secfouronestate$, it will consider the value estimates $\Quct(\secfouronestate,\texttt{DOWN})\approx -8$ and $ \Quct(\secfouronestate,\texttt{UP})\approx -12$ (note that at state $\secfouronestate$ the agent has already taken 4 steps along the path). As the Q-value estimate for taking the suboptimal action \texttt{DOWN} is higher, UCT will most frequently select this action from state $\secfouronestate$. 
 
-        In Figure \ref{fig:4:shortest_path_intro_results} the performance of UCT after 5000 trials is given for a range of values of the UCT bias parameter $\buct$. This bias parameter controls the amount of exploration that UCT performs, and as the bias parameter is increased UCT will explore more. It can be seen that for low values of the bias parameter UCT is stuck in a suboptimal solution. When the bias parameter is increased UCT sufficiently explores to find the optimal policy. Finally, as UCT uses sample averages, for a very large bias parameter, 5000 trials is not sufficient enough for the average return value estimates to converge. Note that the (Q-)values of UCT can also be written as:
+    UCT will select every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and in theory will eventually converge to the optimal policy. However, in practice this could take a long time. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is considered where UCT needs much more than $\exp(|\cl{S}|)$ trials for the search policy to converge to the optimal policy.
+
+    In Figure \ref{fig:4:shortest_path_intro_results} the performance of UCT after 5000 trials is given for a range of values of the UCT bias parameter $\buct$. This bias parameter controls the amount of exploration that UCT performs, and as the bias parameter is increased UCT will explore more. It can be seen that for low values of the bias parameter UCT is stuck in a suboptimal solution. When the bias parameter is increased UCT sufficiently explores to find the optimal policy. Finally, as UCT uses sample averages, for a very large bias parameter, 5000 trials is not sufficient enough for the average return value estimates to converge. 
+
+
+    
+    
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{MENTS}
+
+    One can argue that when using the maximum entropy objective, it is possible to recover the standard objective by setting the temperature parameter to zero, or an infitesimally small value. However, in practice, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
+
+    The optimal soft policy for a large temperature may be very different to the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. 
+    \begin{defn} 
+        The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}).
+    \end{defn}
+    
+    For a more concrete example of this phenomenon, consider the shortest path example and what the optimal soft policy looks like at a state next to the goal. The agent can either reach the goal in the next step, or, alternatively move away from the goal so that it can collect more entropy reward. This is depicted in Figure \ref{fig:4:shortest_path_intro_b} in green.   
+
+    Hence, when using the maximum entropy objective the temperature parameter often needs to be carefully tuned to the MDP. Using too small a value will nullify the exploration benefits, and using too large a value will result in the maximum entropy objective being misaligned with the standard objective. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is constructed where the temperature parameter needs to be made prohibitively small to avoid the maximum entropy objective from being misaligned. 
+
+    In Figure \ref{fig:4:shortest_path_intro_results} the performance of MENTS after 5000 trials is given for a range of values of the temperature parameter $\alphaments$. For temperature values up to a value of 1, a close to optimal path is found in the shortest path problem. In the range of temperatures between 1 and 100, it becomes more beneficial for MENTS to act randomly to obtain entropy but will still tend to move towards the goal, and beyond a value of 100 it becomes much more valuable to act randomly and optimise for entropy. 
+
+    \todo{claude says cut this section I think, but also said only last two paragraphs}
+    Building off this intuition, a good rule of thumb when using the maximum entropy objective is to set the temperature parameter large enough to gain an exploration benefit, but small enough to avoid misalignment issues. Additionally, the threshold for which the maximum entropy objective will become misaligned is dependent on the MDP itself, considering that a uniform policy over $|\cl{A}|$ actions has an entropy of $\log(|\cl{A})$. Generally this means that the temperature will need to be carefully tuned for any new MDP that it is used with.
+    
+    % Furhermore, in Section \ref{sec:4-3-toyenvs}, a theoretical MDP will be constructed where MENTS will either suffer from the issue of the entropy objective misalignment, or the temperature must be set to a small value that does not effectively utilise the entropy exploration. 
+    
+    % While only the MENTS algorithm has been discussed in this section, the issue arises from mixing entropy into the scalar objective. Similar issues still arise no matter the form of entropy considered.
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Simple Regret and Consistency}
+
+    \todo{Move to chapter 2 in RL section and add cumulative regret. Call subsection regret and consistency.}
+
+    Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (Equation (\ref{eq:4:simple_regret})). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
+
+    While \textit{cumulative regret} has been used to motivate and analyse algorithms such as UCT, it is not the most appropriate measure for the exploration setting. In the exploration setting, the agent is only assessed on the recommendations it makes, and is not penalised for considering poor actions in the simulator. See Figure \ref{fig:4:planning_problem} for the formal setup of the exploring planning problem for MDPs. As such, the focus of this chapter will be on the (expected) simple regret of the algorithms developed.
+
+    % \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered} \todo{Neurips paper says: ``In this work, we consider scenarios where MCTS methods are used with a simulator to plan how an
+    % agent should act'' in intro, and ``UCB [1] is frequently used in MCTS methods to minimise cumulative regret during the tree search.
+    % Cumulative regret is most appropriate in scenarios where the actions taken during tree search have an
+    % associated real-world cost. However, MCTS methods often use a simulator during the tree search,
+    % where the only significant real-world cost is associated with taking the recommended action after the
+    % tree search. In such scenarios, simple regret [7, 8] is more appropriate for analysing the performance
+    % of algorithms, as it only considers the cost of the actions that are actually executed. Under simple
+    % regret, algorithms are not penalised for under-exploiting during the search, thus can explore more,
+    % which leads to better recommendations by allowing algorithms to confirm that bad actions are indeed
+    % of lower value.'' in the simple regret section} 
+
+    \begin{figure}
+        \begin{tcolorbox}
+            Parameters: An MDP $\cl{M}$.
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
+                \begin{enumerate}
+                    \item the agent produces a search policy $\pi^m$ to follow;
+                    \item the environment samples a trajectory $\tau\sim\pi^m$ (including rewards $r_t=R(s_t,a_t)$ for each $s_t,a_t$ pair in $\tau$);
+                    \item the agent produces a recommendation policy $\psi^m$;
+                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
+                \end{enumerate} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption[The procedure of an exploring planning problem for MDPs]{The procedure of an exploring planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
+        \label{fig:4:planning_problem}
+    \end{figure}
+
+    \begin{defn}
+        The \textnormal{simple regret} of a policy $\psi$ at state $s\in\cl{S}$ is the difference between the value of the policy and the optimal value at that state:
         \begin{align}
-            \Vuct(s) &= \sum_{a \in \cl{A}} \frac{N(s,a)}{N(s)}\Quct(s,a), \\
-            \Quct(s,a) &= R(s,a) \sum_{s' \in \suc{s}{a}} \frac{N(s')}{N(s,a)}\Vuct(s,a),
-        \end{align} 
-        and so the empirical distribution $\frac{N(s,a)}{N(s)}$ needs to a converge to a one hot distribuion before the value estimates can converge to the optimal values.
-        
-        \hide{\todo{This later issue can be resolved by using MaxUCT instead. Add? Also add in results Section 4.4?}}
+            \sreg(s,\psi) = V^*(s)-V^{\psi}(s). \label{eq:4:simple_regret}
+        \end{align}
+    \end{defn}
 
+    Note that the simple regret is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret will be the main value of interest in the theoretical analysis of Section \ref{sec:4-5-theory}.
 
-    
-    
-    \subsection{MENTS}
+    Now that simple regret has been defined, the concept of consistency can be defined formally:
 
-        One can argue that when using the maximum entropy objective, it is possible to recover the standard objective by setting the temperature parameter to zero, or an infitesimally small value. However, in practise, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
+    \begin{defn}
+        An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textnormal{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
+    \end{defn}
 
-        The optimal soft policy for a large temperature may be very different to the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. More precisely, the maximum entropy objective is misaligned when the policy $\pi^*_{\sft,\text{eval}}(s) = \argmax_{a'} \pi^*_{\sft}(a'|s)$ that would be followed at test time differs from the optimal standard policy $\pi^*(s)$.
-        
-        For a more concrete example of this phenominon, consider the shortest path example and what the optimal soft policy look like at a state next to the goal? The agent can either reach the goal in the next step, or, alternatively move away from the goal so that it can collect more entropy reward. This is depicted in Figure \ref{fig:4:shortest_path_intro_b} in purple.   
-
-        Hence, when using the maximum entropy objective the temperature parameter often needs to be carefully tuned to the MDP. Using too small of a value will nullify the exploration benefits, and using too large of a value will result in the maximum entropy objective being misaligned with the standard objective. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is considered where the temperature parameter needs to be made prohibitively small to avoid the maximum entropy objective from being misaligned. 
-
-        In Figure \ref{fig:4:shortest_path_intro_results} the performance of MENTS after 5000 trials is given for a range of values of the temperature parameter $\alphaments$. For temperature values up to a value of 1, a close to optimal path is found in the shortest path problem. In the range of temperatures between 1 and 100, it becomes more beneficial for MENTS to act randomly to obtain entropy but will still tend to move towards the goal, and beyond a value of 100 it becomes much more valueable to act randomly and optimise for entropy. 
-
-        Building off this intuition, a good rule of thumb when using the maximum entropy objective is to set the temperature parameter large enough to gain an exploration benefit, but small enough to avoid misalignment issues. Additionally, the threshold for which the maximum entropy objective will become misaligned is dependent on the MDP itself, considering that a uniform policy over $|\cl{A}|$ actions has an entropy of $\log(|\cl{A})$. Generally this means that the temperature will need to be carefully tuned for any new MDP that it is used with.
-        
-        Furhermore, in Section \ref{sec:4-3-toyenvs}, a theoretical MDP will be constructed where MENTS will either suffer from the issue of the entropy objective misalignment, or the temperature must be set to a small value that does not effectively utilise the entropy exploration. 
-        
-        While only the MENTS algorithm has been discussed in this section, the issue arises from mixing entropy into the scalar objective. Similar issues still arise no matter the form of entropy considered.
-
-
-
-    \subsection{Simple Regret and Consistency}
-
-        \todo{Move to chapter 2 in RL section and add cumulative regret. Call subsection regret and consistency.}
-
-        Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (Equation (\ref{eq:4:simple_regret})). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
-
-        While \textit{cumulative regret} has been used to motivate and analyse algorithms such as UCT, it is not the most appropriate measure for the exploration setting. In the exploration setting, the agent is only assessed on the recommendations it makes, and is not penalised for considering poor actions in the simulator. See Figure \ref{fig:4:planning_problem} for the formal setup of the exploring planning problem for MDPs. As such, the focus of this chapter will be on the (expected) simple regret of the algorithms developed.
-
-        % \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered} \todo{Neurips paper says: ``In this work, we consider scenarios where MCTS methods are used with a simulator to plan how an
-        % agent should act'' in intro, and ``UCB [1] is frequently used in MCTS methods to minimise cumulative regret during the tree search.
-        % Cumulative regret is most appropriate in scenarios where the actions taken during tree search have an
-        % associated real-world cost. However, MCTS methods often use a simulator during the tree search,
-        % where the only significant real-world cost is associated with taking the recommended action after the
-        % tree search. In such scenarios, simple regret [7, 8] is more appropriate for analysing the performance
-        % of algorithms, as it only considers the cost of the actions that are actually executed. Under simple
-        % regret, algorithms are not penalised for under-exploiting during the search, thus can explore more,
-        % which leads to better recommendations by allowing algorithms to confirm that bad actions are indeed
-        % of lower value.'' in the simple regret section} 
-
-        \begin{figure}
-            \begin{tcolorbox}
-                Parameters: An MDP $\cl{M}$.
-                \begin{itemize}
-                    \item For each round $m=1,2,...$:
-                    \begin{enumerate}
-                        \item the agent produces a search policy $\pi^m$ to follow;
-                        \item the environment samples a trajectory $\tau\sim\pi^m$ (including rewards $r_t=R(s_t,a_t)$ for each $s_t,a_t$ pair in $\tau$);
-                        \item the agent produces a recommendation policy $\psi^m$;
-                        \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
-                    \end{enumerate} 
-                \end{itemize}
-            \end{tcolorbox}
-            \caption[The procedure of an exploring planning problem for MDPs]{The procedure of an exploring planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
-            \label{fig:4:planning_problem}
-        \end{figure}
-
-        \begin{defn}
-            The \textnormal{simple regret} of a policy $\psi$ at state $s\in\cl{S}$ is the difference between the value of the policy and the optimal value at that state:
-            \begin{align}
-                \sreg(s,\psi) = V^*(s)-V^{\psi}(s). \label{eq:4:simple_regret}
-            \end{align}
-        \end{defn}
-
-        Note that the simple regret is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret will be the main value of interest in the theoretical analysis of Section \ref{sec:4-5-theory}.
-
-        Now that simple regret has been defined, the concept of consistency can be defined formally:
-
-        \begin{defn}
-            An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textnormal{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
-        \end{defn}
-
-        Returning to the discussion around UCT and MENTS, now that simple regret and consistency have been defined, it can be shown the UCT is always consistent \todo{cite?}, whereas MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP (\todo{ref section/theorem, where show MENTS garunteed to converge given a small enough temperature. Maybe quote theorem here?}). Although UCT is consistent, it can take a long time to converge to the optimal policy (as will be seen in \ref{sec:4-3-toyenvs}), and so it is of interest to develop algorithms that can explore more that are also consistent.
+    Returning to the discussion around UCT and MENTS, now that simple regret and consistency have been defined, it can be shown the UCT is always consistent \todo{cite?}, whereas MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP (\todo{ref section/theorem, where show MENTS garunteed to converge given a small enough temperature. Maybe quote theorem here?}). Although UCT is consistent, it can take a long time to converge to the optimal policy (as will be seen in \ref{sec:4-3-toyenvs}), and so it is of interest to develop algorithms that can explore more that are also consistent.
     
 
 
@@ -436,6 +412,16 @@ def build_alias_table($f$):
 
 \section{Boltzmann Search}
 \label{sec:4-2-boltzmannsearch}
+    
+
+
+
+
+
+
+
+
+\todo{Add heuristic into backups with a weighting term for when using mcts mode.}
 
     This section defines new algorithms, Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS). Following the discussion from Section \ref{sec:4-1-intro}, the design aims of these algorithms are as follows:
     \begin{itemize}

@@ -897,7 +897,7 @@ def backup_phase($\tau_{:h}$, ctx)
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
+% [ ] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -908,6 +908,9 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Final revision
 \subsection{Predictor-UCT (PUCT)}
 \label{sec:2-4-2-puct}
+
+    \todo{Maybe move to related work, Sec 2.4 is just introducing THTS and some examples of it making MCTS algorithms consise/precise to define. Should also define MaxUCT, either after PUCT here or preferrably in related work section.}
+
     AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{pucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
 
     PUCT uses similar variables to UCT (Section \ref{sec:2-4-2-uct}), the sample average value estimates $\Vpuct(s)$ and $\Qpuct(s,a)$, visit counts $N(s)$ and $N(s,a)$, the bias parameter $\bpuct$, and the flag $\normalisedq$. 
