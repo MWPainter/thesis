@@ -221,8 +221,8 @@ def build_alias_table($f$):
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -234,10 +234,6 @@ def build_alias_table($f$):
 % [ ] Final revision
 \section{Introduction and Motivation}
 \label{sec:4-1-intro}
-
-    \newcommand{\secfouronestate}{s^{(2,2)}}.
-
-    \todo{Change labelled state for a colour, so can refer to it by colour in the text without defining the entire MDP formally. Or just tag it somehow.}
 
     \begin{figure}
         \centering
@@ -254,27 +250,40 @@ def build_alias_table($f$):
             \caption{Optimal policy with the maximum entropy objective for varying temperatures.}
             \label{fig:4:shortest_path_intro_b}
         \end{subfigure}
-        \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) shows three possible paths, that could be explored by UCT. The red path shows one possible optimal path from the start to finish (cost of 10). The blue path shows a near optimal path (cost of 12), and the green path shows a suboptimal path (cost of 16). Supposing UCT has searched the blue and green paths, when the UCT search policy selects actions at state $\secfouronestate$, it will often pick action \texttt{DOWN} over action \texttt{UP}, as the Q-value estimates it has are $\Quct(\secfouronestate,\texttt{DOWN})=-8$ and $\Quct(\secfouronestate,\texttt{UP})=-12$. (b) shows the probability of sampling actions from the optimal soft policy for varying temperature $\alpha$. Red corresponds to a small value of $\alpha$, and is close to the optimal standard policy. Blue corresponds to a mid-range value of $\alpha$ where the optimal policy will still try to reach the goal, but still act randomly to obtain entropy reward. Green corresponds to a large value of $\alpha$, where obtaining entropy reward outweighs ever reaching the goal, and the optimal soft policy is nearly uniform. For large values of entropy the optimal soft policy actively avoids reaching the goal that will end the trial, and will have a slight preference to stay near the middle of the grid, as there are fewer available actions at the edges and corners (less entropy available). \todo{clean up alignment of arrows in figs and make state label clearer in fig a}}
+        \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
         \label{fig:4:shortest_path_intro}
     \end{figure}
 
     This section considers a grid world shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms.
 
-    In this grid world, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (6 times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. 
+    In this grid world, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
 
-    In Section \ref{sec:4-4-results} similar grid world problems will be considered with greater complexities including terminal states, sparse rewards and stochastic transition distributions.
+    While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS and Section \ref{sec:4-4-results} considers more complex grid worlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/ch4/grid_world_sec_1_results.png}
-        \caption[Results on the example grid world problem for a variety of bias and temperature parameters.]{Results on the example grid world problem for a variety of UCT bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. Each algorithm was run for 5000 trials, and results were averaged over 25 repeated experiments. UCT is able to find the optimal solution in some of the repeats with a bias of 10, but for larger biases 5000 trials was not enough to converge. MENTS successfully finds the shortest path of length 10 for small values of $\alphaments$, but for values in the inteval $[1,100)$ the entropy objective encourages a scenic route to the goal, and for values $100+$ acting randomly to gain entropy reward far outweighs reaching the goal. \todo{Make sure can actually see x-axis label (Temperature/Bias)}}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/grid_world_sec_1_results_params.png}
+            \caption{Reward of best path, after 2500 trials, for a range of bias/temperature parameters.}
+            \label{fig:4:shortest_path_intro_results_a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/grid_world_sec_1_results_trials.png}
+            \caption{Reward of best path relative to the number of trials. ($\alpha=1$ and $\bpuct=0.01,0.1,1$).}
+            \label{fig:4:shortest_path_intro_results_b}
+        \end{subfigure}
+        \centering
+        \caption[Results on the example grid world problem for a variety of bias and temperature parameters.]{Results on the example grid world problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters. (b) Shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
         \label{fig:4:shortest_path_intro_results}
     \end{figure}
+    
 
 
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -286,22 +295,20 @@ def build_alias_table($f$):
 % [ ] Final revision
 \subsection{UCT}
 
-    The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade off between exploration and exploitation during it trials, and as such will frequently choose the same action to exploit, which can result in it getting stuck in local optima when rewards are sparse or not informative. 
+    The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade-off between exploration and exploitation during its trials, and frequently chooses the same action to exploit, which can result in it getting stuck in local optima, particularly when rewards are sparse or not informative. 
 
-    A sparse reward is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but relatively uninformative, as the immediate cost of taking any action is the same. 
+    A \textit{sparse reward} is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but uninformative, as the immediate cost of taking any action is the same. 
 
-    In Figure \ref{fig:4:shortest_path_intro_a} the shortest path problem is depicted, with an optimal path shown in red, and two paths that UCT may have explored in blue and green. When UCT is selecting an action to take from state $\secfouronestate$, it will consider the value estimates $\Quct(\secfouronestate,\texttt{DOWN})\approx -8$ and $ \Quct(\secfouronestate,\texttt{UP})\approx -12$ (note that at state $\secfouronestate$ the agent has already taken 4 steps along the path). As the Q-value estimate for taking the suboptimal action \texttt{DOWN} is higher, UCT will most frequently select this action from state $\secfouronestate$. 
+    Suppose that UCT has been run for many trials, and the best paths found by UCT so far are shown in red and blue in Figure \ref{fig:4:shortest_path_intro_a}. The two paths coincide until the shaded state at $(2,2)$, where UCT has the Q-value estimates $\Quct((2,2),\texttt{DOWN}) \approx -8$ and $\Quct((2,2),\texttt{UP}) \approx -12$. When a UCT trial reaches the shaded state at $(2,2)$, it will frequently select the action \texttt{DOWN} over \texttt{UP} to exploit the best path it has found so far, rather than exploring the optimal actions \texttt{UP} and \texttt{RIGHT}.
 
-    UCT will select every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and in theory will eventually converge to the optimal policy. However, in practice this could take a long time. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is considered where UCT needs much more than $\exp(|\cl{S}|)$ trials for the search policy to converge to the optimal policy.
-
-    In Figure \ref{fig:4:shortest_path_intro_results} the performance of UCT after 5000 trials is given for a range of values of the UCT bias parameter $\buct$. This bias parameter controls the amount of exploration that UCT performs, and as the bias parameter is increased UCT will explore more. It can be seen that for low values of the bias parameter UCT is stuck in a suboptimal solution. When the bias parameter is increased UCT sufficiently explores to find the optimal policy. Finally, as UCT uses sample averages, for a very large bias parameter, 5000 trials is not sufficient enough for the average return value estimates to converge. 
+    In theory, UCT selects every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and will converge to the optimal values and policy. In practice, UCT shifts its focus from exploration to exploitation throughout the search, which is determined by the confidence intervals and the bias parameter $\buct$ from Equation (\ref{eq:2:uct_policy}). This is illustrated in Figure \ref{fig:4:shortest_path_intro_results}, where for small bias parameters UCT quickly exploits a suboptimal solution and for large bias parameters UCT is still exploring and its value estimates have not yet converged.
 
 
     
     
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -313,25 +320,16 @@ def build_alias_table($f$):
 % [ ] Final revision
 \subsection{MENTS}
 
-    One can argue that when using the maximum entropy objective, it is possible to recover the standard objective by setting the temperature parameter to zero, or an infitesimally small value. However, in practice, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
+    One can argue that when using the maximum entropy objective, it is possible to recover the standard objective by setting the temperature parameter to zero, or an infinitesimally small value. However, in practice, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
 
-    The optimal soft policy for a large temperature may be very different to the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. 
+    The optimal soft policy for a large temperature may be different from the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. 
     \begin{defn} 
-        The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}).
+        The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*_{\sft}(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}). The \textnormal{misalignment threshold} is the smallest temperature parameter at which the maximum entropy objective is misaligned.
     \end{defn}
-    
-    For a more concrete example of this phenomenon, consider the shortest path example and what the optimal soft policy looks like at a state next to the goal. The agent can either reach the goal in the next step, or, alternatively move away from the goal so that it can collect more entropy reward. This is depicted in Figure \ref{fig:4:shortest_path_intro_b} in green.   
 
-    Hence, when using the maximum entropy objective the temperature parameter often needs to be carefully tuned to the MDP. Using too small a value will nullify the exploration benefits, and using too large a value will result in the maximum entropy objective being misaligned with the standard objective. In Section \ref{sec:4-3-toyenvs} a theoretical MDP is constructed where the temperature parameter needs to be made prohibitively small to avoid the maximum entropy objective from being misaligned. 
+    In Figure \ref{fig:4:shortest_path_intro_b} the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. 
 
-    In Figure \ref{fig:4:shortest_path_intro_results} the performance of MENTS after 5000 trials is given for a range of values of the temperature parameter $\alphaments$. For temperature values up to a value of 1, a close to optimal path is found in the shortest path problem. In the range of temperatures between 1 and 100, it becomes more beneficial for MENTS to act randomly to obtain entropy but will still tend to move towards the goal, and beyond a value of 100 it becomes much more valuable to act randomly and optimise for entropy. 
-
-    \todo{claude says cut this section I think, but also said only last two paragraphs}
-    Building off this intuition, a good rule of thumb when using the maximum entropy objective is to set the temperature parameter large enough to gain an exploration benefit, but small enough to avoid misalignment issues. Additionally, the threshold for which the maximum entropy objective will become misaligned is dependent on the MDP itself, considering that a uniform policy over $|\cl{A}|$ actions has an entropy of $\log(|\cl{A})$. Generally this means that the temperature will need to be carefully tuned for any new MDP that it is used with.
-    
-    % Furhermore, in Section \ref{sec:4-3-toyenvs}, a theoretical MDP will be constructed where MENTS will either suffer from the issue of the entropy objective misalignment, or the temperature must be set to a small value that does not effectively utilise the entropy exploration. 
-    
-    % While only the MENTS algorithm has been discussed in this section, the issue arises from mixing entropy into the scalar objective. Similar issues still arise no matter the form of entropy considered.
+    When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is around $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex grid worlds where the misalignment threshold is low enough to significantly affect performance.
 
 
 
@@ -350,6 +348,8 @@ def build_alias_table($f$):
 \subsection{Simple Regret and Consistency}
 
     \todo{Move to chapter 2 in RL section and add cumulative regret. Call subsection regret and consistency.}
+
+    This section introduces the concepts of simple regret (for MDPs) and consistency (for MCTS algorithms).
 
     Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (Equation (\ref{eq:4:simple_regret})). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
 
