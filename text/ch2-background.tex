@@ -735,12 +735,14 @@
 
     If the unique state assumption (Section \ref{sec:2-4-0-notation}) is set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
 
-    Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} discusses the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
+    Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} illustrates the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
 
     To run an algorithm in the \thtspp\ewe schema, the following \textit{modules} and \textit{parameters} need to be specified. Algorithms specify the operation of each module:
     \begin{description}
         \item[Value Estimates:]
-            What data will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined;
+            What data will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined. It is assumed that $\dnodedata{s}$ and $\cnodedata{s,a}$ always contain the visit counts $N(s)$, and $N(s,a)$ respectively;
+        \item[Initialisation:]
+            Two functions $\initv$ and $\initq$ which specify how to initialise $\dnodedata{s}$ and $\cnodedata{s,a}$ respectively;
         \item[Context Sampler:]
             A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
         \item[Action Selection (Search Policy):]
@@ -765,16 +767,24 @@
     
     Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
     \begin{description}
-        \item[Sample Context:] At the start of the trial, a context is sampled using the $\samplecontext$ function, and the context is passed to all subsequent steps of the trial.
-        \item[Selection Phase:] A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $h=0$:
+        \item[Sample Context:] 
+            At the start of the trial, a context is sampled using the $\samplecontext$ function, and the context is passed to all subsequent steps of the trial.
+        \item[Selection Phase:] 
+            A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $i=0$:
         \begin{description}
-            \item[Selection Step:] Action $a_h$ is selected using $\selectaction(s_h)$, and an outcome $s_{h+1}$ is sampled using $\sampleoutcome(s_h,a_h)$.
-            \item[Heuristic Step:] If $s_{h+1}\not\in\cl{T}$, then $\dnodedata{s_{h+1}}$ is initialised using $\Vinit$, $\Qinit$, and $\piinit$. New nodes are added to the tree, $\cl{T}\leftarrow\cl{T}\cup\{(s_h,a_h),s_{h+1}\}$.
-            \item[] If $s_{h+1}\in\terminal$ or $h+1=H_{\thtspp}$, then proceed to the backup phase.
-            \item[] If $\mctsmode$ and $s_{h+1}$ was just added to the tree, then proceed to the backup phase.
-            \item[] Otherwise, increment $h$ and return to the selection step.
+            \item[Selection Step:] 
+                Action $a_i$ is selected using $\selectaction(s_i)$, and an outcome $s_{i+1}$ is sampled using $\sampleoutcome(s_i,a_i)$.
+            \item[Heuristic Step:] 
+                If $(s_i,a_i)\not\in\cl{T}$ initialise $\cnodedata{s_i,a_i}$ using $\initq$, and if $s_{i+1}\not\in\cl{T}$ initialise $\dnodedata{s_{i+1}}$ using $\initv$. New nodes are added to the tree, $\cl{T}\leftarrow\cl{T}\cup\{(s_i,a_i),s_{i+1}\}$.
+            \item[] 
+                If $s_{i+1}\in\terminal$ or $i+1=H_{\thtspp}$, then proceed to the backup phase.
+            \item[] 
+                If $\mctsmode$ and $s_{i+1}$ was just added to the tree, then proceed to the backup phase.
+            \item[] 
+                Otherwise, increment $i$ and return to the selection step.
         \end{description}
-        \item[Backup Phase:] The $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_i,a_i}$ and $\dnodedata{s_i}$ for $i=h,\ldots,0$.
+        \item[Backup Phase:]
+            For $i=h-1,\ldots,0$, where h is the final value of $i$ in the selection phase, the visit counts $N(s_i)$ and $N(s_i,a_i)$ are incremented, and the $\backupq$ and $\backupv$ functions are used to update the values of $\cnodedata{s_i,a_i}$ and $\dnodedata{s_i}$ respectively.
     \end{description}
             
     
@@ -791,7 +801,7 @@ def run_trial(search_tree: $\cl{T}$,
     $\tau_{:h}$ = selection_phase($\cl{T}$, $\pisearch$, $\Vinit$, $\Qinit$, $\piinit$, single_node_expansion, $H_{\thtspp}$, ctx)
     backup_phase($\tau_{:h}$, ctx)
 
-def sample_trajectory(search_tree: $\cl{T}$, 
+def selection_phase(search_tree: $\cl{T}$, 
                       search_policy: $\pisearch$, 
                       heuristic_fn: $\Vinit$,
                       heuristic_action_fn: $\Qinit$,
@@ -808,8 +818,10 @@ def sample_trajectory(search_tree: $\cl{T}$,
         $r_{\texttt{i}} \leftarrow R(s_{\texttt{i}}, a_{\texttt{i}})$
         $s_{\texttt{i+1}} \leftarrow$ sample_outcome$(s_{\texttt{i}}$, $a_{\texttt{i}}$, ctx$)$
         # heuristic step
+        if $(s_{\texttt{i}}, a_{\texttt{i}}) \not\in \cl{T}$:
+            $\initq((s_{\texttt{i}}, a_{\texttt{i}}), \Qinit, \piinit, ctx)$
         if $s_{\texttt{i+1}} \not\in \cl{T}$:
-            $\dnodedata{s_{\texttt{i+1}}} \leftarrow \Vinit(s_{\texttt{i+1}})$
+            $\initv(s_{\texttt{i+1}}, \Vinit, \piinit, ctx)$
         $\cl{T} \leftarrow \cl{T} \cup \{(s_{\texttt{i}}, a_{\texttt{i}}), s_{\texttt{i+1}}\}$
         i += 1
     return $(s_0,a_0,r_0,s_1,\ldots,s_{\texttt{i-1}}, a_{\texttt{i-1}},r_{\texttt{i-1}}, s_{\texttt{i}})$
@@ -824,6 +836,8 @@ def sample_outcome($s$, $a$, ctx):
 
 def backup_phase($\tau_{:h}$, ctx)
     for i in $\{h-1,h-2,\ldots,1,0\}$:
+        $N(s_i,a_i) \leftarrow N(s_i,a_i) + 1$
+        $N(s_i) \leftarrow N(s_i) + 1$
         node$(s_i,a_i)$.backup_q(node$(s_i,a_i)\dotchildren$, $\tau_{i:h}$, ctx)
         node$(s_i)$.backup_v(node$(s_i)\dotchildren$, $\tau_{i:h}$, $\Vinit(s_h)$, ctx)
         \end{lstlisting}
@@ -859,24 +873,29 @@ def backup_phase($\tau_{:h}$, ctx)
     \begin{align}
         \Quctnorm(s,a) &= 
         \begin{cases}
-            \frac{\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)}{\max_{a\in\cl{A}}\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)} & \text{if } \normalisedq \\
-            \Quct(s,a) & \text{otherwise}
+            \frac{\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)}{\max_{a\in\cl{A}}\Quct(s,a)-\min_{a\in\cl{A}}\Quct(s,a)} & \text{if } \normalisedq, \\
+            \Quct(s,a) & \text{otherwise,}
         \end{cases} \\
         \piuct(s) &= \argmax_{a\in\cl{A}} \Quctnorm(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, \label{eq:2:uct_policy}
     \end{align}
     In Equation (\ref{eq:2:uct_policy}), when $N(s,a)=0$ there is a division by zero, which is taken as $\infty$, and ties are broken uniformly randomly. Note that like UCB (Section \ref{sec:2-1-mab}), this results in every action being taken once before any action is selected for a second time. The heuristic functions $\Qinit$ and $\piinit$ are not used by UCT.  
     
-    Let $\tau_{:h}\sim\piuct$, be the trajectory sampled in the selection phase of UCT, and let $\tilde{r} = \Vinit(s_h)$. In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates incrementally. For $t=h,\ldots,0$:
+    Let $\tau_{:h}\sim\piuct$ be the trajectory sampled in the selection phase of UCT. For any chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count $N(s,a)=0$ and the Q-value estimate $\Quct(s,a)=\Qinit(s,a)$, which will be overwritten by $\backupq$ on the first visit (Equation \ref{eq:2:uct_backup_q}). The $\initv$ function initialises the leaf node $s_h$ using the heuristic function and with a single visit:
     \begin{align}
-        N(s_t,a_t) &\leftarrow N(s_t,a_t) + 1, \\
-        N(s_t) &\leftarrow N(s_t) + 1, \\
+        N(s_h) &= 1, \\
+        \Vuct(s_h) &= \Vinit(s_h). \label{eq:2:uct_init_v}
+    \end{align}
+    
+    In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates incrementally. For $t=h-1,\ldots,0$:
+    \begin{align}
         \Quct(s_t,a_t) &\leftarrow 
             \frac{1}{N(s_t,a_t)} \left( (N(s_t,a_t)-1) \Quct(s_t,a_t) 
                 + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_q} \\
         \Vuct(s_t) &\leftarrow 
             \frac{1}{N(s_t)} \left( (N(s_t)-1) \Vuct(s_t) 
                 + \tilde{r} + \sum_{i=t}^{h-1} r_i \right) \label{eq:2:uct_backup_v} 
-    \end{align}   
+    \end{align}  
+    where $\tilde{r} = \Vinit(s_h)$ is the value estimate of the leaf node $s_h$.
 
     There are two common approaches for implementing $\Vinit$ in UCT. The first approach uses a function approximation $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c}, where $\tilde{V}$ is often a neural network that aims to approximate the optimal value function $V^*$. The second approach uses a \textit{rollout}, which completes the trajectory from the selection phase using a \textit{rollout policy} and uses the rewards from the rollout to give a heuristic value estimate \cite{mcts_survey,offlineonlineuct,prost,bus}. If no informative policy is available for $\pirollout$, then a uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}. 
     
@@ -909,7 +928,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Predictor-UCT (PUCT)}
 \label{sec:2-4-2-puct}
 
-    \todo{Maybe move to related work, Sec 2.4 is just introducing THTS and some examples of it making MCTS algorithms consise/precise to define. Should also define MaxUCT, either after PUCT here or preferrably in related work section.}
+    \todo{Maybe move to related work Ch3, Sec 2.4 either is THTS with all the algorithms, or THTS with a couple examples. PUCT, RENTS, TENTS can go in the related work section. Should also define MaxUCT.}
 
     AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{pucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
 
@@ -950,19 +969,17 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-3-ments}
 
-    \todo{add normalised q values in ments and sync with notation section}
-
     Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
     \begin{align}
         \piments(a|s) &= 
             (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
         \rhoments(a|s) &= 
             \exp\left(\frac{1}{\alphaments}\left(\Qments(s,a)-\Vments(s)\right)\right), \\
-        \lambda(s,x) &= \min\left(1,\frac{x}{\log(e+N(s))}\right).
+        \lambda(s,\epsilon) &= \min\left(1,\frac{\epsilon}{\log(e+N(s))}\right).
     \end{align}
     where $\epsments \in (0,\infty)$ is an exploration parameter, $\alphaments$ is the temperature parameter used in MENTS for the maximum entropy objective (the coefficient of the entropy term in Equation (\ref{eq:2:sft_value_fn_def})), and $\lambda$ is a decay function that is also used in later chapters with different arguments.
 
-    Let $\tau_{:h}\sim\piments$, be the trajectory sampled in the selection phase of MENTS. The leaf node $s_h$ is initialised with the heuristic value function:
+    Let $\tau_{:h}\sim\piments$ be the trajectory sampled in the selection phase of MENTS. For any chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count $N(s,a)=0$ and the Q-value estimate $\Qments(s,a)=\Qinit(s,a)$, which will be overwritten by $\backupq$ on the first visit (Equation \ref{eq:2:ments_backup_q}). The $\initv$ function initialises the leaf node $s_h$ using the heuristic function and with a single visit:
     \begin{align}
         N(s_h) &= 1, \\
         \Vments(s_h) &= \Vinit(s_h). \label{eq:2:ments_init_v}
@@ -970,8 +987,6 @@ def backup_phase($\tau_{:h}$, ctx)
 
     The backups $\backupv$ and $\backupq$ then update the soft value estimates using soft Bellman backups (Equations (\ref{eq:2:soft_value_iter_v_backup}) and (\ref{eq:2:soft_value_iter_q_backup})) as follows for $t=h-1,\ldots,0$:
     \begin{align}
-        N(s_t,a_t) &\leftarrow N(s_t,a_t) + 1, \\
-        N(s_t) &\leftarrow N(s_t) + 1, \\
         \Qments(s_t,a_t) &\leftarrow 
             R(s_t,a_t) + \sum_{s'\in\suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vments(s') \right), \label{eq:2:ments_backup_q} \\
         \Vments(s_t) &\leftarrow 

@@ -38,7 +38,7 @@
     \item[$\bar{A}$] 
         The bar notation is used to denote sample averages, $\bar{A}$ is a sample average of a number of samples $A_1,...,A_k$. i.e. $\bar{A}=\frac{1}{k}\sum_{i=1}^k A_i$.
     \item[$\tilde{A}$] 
-        The tilde notation is used to denote a function approximation, such as a neural network.
+        The tilde notation is used to denote a (function) approximation, such as a neural network.
     \item[$\cl{A}$] 
         Calligraphic font is used to denote variables that are sets or tuples (ordered sets).
     \item[$\bff{A}$] 
@@ -263,8 +263,8 @@
         The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
     \item[$\epsments$]
         An exploration parameter used in MENTS.
-    \item[$\lambda(s,x)$] 
-        A decaying function used to control and anneal exploration in MENTS. $\lambda(s,x) = \min\left(1,\frac{x}{\log(e+N(s))}\right)$.
+    \item[$\lambda(s,\epsilon)$] 
+        A decaying function used to control and anneal exploration in MENTS. $\lambda(s,\epsilon) = \min\left(1,\frac{\epsilon}{\log(e+N(s))}\right)$.
     \item[$\tilde{\pi}$] 
         A policy neural network, used to initialise soft Q-value estimates in MENTS, if available. 
     \item[$\piments$] 

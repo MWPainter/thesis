@@ -212,8 +212,8 @@ def build_alias_table($f$):
         \item Section \ref{sec:4-2-boltzmannsearch} defines the \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS) algorithms.
         \item Section \ref{sec:4-2-3-stoch_search_policies} discusses some properties of using a stochastic search policy in MCTS, and examines how the \textit{Alias Method} can be used to address \complexityq.
         \item Section \ref{sec:4-3-toyenvs} introduces two theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms.
-        \item Section \ref{sec:4-4-results} presents experimental results on grid world environments and the game of Go.
-        \item Section \ref{sec:4-5-theory} presents the main theoretical analysis and proofs. Convergence properties of MENTS, BTS and DENTS are proven to answer \entropyq.
+        \item Section \ref{sec:4-4-results} presents experimental results on grid world environments and the game of Go, and gives an empirical answer to \entropyq.
+        \item Section \ref{sec:4-5-theory} presents the main theoretical analysis and proofs. Convergence properties of MENTS, BTS and DENTS are proven to provide a theoretical answer to \entropyq.
     \end{itemize}
 
 
@@ -250,7 +250,7 @@ def build_alias_table($f$):
             \caption{Optimal policy with the maximum entropy objective for varying temperatures.}
             \label{fig:4:shortest_path_intro_b}
         \end{subfigure}
-        \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
+        \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) Shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) Illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
         \label{fig:4:shortest_path_intro}
     \end{figure}
 
@@ -258,7 +258,7 @@ def build_alias_table($f$):
 
     In this grid world, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
 
-    While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS and Section \ref{sec:4-4-results} considers more complex grid worlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
+    While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS, and Section \ref{sec:4-4-results} considers more complex grid worlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
 
     \begin{figure}
         \centering
@@ -276,7 +276,7 @@ def build_alias_table($f$):
             \label{fig:4:shortest_path_intro_results_b}
         \end{subfigure}
         \centering
-        \caption[Results on the example grid world problem for a variety of bias and temperature parameters.]{Results on the example grid world problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters. (b) Shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
+        \caption[Results on the example grid world problem for a variety of bias and temperature parameters.]{Results on the example grid world problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters, and (b) shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
         \label{fig:4:shortest_path_intro_results}
     \end{figure}
     
@@ -327,9 +327,105 @@ def build_alias_table($f$):
         The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*_{\sft}(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}). The \textnormal{misalignment threshold} is the smallest temperature parameter at which the maximum entropy objective is misaligned.
     \end{defn}
 
-    In Figure \ref{fig:4:shortest_path_intro_b} the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. 
+    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. 
 
     When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is around $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex grid worlds where the misalignment threshold is low enough to significantly affect performance.
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Simple Regret and Consistency}
+
+    This section generalises the concept of simple regret (Definition \ref{def:2:simple_regret}) to MDPs and introduces the concept of consistency for MCTS algorithms. \textit{Simple regret} is used to motivate and analyse the algorithms introduced in this chapter. \textit{Consistency} refers to the correctness of an MCTS algorithm in the limit — informally, a consistent algorithm will eventually find the optimal policy given enough trials. The term originates from the MCTS literature, to describe whether modifications to UCT preserve its asymptotic behaviour \cite{consistency,mcts_survey,poly_uct}.
+
+    \begin{figure}
+        \begin{tcolorbox}
+            Parameters: An MDP $\cl{M}$.
+            \begin{itemize}
+                \item For each round $m=1,2,...$:
+                \begin{enumerate}
+                    \item the agent produces a search policy $\pi^m$ to follow;
+                    \item the environment samples a trajectory $\tau\sim\pi^m$ (including rewards $r_t=R(s_t,a_t)$ for each $s_t,a_t$ pair in $\tau$);
+                    \item the agent produces a recommendation policy $\psi^m$;
+                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
+                \end{enumerate} 
+            \end{itemize}
+        \end{tcolorbox}
+        \caption[The procedure of an exploration planning problem for MDPs]{The procedure of an exploration planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
+        \label{fig:4:planning_problem}
+    \end{figure}
+
+    The \textit{simple regret} of a policy is the difference between the value of the policy and optimal value of the policy (Equation (\ref{eq:4:simple_regret})). Whilst \textit{cumulative regret} is used to analyse algorithms in the standard reinforcement learning setting, simple regret is more appropriate for the exploration setting, where the agent is assessed only on its recommendations and not penalised for exploring poor actions in simulation.
+
+    \begin{defn}
+        \label{def:4:simple_regret}
+        The \textnormal{simple regret} of a policy $\psi$ at state $s\in\cl{S}$ is the difference between the value of the policy and the optimal value at that state:
+        \begin{align}
+            \sreg(s,\psi) = V^*(s)-V^{\psi}(s). \label{eq:4:simple_regret}
+        \end{align}
+    \end{defn}
+
+    By definition, the optimal policy achieves a simple regret of zero. In this thesis an MCTS algorithm is considered \textit{consistent} if its expected simple regret tends to zero. Informally, a consistent algorithm will eventually output an optimal policy if run indefinitely, and is expected to improve its recommendation with more trials.
+
+    \begin{defn}
+        \label{def:4:consistency}
+        An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textnormal{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
+    \end{defn}
+
+    Note that the simple regret (Equation (\ref{eq:4:simple_regret})) is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret is used in Definition \ref{def:4:consistency} to define consistency, and is the main value of interest in the theoretical analysis in Section \ref{sec:4-5-theory}.
+
+    \citet{explore_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP (\todo{ref section and/or theorem later in chapter}).
+    
+
+
+
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Boltzmann Search}
+\label{sec:4-2-boltzmannsearch}
+    
+    This section defines the new algorithms Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS). Following the discussion from Section \ref{sec:4-1-intro}, the design aims of these algorithms are as follows:
+    \begin{itemize}
+        \item to be as simple to define and implement as UCT and MENTS\footnote{i.e. each decision node operates on a multi-armed bandit problem};
+        \item to be able to explore effectively when rewards are sparse or uninformative;
+        \item to be able to exploit when necessary, in large or stochastic domains;
+        \item to be consistent using parameters that do not depend on the MDP.
+    \end{itemize}
+
+    In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq (Section \ref{sec:4-2-3-2-alias_method}).
+
+
+
+
+
+
 
 
 
@@ -345,176 +441,93 @@ def build_alias_table($f$):
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Simple Regret and Consistency}
+\subsection{Boltzmann Tree Search}
+\label{sec:4-2-1-bts}
 
-    \todo{Move to chapter 2 in RL section and add cumulative regret. Call subsection regret and consistency.}
+    \paragraph{Algorithm Definition}
 
-    This section introduces the concepts of simple regret (for MDPs) and consistency (for MCTS algorithms).
+    The \textit{Boltzmann Tree Search} (BTS) algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the positive function $\alphabts(x)>0$ for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
 
-    Now \textit{simple regret} is defined, which will be used motivate and analyse the algorithms developed. The simple regret of a policy is the difference between the value of the policy and optimal value of the policy (Equation (\ref{eq:4:simple_regret})). By definition, the optimal policy achieves a simple regret of zero, and an MCTS algorithm is considered \textit{consistent} if it's expected simple regret tends to zero. In plain english, an algorithm is consistent if left to run forever it would eventually output an optimal policy. An implication of consistency is that if an algorithm can be run for longer, then it is expected to improve on its solution.
+    \bd{The BTS search policy uses the flag $\normalisedq$ to indicate whether the Q-values should be normalised when used in the search policy, and allows the search to be biased towards prior knowledge by $\qinit$ with a weigthing of $\Nqbts$ ``visits''.}
+    %
+    \begin{align}
+        \Qbtsbias(s,a) &= \frac{N(s,a) \Qbts(s,a) +  \Nqbts \Qinit(s,a)}{N(s,a)+\Nqbts}, \\
+        \Qbtsnorm(s,a) &= 
+        \begin{cases}
+            \frac{\Qbtsbias(s,a)-\min_{a\in\cl{A}}\Qbtsbias(s,a)}{\max_{a\in\cl{A}}\Qbtsbias(s,a)-\min_{a\in\cl{A}}\Qbtsbias(s,a)} & \text{if } \normalisedq, \\
+            \Qbtsbias(s,a) & \text{otherwise.}
+        \end{cases}
+    \end{align}
 
-    While \textit{cumulative regret} has been used to motivate and analyse algorithms such as UCT, it is not the most appropriate measure for the exploration setting. In the exploration setting, the agent is only assessed on the recommendations it makes, and is not penalised for considering poor actions in the simulator. See Figure \ref{fig:4:planning_problem} for the formal setup of the exploring planning problem for MDPs. As such, the focus of this chapter will be on the (expected) simple regret of the algorithms developed.
+    The search policy of BTS is similar to MENTS (Section \ref{sec:2-4-3-ments}), but using a variable temperature and (the normalised and biased) Bellman value estimates rather than soft value estimates.
+    %
+    \begin{align}
+        \pibts(a|s) &= (1-\lambdabts)\rhobts(a|s) + \frac{\lambdabts}{|\cl{A}|}, 
+                    \label{eq:4:bts_search_policy} \\ 
+        \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbtsnorm(s,a)\right)\right).
+                    \label{eq:4:bts_value_policy} \\
+        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right) \label{eq:4:lambda}
+    \end{align}
+    %
+    where $\epsbts \in [0,\infty)$ is an exploration parameter. %When $\alphabts(N(s))=0$, equation (\ref{eq:4:bts_value_policy}) is taken to be $\rhobts(a|s)=\one[a=\max_{a'\in\cl{A}} \Qbts(s,a)]$.
 
-    % \todo{Talk about the setup we're using. Probably want to try motive similarly to DENTS paper, and recall the diagram from} \ref{sec:2-3-rl}. \todo{Say that in fig below that normally step 3 is not considered} \todo{Neurips paper says: ``In this work, we consider scenarios where MCTS methods are used with a simulator to plan how an
-    % agent should act'' in intro, and ``UCB [1] is frequently used in MCTS methods to minimise cumulative regret during the tree search.
-    % Cumulative regret is most appropriate in scenarios where the actions taken during tree search have an
-    % associated real-world cost. However, MCTS methods often use a simulator during the tree search,
-    % where the only significant real-world cost is associated with taking the recommended action after the
-    % tree search. In such scenarios, simple regret [7, 8] is more appropriate for analysing the performance
-    % of algorithms, as it only considers the cost of the actions that are actually executed. Under simple
-    % regret, algorithms are not penalised for under-exploiting during the search, thus can explore more,
-    % which leads to better recommendations by allowing algorithms to confirm that bad actions are indeed
-    % of lower value.'' in the simple regret section} 
-
-    \begin{figure}
-        \begin{tcolorbox}
-            Parameters: An MDP $\cl{M}$.
-            \begin{itemize}
-                \item For each round $m=1,2,...$:
-                \begin{enumerate}
-                    \item the agent produces a search policy $\pi^m$ to follow;
-                    \item the environment samples a trajectory $\tau\sim\pi^m$ (including rewards $r_t=R(s_t,a_t)$ for each $s_t,a_t$ pair in $\tau$);
-                    \item the agent produces a recommendation policy $\psi^m$;
-                    \item if the environment sends a stop signal, then the game ends, otherwise the next round starts.
-                \end{enumerate} 
-            \end{itemize}
-        \end{tcolorbox}
-        \caption[The procedure of an exploring planning problem for MDPs]{The procedure of an exploring planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
-        \label{fig:4:planning_problem}
-    \end{figure}
-
-    \begin{defn}
-        The \textnormal{simple regret} of a policy $\psi$ at state $s\in\cl{S}$ is the difference between the value of the policy and the optimal value at that state:
-        \begin{align}
-            \sreg(s,\psi) = V^*(s)-V^{\psi}(s). \label{eq:4:simple_regret}
-        \end{align}
-    \end{defn}
-
-    Note that the simple regret is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret will be the main value of interest in the theoretical analysis of Section \ref{sec:4-5-theory}.
-
-    Now that simple regret has been defined, the concept of consistency can be defined formally:
-
-    \begin{defn}
-        An agent, that produces recommendation policies $\psi^1,\psi^2,...$ is said to be \textnormal{consistent} if $\bb{E}[\sreg(s,\psi^m)] \rightarrow 0$ as $m\rightarrow \infty$.
-    \end{defn}
-
-    Returning to the discussion around UCT and MENTS, now that simple regret and consistency have been defined, it can be shown the UCT is always consistent \todo{cite?}, whereas MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP (\todo{ref section/theorem, where show MENTS garunteed to converge given a small enough temperature. Maybe quote theorem here?}). Although UCT is consistent, it can take a long time to converge to the optimal policy (as will be seen in \ref{sec:4-3-toyenvs}), and so it is of interest to develop algorithms that can explore more that are also consistent.
+    For any new decision nodes $s$ added to the tree, the $\initv$ function initialises the visit count to $N(s)=0$ and the value estimate to $\Vbts(s)=\Vinit(s)$. For any new chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count to $N(s,a)=0$ and the Q-value estimate to $\Qbts(s,a)=\Qinit(s,a)$.
     
-
-
-
-
-
-
-
-
-
-
-\section{Boltzmann Search}
-\label{sec:4-2-boltzmannsearch}
+    BTS also allows the value estimates to be biased by $\vinit$ with a weighting of $\Nvbts$ ``visits''. \bd{For example, when running in \mctsmode\ewe, this biasing term should be set to the number of ``psuedotrials'' to weight the (rollout) heuristic value estimate.} \bd{really I want to say that in mctsmode that you would set this to the number of psuedotrials (usually 1) and not in mctsmode you would set this to zero}. Let $\tau_{:h}=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pibts$ be the trajectory sampled during the selection phase, the $\backupv$ and $\backupq$ functions update the value estimates for $t=h-1,...,0$:
+    \begin{align}
+        \Qbts(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s') \right), 
+                    \label{eq:4:bts_backup_q} \\ 
+        \Vbts(s_t) &\leftarrow \frac{\Nvbts \Vinit(s_t) + N(s_t) \max_{a\in\cl{A}} \Qbts(s_t,a)}{N(s_t)+\Nvbts}.
+                    \label{eq:4:bts_backup_v} 
+    \end{align}
     
-
-
-
-
-
-
-
-
-\todo{Add heuristic into backups with a weighting term for when using mcts mode.}
-
-    This section defines new algorithms, Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS). Following the discussion from Section \ref{sec:4-1-intro}, the design aims of these algorithms are as follows:
-    \begin{itemize}
-        \item to be as simple to define and implement as UCT and MENTS (i.e. each decision node operates on a multi-armed bandit problem);
-        \item be able to explore effectively when rewards are sparse or uninformative;
-        \item be able to exploit when necessary (dense informative rewards, large environments or stochastic environments);
-        \item can be shown to be consistent for parameters that do not depend on the MDP.
-    \end{itemize}
-
-    In Section \ref{sec:4-2-1-bts} BTS is defined, which adapts MENTS to run on the standard objective to arrive at a consistent algorithm. Then Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency.
-
-
-
+    When BTS needs to recommend a policy, it can use it's Q-value estimates, or the visit counts:
+    %
+    \begin{align}
+        \psibts(s)=\argmax_{a\in\cl{A}}\Qbts(s,a), \label{eq:4:psibts} \\
+        \mvbts(s) = \argmax_{a\in\cl{A}} N(s,a). \label{eq:4:mvbts}
+    \end{align}
     
-    \subsection{Boltzmann Tree Search}
-    \label{sec:4-2-1-bts}
+    \paragraph{Average Returns}
 
-        The \textit{Boltzmann Tree Search} (BTS) algorithm uses value estimates $\Vbts$ and $\Qbts$ that are computed using \textit{Bellman backups}. Additionally, BTS uses a variable temperature specified by the positive function $\alphabts(x)>0$, and at a decision node $s$ the temperature used will be $\alphabts(N(s))$. BTS promotes exploration through the use of a stochastic Boltzmann search policy.
-        
-        The search policy of BTS is defined as: 
-        %
-        \begin{align}
-            \pibts(a|s) &= (1-\lambdabts)\rhobts(a|s) + \frac{\lambdabts}{|\cl{A}|}, 
-                        \label{eq:4:bts_search_policy} \\ 
-            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbts(s,a)\right)\right).
-                        \label{eq:4:bts_value_policy} \\
-            \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right) \label{eq:4:lambda}
-        \end{align}
-        %
-        where $\epsbts \in [0,\infty)$ is an exploration parameter. %When $\alphabts(N(s))=0$, equation (\ref{eq:4:bts_value_policy}) is taken to be $\rhobts(a|s)=\one[a=\max_{a'\in\cl{A}} \Qbts(s,a)]$.
-        
-        Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pibts$ the value estimates are updated for $t=h-1,...,0$:
-        \begin{align}
-            \Qbts(s_t,a_t) &\leftarrow 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vbts(s') \right), 
-                        \label{eq:4:bts_backup_q} \\ 
-            \Vbts(s_t) &\leftarrow \max_{a\in\cl{A}} \Qbts(s_t,a).
-                        \label{eq:4:bts_backup_v} 
-        \end{align}
+    \todo{Check if this is consistent with the initq and initv definitions}
 
-        In line with the \thtspp\ewe schema, the values of $\Vbts(s)$ are initialised with the function $\Vinit$ and any missing values of $\Qbts(s,a)$ are completed using the function $\Qinit$. By default these functions can be set to a constant value, or could encorporate prior information, for example with the use of neural networks.
-        
-        When BTS needs to recommend a policy, it can use it's Q-value estimates:
-        %
-        \begin{align}
-            \psibts(s)=\argmax_{a\in\cl{A}}\Qbts(s,a). \label{eq:4:psibts}
-        \end{align}
-        %
-        Alternatively, the node visit counts can be used in the recommendation policy
-        \begin{align}
-            \mvbts(s) = \argmax_{a\in\cl{A}} N(s,a). \label{eq:4:mvbts}
-        \end{align}
+    The BTS search policy can still be used with average returns. In \textit{Boltzmann Tree Search with Average Returns} (AR-BTS) the Bellman value estimates are replaced with average returns $\Varbts$ and $\Qarbts$. Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the average returns are updated for $t=h-1,...,0$: and the leaf node value estimate $\tilde{r} = $, the value estimates are updated for $t=h-1,...,0$:
+    \begin{align}
+        \Qarbts(s_t,a_t) &\leftarrow 
+            \frac{N(s_t,a_t)-1}{N(s_t,a_t)} \left( \Qarbts(s_t,a_t) 
+                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t,a_t)-1} \right) \label{eq:4:arbsts_backup_q} \\
+        \Varbts(s_t) &\leftarrow 
+            \frac{N(s_t)-1}{N(s_t)} \left( \Varbts(s_t) 
+                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t)-1} \right). \label{eq:4:arbsts_backup_v} 
+    \end{align}
 
-        Similarly to UCT the best setting of the temperature function will be dependent on the reward scaling. Rather than adding a scaling factor to this parameter, BTS can operate in an \texttt{adaptive\_policy} mode, where the Q-values are normalised to the unit interval before they are used in the policy:
-        \begin{align}
-            \rhobts(a|s) &\propto \exp\left(\frac{1}{\alphabts(N(s))}\left(\Qbts^{\norm}(s,a)\right)\right). \\
-            \Qbts^{\norm}(s,a) &= 
-                \frac{\Qbts(s,a)-\min_{a\in\cl{A}}\Qbts(s,a)}{\max_{a\in\cl{A}}\Qbts(s,a)-\min_{a\in\cl{A}}\Qbts(s,a)}.
-        \end{align}
+    The corresponding definitions of $\piarbts$, $\psiarbts$, $\mvbts$ are similar to the definitions for BTS, but for completeness are given in Appendix \ref{app:ar-algs} \todo{update this to point to the new appendix}.
 
-        The BTS search policy can still be used with average returns. In \textit{Boltzmann Tree Search with Average Returns} (AR-BTS) the Bellman value estimates are replaced with average returns $\Varbts$ and $\Qarbts$. Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$ the average returns are updated for $t=h-1,...,0$: and the leaf node value estimate $\tilde{r} = $, the value estimates are updated for $t=h-1,...,0$:
-        \begin{align}
-            \Qarbts(s_t,a_t) &\leftarrow 
-                \frac{N(s_t,a_t)-1}{N(s_t,a_t)} \left( \Qarbts(s_t,a_t) 
-                    + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t,a_t)-1} \right) \label{eq:4:arbsts_backup_q} \\
-            \Varbts(s_t) &\leftarrow 
-                \frac{N(s_t)-1}{N(s_t)} \left( \Varbts(s_t) 
-                    + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t)-1} \right). \label{eq:4:arbsts_backup_v} 
-        \end{align}
+    \paragraph{Summary of Theoretical Results}
 
-        The corresponding definitions of $\piarbts$, $\psiarbts$, $\mvbts$ are similar to the definitions for BTS, but for completeness are given in Appendix \ref{app:ar-algs}.
+    In Section \ref{sec:4-5-theory} it is shown that BTS recommendation policy will converge to the optimal policy.
+    \begin{theorem} \label{thrm:4:bts} 
+        For any MDP $\cl{M}$, the expected simple regret of $\psibts$ tends to zero: $\bb{E}[\sreg(s_0,\psibts)]\rightarrow 0$.
+    \end{theorem}
 
-        In Section \ref{sec:4-5-theory} it is shown that BTS recommendation policy will converge to the optimal policy.
-        \begin{theorem} \label{thrm:4:bts} 
-            For any MDP $\cl{M}$, the expected simple regret of $\psibts$ tends to zero: $\bb{E}[\sreg(s_0,\psibts)]\rightarrow 0$.
-        \end{theorem}
+    Additionally, if the temperature function is allowed to tend to zero, then the search policy will also converge to the optimal policy, and the most visited recommendation policy will also converge to the optimal policy as a result. 
+    \begin{theorem} \label{thrm:4:bts_decay}
+        For any MDP $\cl{M}$, if $\alphabts(x)\rightarrow 0$, then $\pibts\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
+    \end{theorem}
 
-        Additionally, if the temperature function is allowed to tend to zero, then the search policy will also converge to the optimal policy, and the most visited recommendation policy will also converge to the optimal policy as a result.
-        \begin{theorem} \label{thrm:4:bts_decay}
-            For any MDP $\cl{M}$, if $\alphabts(x)\rightarrow 0$, then $\pibts\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvbts)]\rightarrow 0$. \htodo{Double check converge in prob is correct for search policy}
-        \end{theorem}
+    Conversely, if the temperature always positive, then the BTS recommendation policy will converge to the optimal policy exponentially fast. \bd{Although the search and most visited recommendation policies will not converge}.
+    \begin{theorem} \label{thrm:4:bts_exp}
+        For any MDP $\cl{M}$, if there exists $\alphabts(x)\geq L > 0$, then there exists constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$ after running $n$ trials of BTS.
+    \end{theorem}
 
-        Conversely, if the temperature always positive, then the BTS recommendation policy will converge to the optimal policy exponentially fast.
-        \begin{theorem} \label{thrm:4:bts_exp}
-            For any MDP $\cl{M}$, if there exists $\alphabts(x)\geq L > 0$, then there exists constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$ after running $n$ trials of BTS.
-        \end{theorem}
+    For AR-BTS, the temperature function always needs to be restricted to functions that tend to zero. \bd{Intuitively, the value estimates will only converge if the search policy converges, and the search policy will only converge if the temperature function tends to zero}. This is necessary so that the search policy converges to the optimal policy, so that the average return value estimates can converge to the optimal (Q-)values.
+    \begin{theorem} \label{thrm:4:ar_bts}
+        For any MDP $\cl{M}$, if $\alphaarbts(x)\rightarrow 0$, then $\piarbts\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiarbts)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvarbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
+    \end{theorem} 
 
-        For AR-BTS, the temperature function needs to be restricted to functions that tend to zero. This is necessary so that the search policy converges to the optimal policy, so that the average return value estimates can converge to the optimal (Q-)values.
-        \begin{theorem} \label{thrm:4:ar_bts}
-            For any MDP $\cl{M}$, if $\alphaarbts(x)\rightarrow 0$, then $\piarbts\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiarbts)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvarbts)]\rightarrow 0$. \htodo{Double check converge in prob is correct for search policy}
-        \end{theorem} 
-
-        \htodo{Make sure theorem numbers in theory section match (for all 4 of the above)}
+    \todo{Make sure theorem numbers in theory section match (for all 4 of the above)}
 
 
 
@@ -525,69 +538,80 @@ def build_alias_table($f$):
 
 
 
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Decaying ENtropy Tree Search}
+\label{sec:4-2-2-dents}
+
+
+    \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates}. In DENTS nodes maintain value estimates $\Vdents$ and $\Qdents$, but also a secondary value estimate, $\HVdents$ and $\HQdents$, which are monte carlo estimates the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in it's search policy, and discard it for recommendations.
+
+    The entropy values are used as an exploration bonus in the search policy, and are weighted by a non-negative function $\betadents(x)\geq 0$. Generally this will be set to a function such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the weighting on entropy reduces over time and deeper parts of the tree can be explored. The DENTS search policy $\pidents$ is defined follows: \todo{highlight the changes from BTS in red?}
+    %
+    \begin{align}
+        \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
+                    \label{eq:dents_search_policy} \\ 
+        \rhodents(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s))}\left(\Qdents(s,a)+\beta(N(s))\HQdents(s,a)\right)\right),
+                    \label{eq:dents_value_policy} \\
+        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
+    \end{align}
+
+    Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pidents$, the entropy values are updated as follows for $t=h-1,...,0$:
+    \begin{align}
+        \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
+            \label{eq::4dents_entropy_q_backup} \\
+        \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
+            \label{eq:4:dents_entropy_v_backup} 
+    \end{align}
+    %
+    where $\cl{H}$ is the Shannon entropy function. Initially, each of the entropy estimates are set to zero:  $\HVdents(s) \leftarrow 0$ and $\HQdents(s,a) \leftarrow 0$.
+
+    Given the same trajectory,the Bellman value estimates $\Vdents$ and $\Qdents$ are updated identically to BTS for $t=h-1,...,0$:
+    \begin{align}
+        \Qdents(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vdents(s) \right), 
+                    \label{eq:dents_q_backup} \\ 
+        \Vdents(s_t) &\leftarrow \max_{a\in\cl{A}} \Qdents(s_t,a), 
+                    \label{eq:dents_v_backup} 
+    \end{align}
+
+    The recommendation policies for DENTS are also defined identically to BTS:
+    \begin{align}
+        \psidents(s)=\argmax_{a\in\cl{A}}\Qdents(s,a), \label{eq:4:psidents} \\
+        \mvdents(s) = \argmax_{a\in\cl{A}} N(s,a), \label{eq:4:mvdents}
+    \end{align}
     
-    \subsection{Decaying ENtropy Tree Search}
-    \label{sec:4-2-2-dents}
+    DENTS can also be run in the \texttt{adaptive\_policy} mode similarly to BTS, and the Bellman value estimates can be with average returns to arrive at the \textit{Decaying ENtropy Tree Search with Average Returns} (AR-DENTS) algorithm. To avoid repetition, full details are given in Appendix \ref{app:ar-algs} for completeness.
 
+    Corresponding theoretical results hold for DENTS and AR-DENTS to those stated for BTS. For results that require the temperature function $\alphadents$ to tend to zero, it will now also be required for the entropy weighting function $\betadents$ to tend to zero at a faster rate than the temperature function. This is necessary so that the convergent search policy is not skewed by any entropy estimate. Proofs of the theorems below are given in Section \ref{sec:4-5-theory}.
 
-        \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates}. In DENTS nodes maintain value estimates $\Vdents$ and $\Qdents$, but also a secondary value estimate, $\HVdents$ and $\HQdents$, which are monte carlo estimates the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in it's search policy, and discard it for recommendations.
+    \begin{theorem} \label{thrm:4:dents}
+        For any MDP $\cl{M}$, the expected simple regret of $\psidents$ tends to zero: $\bb{E}[\sreg(s_0,\psidents)]\rightarrow 0$.
+    \end{theorem}
 
-        The entropy values are used as an exploration bonus in the search policy, and are weighted by a non-negative function $\betadents(x)\geq 0$. Generally this will be set to a function such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the weighting on entropy reduces over time and deeper parts of the tree can be explored. The DENTS search policy $\pidents$ is defined follows: \todo{highlight the changes from BTS in red?}
-        %
-        \begin{align}
-            \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
-                        \label{eq:dents_search_policy} \\ 
-            \rhodents(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s))}\left(\Qdents(s,a)+\beta(N(s))\HQdents(s,a)\right)\right),
-                        \label{eq:dents_value_policy} \\
-            \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
-        \end{align}
+    \begin{theorem} \label{thrm:4:dents_decay}
+        For any MDP $\cl{M}$, if $\alphadents(x)\rightarrow 0$ and $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, then $\pidents\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvdents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
+    \end{theorem}
 
-        Given a trajectory $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pidents$, the entropy values are updated as follows for $t=h-1,...,0$:
-        \begin{align}
-            \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
-                \label{eq::4dents_entropy_q_backup} \\
-            \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
-                \label{eq:4:dents_entropy_v_backup} 
-        \end{align}
-        %
-        where $\cl{H}$ is the Shannon entropy function. Initially, each of the entropy estimates are set to zero:  $\HVdents(s) \leftarrow 0$ and $\HQdents(s,a) \leftarrow 0$.
+    \begin{theorem} \label{thrm:4:dents_exp}
+        For any MDP $\cl{M}$, if there exists $\alphadents(x)\geq L > 0$ and $U\geq\betadents(x)$, then there exists constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psidents)] \leq C\exp(-kn)$ after running $n$ trials of DENTS.
+    \end{theorem}
+    
+    \begin{theorem} \label{thrm:4:ar_dents}
+        For any MDP $\cl{M}$, if $\alphaardents(x)\rightarrow 0$ and $\frac{\betaardents(x)}{\alphaardents(x)}\rightarrow 0$, then $\piardents\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiardents)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvardents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
+    \end{theorem} 
 
-        Given the same trajectory,the Bellman value estimates $\Vdents$ and $\Qdents$ are updated identically to BTS for $t=h-1,...,0$:
-        \begin{align}
-            \Qdents(s_t,a_t) &\leftarrow 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vdents(s) \right), 
-                        \label{eq:dents_q_backup} \\ 
-            \Vdents(s_t) &\leftarrow \max_{a\in\cl{A}} \Qdents(s_t,a), 
-                        \label{eq:dents_v_backup} 
-        \end{align}
-
-        The recommendation policies for DENTS are also defined identically to BTS:
-        \begin{align}
-            \psidents(s)=\argmax_{a\in\cl{A}}\Qdents(s,a), \label{eq:4:psidents} \\
-            \mvdents(s) = \argmax_{a\in\cl{A}} N(s,a), \label{eq:4:mvdents}
-        \end{align}
-        
-        DENTS can also be run in the \texttt{adaptive\_policy} mode similarly to BTS, and the Bellman value estimates can be with average returns to arrive at the \textit{Decaying ENtropy Tree Search with Average Returns} (AR-DENTS) algorithm. To avoid repetition, full details are given in Appendix \ref{app:ar-algs} for completeness.
-
-        Corresponding theoretical results hold for DENTS and AR-DENTS to those stated for BTS. For results that require the temperature function $\alphadents$ to tend to zero, it will now also be required for the entropy weighting function $\betadents$ to tend to zero at a faster rate than the temperature function. This is necessary so that the convergent search policy is not skewed by any entropy estimate. Proofs of the theorems below are given in Section \ref{sec:4-5-theory}.
-
-        \begin{theorem} \label{thrm:4:dents}
-            For any MDP $\cl{M}$, the expected simple regret of $\psidents$ tends to zero: $\bb{E}[\sreg(s_0,\psidents)]\rightarrow 0$.
-        \end{theorem}
-
-        \begin{theorem} \label{thrm:4:dents_decay}
-            For any MDP $\cl{M}$, if $\alphadents(x)\rightarrow 0$ and $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, then $\pidents\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvdents)]\rightarrow 0$. \htodo{Double check converge in prob is correct for search policy}
-        \end{theorem}
-
-        \begin{theorem} \label{thrm:4:dents_exp}
-            For any MDP $\cl{M}$, if there exists $\alphadents(x)\geq L > 0$ and $U\geq\betadents(x)$, then there exists constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psidents)] \leq C\exp(-kn)$ after running $n$ trials of DENTS.
-        \end{theorem}
-        
-        \begin{theorem} \label{thrm:4:ar_dents}
-            For any MDP $\cl{M}$, if $\alphaardents(x)\rightarrow 0$ and $\frac{\betaardents(x)}{\alphaardents(x)}\rightarrow 0$, then $\piardents\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiardents)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvardents)]\rightarrow 0$. \htodo{Double check converge in prob is correct for search policy}
-        \end{theorem} 
-
-        \htodo{Make sure theorem numbers in theory section match (for all 4 of the above)}
+    \todo{Make sure theorem numbers in theory section match (for all 4 of the above)}
 
 
 
@@ -599,88 +623,21 @@ def build_alias_table($f$):
 
 
 
-    \subsection{Advantages of Stochastic Search Policies}
-    \label{sec:4-2-3-stoch_search_policies}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Advantages of Stochastic Search Policies}
+\label{sec:4-2-3-stoch_search_policies}
 
-        Using a stochastic search policy in MCTS (or \thtspp) provides more benefits than just encouraging exploration through randomly sampled actions. In particular, the Alias Method (Section \ref{sec:2-6-sampling}) can be used to trade off using the most up to date policy for computational speed, yeilding an answer to \complexityq. Moreover, when prior knowledge (in the form of a policy prior) is available, it can naturally be integrated into the search using a \textit{mixture policy}.
-
-
-
-
-
-
-        \subsubsection{The Alias Method in MCTS}
-
-        \todo{This subsubsection feels unnecessarily dense right now} 
-
-        The Alias Method (Section \ref{sec:2-6-sampling}) can be used sample from a categorical distribution in constant time, with a linear cost for preprocessing. However this assumes that the categorical distribution is fixed, which is not the case for search policies in MCTS. However, the up-to-dateness of the search policy can be traded off for sampling speed. 
-
-        Any MCTS algorithm that samples actions from a stochastic (categorical) distribution can make use of the alias method. To do so, when a new decision node is made, construct an initial alias table, with $O(A)$ cost, where $A=|\cl{A}|$. Then, update the alias table every $A$ visits to the decision node. As sampling from the alias table has a cost of $O(1)$, and there is an $O(A)$ cost to update the table every $A$ visits, the amortised cost of sampling actions is reduced to $O(1)$ using this method.
-
-        To fully answer \complexityq, the cost of backups needs to be considered too. The remainder of this subsection will consider how efficiently DENTS and AR-DENTS can be implemented.
-
-        The cost of running $n$ trials of MCTS, on an MDP with horizon $H$ and $A$ actions is typically $O(nAH)$. Which is because on each of the $n$ trials, up to $H$ many decision nodes may be visited, and each decision node needs to consider $A$ many values in sampling actions. 
-        
-        When not running in \mctsmode\ewe the worst case complexity while using the Alias method will still be $O(nAH)$, when each trial creates many ($O(H)$) new decision nodes, each incurring an $O(A)$ cost to build the alias table. Although the asymptotic cost is not improved by using the Alias method without \mctsmode, in practise it may still run an order of magnitude faster.
-
-        When running \mctsmode\ewe however, only one new decision node is created per trial, which leads to a complexity of $O(n(BH+A))$, where $B$ is the worst cost for computing backups in the trial, as backups still need to be computed for every node visited per trial.  
-
-        \newcommand{\old}{{\text{old}}}
-        \newcommand{\Qcorrected}{{S}}
-        % \newcommand{\Qcorrected}{{\hat{Q}^{\textnormal{corrected}}}}
-
-        \paragraph{Bellman Backups.} For some $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$, consider Bellman backups used of the form:
-        \begin{align}
-            \hat{Q}(s_t,a_t) &\leftarrow 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \hat{V}(s) \right), 
-                    \label{eq:4:local1} \\ 
-            \hat{V}(s_t) &\leftarrow \max_{a\in\cl{A}} \hat{Q}(s_t,a). \label{eq:4:local2}
-        \end{align}
-        %
-        Although the cost to compute the right hand side of each of these is $O(A)$, they can be more efficiently computed by observing that only one child value is updated per trial. As such, Equation (\ref{eq:4:local1}) can be computed in $O(1)$ time as:
-        \begin{align}
-            \hat{Q}(s_t,a_t) &\leftarrow \begin{cases}
-                R(s_t,a_t) + \hat{V}(s_{t+1}) & \text{ if } N(s_t,a_t) = 1, \\
-                R(s_t,a_t)  
-                    + \Qcorrected(s_t,a_t)
-                    + \frac{N(s_{t+1})}{N(s_t,a_t)}\hat{V}(s_{t+1}) & \text{ otherwise,}
-            \end{cases} \\
-            \Qcorrected(s_t,a_t) &= 
-                \frac{N^{\old}(s_t,a_t)}{N(s_t,a_t)} \left( Q(s_t,a_t) - R(s_t,a_t) 
-                    - \frac{N^{\old}(s_{t+1})}{N^{\old}(s_t,a_t)} \hat{V}^{\old}(s_{t+1}) \right),
-        \end{align}
-        %
-        where $S$ computes the corrected average of $\hat{V}(s')$ for $s'\in\suc{s_t}{a_t}-\{s_{t+1}\}$, $\hat{V}^{\old}(s_{t+1})$ is the previous value of $\hat{V}(s_{t+1})$, and $N^{\old}(s_{t+1}) = N(s_{t+1})-1$, $N^{\old}(s_t,a_t) = N(s_t,a_t)-1$ are the previous values of $N(s_{t+1})$, $N(s_t,a_t)$.
-
-        Equation (\ref{eq:4:local2}) can be most efficiently implemented in the general case by using a \textit{max heap}. The max heap keeps track of the values of $\hat{Q}(s_t,a)$, on each backup the value of $\hat{Q}(s_t,a_t)$ needs to be updated in the heap, taking $O(\log(A))$ time, and then the maximum can be read out in $O(1)$ time. 
-        
-        \paragraph{Entropy Backups.} Recall Equations (\ref{eq:4:dents_entropy_v_backup}) and (\ref{eq::4dents_entropy_q_backup}), the entropy backups of DENTS:
-        \begin{align}
-            \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'). 
-                \label{eq:4:local3} \\
-            \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
-                \label{eq:4:local4} 
-        \end{align}
-
-
-        \newcommand{\pidentsold}{{\pi_{\dents}^{\old}}}   
-        \newcommand{\HQdentsold}{{\bar{\cl{H}}^{\old}_{Q,\dents}}}
-
-        Equation (\ref{eq:4:local3}) is of the same form as Equation (\ref{eq:4:local1}), so can also be computed in $O(1)$ time similarly. Equation (\ref{eq:4:local4}) can also be implemented in amortised $O(1)$ time, as in most backups the search policy does not change. Hence, every $A$ visits, and $O(A)$ backup is required, when the search policy is updated, and otherwise an $O(1)$ backup is sufficient. Let $\pidentsold$ be the search policy from before the node was visited this trial, when Equation (\ref{eq:4:local4}) can be computed by \todo{Fix overflow. Just use subscript D rather than DNTS?}:
-        \begin{align}
-            \HVdents(s_t) &\leftarrow \begin{cases}
-                \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a)
-                    & \text{ if } \pidents \neq \pidentsold, \\
-                \HVdents(s_t) + \pidents(a_t|s_t)\left( \HQdents(s_t,a_t) - \HQdentsold(s_t,a_t) \right)
-                    & \text{ if } \pidents = \pidentsold,
-            \end{cases} 
-        \end{align}
-        %
-        where $\HQdentsold(s_t,a_t)$ is the previous value of $\HQdents(s_t,a_t)$. 
-
-        \paragraph{DENTS complexity.} From the above arguments, the most time consuming backup operation costs $O(\log(A))$, and hence DENTS can be run in \mctsmode\ewe with the Alias method with an overall complexity of $O(n(H\log(A)+A))$ to run $n$ trials.
-        
-        \paragraph{AR-DENTS complexity.} The average return values in AR-DENTS are computed similarly to AR-BTS from Equations (\ref{eq:4:arbsts_backup_q}) and (\ref{eq:4:arbsts_backup_v}). These backups are already in a form that takes $O(1)$ to compute. Because the entropy backups can also be computed in amortised $O(1)$ time, the backups for AR-DENTS have an amortised complexity of $O(1)$. Hence, AR-DENTS can be run in \mctsmode\ewe with the Alias method with an overall complexity of $O(n(H+A))$ to run $n$ trials. As will be seen later in Table \ref{table:go_results}, this can lead to an order of magnitude more trials being run in the same timespan.
+    Using a stochastic search policy in MCTS (or \thtspp) provides more benefits than just encouraging exploration through randomly sampled actions. In particular, the Alias Method (Section \ref{sec:2-6-sampling}) can be used to trade off using the most up to date policy for computational speed, yeilding an answer to \complexityq. Moreover, when prior knowledge (in the form of a policy prior) is available, it can naturally be integrated into the search using a \textit{mixture policy}.
         
 
 
@@ -691,38 +648,151 @@ def build_alias_table($f$):
 
 
 
-        \subsubsection{Encorporating Prior Knowledge Through Mixture Policies}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Encorporating Prior Knowledge Through Mixture Policies}
+\label{sec:4-2-3-1-mixture_policies}
 
-        Let $\pi$ be some \thtspp\ewe search policy, and supposed that we have access to another policy $\tilde{\pi}$ that encapsulates some prior knowledge, such as a neural network. Then a new search policy $\pi_{\text{mix}}$ can be naturally be defined using a mixture of $\pi$ and $\tilde{\pi}$.
+    Let $\pi$ be some \thtspp\ewe search policy, and supposed that we have access to another policy $\tilde{\pi}$ that encapsulates some prior knowledge, such as a neural network. Then a new search policy $\pi_{\text{mix}}$ can be naturally be defined using a mixture of $\pi$ and $\tilde{\pi}$.
 
-        The mixture policy is defined by:
-        \begin{align}
-            \pi_{\text{mix}}(a|s) &= 
-                (1-\lambda(s,\epsilon_{\text{mix}})) \pi(a|s) 
-                + \lambda(s,\epsilon_{\text{mix}}) \tilde{\pi}(a|s),\\
-            \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
-        \end{align}
-        %
-        where $\epsilon_{\text{mix}}\in[0,\infty)$ controls how heavily to weight the prior knowledge by in the mixture policy. The weighting of the prior policy $\tilde{\pi}$ is decayed with the number of visits, and eventually to zero, so that the behaviour of the algorithm is unchanged in the limit.
-        
-        % \citet{ments} suggest that the prior policy $\tilde{\pi}$ can be used for a $\Qinit$ function. Slightly adapting their method, the heuristic Q-value function can be set to $\Qinit(s,a)\leftarrow\log \tilde{\pi}(a|s)+B$, for an arbitrary constant $B$. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    The mixture policy is defined by:
+    \begin{align}
+        \pi_{\text{mix}}(a|s) &= 
+            (1-\lambda(s,\epsilon_{\text{mix}})) \pi(a|s) 
+            + \lambda(s,\epsilon_{\text{mix}}) \tilde{\pi}(a|s),\\
+        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
+    \end{align}
+    %
+    where $\epsilon_{\text{mix}}\in[0,\infty)$ controls how heavily to weight the prior knowledge by in the mixture policy. The weighting of the prior policy $\tilde{\pi}$ is decayed with the number of visits, and eventually to zero, so that the behaviour of the algorithm is unchanged in the limit.
+    
+    % \citet{ments} suggest that the prior policy $\tilde{\pi}$ can be used for a $\Qinit$ function. Slightly adapting their method, the heuristic Q-value function can be set to $\Qinit(s,a)\leftarrow\log \tilde{\pi}(a|s)+B$, for an arbitrary constant $B$. 
 
 
 
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{The Alias Method in MCTS}
+\label{sec:4-2-3-2-alias_method}
+
+    \todo{This subsubsection feels unnecessarily dense right now} 
+
+    The Alias Method (Section \ref{sec:2-6-sampling}) can be used sample from a categorical distribution in constant time, with a linear cost for preprocessing. However this assumes that the categorical distribution is fixed, which is not the case for search policies in MCTS. However, the up-to-dateness of the search policy can be traded off for sampling speed. 
+
+    Any MCTS algorithm that samples actions from a stochastic (categorical) distribution can make use of the alias method. To do so, when a new decision node is made, construct an initial alias table, with $O(A)$ cost, where $A=|\cl{A}|$. Then, update the alias table every $A$ visits to the decision node. As sampling from the alias table has a cost of $O(1)$, and there is an $O(A)$ cost to update the table every $A$ visits, the amortised cost of sampling actions is reduced to $O(1)$ using this method.
+
+    To fully answer \complexityq, the cost of backups needs to be considered too. The remainder of this subsection will consider how efficiently DENTS and AR-DENTS can be implemented.
+
+    The cost of running $n$ trials of MCTS, on an MDP with horizon $H$ and $A$ actions is typically $O(nAH)$. Which is because on each of the $n$ trials, up to $H$ many decision nodes may be visited, and each decision node needs to consider $A$ many values in sampling actions. 
+    
+    When not running in \mctsmode\ewe the worst case complexity while using the Alias method will still be $O(nAH)$, when each trial creates many ($O(H)$) new decision nodes, each incurring an $O(A)$ cost to build the alias table. Although the asymptotic cost is not improved by using the Alias method without \mctsmode, in practise it may still run an order of magnitude faster.
+
+    When running \mctsmode\ewe however, only one new decision node is created per trial, which leads to a complexity of $O(n(BH+A))$, where $B$ is the worst cost for computing backups in the trial, as backups still need to be computed for every node visited per trial.  
+
+    \newcommand{\old}{{\text{old}}}
+    \newcommand{\Qcorrected}{{S}}
+    % \newcommand{\Qcorrected}{{\hat{Q}^{\textnormal{corrected}}}}
+
+    \paragraph{Bellman Backups.} For some $\tau=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_h)$, consider Bellman backups used of the form:
+    \begin{align}
+        \hat{Q}(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \hat{V}(s) \right), 
+                \label{eq:4:local1} \\ 
+        \hat{V}(s_t) &\leftarrow \max_{a\in\cl{A}} \hat{Q}(s_t,a). \label{eq:4:local2}
+    \end{align}
+    %
+    Although the cost to compute the right hand side of each of these is $O(A)$, they can be more efficiently computed by observing that only one child value is updated per trial. As such, Equation (\ref{eq:4:local1}) can be computed in $O(1)$ time as:
+    \begin{align}
+        \hat{Q}(s_t,a_t) &\leftarrow \begin{cases}
+            R(s_t,a_t) + \hat{V}(s_{t+1}) & \text{ if } N(s_t,a_t) = 1, \\
+            R(s_t,a_t)  
+                + \Qcorrected(s_t,a_t)
+                + \frac{N(s_{t+1})}{N(s_t,a_t)}\hat{V}(s_{t+1}) & \text{ otherwise,}
+        \end{cases} \\
+        \Qcorrected(s_t,a_t) &= 
+            \frac{N^{\old}(s_t,a_t)}{N(s_t,a_t)} \left( Q(s_t,a_t) - R(s_t,a_t) 
+                - \frac{N^{\old}(s_{t+1})}{N^{\old}(s_t,a_t)} \hat{V}^{\old}(s_{t+1}) \right),
+    \end{align}
+    %
+    where $S$ computes the corrected average of $\hat{V}(s')$ for $s'\in\suc{s_t}{a_t}-\{s_{t+1}\}$, $\hat{V}^{\old}(s_{t+1})$ is the previous value of $\hat{V}(s_{t+1})$, and $N^{\old}(s_{t+1}) = N(s_{t+1})-1$, $N^{\old}(s_t,a_t) = N(s_t,a_t)-1$ are the previous values of $N(s_{t+1})$, $N(s_t,a_t)$.
+
+    Equation (\ref{eq:4:local2}) can be most efficiently implemented in the general case by using a \textit{max heap}. The max heap keeps track of the values of $\hat{Q}(s_t,a)$, on each backup the value of $\hat{Q}(s_t,a_t)$ needs to be updated in the heap, taking $O(\log(A))$ time, and then the maximum can be read out in $O(1)$ time. 
+    
+    \paragraph{Entropy Backups.} Recall Equations (\ref{eq:4:dents_entropy_v_backup}) and (\ref{eq::4dents_entropy_q_backup}), the entropy backups of DENTS:
+    \begin{align}
+        \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'). 
+            \label{eq:4:local3} \\
+        \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
+            \label{eq:4:local4} 
+    \end{align}
+
+
+    \newcommand{\pidentsold}{{\pi_{\dents}^{\old}}}   
+    \newcommand{\HQdentsold}{{\bar{\cl{H}}^{\old}_{Q,\dents}}}
+
+    Equation (\ref{eq:4:local3}) is of the same form as Equation (\ref{eq:4:local1}), so can also be computed in $O(1)$ time similarly. Equation (\ref{eq:4:local4}) can also be implemented in amortised $O(1)$ time, as in most backups the search policy does not change. Hence, every $A$ visits, and $O(A)$ backup is required, when the search policy is updated, and otherwise an $O(1)$ backup is sufficient. Let $\pidentsold$ be the search policy from before the node was visited this trial, when Equation (\ref{eq:4:local4}) can be computed by \todo{Fix overflow. Just use subscript D rather than DNTS?}:
+    \begin{align}
+        \HVdents(s_t) &\leftarrow \begin{cases}
+            \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a)
+                & \text{ if } \pidents \neq \pidentsold, \\
+            \HVdents(s_t) + \pidents(a_t|s_t)\left( \HQdents(s_t,a_t) - \HQdentsold(s_t,a_t) \right)
+                & \text{ if } \pidents = \pidentsold,
+        \end{cases} 
+    \end{align}
+    %
+    where $\HQdentsold(s_t,a_t)$ is the previous value of $\HQdents(s_t,a_t)$. 
+
+    \paragraph{DENTS complexity.} From the above arguments, the most time consuming backup operation costs $O(\log(A))$, and hence DENTS can be run in \mctsmode\ewe with the Alias method with an overall complexity of $O(n(H\log(A)+A))$ to run $n$ trials.
+    
+    \paragraph{AR-DENTS complexity.} The average return values in AR-DENTS are computed similarly to AR-BTS from Equations (\ref{eq:4:arbsts_backup_q}) and (\ref{eq:4:arbsts_backup_v}). These backups are already in a form that takes $O(1)$ to compute. Because the entropy backups can also be computed in amortised $O(1)$ time, the backups for AR-DENTS have an amortised complexity of $O(1)$. Hence, AR-DENTS can be run in \mctsmode\ewe with the Alias method with an overall complexity of $O(n(H+A))$ to run $n$ trials. As will be seen later in Table \ref{table:go_results}, this can lead to an order of magnitude more trials being run in the same timespan.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Toy Environments}
 \label{sec:4-3-toyenvs}
 
@@ -730,79 +800,112 @@ def build_alias_table($f$):
 
     The D-chain problem has a sparse unit reward at the end of the chain, and use of the maximum entropy objective is able to solve the problem easily. However, the D-chain problem can be extended to include a \textit{entropy trap}, to create an MDP for which both UCT and MENTS cannot solve in any feasible time.
 
-    
-    \subsection{The D-Chain Problem}
-
-        \newcommand{\aL}{a^L_{\cl{M}}}
-        \newcommand{\aR}{a^R_{\cl{M}}}
-        \newcommand{\schain}[1]{s^{#1}_{\cl{M}}}
-
-        In the \textit{D-chain problem}, depicted in Figure \ref{fig:modified_d_chain}, an agent may take one of two actions at any point throughout the chain. If the action $\aL$ is taken from state $\schain{i}$, then it collects an immediate reward of $R(\schain{i},\aL)=\frac{D-i}{D}$. If the action $\aR$ is instead taken all the way to the end of the chain, then the agent will receive a reward of $R(\schain{D},\aR)=1$. By inspection, the optimal policy is $\pi*(s)=\aR$, to follow the chain to the end and collect the maximum reward of one.
-
-        \begin{figure}
-            \centering
-            \includegraphics[width=\textwidth]{figures/ch4/mod_dchain_mdp.pdf}
-            \caption[An illustration of the \textit{(modified) D-chain problem}.]{An illustration of the \textit{(modified) D-chain problem}, where $\schain{1}$ is the starting state and transitions are deterministic. The reward for taking action $\aR$ from state $\schain{D}$ at the end of the chain is $R_f$, where $R_f=1$ in the original D-chain, and $R_f=\frac{1}{2}$ in the modified D-chain.}
-            \label{fig:modified_d_chain}
-        \end{figure}
-
-        To intuitively understand why UCT will struggle on this MDP, the reward function can be decomposed into a dense and sparse component:
-        \begin{align}
-            R_{\dense}(\schain{i},\aL) &= \frac{D-i}{D}, \\
-            R_{\dense}(\schain{i},\aR) &= 0, \\
-            R_{\sparse}(\schain{i},a) &= \one[i=D] \cdot \one[a=\aR], \\
-            R(s,a) &= R_{\dense}(s,a) + R_{\sparse}(s,a).
-        \end{align}
-
-        The two components of the rewards can be seen to encourage the agent to perform two different behaviours. In English, the reward $R_{\dense}$ is telling the agent to ``leave the chain as soon as possible and collect a reward as soon as possible'', whereas the sparse reward $R_{\sparse}$ is telling the agent to ``stay on the chain until the end''. As UCT tries to interleve exploration and exploitation, UCT will take the immediate reward of $\frac{D-1}{D}$ on most trials, rather than exploring to find the reward of one. 
-
-        Compounded on this, once a trial of UCT finally reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to reach the unit reward for the values to become close to accurate. \citet{dchain} make these arguments more formally to prove that UCT will suffer a regret of $\Omega((\exp \circ \exp \circ ... \circ \exp)(1))$, where $\circ$ denotes functional composition, and there are $D$ many composed exponential functions.
-
-        While from the lens of practical (single-objective) reinforcement the issue may seem like one of poor reward engineering, rewards with conflicting objectives similar to this will naturally arise in the context of multi-objective reinforcement learning. An example of this will be seen in the \textit{Deep Sea Treasure} problem in Chapter \ref{ch:5-chmcts}. \todo{Here I'm referencing that in deep sea treasure, the scalarised reward can be written as} $R=w\cdot R_{\text{time}} + (1-w) R_{\text{treasure}}$, \todo{and its very similar in form to my above decomposition.}
-
-        Introducing entropy as an exploration bonus in this problem helps to solve the problem easily. Once the agent leaves the chain, it can no longer collect an bonus entropy reward, encouraging it to explore down the chain. As can be seen in Figure \ref{fig:d_chain_results}, the D-chain problem is an example of an MDP where the standard and maximum-entropy objectives are well aligned.
-
-        To highlight that in maximum entropy methods that the temperature parameter needs to be tuned precisely per MDP, consider the \textit{modified D-chain problem}, where the sparse reward at the end of the chain is replaced with $R(\schain{D},\aR)=\frac{1}{2}$. In this case the optimal policy takes the immediate reward of $\frac{D-1}{D}$ from the initial state, and the maximum entropy objective is misaligned with the standard objective. \todo{Comment about results}
-
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.49\textwidth]{figures/ch4/ten_chain.png}
-            \includegraphics[width=0.49\textwidth]{figures/ch4/mod_ten_chain.png}
-            \caption[Results on the (modified) D-chain problem.]{Results on the D-chain problem (left), and the modified D-chain problem (right), for a variety of parameters and with $D=10$. Each algorithm was run for 5000 trials, and results are averaged over 25 repeated experiments. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{Make yaxis go from 0 to 1, and add some markers again to make things clearer with overlapping lines.}}
-            \label{fig:d_chain_results}
-        \end{figure}
 
 
 
 
-    \subsection{The Entropy Trap}
 
-        In the \textit{D-chain with Entropy Trap problem}, or \textit{Entropy Trap problem} for short, an additional chain of states is added to end of the original D-chain to throw off maximum entropy agents. Now at the end of the D-chain, or the \textit{UCT Gauntlet}, the agent has to make a final choice. It can either collect the final sparse reward of one, or it can fall into the \textit{Entropy Trap}, a chain of length $E$, where zero reward is given, but the agent can collect an entropy bonus of up to $E\log(2)$. The Entropy Trap problem is depicted in Figure \ref{fig:entropy_trap}. 
 
-        \htodo{Make proofs use consistent E notation instead of H}
 
-        \begin{figure}
-            \centering
-            \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
-            \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero.}
-            \label{fig:entropy_trap}
-        \end{figure}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{The D-Chain Problem}
 
-        When using the maximum entropy objective, with temperature $\alpha$, in the Entropy Trap problem, an agent can gain an entropy bonus of $\alpha E \log(2)$ from falling in the Entropy Trap. And hence, if $\alpha > \frac{1}{E\log(2)}$, the maximum entropy objective must be misaligned with the standard objective, as the entropy agent can gain an entropy bonus of greater than one from the Entropy Trap. So a maximum entropy agent can be restricted to using an arbitrarily small temperature, by increasing the value of $E$. By setting $D=E$ it can be shown that expectation MENTS will need exponentially many trials with respect to the size of the MDP state space to find the optimal policy: 
-        %
-        \begin{theorem} \label{thrm:ments_fail}
-            There exists an MDP such that MENTS (for any value of $\alphaments$) is either not consistent, or requires an exponential number of trials in the size of the state space. That is, either $\mathbb{E}\sreg(s_0,\psiments)\not\rightarrow 0$ or there exists constants $c,k>0$ such that $\mathbb{E}\sreg(s_0,\psiments) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$. The latter case implies that $\mathbb{E}\sreg(s_0,\psiments)>0$ and $\psiments\neq\pi^*$ for $n<k^{|\cl{S}|}$. 
-        \end{theorem}
+    \newcommand{\aL}{a^L_{\cl{M}}}
+    \newcommand{\aR}{a^R_{\cl{M}}}
+    \newcommand{\schain}[1]{s^{#1}_{\cl{M}}}
 
-        Results on the Entropy Trap problem are given for $D=E=10$ and $D=E=15$ in Figure \ref{fig:entropy_trap_results}. When using $D=E=15$ it is feasible that BTS can make progress given enough trials, but ultimately if $D$ is made large enough BTS will also struggle on this environment, as it can only explore randomly. As the likeliehood of reaching the end of the chain through random exploration becomes exponentially less likely, only DENTS is able to solve the Entropy Trap in a reasonable amount of time as $D=E$ is made larger.
+    In the \textit{D-chain problem}, depicted in Figure \ref{fig:modified_d_chain}, an agent may take one of two actions at any point throughout the chain. If the action $\aL$ is taken from state $\schain{i}$, then it collects an immediate reward of $R(\schain{i},\aL)=\frac{D-i}{D}$. If the action $\aR$ is instead taken all the way to the end of the chain, then the agent will receive a reward of $R(\schain{D},\aR)=1$. By inspection, the optimal policy is $\pi*(s)=\aR$, to follow the chain to the end and collect the maximum reward of one.
 
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_10.png}
-            \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_15.png}
-            \caption[Results on the Entropy Trap problem.]{Results on the Entropy Trap problem, with $D=E=10$ (left) and $D=E=15$ (right). Each algorithm was run with a variety of temperature/bias parameters, and results are averaged over 25 repeated experiments. In the $D=E=10$ case, each algorithm was run for $5000$ trials, and in the $D=E=15$ case each algorithm was run for $100000$ trials. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \htodo{Update thtspp aux to run DENTS with fewer trials, just to show off DENTS a even more.} \htodo{also fiddle with num trials to show things off more. Maybe use 20, for the second plot and let temperatures rise to one order of magnitude more, or lower the number of trials. Basically want the second plot for MENTS to show no progress. First plot increase number of trials until MENTS is just about able to solve it.}}
-            \label{fig:entropy_trap_results}
-        \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch4/mod_dchain_mdp.pdf}
+        \caption[An illustration of the \textit{(modified) D-chain problem}.]{An illustration of the \textit{(modified) D-chain problem}, where $\schain{1}$ is the starting state and transitions are deterministic. The reward for taking action $\aR$ from state $\schain{D}$ at the end of the chain is $R_f$, where $R_f=1$ in the original D-chain, and $R_f=\frac{1}{2}$ in the modified D-chain.}
+        \label{fig:modified_d_chain}
+    \end{figure}
+
+    To intuitively understand why UCT will struggle on this MDP, the reward function can be decomposed into a dense and sparse component:
+    \begin{align}
+        R_{\dense}(\schain{i},\aL) &= \frac{D-i}{D}, \\
+        R_{\dense}(\schain{i},\aR) &= 0, \\
+        R_{\sparse}(\schain{i},a) &= \one[i=D] \cdot \one[a=\aR], \\
+        R(s,a) &= R_{\dense}(s,a) + R_{\sparse}(s,a).
+    \end{align}
+
+    The two components of the rewards can be seen to encourage the agent to perform two different behaviours. In English, the reward $R_{\dense}$ is telling the agent to ``leave the chain as soon as possible and collect a reward as soon as possible'', whereas the sparse reward $R_{\sparse}$ is telling the agent to ``stay on the chain until the end''. As UCT tries to interleve exploration and exploitation, UCT will take the immediate reward of $\frac{D-1}{D}$ on most trials, rather than exploring to find the reward of one. 
+
+    Compounded on this, once a trial of UCT finally reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to reach the unit reward for the values to become close to accurate. \citet{dchain} make these arguments more formally to prove that UCT will suffer a regret of $\Omega((\exp \circ \exp \circ ... \circ \exp)(1))$, where $\circ$ denotes functional composition, and there are $D$ many composed exponential functions.
+
+    While from the lens of practical (single-objective) reinforcement the issue may seem like one of poor reward engineering, rewards with conflicting objectives similar to this will naturally arise in the context of multi-objective reinforcement learning. An example of this will be seen in the \textit{Deep Sea Treasure} problem in Chapter \ref{ch:5-chmcts}. \todo{Here I'm referencing that in deep sea treasure, the scalarised reward can be written as} $R=w\cdot R_{\text{time}} + (1-w) R_{\text{treasure}}$, \todo{and its very similar in form to my above decomposition.}
+
+    Introducing entropy as an exploration bonus in this problem helps to solve the problem easily. Once the agent leaves the chain, it can no longer collect an bonus entropy reward, encouraging it to explore down the chain. As can be seen in Figure \ref{fig:d_chain_results}, the D-chain problem is an example of an MDP where the standard and maximum-entropy objectives are well aligned.
+
+    To highlight that in maximum entropy methods that the temperature parameter needs to be tuned precisely per MDP, consider the \textit{modified D-chain problem}, where the sparse reward at the end of the chain is replaced with $R(\schain{D},\aR)=\frac{1}{2}$. In this case the optimal policy takes the immediate reward of $\frac{D-1}{D}$ from the initial state, and the maximum entropy objective is misaligned with the standard objective. \todo{Comment about results}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.49\textwidth]{figures/ch4/ten_chain.png}
+        \includegraphics[width=0.49\textwidth]{figures/ch4/mod_ten_chain.png}
+        \caption[Results on the (modified) D-chain problem.]{Results on the D-chain problem (left), and the modified D-chain problem (right), for a variety of parameters and with $D=10$. Each algorithm was run for 5000 trials, and results are averaged over 25 repeated experiments. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{Make yaxis go from 0 to 1, and add some markers again to make things clearer with overlapping lines.}}
+        \label{fig:d_chain_results}
+    \end{figure}
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{The Entropy Trap}
+
+    In the \textit{D-chain with Entropy Trap problem}, or \textit{Entropy Trap problem} for short, an additional chain of states is added to end of the original D-chain to throw off maximum entropy agents. Now at the end of the D-chain, or the \textit{UCT Gauntlet}, the agent has to make a final choice. It can either collect the final sparse reward of one, or it can fall into the \textit{Entropy Trap}, a chain of length $E$, where zero reward is given, but the agent can collect an entropy bonus of up to $E\log(2)$. The Entropy Trap problem is depicted in Figure \ref{fig:entropy_trap}. 
+
+    \todo{Make proofs use consistent E notation instead of H}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
+        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero.}
+        \label{fig:entropy_trap}
+    \end{figure}
+
+    When using the maximum entropy objective, with temperature $\alpha$, in the Entropy Trap problem, an agent can gain an entropy bonus of $\alpha E \log(2)$ from falling in the Entropy Trap. And hence, if $\alpha > \frac{1}{E\log(2)}$, the maximum entropy objective must be misaligned with the standard objective, as the entropy agent can gain an entropy bonus of greater than one from the Entropy Trap. So a maximum entropy agent can be restricted to using an arbitrarily small temperature, by increasing the value of $E$. By setting $D=E$ it can be shown that expectation MENTS will need exponentially many trials with respect to the size of the MDP state space to find the optimal policy: 
+    %
+    \begin{theorem} \label{thrm:ments_fail}
+        There exists an MDP such that MENTS (for any value of $\alphaments$) is either not consistent, or requires an exponential number of trials in the size of the state space. That is, either $\mathbb{E}\sreg(s_0,\psiments)\not\rightarrow 0$ or there exists constants $c,k>0$ such that $\mathbb{E}\sreg(s_0,\psiments) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$. The latter case implies that $\mathbb{E}\sreg(s_0,\psiments)>0$ and $\psiments\neq\pi^*$ for $n<k^{|\cl{S}|}$. 
+    \end{theorem}
+
+    Results on the Entropy Trap problem are given for $D=E=10$ and $D=E=15$ in Figure \ref{fig:entropy_trap_results}. When using $D=E=15$ it is feasible that BTS can make progress given enough trials, but ultimately if $D$ is made large enough BTS will also struggle on this environment, as it can only explore randomly. As the likeliehood of reaching the end of the chain through random exploration becomes exponentially less likely, only DENTS is able to solve the Entropy Trap in a reasonable amount of time as $D=E$ is made larger.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_10.png}
+        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_15.png}
+        \caption[Results on the Entropy Trap problem.]{Results on the Entropy Trap problem, with $D=E=10$ (left) and $D=E=15$ (right). Each algorithm was run with a variety of temperature/bias parameters, and results are averaged over 25 repeated experiments. In the $D=E=10$ case, each algorithm was run for $5000$ trials, and in the $D=E=15$ case each algorithm was run for $100000$ trials. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{Update thtspp aux to run DENTS with fewer trials, just to show off DENTS a even more.} \todo{also fiddle with num trials to show things off more. Maybe use 20, for the second plot and let temperatures rise to one order of magnitude more, or lower the number of trials. Basically want the second plot for MENTS to show no progress. First plot increase number of trials until MENTS is just about able to solve it.}}
+        \label{fig:entropy_trap_results}
+    \end{figure}
         
 
 
@@ -820,7 +923,7 @@ def build_alias_table($f$):
 
 
 
-    \htodo{below this in tex is original writing about D-chain from NeurIPS. Should make sure that there's no info want to also cover missed in the above. Just re-wrote this section as the arguments are updated and better now.}
+    \todo{below this in tex is original writing about D-chain from NeurIPS. Should make sure that there's no info want to also cover missed in the above. Just re-wrote this section as the arguments are updated and better now.}
 
     % This section discusses theoretical MDPs, building on top of the intuitions from Section \ref{sec:4-1-intro} to take advantage of the pitfalls of UCT and MENTS. These MDPs can then be used to constructively prove theoretical results. 
 
@@ -909,12 +1012,18 @@ def build_alias_table($f$):
 
 \section{Empirical Results}
 \label{sec:4-4-results}
+
+
+
+    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
+
+
     
-    \htodo{Wasn't too careful about changing from active voice to passive voice here in this entire section}
+    \todo{Wasn't too careful about changing from active voice to passive voice here in this entire section}
 
-    \htodo{Get some better results using hyperparam optimise //// want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot /// want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)}
+    \todo{Get some better results using hyperparam optimise //// want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot /// want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)}
 
-    This section provides empirical results on gridworld environments and on the game of Go. It begins by describing the environments, the evaluation setup, and is followed by the empirical results and discussion. The main algorithms discussed in this chapter, BTS and DENTS will be evaluated, using UCT, MENTS, RENTS, TENTS and H-MCTS as baselines \htodo{ref litrev or cite?}. 
+    This section provides empirical results on gridworld environments and on the game of Go. It begins by describing the environments, the evaluation setup, and is followed by the empirical results and discussion. The main algorithms discussed in this chapter, BTS and DENTS will be evaluated, using UCT, MENTS, RENTS, TENTS and H-MCTS as baselines \todo{ref litrev or cite?}. 
 
 
 
@@ -922,15 +1031,15 @@ def build_alias_table($f$):
     \subsection{Environments}
 
         \subsubsection{(Deterministic) Frozen Lake}
-            The \emph{(Deterministic) Frozen Lake} \htodo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \htodo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \htodo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \htodo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
+            The \emph{(Deterministic) Frozen Lake} \todo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \todo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \todo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \todo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
 
-            \htodo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
+            \todo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
 
-            \htodo{ Extra credit: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
+            \todo{ Extra credit: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
 
             Figure \ref{fig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
 
-            An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \htodo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
+            An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
         
             \begin{figure}
                 \centering
@@ -975,7 +1084,7 @@ def build_alias_table($f$):
                 %     \caption{8x12 Test Frozen Lake.}
                 %     \label{fig:fl12test}
                 % \end{subfigure}
-                \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \htodo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \htodo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \htodo{use standard maps from gym where possible}}
+                \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{use standard maps from gym where possible}}
                 \label{fig:fl_maps}
             \end{figure}
 
@@ -985,7 +1094,7 @@ def build_alias_table($f$):
         \subsubsection{Sailing Problem}
             The \emph{Sailing Problem} is another grid world environment with one goal state, at the opposite corner to the starting location of the agent. This problem has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. 
             
-            The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,...,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. \htodo{The agent incurs a (dense) cost of (thetawind - theta)/45 + 1 for traveling at angle theta when wind is in direction thetawind.}
+            The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,...,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. \todo{The agent incurs a (dense) cost of (thetawind - theta)/45 + 1 for traveling at angle theta when wind is in direction thetawind.}
 
             Figure \ref{fig:sailing_deets} gives the map and wind transition probabilities for the Sailing problem, using the same map notation as for Frozen Lake. 
 
@@ -1038,7 +1147,7 @@ def build_alias_table($f$):
             \end{align}
             %
             \todo{should define this in ch2? It's only really relevant here, and kind of in Frozen lake}
-            If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games. \htodo{assuming that the reward function always gives rewards from the perspective of the player taking the current action.}
+            If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games. \todo{assuming that the reward function always gives rewards from the perspective of the player taking the current action.}
         
         
 
@@ -1066,7 +1175,7 @@ def build_alias_table($f$):
             \end{cases} \label{eq:full_Recommend}
         \end{align}
         % 
-        Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. \htodo{Kind of want a better argument for this line of eval here.} Although this proceedure is evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting when planning in simulation is interleaved with letting the agent act in the real environment. \htodo{either scrap the evaluation question, or do something more to justify this.But should say something like "this evaluates the policy, and the online performance depends on the policies produced online, therefore correlated"}
+        Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. \todo{Kind of want a better argument for this line of eval here.} Although this proceedure is evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting when planning in simulation is interleaved with letting the agent act in the real environment. \todo{either scrap the evaluation question, or do something more to justify this.But should say something like "this evaluates the policy, and the online performance depends on the policies produced online, therefore correlated"}
 
         All experiments in this chapter were run with \mctsmode\ewe turned off and did not use the Alias method as described in Section \ref{sec:4-2-3-stoch_search_policies}, apart from the experiments on Go, which used \mctsmode and the Alias method.
 
@@ -1097,11 +1206,11 @@ def build_alias_table($f$):
 
     \subsection{Results and Discussion}
 
-        \htodo{Wanted to show the breadth first search if Qinit incorrectly set then get breadth first search in costs case. If can estimate, for example know Rmin and can get Qinit to H times Rmin then can do that. Another zero knowledge Qinit function can use is Qinit equals min a Q(s,a) where for (s,a) in tree, if no such (s,a) then zero (its uniform policy then anyway).}
+        \todo{Wanted to show the breadth first search if Qinit incorrectly set then get breadth first search in costs case. If can estimate, for example know Rmin and can get Qinit to H times Rmin then can do that. Another zero knowledge Qinit function can use is Qinit equals min a Q(s,a) where for (s,a) in tree, if no such (s,a) then zero (its uniform policy then anyway).}
 
-        \htodo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
+        \todo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
 
-        \htodo{Should also eval AR-BTS etc on these envs? Might make the arguments/results nicer and more complete}
+        \todo{Should also eval AR-BTS etc on these envs? Might make the arguments/results nicer and more complete}
 
         This subsection first demonstrates the parameter sensitivity of maximum entropy methods on the Frozen Lake environment. Then results on Frozen Lake and the Sailing problem are given with optimised parameters, and finally results from the Go round robin.
 
@@ -1113,11 +1222,11 @@ def build_alias_table($f$):
 
         \subsubsection{Parameter sensitivity in Frozen Lake} \label{sec:param_sens_fl}
 
-            \htodo{this subsubsection currently just a c and p from neurips}
+            \todo{this subsubsection currently just a c and p from neurips}
 
             Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 Frozen Lake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
 
-            \htodo{clean up hyperparam setting }
+            \todo{clean up hyperparam setting }
             % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 Frozen Lake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
 
             In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state for all of the temperatures considered.
@@ -1247,7 +1356,7 @@ def build_alias_table($f$):
 
         \subsubsection{Gridworld Results}
 
-            \htodo{this subsubsection currently just a c and p from neurips}
+            \todo{this subsubsection currently just a c and p from neurips}
 
             The 8x12 Frozen Lake environment (Figure \ref{fig:fl12}) and a 6x6 Sailing Problem (Figure \ref{fig:sailing_deets}) were used to evaluate the algorithms introduced in this chapter against the baseline algorithms.
 
@@ -1256,11 +1365,11 @@ def build_alias_table($f$):
 
             In Frozen Lake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
 
-            In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \htodo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
+            In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \todo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
             
             Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
 
-            \htodo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
+            \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
             
             \begin{figure*}
                 \centering
@@ -1276,7 +1385,7 @@ def build_alias_table($f$):
                     \caption{6x6 Sailing Problem.}
                     \label{fig:sp}
                 \end{subfigure}
-                \caption{Results for gridworld environments. \todo{update fig?} \htodo{add more caption?}}
+                \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
                 \label{fig:gridworld_results}
             \end{figure*}
 
@@ -1380,9 +1489,11 @@ def build_alias_table($f$):
 \section{Theoretical Results}
 \label{sec:4-5-theory}
 
-    \htodo{Change N(s,m) to N(s,n) and then change N(s,n) to N to pow n of s.}
+    \todo{State the assumptions clearly. For example, search bias and backup bias are assumed to be zero in proofs for simplicity, but the asymptotic behaviour will be the same.}
 
-    \htodo{Highlight where and when the actual theorems from the text come up. And make sure that they're clearly stated.}
+    \todo{Change N(s,m) to N(s,n) and then change N(s,n) to N to pow n of s.}
+
+    \todo{Highlight where and when the actual theorems from the text come up. And make sure that they're clearly stated.}
 
 
     This Section provides the theoretical analysis and proofs discussed in this chapter. This section is structured as follows:
@@ -1393,7 +1504,7 @@ def build_alias_table($f$):
         \item Fourth, in Section \ref{sec:4-5-4-entropy-trap}, Theorem \ref{thrm:ments_fail} is proven, showing that the maximum entropy objective is either misaligned or \bd{not useful} in the Entropy Trap problem from Section \ref{sec:4-3-toyenvs};
     \end{enumerate}
 
-    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} so that they do not distract from the string of thought in this section. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS are left to Appendix \ref{appsec:exp}. This section will refer to particular parts of the appendix where they provide any relevant extra details. \htodo{also point the MENTS exp bound to this section, once that's written up}
+    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} so that they do not distract from the string of thought in this section. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS are left to Appendix \ref{appsec:exp}. This section will refer to particular parts of the appendix where they provide any relevant extra details. \todo{also point the MENTS exp bound to this section, once that's written up}
 
 
 
@@ -1417,7 +1528,7 @@ def build_alias_table($f$):
             The search tree after $n$ trials is denoted $\cl{T}^n$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^n = \cl{T}^{n-1} \cup \tau^n$.
     \end{itemize}
 
-    It will also be useful to have some additional notation for counting the number of times that nodes have been visited. Let the $m$th trajectory be $\tau^m=(s_0^m,a_0^m,r_0^m,...,s_{h-1}^m,a_{h-1}^m,r_{h-1}^m,s_{h}^m)$ for $1\leq m \leq n$. The number of times state~$s_t$ was visited in the first $n$ trials is $N^n(s_t)$, and the number of times action~$a_t$ was selected from state~$s_t$ in the first $n$ trials is $N^n(s_t,a_t)$. \htodo{make rest of text consistent with this notation.} Also, let $T^n(s_t)$ (and $T^n(s_t,a_t)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $n$ trials: 
+    It will also be useful to have some additional notation for counting the number of times that nodes have been visited. Let the $m$th trajectory be $\tau^m=(s_0^m,a_0^m,r_0^m,...,s_{h-1}^m,a_{h-1}^m,r_{h-1}^m,s_{h}^m)$ for $1\leq m \leq n$. The number of times state~$s_t$ was visited in the first $n$ trials is $N^n(s_t)$, and the number of times action~$a_t$ was selected from state~$s_t$ in the first $n$ trials is $N^n(s_t,a_t)$. \todo{make rest of text consistent with this notation.} Also, let $T^n(s_t)$ (and $T^n(s_t,a_t)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $n$ trials: 
     %
     \begin{align}
         T^n(s_t) &= \{i | 1\leq i\leq n, s^i_t = s_t \} \\
@@ -1552,9 +1663,9 @@ def build_alias_table($f$):
 
 
 
-        \htodo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
+        \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
         
-        \htodo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
+        \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
 
         % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
         

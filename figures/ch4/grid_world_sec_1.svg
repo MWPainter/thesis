@@ -28,15 +28,15 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="8.212761"
-     inkscape:cx="56.010396"
-     inkscape:cy="40.851061"
+     inkscape:zoom="7.5974643"
+     inkscape:cx="-16.321235"
+     inkscape:cy="30.865561"
      inkscape:window-width="3840"
      inkscape:window-height="2096"
      inkscape:window-x="1080"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g202" />
   <defs
      id="defs1">
     <marker
@@ -820,6 +820,13 @@
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583"
          inkscape:label="Border"
          id="rect201" />
+      <rect
+         style="fill:#a4a4a4;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:2.6;fill-opacity:1"
+         id="rect4"
+         width="5.045702"
+         height="4.975379"
+         x="9.9591112"
+         y="14.987232" />
       <g
          inkscape:label="MajorXGridlines"
          id="g160">
@@ -854,6 +861,11 @@
          id="g165">
         <path
            style="fill:none;stroke:#000000;stroke-width:0.264583"
+           d="M 0,15 H 30"
+           inkscape:label="MajorYDiv3"
+           id="path163" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.264583"
            d="M 0,5 H 30"
            inkscape:label="MajorYDiv1"
            id="path161" />
@@ -862,11 +874,6 @@
            d="M 0,10 H 30"
            inkscape:label="MajorYDiv2"
            id="path162" />
-        <path
-           style="fill:none;stroke:#000000;stroke-width:0.264583"
-           d="M 0,15 H 30"
-           inkscape:label="MajorYDiv3"
-           id="path163" />
         <path
            style="fill:none;stroke:#000000;stroke-width:0.264583"
            d="M 0,20 H 30"
