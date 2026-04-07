@@ -170,7 +170,7 @@
 
 %%%%% THESIS / TITLE PAGE INFORMATION
 % Everybody needs to complete the following:
-\title{On Monte Carlo Tree Search \\With Multiple Objectives}
+\title{On Monte Carlo Tree Search \\with Multiple Objectives}
 \author{Michael Painter}
 \college{Pembroke College}
 
@@ -291,6 +291,7 @@
 \newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
 \newcommand{\graphmode}{{\textnormal{\texttt{transposition\_table}}}}
 \newcommand{\Vinit}{{\hat{V}_{\textnormal{heuristic}}}}
+\newcommand{\Vh}{{\hat{V}_{\textnormal{h}}}}
 
 
 \newcommand{\normalisedq}{{\textnormal{\texttt{normalised\_Q}}}}
@@ -374,8 +375,10 @@
 \newcommand{\piarbts}{{\pi_{\arbts}}}
 \newcommand{\rhoarbts}{{\rho_{\arbts}}}
 \newcommand{\alphaarbts}{{\alpha_{\arbts}}}
-\newcommand{\Qarbts}{{\hat{Q}_{\arbts}}}
-\newcommand{\Varbts}{{\hat{V}_{\arbts}}}
+\newcommand{\Qarbts}{{\bar{Q}_{\arbts}}}
+\newcommand{\Qarbtsbias}{{\bar{Q}^{\bias}_{\arbts}}}
+\newcommand{\Qarbtsnorm}{{\bar{Q}^{\norm}_{\arbts}}}
+\newcommand{\Varbts}{{\bar{V}_{\arbts}}}
 \newcommand{\psiarbts}{{\psi_{\arbts}}}
 \newcommand{\epsarbts}{{\epsilon_{\arbts}}}
 \newcommand{\lambdaarbts}{{\lambda(s,\epsarbts)}}
@@ -395,6 +398,9 @@
 \newcommand{\alphadents}{{\alpha_{\dents}}}
 \newcommand{\betadents}{{\beta_{\dents}}}
 \newcommand{\Qdents}{{\hat{Q}_{\dents}}}
+\newcommand{\Qdentssoft}{{\hat{Q}^{\sft}_{\dents}}}
+\newcommand{\Qdentsbias}{{\hat{Q}^{\sft,\bias}_{\dents}}}
+\newcommand{\Qdentsnorm}{{\hat{Q}^{\sft,\norm}_{\dents}}}
 \newcommand{\mQdents}[1]{{\hat{Q}^{(#1)}_{\dents}}}
 \newcommand{\Vdents}{{\hat{V}_{\dents}}}
 \newcommand{\mVdents}[1]{{\hat{V}^{(#1)}_{\dents}}}
@@ -406,6 +412,8 @@
 \newcommand{\mlambdadents}[1]{{\lambda^{#1}(s,\epsdents)}}
 \newcommand{\mvdents}{{\textup{\texttt{mv}}_{\dents}}}
 \newcommand{\mmvdents}[1]{{\textup{\texttt{mv}}^{#1}_{\dents}}}
+\newcommand{\Nvdents}{N^{\Vinit}_{\dents}}
+\newcommand{\Nqdents}{N^{\Qinit}_{\dents}}
 % Sec 4.2.2 - AR-DENTS
 % \newcommand{\ardents}{{\textnormal{AR-DENTS}}}
 % \newcommand{\ardents}{{\textnormal{AR-D}}}
