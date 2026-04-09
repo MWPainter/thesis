@@ -14,6 +14,31 @@
 
 
 
+    New Ch5 plan:
+    \begin{itemize}
+        \item Intro, introduce and motivate contextual tree search, forward ref to 
+        \item Algos, contextual zooming (motivate by parallel to UCT)
+        \item Algos, convex hull backups
+        \item Algos, why no entropy
+        \item Optimizations, solved labelling (ref LRTDP)
+        \item Empirical results
+        \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
+        \item Theory, reproduce the CHMCTS results, and say that garunteed to eventually produce optimal (lemmas are actions selected inf often)
+        \item No theory for CZT directly, makes a heuristic adaptation from the base work, and the proofs are very complex in themselves (would add like 50 pages of maths) 
+        \item Conclusion, wrap up, motivate move to simplex maps (convex hull slow) and weight space (entropy)
+    \end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
     should have a QHull reference when talking about the implementation
 
     say that we prune using that, unless it is a degenerate case where we fall back to using the linear programming method

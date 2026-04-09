@@ -51,8 +51,8 @@
         \begin{align}
             N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
             N(s_t,a_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
-            N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{appeq:nsa_sum} \\
-            N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
+            N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{eq:4:nsa_sum} \\
+            N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{eq:4:ns_sum}
         \end{align}
         %
         Additionally, the assumption that for any two states $s,s'\in\cl{S}$ that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{move this up}
@@ -471,7 +471,7 @@
             
             \begin{proof}
                 \todo{Define m again somewhere?}
-                Recall from Equation (\ref{appeq:nsa_sum}) that $N(s_t,a_t,m)=\sum_{i\in T(s_t,m)} \one[a^i_t=a_t] = \sum_{i\in T(s_t,m)} \one[a^i_t=a_t | s^i_t=s_t]$ \todo{this should be the other sum, from i equal to one to N(st,m)}. By taking expectations \todo{with respect to at} and using the assumed $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$ it follows that $\bb{E}N(s_t,a_t,m) \geq \eta N(s_t,m)$ (and more specifically as a consequence $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$). The probability of $N(s_t,a_t,m)$ being below a multiplicative ratio of $N(s_t,m)$ is bounded as follows:
+                Recall from Equation (\ref{eq:4:nsa_sum}) that $N(s_t,a_t,m)=\sum_{i\in T(s_t,m)} \one[a^i_t=a_t] = \sum_{i\in T(s_t,m)} \one[a^i_t=a_t | s^i_t=s_t]$ \todo{this should be the other sum, from i equal to one to N(st,m)}. By taking expectations \todo{with respect to at} and using the assumed $\Pr(a^i_t=a_t|s^i_t=s_t)\geq\eta$ it follows that $\bb{E}N(s_t,a_t,m) \geq \eta N(s_t,m)$ (and more specifically as a consequence $\bb{E}N(s_t,a_t,m) - \eta N(s_t,m)/2 \geq \eta N(s_t,m)/2$). The probability of $N(s_t,a_t,m)$ being below a multiplicative ratio of $N(s_t,m)$ is bounded as follows:
                 \begin{align}
                     & \Pr\left(N(s_t,a_t,m) < \frac{1}{2}\eta N(s_t,m)\right) \\
                         \leq & \Pr\left(N(s_t,a_t,m) < \bb{E}N(s_t,a_t,m) - \frac{1}{2}\eta N(s_t,m)\right) \\
@@ -529,7 +529,7 @@
                 \end{align}
             \end{lemma}
             \begin{proofoutline}
-                Proof is similar to Lemma \ref{lem:sa_to_s}. Instead of having a minimum probability of selecting an action $\eta$, replace it with the corresponding probability from the transition distribution $p(s_{t+1}|s_t,a_t)$. Then swapping any $N(s_t)$ with $N(s_t,a_t)$, any $N(s_t,a_t)$ with $N(s'_t)$, and using $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$ (Equation (\ref{appeq:ns_sum})) as the sum of indicator random variables will give the result.
+                Proof is similar to Lemma \ref{lem:sa_to_s}. Instead of having a minimum probability of selecting an action $\eta$, replace it with the corresponding probability from the transition distribution $p(s_{t+1}|s_t,a_t)$. Then swapping any $N(s_t)$ with $N(s_t,a_t)$, any $N(s_t,a_t)$ with $N(s'_t)$, and using $N(s_{t+1}) = \sum_{i\in T(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]$ (Equation (\ref{eq:4:ns_sum})) as the sum of indicator random variables will give the result.
             \end{proofoutline}
 
         \todo{<end> dump}
@@ -1008,9 +1008,10 @@
 
         \todo{this was a theorem in the main neurips paper. Need to decide how writing this up, so this may go}
         \todo{We} have now shown Theorem \ref{thrm:ments}:
-        \begin{customthm}{3.2} 
-            For any MDP $\cl{M}$, after running $n$ trials of the MENTS algorithm with $\alphaments \leq \Delta_{\cl{M}}/3H\log|\cl{A}|$, \todo{H consistent with thtspp} there exists constants $C,k>0$ such that: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{MENTS}})] \leq C\exp(-kn)$, where $\Delta_{\cl{M}}=\min \{Q^*(s,a,t)-Q^*(s,a',t)\vert Q^*(s,a,t) \neq Q^*(s,a',t),s\in\cl{S}, a,a'\in\cl{A},t\in\bb{N}\}$.
-        \end{customthm}
+        \todo{theorem restate}
+        % \begin{customthm}{3.2} 
+        %     For any MDP $\cl{M}$, after running $n$ trials of the MENTS algorithm with $\alphaments \leq \Delta_{\cl{M}}/3H\log|\cl{A}|$, \todo{H consistent with thtspp} there exists constants $C,k>0$ such that: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{MENTS}})] \leq C\exp(-kn)$, where $\Delta_{\cl{M}}=\min \{Q^*(s,a,t)-Q^*(s,a',t)\vert Q^*(s,a,t) \neq Q^*(s,a',t),s\in\cl{S}, a,a'\in\cl{A},t\in\bb{N}\}$.
+        % \end{customthm}
         \begin{proof}
             This is part of Theorem \ref{thrm:ments_simple_regret_converge}.
         \end{proof}
@@ -1223,11 +1224,12 @@
 
 
         Finally, Theorem \ref{thrm:dents} hows as it is a subset of what has already been shown.
-        \begin{customthm}{4.2}
-            \todo{this was the neurips main paper theorem, only changed enough to get this compiling. Also need to change the results for correct conditions, dont think beta needs to be bounded actually}
-            For any MDP $\cl{M}$, after running $n$ trials of the DENTS algorithm with a root node of $s_0$, if $\betadents$ is bounded above and $\betadents(m)\geq 0$ for all $m\in\bb{N}$, then there exists constants $C,k>0$ such that for all $\varepsilon>0$ it holds that
-            $\bb{E}[\sreg(s_0,\mpsidents{n})] \leq C\exp(-kn)$, and also $\mVdents{N(s_0,n)}(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
-        \end{customthm}
+        \todo{theorem restate}
+        % \begin{customthm}{4.2}
+        %     \todo{this was the neurips main paper theorem, only changed enough to get this compiling. Also need to change the results for correct conditions, dont think beta needs to be bounded actually}
+        %     For any MDP $\cl{M}$, after running $n$ trials of the DENTS algorithm with a root node of $s_0$, if $\betadents$ is bounded above and $\betadents(m)\geq 0$ for all $m\in\bb{N}$, then there exists constants $C,k>0$ such that for all $\varepsilon>0$ it holds that
+        %     $\bb{E}[\sreg(s_0,\mpsidents{n})] \leq C\exp(-kn)$, and also $\mVdents{N(s_0,n)}(s_0) \rap V^*(s_0)$ as $n\rightarrow\infty$.
+        % \end{customthm}
         \begin{proof}
             The simple regret bound follows immediately from Theorem \ref{thrm:dents_simple_regret_converge}. Using Theorem \ref{thrm:dents_val_converge} it holds that $\Pr\left(\left| \mVdents{N(s_{0},n)}(s_0) - V^*(s_0) \right| > \varepsilon \right) \leq C\exp\left( -k\varepsilon^2 n \right) \rightarrow 0$ as $n\rightarrow \infty$, and hence $\mVdents{N(s_{0},n)}(s_0)$ converges in probability to $V^*(s_0)$.
         \end{proof}

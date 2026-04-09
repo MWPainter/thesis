@@ -115,6 +115,7 @@
 \usepackage{mathtools}
 \usepackage{amsthm}
 \usepackage{bbm} % for indicator function
+\usepackage{thmtools, thm-restate} % restate theorems with same numbering
 
 % figs + subfigs 
 \usepackage{graphicx}
@@ -129,38 +130,48 @@
 \newcommand{\tick}{{\ding{51}}}
 \newcommand{\cross}{{\ding{55}}}
 
-% Maffs theorems envs
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{defn}{Definition}[section]
-\newtheorem{prop}{Proposition}[section]
-\newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{counterexample}[theorem]{Counterexample}
-\newtheorem{remark}[theorem]{Remark}
-
 % Maffs proof env
 \newenvironment{proofoutline}{\proof[Proof outline]}{\endproof}
 
-% Add command \newcustomtheorem to make theorems envs that can set the numbering
-\newtheorem{innercustomgeneric}{\customgenericname}
-\providecommand{\customgenericname}{}
-\newcommand{\newcustomtheorem}[2]{%
-	\newenvironment{#1}[1]
-	{%
-		\renewcommand\customgenericname{#2}%
-		\renewcommand\theinnercustomgeneric{##1}%
-		\innercustomgeneric
-	}
-	{\endinnercustomgeneric}
-}
+% New theorem envs, compatible with restatable
+\declaretheorem[name=Theorem, numberwithin=section]{theorem}
+\declaretheorem[name=Definition, numberwithin=section]{defn}
+\declaretheorem[name=Proposition, numberwithin=section]{prop}
+\declaretheorem[name=Corollary, numberwithin=section]{corollary}
+\declaretheorem[name=Lemma, numberwithin=section]{lemma}
+\declaretheorem[name=Counterexample, numberwithin=section]{counterexample}
+\declaretheorem[name=Remark, numberwithin=section]{remark}
 
-% Custom theorems envs where can set the numbering 
-\newcustomtheorem{customthm}{Theorem}
-\newcustomtheorem{customcorollary}{Corollary}
-\newcustomtheorem{customcounter}{Counterexample}
-\newcustomtheorem{customremark}{Remark}
-\newcustomtheorem{customprop}{Proposition}
+% % Maffs theorems envs
+% \theoremstyle{plain}
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{defn}{Definition}[section]
+% \newtheorem{prop}{Proposition}[section]
+% \newtheorem{corollary}{Corollary}[theorem]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{counterexample}[theorem]{Counterexample}
+% \newtheorem{remark}[theorem]{Remark}
+
+
+% % Add command \newcustomtheorem to make theorems envs that can set the numbering
+% \newtheorem{innercustomgeneric}{\customgenericname}
+% \providecommand{\customgenericname}{}
+% \newcommand{\newcustomtheorem}[2]{%
+% 	\newenvironment{#1}[1]
+% 	{%
+% 		\renewcommand\customgenericname{#2}%
+% 		\renewcommand\theinnercustomgeneric{##1}%
+% 		\innercustomgeneric
+% 	}
+% 	{\endinnercustomgeneric}
+% }
+
+% % Custom theorems envs where can set the numbering 
+% \newcustomtheorem{customthm}{Theorem}
+% \newcustomtheorem{customcorollary}{Corollary}
+% \newcustomtheorem{customcounter}{Counterexample}
+% \newcustomtheorem{customremark}{Remark}
+% \newcustomtheorem{customprop}{Proposition}
 
 % Highlighting (for todos  and strikethroughs)
 \usepackage{xcolor} 
@@ -383,6 +394,8 @@
 \newcommand{\epsarbts}{{\epsilon_{\arbts}}}
 \newcommand{\lambdaarbts}{{\lambda(s,\epsarbts)}}
 \newcommand{\mvarbts}{{\textup{\texttt{mv}}_{\arbts}}}
+\newcommand{\Nvarbts}{N^{\Vinit}_{\arbts}}
+\newcommand{\Nqarbts}{N^{\Qinit}_{\arbts}}
 % Sec 4.2.2 - DENTS
 % \newcommand{\dents}{{\textnormal{DENTS}}}
 % \newcommand{\dents}{{\textnormal{D}_{\textnormal{ENTS}}}}
@@ -430,6 +443,8 @@
 \newcommand{\epsardents}{{\epsilon_{\ardents}}}
 \newcommand{\lambdaardents}{{\lambda(s,\epsardents)}}
 \newcommand{\mvardents}{{\textup{\texttt{mv}}_{\ardents}}}
+\newcommand{\Nvardents}{N^{\Vinit}_{\ardents}}
+\newcommand{\Nqardents}{N^{\Qinit}_{\ardents}}
 
 % Sec 4.5 - DENTS theory
 \newcommand{\immreg}{{\textnormal{\texttt{imm\_regr}}}}

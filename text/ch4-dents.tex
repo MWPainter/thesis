@@ -248,6 +248,8 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
         \end{align}
     \end{defn}
 
+    \todo{make sure simple regret is in the table of notation}
+
     By definition, the optimal policy achieves a simple regret of zero. In this thesis an MCTS algorithm is considered \textit{consistent} if its expected simple regret tends to zero. Informally, a consistent algorithm will eventually output an optimal policy if run indefinitely, and is expected to improve its recommendation with more trials.
 
     \begin{defn}
@@ -391,26 +393,25 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
     \paragraph{Summary of Theoretical Results}
 
     In Section \ref{sec:4-5-theory} it is shown that the BTS recommendation policy will always eventually converge to the optimal policy.
-    \begin{theorem} \label{thrm:4:bts} 
-        For any MDP $\cl{M}$, the expected simple regret of $\psibts$ tends to zero: $\bb{E}[\sreg(s_0,\psibts)]\rightarrow 0$.
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmBTS} 
+        \label{thrm:4:bts} 
+        For any MDP $\cl{M}$, the expected simple regret of $\psibts$ tends to zero: $\bb{E}[\sreg(s_0,\psibts)]\rightarrow 0$. \todo{Check assumptions on epsilon}
+    \end{restatable}
 
     Additionally, if the temperature function is allowed to tend to zero, then the search policy will also converge to the optimal policy, and the most visited recommendation policy will also converge to the optimal policy as a result. 
-    \begin{theorem} \label{thrm:4:bts_decay}
-        For any MDP $\cl{M}$, if $\alphabts(x)\rightarrow 0$, then $\pibts\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmBTSdecay} \label{thrm:4:bts_decay}
+        For any MDP $\cl{M}$, if $\alphabts(x)\rightarrow 0$, then $\pibts\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy} \todo{Check assumptions on epsilon}
+    \end{restatable}
 
     Conversely, if the temperature has a strictly positive lower bound (and does not converge to zero), then the BTS recommendation policy will converge to the optimal policy exponentially fast. However, note that neither the search policy nor the most-visited recommendation policy is guaranteed to converge to the optimal policy in this case.
-    \begin{theorem} \label{thrm:4:bts_exp}
-        For any MDP $\cl{M}$, if there exists $\alphabts(x)\geq L > 0$, then there exist constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$ after running $n$ trials of BTS.
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmBTSexp} \label{thrm:4:bts_exp}
+        For any MDP $\cl{M}$, if there exists $\alphabts(x)\geq L > 0$, then there exist constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psibts)] \leq C\exp(-kn)$ after running $n$ trials of BTS. \todo{Check assumptions on epsilon}
+    \end{restatable}
 
     For AR-BTS, the temperature function always needs to be restricted to functions that tend to zero. Intuitively, the average return estimates converge only if the search policy converges, and the search policy converges only if the temperature tends to zero.
-    \begin{theorem} \label{thrm:4:ar_bts}
-        For any MDP $\cl{M}$, if $\alphaarbts(x)\rightarrow 0$, then $\piarbts\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiarbts)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvarbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
-    \end{theorem} 
-
-    \todo{Make sure theorem numbers in theory section match (for all 4 of the above)}
+    \begin{restatable}{theorem}{thrmARBTS} \label{thrm:4:ar_bts}
+        For any MDP $\cl{M}$, if $\alphaarbts(x)\rightarrow 0$, then $\piarbts\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiarbts)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvarbts)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy} \todo{Check assumptions on epsilon}
+    \end{restatable} 
 
 
 
@@ -506,23 +507,21 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
     Corresponding theoretical results hold for DENTS and AR-DENTS to those stated for BTS. For results requiring $\alphadents(x)\rightarrow 0$, it is additionally required that $\betadents$ tends to zero faster than $\alphadents$. This is necessary so that the convergent search policy is not skewed by any entropy estimate. Proofs of the theorems below are given in Section \ref{sec:4-5-theory}.
 
-    \begin{theorem} \label{thrm:4:dents}
-        For any MDP $\cl{M}$, the expected simple regret of $\psidents$ tends to zero: $\bb{E}[\sreg(s_0,\psidents)]\rightarrow 0$.
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmDENTS} \label{thrm:4:dents}
+        For any MDP $\cl{M}$, the expected simple regret of $\psidents$ tends to zero: $\bb{E}[\sreg(s_0,\psidents)]\rightarrow 0$. \todo{Check assumptions on epsilon}
+    \end{restatable}
 
-    \begin{theorem} \label{thrm:4:dents_decay}
-        For any MDP $\cl{M}$, if $\alphadents(x)\rightarrow 0$ and $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, then $\pidents\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvdents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmDENTSdecay} \label{thrm:4:dents_decay}
+        For any MDP $\cl{M}$, if $\alphadents(x)\rightarrow 0$ and $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, then $\pidents\rap \pi^*$ and $\bb{E}[\sreg(s_0,\mvdents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy} \todo{Check assumptions on epsilon}
+    \end{restatable}
 
-    \begin{theorem} \label{thrm:4:dents_exp}
-        For any MDP $\cl{M}$, if there exists $\alphadents(x)\geq L > 0$ and $U\geq\betadents(x)$, then there exist constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psidents)] \leq C\exp(-kn)$ after running $n$ trials of DENTS.
-    \end{theorem}
+    \begin{restatable}{theorem}{thrmDENTSexp} \label{thrm:4:dents_exp}
+        For any MDP $\cl{M}$, if there exists $\alphadents(x)\geq L > 0$ and $U\geq\betadents(x)$, then there exist constants $C,k>0$ such that $\bb{E}[\sreg(s_0,\psidents)] \leq C\exp(-kn)$ after running $n$ trials of DENTS. \todo{Check assumptions on epsilon}
+    \end{restatable}
     
-    \begin{theorem} \label{thrm:4:ar_dents}
-        For any MDP $\cl{M}$, if $\alphaardents(x)\rightarrow 0$ and $\frac{\betaardents(x)}{\alphaardents(x)}\rightarrow 0$, then $\piardents\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiardents)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvardents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy}
-    \end{theorem} 
-
-    \todo{Make sure theorem numbers in theory section match (for all 4 of the above)}
+    \begin{restatable}{theorem}{thrmARDENTS} \label{thrm:4:ar_dents}
+        For any MDP $\cl{M}$, if $\alphaardents(x)\rightarrow 0$ and $\frac{\betaardents(x)}{\alphaardents(x)}\rightarrow 0$, then $\piardents\rap \pi^*$, $\bb{E}[\sreg(s_0,\psiardents)]\rightarrow 0$ and  $\bb{E}[\sreg(s_0,\mvardents)]\rightarrow 0$. \todo{Double check converge in prob is correct for search policy} \todo{Check assumptions on epsilon}
+    \end{restatable} 
 
 
 
@@ -912,8 +911,8 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -963,8 +962,205 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
         \centering
         \includegraphics[width=0.49\textwidth]{figures/ch4/ten_chain.png}
         \includegraphics[width=0.49\textwidth]{figures/ch4/mod_ten_chain.png}
-        \caption[Results on the (modified) D-chain problem.]{Results on the D-chain problem (left), and the modified D-chain problem (right), for a variety of parameters and with $D=10$. Each algorithm was run for 5000 trials, and results are averaged over 25 repeated experiments. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value.}
+        \caption[Results on the (modified) D-chain problem.]{Results on the D-chain problem (left), and the modified D-chain problem (right), for a variety of parameters and with $D=10$. Each algorithm was run for 5000 trials, and results are averaged over 25 repeated experiments. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{update figures to have y-axis 0 to 1}}
         \label{fig:d_chain_results}
+    \end{figure}
+
+
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{The Entropy Trap}
+\label{sec:4-3-2-entropy_trap}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
+        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero. \todo{rephrase labels to D-Chain and Entropy Chain}}
+        \label{fig:entropy_trap}
+    \end{figure}
+
+    In the \textit{D-chain with Entropy Trap problem} (or \textit{Entropy Trap problem} for short), an additional chain of states is appended to the end of the D-chain, designed to exploit the misalignment between the maximum entropy and standard objectives. At the end of the D-chain, the agent must choose between collecting the sparse reward of one, or entering the \textit{entropy chain} where no reward is given but the agent can accumulate entropy ``reward''. The Entropy Trap problem is depicted in Figure \ref{fig:entropy_trap}.
+
+    At each step of the entropy chain the agent still has the option of the two actions $\aL$ and $\aR$. The optimal maximum entropy policy is uniform, taking either action with probability $\frac{1}{2}$ with an entropy of $\log(2)$ per step. If there are $E$ steps in the entropy chain and a temperature of $\alpha$ is used in the maximum entropy objective, then the maximum entropy bonus that can be collected from the chain is $\alpha E\log(2)$. Therefore, $\frac{1}{E\log(2)}$ is an upper bound on the misalignment threshold for the entropy trap, as if $\alpha > \frac{1}{E\log(2)}$, a maximum entropy agent will select the entropy chain over the reward of one at the end of the D-chain. 
+
+    The entropy trap problem can therefore be made arbitrarily difficult for UCT by increasing $D$, while the misalignment threshold can be made arbitrarily small by increasing $E$. Theorem \ref{thrm:ments_bad_mdp} uses the case when $D=E$ to show that MENTS must either suffer from misalignment or require an exponential number of trials with respect to the size of the state space.
+    %
+    \begin{restatable}{theorem}{thrmMENTSbadmdp} \label{thrm:ments_bad_mdp}
+        There exists an MDP such that MENTS (for any value of $\alphaments$) is either not consistent, or requires an exponential number of trials in the size of the state space. That is, either $\mathbb{E}\sreg(s_0,\psiments)\not\rightarrow 0$ or there exist constants $c,k>0$ such that $\mathbb{E}\sreg(s_0,\psiments) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$. \todo{This statement needs correcting and proving additionally. 1 - (max R-min R)(prob policy is not optimal) is an upper bound for simple regret, or something similar.} The latter case implies that $\mathbb{E}\sreg(s_0,\psiments)>0$ and $\psiments\neq\pi^*$ for $n<k^{|\cl{S}|}$. \todo{Make sure proofs use consistent E notation instead of H}
+    \end{restatable}
+
+    Results on the Entropy Trap problem are given in Figure \ref{fig:entropy_trap_results} for $(D,E)=(10,10)$ and $(D,E)=(15,25)$. In the $(D,E)=(15,25)$ case, $500{,}000$ trials were run per parameter setting. The misalignment threshold is bounded above by $\frac{1}{25\log(2)}\approx 0.06$, which is prohibitively small for effective exploration. Below this threshold, no more than 1000 of the $500{,}000$ trials reached the third state of the D-chain, and typically fewer than 100. While BTS and MaxUCT are able to produce the optimal policy given a sufficiently large temperature/bias parameter, increasing $D$ further would eventually prevent them from doing so within a reasonable number of trials. DENTS, by contrast, is able to recommend the optimal policy across a wider range of settings since its Bellman value estimates are unaffected by the entropy chain. For BTS and DENTS, each of $\alphabts$, $\alphadents$ and $\betadents$ is set to a constant value. While this leads to the majority of trials in DENTS entering the entropy chain, this can be resolved by using a function that tends to zero for $\betadents$.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_10.png}
+        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_15.png}
+        \caption[Results on the Entropy Trap problem.]{Results on the Entropy Trap problem, with $(D,E)=(10,10)$ (left) and $(D,E)=(15,25)$ (right). Each algorithm was run with a variety of temperature and bias parameters, averaged over 25 repeated experiments. For BTS the temperature function is set to a constant, and in DENTS the temperature and entropy weighting functions are set to the same constant. All other exploration parameters $\epsilon$ and the heuristic value function $\Vinit$ are set to zero. In the $(D,E)=(10,10)$ case each algorithm was run for 5000 trials: MENTS produces the optimal policy for a small range of temperatures, and BTS and MaxUCT do so for sufficiently large temperature and bias parameters. In the $(D,E)=(15,25)$ case each algorithm was run for $500{,}000$ trials: at the misalignment threshold MENTS recommendations drop to zero due to the entropy trap, while DENTS recommends the optimal policy using its Bellman value estimates.}
+        \label{fig:entropy_trap_results}
+    \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Empirical Results}
+\label{sec:4-4-results}
+
+
+
+    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
+
+    \todo{also back reference RTDP, and how BTS with single node expansion turned off is essentially that. Difference is that temperature is decayed but not to zero in RTDP and BTS adds the epsilon exploration term}
+
+    \todo{also make a comment about how just use H-MCTS as a simple regret baseline, but the simplex regret MCTS methods loosly boil down to a mixture of UCT and uniform combinations.}
+
+
+    
+    \todo{Wasn't too careful about changing from active voice to passive voice here in this entire section}
+
+    \todo{Get some better results using hyperparam optimise //// want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot /// want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)}
+
+    This section provides empirical results on gridworld environments and on the game of Go. It begins by describing the environments, the evaluation setup, and is followed by the empirical results and discussion. The main algorithms discussed in this chapter, BTS and DENTS will be evaluated, using UCT, MENTS, RENTS, TENTS and H-MCTS as baselines \todo{ref litrev or cite?}. 
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Environments}
+
+    
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{(Deterministic) Frozen Lake}
+    The \emph{(Deterministic) Frozen Lake} \todo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \todo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \todo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \todo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
+
+    \todo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
+
+    \todo{ Extra credit: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
+
+    Figure \ref{fig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
+
+    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFFFFFHF} \\
+            \texttt{FFFFFFFF} \\
+            \texttt{FHFHFFFF} \\
+            \texttt{FFFFFFHH} \\
+            \texttt{FFFHFFFF} \\
+            \texttt{FHHHFFFF} \\
+            \texttt{FFFFFHFF} \\
+            \texttt{FFFFFFFG} 
+            \caption{8x8 Frozen Lake.}
+            \label{fig:fl8}
+        \end{subfigure}
+        % \hfill
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFHFFFHFFFFF} \\
+            \texttt{FFFFFFFHFFFF} \\
+            \texttt{HFFFFFHFFFFF} \\
+            \texttt{FHFFHFFFFFFF} \\
+            \texttt{HHFFFFFFFFFF} \\
+            \texttt{FHFFFFHFFFFF} \\
+            \texttt{FHFFFHHFHFFF} \\
+            \texttt{FFFFFFFFFHHG} 
+            \caption{8x12 Frozen Lake.}
+            \label{fig:fl12}
+        \end{subfigure}
+        % \hfill
+        % \begin{subfigure}[b]{0.3\textwidth}
+        %     \centering
+        %     \texttt{SFHFFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FHFFFFHFFFFF} \\
+        %     \texttt{FFFHFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FFFFHFFFHFFF} \\
+        %     \texttt{FFHFFFFFFFFH} \\
+        %     \texttt{FFFFFFFFFFFG} 
+        %     \caption{8x12 Test Frozen Lake.}
+        %     \label{fig:fl12test}
+        % \end{subfigure}
+        \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{use standard maps from gym where possible}}
+        \label{fig:fl_maps}
     \end{figure}
 
 
@@ -986,186 +1182,79 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{The Entropy Trap}
-\label{sec:4-3-2-entropy_trap}
-
-    \todo{Before the misalignment threshold (at about XXX), fewer than 1000 trials reached s3 or further out of the 500k trials.}
-
-    In the \textit{D-chain with Entropy Trap problem}, or \textit{Entropy Trap problem} for short, an additional chain of states is added to end of the original D-chain to throw off maximum entropy agents. Now at the end of the D-chain, or the \textit{UCT Gauntlet}, the agent has to make a final choice. It can either collect the final sparse reward of one, or it can fall into the \textit{Entropy Trap}, a chain of length $E$, where zero reward is given, but the agent can collect an entropy bonus of up to $E\log(2)$. The Entropy Trap problem is depicted in Figure \ref{fig:entropy_trap}. 
-
-    \todo{Make proofs use consistent E notation instead of H}
-
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
-        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero.}
-        \label{fig:entropy_trap}
-    \end{figure}
-
-    When using the maximum entropy objective, with temperature $\alpha$, in the Entropy Trap problem, an agent can gain an entropy bonus of $\alpha E \log(2)$ from falling in the Entropy Trap. And hence, if $\alpha > \frac{1}{E\log(2)}$, the maximum entropy objective must be misaligned with the standard objective, as the entropy agent can gain an entropy bonus of greater than one from the Entropy Trap. So a maximum entropy agent can be restricted to using an arbitrarily small temperature, by increasing the value of $E$. By setting $D=E$ it can be shown that expectation MENTS will need exponentially many trials with respect to the size of the MDP state space to find the optimal policy: 
-    %
-    \begin{theorem} \label{thrm:ments_fail}
-        There exists an MDP such that MENTS (for any value of $\alphaments$) is either not consistent, or requires an exponential number of trials in the size of the state space. That is, either $\mathbb{E}\sreg(s_0,\psiments)\not\rightarrow 0$ or there exists constants $c,k>0$ such that $\mathbb{E}\sreg(s_0,\psiments) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$. The latter case implies that $\mathbb{E}\sreg(s_0,\psiments)>0$ and $\psiments\neq\pi^*$ for $n<k^{|\cl{S}|}$. 
-    \end{theorem}
-
-    Results on the Entropy Trap problem are given for $D=E=10$ and $D=E=15$ in Figure \ref{fig:entropy_trap_results}. When using $D=E=15$ it is feasible that BTS can make progress given enough trials, but ultimately if $D$ is made large enough BTS will also struggle on this environment, as it can only explore randomly. As the likeliehood of reaching the end of the chain through random exploration becomes exponentially less likely, only DENTS is able to solve the Entropy Trap in a reasonable amount of time as $D=E$ is made larger.
-
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_10.png}
-        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_15.png}
-        \caption[Results on the Entropy Trap problem.]{Results on the Entropy Trap problem, with $D=E=10$ (left) and $D=E=15$ (right). Each algorithm was run with a variety of temperature/bias parameters, and results are averaged over 25 repeated experiments. In the $D=E=10$ case, each algorithm was run for $5000$ trials, and in the $D=E=15$ case each algorithm was run for $100000$ trials. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{Update thtspp aux to run DENTS with fewer trials, just to show off DENTS a even more.} \todo{also fiddle with num trials to show things off more. Maybe use 20, for the second plot and let temperatures rise to one order of magnitude more, or lower the number of trials. Basically want the second plot for MENTS to show no progress. First plot increase number of trials until MENTS is just about able to solve it.}}
-        \label{fig:entropy_trap_results}
-    \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-\section{Empirical Results}
-\label{sec:4-4-results}
-
-
-
-    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
-
-
+\subsubsection{Sailing Problem}
+    The \emph{Sailing Problem} is another grid world environment with one goal state, at the opposite corner to the starting location of the agent. This problem has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. 
     
-    \todo{Wasn't too careful about changing from active voice to passive voice here in this entire section}
+    The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. \todo{The agent incurs a (dense) cost of (thetawind - theta)/45 + 1 for traveling at angle theta when wind is in direction thetawind.}
 
-    \todo{Get some better results using hyperparam optimise //// want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot /// want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)}
+    Figure \ref{fig:sailing_deets} gives the map and wind transition probabilities for the Sailing problem, using the same map notation as for Frozen Lake. 
 
-    This section provides empirical results on gridworld environments and on the game of Go. It begins by describing the environments, the evaluation setup, and is followed by the empirical results and discussion. The main algorithms discussed in this chapter, BTS and DENTS will be evaluated, using UCT, MENTS, RENTS, TENTS and H-MCTS as baselines \todo{ref litrev or cite?}. 
-
-
-
-
-    \subsection{Environments}
-
-        \subsubsection{(Deterministic) Frozen Lake}
-            The \emph{(Deterministic) Frozen Lake} \todo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \todo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \todo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \todo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
-
-            \todo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
-
-            \todo{ Extra credit: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
-
-            Figure \ref{fig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
-
-            An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
-        
-            \begin{figure}
-                \centering
-                \begin{subfigure}[b]{0.3\textwidth}
-                    \centering
-                    \texttt{SFFFFFHF} \\
-                    \texttt{FFFFFFFF} \\
-                    \texttt{FHFHFFFF} \\
-                    \texttt{FFFFFFHH} \\
-                    \texttt{FFFHFFFF} \\
-                    \texttt{FHHHFFFF} \\
-                    \texttt{FFFFFHFF} \\
-                    \texttt{FFFFFFFG} 
-                    \caption{8x8 Frozen Lake.}
-                    \label{fig:fl8}
-                \end{subfigure}
-                % \hfill
-                \begin{subfigure}[b]{0.3\textwidth}
-                    \centering
-                    \texttt{SFHFFFHFFFFF} \\
-                    \texttt{FFFFFFFHFFFF} \\
-                    \texttt{HFFFFFHFFFFF} \\
-                    \texttt{FHFFHFFFFFFF} \\
-                    \texttt{HHFFFFFFFFFF} \\
-                    \texttt{FHFFFFHFFFFF} \\
-                    \texttt{FHFFFHHFHFFF} \\
-                    \texttt{FFFFFFFFFHHG} 
-                    \caption{8x12 Frozen Lake.}
-                    \label{fig:fl12}
-                \end{subfigure}
-                % \hfill
-                % \begin{subfigure}[b]{0.3\textwidth}
-                %     \centering
-                %     \texttt{SFHFFFFFFFHF} \\
-                %     \texttt{FFFFFFFFFFFF} \\
-                %     \texttt{FHFFFFHFFFFF} \\
-                %     \texttt{FFFHFFFFFFHF} \\
-                %     \texttt{FFFFFFFFFFFF} \\
-                %     \texttt{FFFFHFFFHFFF} \\
-                %     \texttt{FFHFFFFFFFFH} \\
-                %     \texttt{FFFFFFFFFFFG} 
-                %     \caption{8x12 Test Frozen Lake.}
-                %     \label{fig:fl12test}
-                % \end{subfigure}
-                \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{use standard maps from gym where possible}}
-                \label{fig:fl_maps}
-            \end{figure}
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \texttt{FFFFFG} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{SFFFFF} 
+            \caption{6x6 Sailing Problem map.}
+        \end{subfigure}
+        % \hfill
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \begin{align*}
+                \begin{pmatrix}
+                0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
+                0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
+                0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
+                \end{pmatrix}
+            \end{align*}
+            \caption{Wind transition probabilities.}
+        \end{subfigure}
+        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
+        \label{fig:sailing_deets}
+    \end{figure}
 
 
 
 
-        \subsubsection{Sailing Problem}
-            The \emph{Sailing Problem} is another grid world environment with one goal state, at the opposite corner to the starting location of the agent. This problem has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. 
-            
-            The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. \todo{The agent incurs a (dense) cost of (thetawind - theta)/45 + 1 for traveling at angle theta when wind is in direction thetawind.}
-
-            Figure \ref{fig:sailing_deets} gives the map and wind transition probabilities for the Sailing problem, using the same map notation as for Frozen Lake. 
-
-            \begin{figure}
-                \centering
-                \begin{subfigure}[b]{0.49\textwidth}
-                    \centering
-                    \texttt{FFFFFG} \\
-                    \texttt{FFFFFF} \\
-                    \texttt{FFFFFF} \\
-                    \texttt{FFFFFF} \\
-                    \texttt{FFFFFF} \\
-                    \texttt{SFFFFF} 
-                    \caption{6x6 Sailing Problem map.}
-                \end{subfigure}
-                % \hfill
-                \begin{subfigure}[b]{0.49\textwidth}
-                    \centering
-                    \begin{align*}
-                        \begin{pmatrix}
-                        0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
-                        0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-                        0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
-                        0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
-                        0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
-                        0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
-                        0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
-                        0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
-                        \end{pmatrix}
-                    \end{align*}
-                    \caption{Wind transition probabilities.}
-                \end{subfigure}
-                \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
-                \label{fig:sailing_deets}
-            \end{figure}
 
 
 
 
-        \subsubsection{Go}
-            For a more challenging domain, a round-robin tournament was run on the game of Go, which has widely motivated the development of MCTS methods \cite{gelly2007combining,alpha_go,alpha_go_zero}. \textit{Area scoring} is used to score the games, with a \textit{komi} (a score handicap for black) of $7.5$. 
-            
-            The open-source library KataGo \cite{katago} was used to provide a value network $\tilde{V}$ and prior policy network $\tilde{\pi}$ for the algorithms. 
-            
-            PUCT algorithm \cite{poly_uct} was used as a baseline algorithm, as described in Alpha Go Zero \cite{alpha_go_zero}, using prioritised UCB \cite{prio_ucb} to utilise the policy neural network. Each algorithm was limited to $5$ seconds of compute time per move, allowed to use $32$ search threads per move, and had access to 80 Intel Xeon E5-2698V4 CPUs clocked at 2.2GHz, and a single Nvidia V100 GPU on a shared compute cluster.
 
-            The methods described in this chapter can be adapted for two-player games by using a discount factor in the MDP. The value of a policy $\pi$ with a discount factor $\gamma$ is defined as:
-            \begin{align}
-                V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} \gamma^{i-t}r_i \Bigg| s_t=s \right].
-            \end{align}
-            %
-            \todo{should define this in ch2? It's only really relevant here, and kind of in Frozen lake}
-            If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games. \todo{assuming that the reward function always gives rewards from the perspective of the player taking the current action.}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Go}
+    For a more challenging domain, a round-robin tournament was run on the game of Go, which has widely motivated the development of MCTS methods \cite{gelly2007combining,alpha_go,alpha_go_zero}. \textit{Area scoring} is used to score the games, with a \textit{komi} (a score handicap for black) of $7.5$. 
+    
+    The open-source library KataGo \cite{katago} was used to provide a value network $\tilde{V}$ and prior policy network $\tilde{\pi}$ for the algorithms. 
+    
+    PUCT algorithm \cite{poly_uct} was used as a baseline algorithm, as described in Alpha Go Zero \cite{alpha_go_zero}, using prioritised UCB \cite{prio_ucb} to utilise the policy neural network. Each algorithm was limited to $5$ seconds of compute time per move, allowed to use $32$ search threads per move, and had access to 80 Intel Xeon E5-2698V4 CPUs clocked at 2.2GHz, and a single Nvidia V100 GPU on a shared compute cluster.
+
+    The methods described in this chapter can be adapted for two-player games by using a discount factor in the MDP. The value of a policy $\pi$ with a discount factor $\gamma$ is defined as:
+    \begin{align}
+        V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} \gamma^{i-t}r_i \Bigg| s_t=s \right].
+    \end{align}
+    %
+    \todo{should define this in ch2? It's only really relevant here, and kind of in Frozen lake}
+    If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games. \todo{assuming that the reward function always gives rewards from the perspective of the player taking the current action.}
         
         
 
@@ -1180,57 +1269,91 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-    \subsection{Evaluation Proceedure} 
-
-        Consider an algorithm with search tree $\cl{T}$, which provides a partial recommendation policy $\psi_{\text{alg}}$. The recommendation policy is made complete by using a uniformly random policy for states and actions that are outside of the tree $\cl{T}$ as follows:
-        % 
-        \begin{align}
-            \psi(a|s) =
-            \begin{cases}
-                1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s), \\
-                0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s), \\
-                \frac{1}{|\cl{A}|}      & \text{ otherwise.}
-            \end{cases} \label{eq:full_Recommend}
-        \end{align}
-        % 
-        Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. \todo{Kind of want a better argument for this line of eval here.} Although this proceedure is evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting when planning in simulation is interleaved with letting the agent act in the real environment. \todo{either scrap the evaluation question, or do something more to justify this.But should say something like "this evaluates the policy, and the online performance depends on the policies produced online, therefore correlated"}
-
-        All experiments in this chapter were run with \mctsmode\ewe turned off and did not use the Alias method as described in Section \ref{sec:4-2-3-stoch_search_policies}, apart from the experiments on Go, which used \mctsmode and the Alias method.
 
 
 
 
-        \subsubsection{Gridworld Hyperparameter Selection}
 
-            To select hyperparameters for the algorithms in the gridworld environments, the BayesOpt package \cite{bayesopt} was used. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \ref{appsec:hps} \todo{double check this ref}.
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Evaluation Proceedure} 
 
-            These experiments were run with \mctsmode\ewe turned off and did not use the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}).
+    Consider an algorithm with search tree $\cl{T}$, which provides a partial recommendation policy $\psi_{\text{alg}}$. The recommendation policy is made complete by using a uniformly random policy for states and actions that are outside of the tree $\cl{T}$ as follows:
+    % 
+    \begin{align}
+        \psi(a|s) =
+        \begin{cases}
+            1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s), \\
+            0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s), \\
+            \frac{1}{|\cl{A}|}      & \text{ otherwise.}
+        \end{cases} \label{eq:full_Recommend}
+    \end{align}
+    % 
+    Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. \todo{Kind of want a better argument for this line of eval here.} Although this proceedure is evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting when planning in simulation is interleaved with letting the agent act in the real environment. \todo{either scrap the evaluation question, or do something more to justify this.But should say something like "this evaluates the policy, and the online performance depends on the policies produced online, therefore correlated"}
+
+    All experiments in this chapter were run with \mctsmode\ewe turned off and did not use the Alias method as described in Section \ref{sec:4-2-3-stoch_search_policies}, apart from the experiments on Go, which used \mctsmode and the Alias method.
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Gridworld Hyperparameter Selection}
+
+    To select hyperparameters for the algorithms in the gridworld environments, the BayesOpt package \cite{bayesopt} was used. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \ref{appsec:hps} \todo{double check this ref}.
+
+    These experiments were run with \mctsmode\ewe turned off and did not use the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}).
 
 
             
-        \subsubsection{Go Hyperparameter Selection}
 
-            To tune hyperparemters for algorithms used in the Go experiments, a methodical sequence of round robin tournaments were run on a $9\times 9$ board, where in each tournament one parameter was tuned at a time. Full details of these tournaments and the selected hyperparamters are given in Appendix \ref{appsec:go_hps} \todo{double check this ref}.
 
-            Of note, both Bellman value estimates and average returns were considered for the Go round robin. In the hyperparamter tuning the two versions of each algorithm were tuned seperately and then played against each other. In each case the average returns algorithms decisively beat the Bellman versions. This could have been because of average returns helping to average out noisy neural network outputs, and the ability of the AR algorithms to run more trials (as described in Section \ref{sec:4-2-3-stoch_search_policies}) in the given search time.
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Go Hyperparameter Selection}
+
+    To tune hyperparemters for algorithms used in the Go experiments, a methodical sequence of round robin tournaments were run on a $9\times 9$ board, where in each tournament one parameter was tuned at a time. Full details of these tournaments and the selected hyperparamters are given in Appendix \ref{appsec:go_hps} \todo{double check this ref}.
+
+    Of note, both Bellman value estimates and average returns were considered for the Go round robin. In the hyperparamter tuning the two versions of each algorithm were tuned seperately and then played against each other. In each case the average returns algorithms decisively beat the Bellman versions. This could have been because of average returns helping to average out noisy neural network outputs, and the ability of the AR algorithms to run more trials (as described in Section \ref{sec:4-2-3-stoch_search_policies}) in the given search time.
+    
+    These experiments were run with \mctsmode\ewe turned on and made use of the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}). Additionally, the value network $\tilde{V}$ was used for the value initialisation function $\Vinit$, and prior policy network $\tilde{\pi}$ was mixed into the search policy as described in Section \ref{sec:4-2-3-stoch_search_policies}.
+
             
-            These experiments were run with \mctsmode\ewe turned on and made use of the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}). Additionally, the value network $\tilde{V}$ was used for the value initialisation function $\Vinit$, and prior policy network $\tilde{\pi}$ was mixed into the search policy as described in Section \ref{sec:4-2-3-stoch_search_policies}.
-
-            
-
-
-
-
-
-    \subsection{Results and Discussion}
-
-        \todo{Wanted to show the breadth first search if Qinit incorrectly set then get breadth first search in costs case. If can estimate, for example know Rmin and can get Qinit to H times Rmin then can do that. Another zero knowledge Qinit function can use is Qinit equals min a Q(s,a) where for (s,a) in tree, if no such (s,a) then zero (its uniform policy then anyway).}
-
-        \todo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
-
-        \todo{Should also eval AR-BTS etc on these envs? Might make the arguments/results nicer and more complete}
-
-        This subsection first demonstrates the parameter sensitivity of maximum entropy methods on the Frozen Lake environment. Then results on Frozen Lake and the Sailing problem are given with optimised parameters, and finally results from the Go round robin.
 
 
 
@@ -1238,201 +1361,279 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-        \subsubsection{Parameter sensitivity in Frozen Lake} \label{sec:param_sens_fl}
 
-            \todo{this subsubsection currently just a c and p from neurips}
 
-            Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 Frozen Lake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
 
-            \todo{clean up hyperparam setting }
-            % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 Frozen Lake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Results and Discussion}
 
-            In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state for all of the temperatures considered.
+    \todo{Wanted to show the breadth first search if Qinit incorrectly set then get breadth first search in costs case. If can estimate, for example know Rmin and can get Qinit to H times Rmin then can do that. Another zero knowledge Qinit function can use is Qinit equals min a Q(s,a) where for (s,a) in tree, if no such (s,a) then zero (its uniform policy then anyway).}
 
-            In contrast, both BTS and DENTS were relativly agnostic to the temperature parameter in this environment (with $\epsilon=1$) and were always able to find the goal state. Curves for BTS and DENTS are included in all of Figures \ref{fig:fl_param_sens_ments}, \ref{fig:fl_param_sens_tents} and \ref{fig:fl_param_sens_rents} for reference and as a comparison for MENTS, RENTS and TENTS.
+    \todo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
+
+    \todo{Should also eval AR-BTS etc on these envs? Might make the arguments/results nicer and more complete}
+
+    This subsection first demonstrates the parameter sensitivity of maximum entropy methods on the Frozen Lake environment. Then results on Frozen Lake and the Sailing problem are given with optimised parameters, and finally results from the Go round robin.
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Parameter sensitivity in Frozen Lake} \label{sec:param_sens_fl}
+
+    \todo{this subsubsection currently just a c and p from neurips}
+
+    Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 Frozen Lake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
+
+    \todo{clean up hyperparam setting }
+    % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 Frozen Lake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
+
+    In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state for all of the temperatures considered.
+
+    In contrast, both BTS and DENTS were relativly agnostic to the temperature parameter in this environment (with $\epsilon=1$) and were always able to find the goal state. Curves for BTS and DENTS are included in all of Figures \ref{fig:fl_param_sens_ments}, \ref{fig:fl_param_sens_tents} and \ref{fig:fl_param_sens_rents} for reference and as a comparison for MENTS, RENTS and TENTS.
+
+    % \FloatBarrier
+    
+    \begin{figure}
+        \centering
         
-            % \FloatBarrier
-            
-            \begin{figure}
-                \centering
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_01.png}
-                    \caption{$\alpha=1$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_01.png}
-                    \caption{$\alpha=0.5$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_01.png}
-                    \caption{$\alpha=0.1$}
-                \end{subfigure}
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_01.png}
-                    \caption{$\alpha=0.05$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_01.png}
-                    \caption{$\alpha=0.01$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_01.png}
-                    \caption{$\alpha=0.005$}
-                \end{subfigure}
-                
-                \caption{MENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-                \label{fig:fl_param_sens_ments}
-            \end{figure}
-            
-            \begin{figure}
-                \centering
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_02.png}
-                    \caption{$\alpha=1$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_02.png}
-                    \caption{$\alpha=0.5$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_02.png}
-                    \caption{$\alpha=0.1$}
-                \end{subfigure}
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_02.png}
-                    \caption{$\alpha=0.05$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_02.png}
-                    \caption{$\alpha=0.01$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_02.png}
-                    \caption{$\alpha=0.005$}
-                \end{subfigure}
-                
-                \caption{RENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-                \label{fig:fl_param_sens_rents}
-            \end{figure}
-            
-            \begin{figure}
-                \centering
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_03.png}
-                    \caption{$\alpha=1$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_03.png}
-                    \caption{$\alpha=0.5$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_03.png}
-                    \caption{$\alpha=0.1$}
-                \end{subfigure}
-                
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_03.png}
-                    \caption{$\alpha=0.05$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_03.png}
-                    \caption{$\alpha=0.01$}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.32\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_03.png}
-                    \caption{$\alpha=0.005$}
-                \end{subfigure}
-                
-                \caption{TENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-                \label{fig:fl_param_sens_tents}
-            \end{figure}
-
-
-
-        \subsubsection{Gridworld Results}
-
-            \todo{this subsubsection currently just a c and p from neurips}
-
-            The 8x12 Frozen Lake environment (Figure \ref{fig:fl12}) and a 6x6 Sailing Problem (Figure \ref{fig:sailing_deets}) were used to evaluate the algorithms introduced in this chapter against the baseline algorithms.
-
-            Each algorithm is run 25 times on each environment and evaluated every 250 trials using 250 trajectories. 
-            A horizon of 100 was used for Frozen Lake and 50 for the Sailing Problem. Curves of these evaluations are given in Figure \ref{fig:gridworld_results}.
-
-            In Frozen Lake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
-
-            In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \todo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
-            
-            Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
-
-            \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
-            
-            \begin{figure*}
-                \centering
-                \begin{subfigure}[b]{0.49\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/grid/fl.png}
-                    \caption{8x12 Frozen Lake.}
-                    \label{fig:fl}
-                \end{subfigure}
-                \begin{subfigure}[b]{0.49\textwidth}
-                    \centering
-                    \includegraphics[width=\textwidth]{figures/temp/grid/s.png}
-                    \caption{6x6 Sailing Problem.}
-                    \label{fig:sp}
-                \end{subfigure}
-                \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
-                \label{fig:gridworld_results}
-            \end{figure*}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_01.png}
+            \caption{$\alpha=1$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_01.png}
+            \caption{$\alpha=0.5$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_01.png}
+            \caption{$\alpha=0.1$}
+        \end{subfigure}
+        
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_01.png}
+            \caption{$\alpha=0.05$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_01.png}
+            \caption{$\alpha=0.01$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_01.png}
+            \caption{$\alpha=0.005$}
+        \end{subfigure}
+        
+        \caption{MENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \label{fig:fl_param_sens_ments}
+    \end{figure}
+    
+    \begin{figure}
+        \centering
+        
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_02.png}
+            \caption{$\alpha=1$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_02.png}
+            \caption{$\alpha=0.5$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_02.png}
+            \caption{$\alpha=0.1$}
+        \end{subfigure}
+        
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_02.png}
+            \caption{$\alpha=0.05$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_02.png}
+            \caption{$\alpha=0.01$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_02.png}
+            \caption{$\alpha=0.005$}
+        \end{subfigure}
+        
+        \caption{RENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \label{fig:fl_param_sens_rents}
+    \end{figure}
+    
+    \begin{figure}
+        \centering
+        
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_03.png}
+            \caption{$\alpha=1$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_03.png}
+            \caption{$\alpha=0.5$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_03.png}
+            \caption{$\alpha=0.1$}
+        \end{subfigure}
+        
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_03.png}
+            \caption{$\alpha=0.05$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_03.png}
+            \caption{$\alpha=0.01$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.32\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_03.png}
+            \caption{$\alpha=0.005$}
+        \end{subfigure}
+        
+        \caption{TENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \label{fig:fl_param_sens_tents}
+    \end{figure}
 
 
 
 
 
-        \subsubsection{Go Results}
 
-            Results of the round-robin are summarised in Table \ref{table:go_results}, where each algorithm played $50$ games as black and $50$ as white. BTS was able to run the most trials per move and beat all of the other algorithms other than DENTS which it drew. The Alias method allowed the Boltzmann search algorithms to run significantly more trials per move than PUCT. BTS and DENTS were able to beat PUCT with results of 57-43 and 58-42 respectively. Using entropy did not seem to have much benefit in these experiments, as can be witnessed by MENTS only beating TENTS, and DENTS drawing 50-50 with BTS. This is likely because the additional exploration provided by entropy is vastly outweighed by utilising the information contained in the neural networks $\tilde{V}$ and $\tilde{\pi}$. Interestingly RENTS had the best performance out of the prior works, losing 43-57 to PUCT, and the use of relative entropy appears to take advantage of a heuristic for Go that the RAVE \cite{rave} algorithm used: the value of a move is typically unaffected by other moves on the board.
-            
-            To validate the strength of the \thtspp\ewe PUCT agent, it was played directly against KataGo \cite{katago}, with a budget of 1600~trials per move. Interestingly, the \thtspp\ewe PUCT agent won 61-39 in 9x9 Go, and lost 35-65 in 19x19 Go, suggesting that our PUCT agent is strong enough to provide a meaningful comparison for our other general purpose algorithms. Finally, note that the neural networks from KataGo were not fine-tuned, so the Boltzmann search algorithms directly used the networks that were trained for use in PUCT (with average returns).
-            
-          	
 
-        \begin{table*}[]
-        \centering   
-		    \begin{tabular}{l|cccccc|c} 
-		        \textbf{Black \textbackslash White}     & PUCT  & AR-M  & AR-R  & AR-T  & AR-B  & AR-D   & Trials/move\\ 
-		        \hline
-		                                PUCT            &   -   & 33-17 & 27-23 & 42-8  & 17-33 & 15-35  & 1054 \\
-		                                AR-MENTS        & 12-48 &   -   & 13-37 & 38-12 & 10-40 & 12-38  & 4851\\
-		                                AR-RENTS        & 20-30 & 24-26 &   -   & 39-11 & 18-32 & 14-36  & 3672 \\
-		                                AR-TENTS        &  8-42 & 11-39 &  9-41 &   -   &  6-44 & 10-40  & 5206 \\
-		                                AR-BTS          & 25-25 & 35-15 & 31-19 & 34-16 &   -   & 15-35  & 5375 \\
-		                                AR-DENTS        & 23-27 & 36-14 & 29-21 & 36-14 & 15-35 &   -    & 4677 \\         
-		    \end{tabular}
-            \caption{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, we abbreviate the algorithm names for space.\label{table:go_results}}
-        \end{table*}
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Gridworld Results}
+
+    \todo{this subsubsection currently just a c and p from neurips}
+
+    The 8x12 Frozen Lake environment (Figure \ref{fig:fl12}) and a 6x6 Sailing Problem (Figure \ref{fig:sailing_deets}) were used to evaluate the algorithms introduced in this chapter against the baseline algorithms.
+
+    Each algorithm is run 25 times on each environment and evaluated every 250 trials using 250 trajectories. 
+    A horizon of 100 was used for Frozen Lake and 50 for the Sailing Problem. Curves of these evaluations are given in Figure \ref{fig:gridworld_results}.
+
+    In Frozen Lake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
+
+    In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \todo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
+    
+    Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
+
+    \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
+    
+    \begin{figure*}
+        \centering
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/grid/fl.png}
+            \caption{8x12 Frozen Lake.}
+            \label{fig:fl}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/grid/s.png}
+            \caption{6x6 Sailing Problem.}
+            \label{fig:sp}
+        \end{subfigure}
+        \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
+        \label{fig:gridworld_results}
+    \end{figure*}
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Go Results}
+
+    Results of the round-robin are summarised in Table \ref{table:go_results}, where each algorithm played $50$ games as black and $50$ as white. BTS was able to run the most trials per move and beat all of the other algorithms other than DENTS which it drew. The Alias method allowed the Boltzmann search algorithms to run significantly more trials per move than PUCT. BTS and DENTS were able to beat PUCT with results of 57-43 and 58-42 respectively. Using entropy did not seem to have much benefit in these experiments, as can be witnessed by MENTS only beating TENTS, and DENTS drawing 50-50 with BTS. This is likely because the additional exploration provided by entropy is vastly outweighed by utilising the information contained in the neural networks $\tilde{V}$ and $\tilde{\pi}$. Interestingly RENTS had the best performance out of the prior works, losing 43-57 to PUCT, and the use of relative entropy appears to take advantage of a heuristic for Go that the RAVE \cite{rave} algorithm used: the value of a move is typically unaffected by other moves on the board.
+    
+    To validate the strength of the \thtspp\ewe PUCT agent, it was played directly against KataGo \cite{katago}, with a budget of 1600~trials per move. Interestingly, the \thtspp\ewe PUCT agent won 61-39 in 9x9 Go, and lost 35-65 in 19x19 Go, suggesting that our PUCT agent is strong enough to provide a meaningful comparison for our other general purpose algorithms. Finally, note that the neural networks from KataGo were not fine-tuned, so the Boltzmann search algorithms directly used the networks that were trained for use in PUCT (with average returns).
+    
+    
+
+    \begin{table*}[]
+    \centering   
+        \begin{tabular}{l|cccccc|c} 
+            \textbf{Black \textbackslash White}     & PUCT  & AR-M  & AR-R  & AR-T  & AR-B  & AR-D   & Trials/move\\ 
+            \hline
+                                    PUCT            &   -   & 33-17 & 27-23 & 42-8  & 17-33 & 15-35  & 1054 \\
+                                    AR-MENTS        & 12-48 &   -   & 13-37 & 38-12 & 10-40 & 12-38  & 4851\\
+                                    AR-RENTS        & 20-30 & 24-26 &   -   & 39-11 & 18-32 & 14-36  & 3672 \\
+                                    AR-TENTS        &  8-42 & 11-39 &  9-41 &   -   &  6-44 & 10-40  & 5206 \\
+                                    AR-BTS          & 25-25 & 35-15 & 31-19 & 34-16 &   -   & 15-35  & 5375 \\
+                                    AR-DENTS        & 23-27 & 36-14 & 29-21 & 36-14 & 15-35 &   -    & 4677 \\         
+        \end{tabular}
+        \caption{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, we abbreviate the algorithm names for space.\label{table:go_results}}
+    \end{table*}
 
 
 
@@ -1504,66 +1705,128 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
+
+
+
+
+
+% [X] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Theoretical Results}
 \label{sec:4-5-theory}
 
-    \todo{State the assumptions clearly. For example, search bias and backup bias are assumed to be zero in proofs for simplicity, but the asymptotic behaviour will be the same.}
+    \todo{Checklist after theory section cleaned up:}
+    \begin{itemize}
+        \item \todo{Make sure assumptions stated clearly and completely.}
+        \item \todo{Change N(s,m) to N(s,n) and then change N(s,n) to N to pow n of s.}
+        \item \todo{Make sure the theorems have correct backward refs to where they came up in the first sections.}
+        \item \todo{Make sure theorems are restated correctly}
+    \end{itemize}
+    
 
-    \todo{Change N(s,m) to N(s,n) and then change N(s,n) to N to pow n of s.}
 
-    \todo{Highlight where and when the actual theorems from the text come up. And make sure that they're clearly stated.}
-
-
-    This Section provides the theoretical analysis and proofs discussed in this chapter. This section is structured as follows:
+    This section provides the theoretical analysis and proofs for this chapter. It is structured as follows:
     \begin{enumerate}
-        \item First, in Section \ref{sec:4-5-1-notation}, additional notation is defined so that the MCTS process can be reasoned about with respect to the number of trials run;
-        \item Second, in Section \ref{sec:4-5-2-prelim}, \bd{some preliminary results, lemmas and definitions are given that are used in later results};
-        \item Third, in Section \ref{sec:4-5-3-consistency}, the consistency results for (AR-)BTS and (AR-)DENTS are proven (Theorems \ref{thrm:4:bts}, \ref{thrm:4:bts_decay}, \ref{thrm:4:ar_bts}, \ref{thrm:4:dents}, \ref{thrm:4:dents_decay}, \ref{thrm:4:ar_dents}); 
-        \item Fourth, in Section \ref{sec:4-5-4-entropy-trap}, Theorem \ref{thrm:ments_fail} is proven, showing that the maximum entropy objective is either misaligned or \bd{not useful} in the Entropy Trap problem from Section \ref{sec:4-3-toyenvs};
+        \item 
+            First, Section \ref{sec:4-5-1-notation} defines additional notation so that \textit{MCTS processes} can be reasoned about with respect to the number of trials run;
+        \item 
+            Second, Section \ref{sec:4-5-2-prelim} establishes preliminary results, lemmas and definitions used in subsequent proofs;
+        \item 
+            Third, Section \ref{sec:4-5-3-consistency} proves the consistency results for (AR-)BTS and (AR-)DENTS from Section \ref{sec:4-2-boltzmannsearch} (Theorems \ref{thrm:4:bts}, \ref{thrm:4:bts_decay}, \ref{thrm:4:ar_bts}, \ref{thrm:4:dents}, \ref{thrm:4:dents_decay}, \ref{thrm:4:ar_dents}); 
+        \item 
+            Finally, Section \ref{sec:4-5-4-entropy-trap} proves Theorem \ref{thrm:ments_bad_mdp}, showing that the maximum entropy objective is either misaligned or requires an exponential number of trials in the Entropy Trap problem.
     \end{enumerate}
 
-    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} \todo{double check this ref} so that they do not distract from the string of thought in this section. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS are left to Appendix \ref{appsec:exp} \todo{double check this ref}. This section will refer to particular parts of the appendix where they provide any relevant extra details. \todo{also point the MENTS exp bound to this section, once that's written up}
+    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} \todo{double check this ref} so that they do not interrupt the flow of the main arguments. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS, are left to Appendix \ref{appsec:exp} \todo{double check this ref}.
+
+    The following assumptions are made for this section, which do not affect the asymptotic behaviour of the algorithms but simplify the proofs and presentation:
+    \begin{itemize}
+        \item the unique state assumption (Section \ref{sec:2-4-0-notation}) remains and $\graphmode$ is set to false;
+        \item heuristic values are set to zero, $\Vinit(s)=0$ and $\Qinit(s,a)=0$ for all $s\in\cl{S}$ and $a\in\cl{A}$;
+        \item the length of all trajectories and the planning horizon $H_{\thtspp}$, are equal to the horizon $H$ of the MDP;
+        \item the psuedo-visit biasing terms $\Nvbts$, $\Nqbts$, $\Nvdents$, $\Nqdents$, $\Nvarbts$, $\Nqarbts$, $\Nvardents$, $\Nqardents$, from Section \ref{sec:4-2-boltzmannsearch} are all set to zero.
+    \end{itemize}
+
+    \bd{All of these assumptions are made to simplify the notation and presentation of the proofs, and do not affect the asymptotic behaviour of the algorithms.}
+
+    Finally, note that mathematically (AR-)BTS is a special case of (AR-)DENTS, with $\betadents(x)=0$ and $\betaardents(x)=0$. Results will be proven about (AR-)DENTS, and the corresponding results for BTS follow \bd{by this special case}.
 
 
 
 
 
 
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \subsection{Notation}
 \label{sec:4-5-1-notation}
 
-    Firstly some additional notation is needed to be able to reason about the MCTS processes over time. Specifically, notation is needed to reason about random variables that vary with the number of MCTS trials run. Similarly to the main text, the assumption that for any two states $s,s'\in\cl{S}$ that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{Either say because this assumption is made, can take an arbitrary} $s_t\in\cl{S}$ \todo{where t denotes the timestep where it can appear, because trajectories unique. OR, try to clean up that we sometimes use an arbitrary st from S. Its probably quite confusion.}
+    \todo{I think this subsection needs a lot of help from claude}
 
-    When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$.
+    Because of the unique state assumption (Section \ref{sec:2-4-0-notation}), any state $s_t \in \tau = (s_0,a_0,r_0,\ldots,s_{H-1},a_{H-1},r_{H-1},s_{H})$ may only appear at timestep $t$ in any trajectory.
+
+    \bd{start (maths in bd env gives compile warning)} When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$.\bd{end (maths in bd env gives compile warning)}  
+    
+    \todo{how to order and connect these sentences?}
+    
+    \bd{To reason about MCTS processes over time, it is necessary for notation to include either the number of trials run, or the number of times a node has been visited.}
 
     Most variables be denoted with a superscript $n$ to denote that it is the value used on the $n$th trial of MCTS. For example:
     \begin{itemize}
         \item 
-            If the algorithm uses a search policy $\pi$ and outputs a recommendation policy $\psi$, then the search policy followed on the $n$th trial is $\pi^n$, and the recommendation policy after $n$ trials is denoted $\psi^n$. 
+            If an algorithm uses a search policy $\pi$ and outputs a recommendation policy $\psi$, then the search policy followed on the $n$th trial is denoted $\pi^n$, and the recommendation policy after $n$ trials is denoted $\psi^n$. 
         \item 
-            When it is necessary to reason about multiple trajectories, the superscript notation will also be used. The trajectory sampled in the $n$th trial is $\tau^n=(s_0^n,a_0^n,r_0^n,\ldots,s_{h-1}^n,a_{h-1}^n,r_{h-1}^n,s_{h}^n)$. If it is sampled from a search policy $\pi$, then $\tau^n\sim\pi^n$.
+            When it is necessary to reason about multiple trajectories, the superscript notation will also be used. The trajectory sampled in the $n$th trial is $\tau^n=(s_0^n,a_0^n,r_0^n,\ldots,s_{H-1}^n,a_{H-1}^n,r_{H-1}^n,s_{H}^n)$. If it is sampled from a search policy $\pi$, then $\tau^n\sim\pi^n$.
         \item 
-            The search tree after $n$ trials is denoted $\cl{T}^n$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^n = \cl{T}^{n-1} \cup \tau^n$.
+            The search tree after $n$ trials is denoted $\cl{T}^n$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^n = \cl{T}^{n-1} \cup \{s\in\tau^n\} \cup \{(s,a)\in\tau^n\}$.
     \end{itemize}
 
-    It will also be useful to have some additional notation for counting the number of times that nodes have been visited. Let the $m$th trajectory be $\tau^m=(s_0^m,a_0^m,r_0^m,\ldots,s_{h-1}^m,a_{h-1}^m,r_{h-1}^m,s_{h}^m)$ for $1\leq m \leq n$. The number of times state~$s_t$ was visited in the first $n$ trials is $N^n(s_t)$, and the number of times action~$a_t$ was selected from state~$s_t$ in the first $n$ trials is $N^n(s_t,a_t)$. \todo{make rest of text consistent with this notation.} Also, let $T^n(s_t)$ (and $T^n(s_t,a_t)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $n$ trials: 
+    It is useful to have additional notation for counting the number of times a node has been visited, and on what trials it was visited. Let $n$ be the total number of trials run so far, $\pi^m$ be the search policy used on the $m$th trial, and the $m$th trajectory be $\tau^m=(s_0^m,a_0^m,r_0^m,\ldots,s_{H-1}^m,a_{H-1}^m,r_{H-1}^m,s_{H}^m)\sim\pi^m$ for $1\leq m \leq n$. \bd{Because of the unique state assumption} Let $T^n(s_t)$ (and $T^n(s_t,a_t)$) be the set of trial indices that $s_t$ was visited on (and action $a_t$ selected) in the first $n$ trials \bd{reiterate that t is an arbitrary time step?}:
     %
     \begin{align}
-        T^n(s_t) &= \{i | 1\leq i\leq n, s^i_t = s_t \} \\
-        T^n(s_t,a_t) &= \{i | 1\leq i\leq n, s^i_t = s_t, a^i_t = a_t \}.
+        T^n(s_t) &= \{i | 1\leq i\leq n, s^i_t = s_t \} \label{eq:4:index_set_s} \\
+        T^n(s_t,a_t) &= \{i | 1\leq i\leq n, s^i_t = s_t, a^i_t = a_t \} \label{eq:4:index_set_sa}.
     \end{align}
     %
-    This allows the counts $N^n(s_t),$ $N^n(s_t,a_t)$ and $N^n(s_{t+1})$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
+    The visit counts after $n$ trials can be written as sums of indicator random variables in the following ways, with $s_t\in\cl{S}$, $a_t\in\cl{A}$:
     %
     \begin{align}
-        N^n(s_t) &= \sum_{i=1}^n \one[s^i_t=s_t] = |T(s_t,m)|, \\
-        N^n(s_t,a_t) &= \sum_{i=1}^n \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
-        N^n(s_t,a_t) &= \sum_{i\in T^n(s_t)} \one[a^i_t = a_t], \label{appeq:nsa_sum} \\
-        N^n(s_{t+1}) &= \sum_{i\in T^n(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}]. \label{appeq:ns_sum}
+        N^n(s) &= \sum_{i=1}^n \one[s\in\tau^i] = |T^n(s)|, \\
+        N^n(s,a) &= \sum_{i\in T^n(s)} \one[a^i = a] = |T^n(s,a)|.
     \end{align}
-    %
 
-    The exception to the superscript notation with respect to the number of trials will be value estimates. They will instead be denoted with respect to the number of times the value has been backed up. To clearly differentiate this counting with respect to backups, instead of with respect to trials, a superscript with brackets will be used. For example, the backups for DENTS value estimates would be written as follows. Let $\tau^n \sim \mpidents{n}$ and $\tau^n=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the backups for $t=h-1,\ldots,0$ are: 
+    And because of the unique state assumption, the index sets from equations (\ref{eq:4:index_set_s}) and (\ref{eq:4:index_set_sa}) can be used to index the sums for visit counts at successor nodes, where$s_{t+1}\in\suc{s_t}{a_t}$:
+    \begin{align}
+        N^n(s_t,a_t) &= \sum_{i\in T^n(s_t)} \one[a^i_t = a_t], \label{eq:4:nsa_sum} \\
+        N^n(s_{t+1}) &= \sum_{i\in T^n(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}] = |T^n(s_t,a_t)|. \label{eq:4:ns_sum}
+    \end{align}
+    %
+    \bd{I want to make it clear that the index set Tn(s) is used for Nn(s,a) and index set for Tn(s,a) is used for Nn(s').}
+
+    Value estimates are the one exception to the superscript notation to denote the number of trials. Superscripts for value estimates will denote the number of times that the value has been backed up. To differentiate this counting with respect to backups, instead of with respect to trials, a superscript with brackets will be used. For example, the backups for DENTS value estimates would be written as follows. Let $\tau^n \sim \mpidents{n}$ and $\tau^n=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the backups for $t=h-1,\ldots,0$ are: 
     %
     \begin{align}
         \mQdents{N^n(s_t,a_t)}(s_t,a_t) &= 
@@ -1579,245 +1842,10 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
                 + \sum_{a\in\cl{A}} \mpidents{n}(a_t|s_t)\mHQdents{N^n(s_t,a_t)}(s_t,a_t).
     \end{align}
     %
-    \todo{Double check we've actually defined the value at leaf nodes as Vinit somewhere in the thesis at least. And make a comment about it here?}
     
-    For reference, all of the algorithms considered in this Section are written out in full with this additional notation in Appendix \ref{appsec:mcts_stoch_process} \todo{double check this ref}.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    \subsection{Preliminaries}
-    \label{sec:4-5-2-prelim}
-
-        Firstly, it is worth noting that mathematically (AR-)BTS is a special case of (AR-)DENTS, with $\betadents(x)=0$ and $\betaardents(x)=0$. Results will be proven about (AR-)DENTS, and the corresponding results for BTS follow from setting the entropy weighting function to zero.
-
-
-
-
-
-        \begin{defn}
-            A sequence of random variables $X_i$ \textnormal{converges in probability} to a random variable $X$, written as $X_n \rap X$, if for all $\varepsilon>0$ the following holds:
-            \begin{align}
-                \Pr\left(\left|X_n - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ n \rightarrow \infty.
-            \end{align}
-        \end{defn}
-
-        \begin{defn}
-            A sequence of random variables $X_i$ \textnormal{converges almost surely} to a random variable $X$, written as $X_n \raas X$, if the following holds:
-            \begin{align}
-                \Pr\left(\lim_{n\rightarrow\infty} X_n = X\right) = 1.
-            \end{align}
-        \end{defn}
-        
-
-
-
-
-        % \todo{DEFINITELY APPENDIX MATERIAL}
-
-        % This section revisits \textit{simple regret} in more detail. Recall the definition of simple regret \todo{double check this is correct notation (brain ded today)}:
-        % %
-        % \begin{align} 
-        %     \sreg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
-        % \end{align}
-        % %
-        % where $\psi^n$ is the policy recommended after $n$ rounds or trials. 
-        
-        The definition of simple regret (Definition \ref{def:2:simple_regret}) used in this thesis is different to what has been considered by the tree search literature so far \todo{cite: mcts\_simple\_regret,brue1}, which only considers the \textit{immediate regret} of taking a single action step. However, the definition used in this thesis is a more natural extension to the simple regret considered for multi-armed bandit problems \todo{cite: simple\_regret\_short,simple\_regret\_long}, as it stems from a more general MDP planning problem that does not have to be solved using a tree search. For example, consider a non-tree search algorithm that outputs a recommendation policy rather than one action at a time. 
-
-        However, the \textit{immediate simple regret} will be a simpler quantity to work with for proofs:
-        \begin{defn}
-            The \textnormal{immediate simple regret} is defined as as:
-            %
-            \begin{align}
-                \immreg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)].
-            \end{align}
-        \end{defn}
-
-        The differences between these alternative definitions of simple regret can be reconciled by showing that any bound and convergence results that hold for one must also hold for the other.
-
-        \begin{lemma} \label{lem:imm_simple_regret}
-            $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$. Consequently, $\bb{E}\sreg(s_t,\psi^n)\rightarrow 0$ iff $\bb{E}\immreg(s_t,\psi^n)\rightarrow 0$.
-        \end{lemma}
-        \begin{proof}
-            Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
-            \begin{align}
-                \sreg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
-                        \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
-                        \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
-                        &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
-                    =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
-                        &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
-                            V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
-                    =& \immreg(s,\psi^n) + 
-                        \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\sreg(s_{t+1},\psi^n)], \label{eq:regret_relation}
-            \end{align}
-            where line (\ref{eq:simple_reg}) uses $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
-            
-            This shows that if $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\immreg(s_t,\psi^n)\leq \bb{E}\sreg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\sreg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$, then:
-            \begin{align}
-                \bb{E}\sreg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
-            \end{align}
-            where the outer expectation is with respect $\psi^n$ (as the recommendation policy is the output of a random process).
-
-            \todo{Setting f(n) equal to one of the expected simple regret gives the last bit. As f(n) is O(f(n)).}
-        \end{proof}
-
-
-
-
-
-        \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
-        
-        \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
-
-        % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
-        
-        % \begin{corollary} \label{cor:imm_to_full_simple_regret}
-        %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\sreg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\immreg(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
-        % \end{corollary}
-        % \begin{proofoutline}
-        %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
-        % \end{proofoutline}
-            
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    \subsection{Consistency Results} 
-    \label{sec:4-5-3-consistency}
-
-        \bd{This subsection gives consistency results for (AR-)DENTS and consequently (AR-)BTS. It begins by showing that the Boltzmann search policies will lead to every state and state-action pair being visited infinitely often. Then a lot of inductive step lemmas, and then finally its all tied up in the theorems using inductive arguments.}
-
-
-
-
-
-
-
-
-
-        \todo{All nodes visited infinitely often}
-
-
-
-
-
-
-
-
-
-        \todo{Make this the main section showing consistency of Boltzmann MCTS processes and under what conditions. Have the missing proofs written up on ipad.}
+    \todo{Add the following for simplification of notation:} where possible, the trial notation will be used for value estiamtes, i.e. $\mQdents{n}(s_t,a_t)=\mQdents{N^n(s_t,a_t)}(s_t,a_t)$
     
-        \todo{Also write up the general steps from the ipad notes (which I think need a bit of correction.)}
-    
-        Because the search temperature is now decayed, \todo{we} need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
-    
-    
-        \todo{This lemma restated means that Boltzmann search policies will select all actions infinitely often.}
-        \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
-    
-        \begin{lemma} \label{lem:inf_often_action_select}
-            Let $\rho^m$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
-            \begin{align} 
-                \pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
-            \end{align} 
-            with $\lambda(m)=\min(1,\epsilon/\log(e+m))$, where $\epsilon\in(0,\infty)$. Let $a^m\sim \pi^m$ be the $m$th sampled action, and let $M(a,m)$ be the number of times action $a$ was selected in the first $m$ samples, i.e. $M(a,m)=\sum_{m=1}^m \one[a^m=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
-        \end{lemma}
-        \begin{proof}
-            First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell\in\bb{N}$ and $b\in\cl{A}$ such that:
-            \begin{align}
-                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b\right) > 0. \label{appeq:ioas_contradict}
-            \end{align}
-    
-            However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
-            \begin{align}
-                \Pr\left(a^m = b\right) \geq \frac{\lambda(m)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+m)}.
-            \end{align} 
-    
-            And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
-            \begin{align}
-                \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b \right)
-                    &= \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
-                        \Pr(a^m \neq b) \\
-                    &\leq \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
-                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
-                    &\leq \lim_{k\rightarrow\infty} 
-                        \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right)^{k-\ell} \label{appeq:ioas_one} \\
-                    &= 0, \label{appeq:ioas_two}
-            \end{align}
-            %
-            which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
-            \begin{align}
-                \lim_{x\rightarrow \infty} \log f(x) 
-                &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
-                &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \\
-                &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x\log(x)(\log(x)-1)}}{-x^{-2}} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{\log(x)(\log(x)-1)} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{2\log(x)-1} \\
-                &= \lim_{x\rightarrow \infty} \frac{-x}{2} \\
-                &= -\infty.
-            \end{align} 
-            %
-            And thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
-    
-            \todo{cut this down maybe, its a little excessive showing all of the working out?}
-    
-            Hence, by contradiction, it must be the case that $\Pr(M(a,m)\not\rightarrow\infty) = 0$, or rather that $\Pr(M(a,m)\rightarrow\infty) = 1$ which is the desired result.
-        \end{proof}
-        %
-        \todo{Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used} 
-    
-        
-    
-    
-    
-    
-    
-    
-        \todo{Words about the consequences of this lemma?}
-    
-        In direct consequence of Lemma \ref{lem:inf_often_action_select}, every reachable state (and state-action pair) will be visited infinitely often in a Boltzmann MCTS Process.
-    
-        \begin{corollary} \label{cor:inf_often_visit_node}
-            For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
-        \end{corollary}
-        \begin{proofoutline}
-            This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
-        \end{proofoutline}
+    For reference, all of the algorithms considered in this Section are written out in full with this additional notation in Appendix \ref{appsec:mcts_stoch_process} \todo{double check this ref}. \todo{make sure handle initv and initq properly in the appendix}
 
 
 
@@ -1830,329 +1858,448 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-        \todo{Now already get core BTS and DENTS results.} 
 
-        \todo{DP backups converge in limit (Dynamic Programming cite)}
 
-        \todo{And corollary is that DENTS with DP backups converges}
 
-        Theorem \ref{thrm:4:dents} and \ref{thrm:4:bts}.
 
 
 
 
 
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Preliminaries}
+\label{sec:4-5-2-prelim}
 
 
 
 
 
-
-
-
-
-
-
-
-        \todo{If Q values converge then can make search policy converge. Generalise the below to be for AR-DENTS and DENTS in one}
-
-
-
-
-
-        \todo{Words about the below, which gives conditions for the search policy to tend to the optimal policy, and should add somewhere that can't have the search policy converge to the optimal policy and get exp simple regret convergence in theory}
-
-        \begin{lemma}
-            \todo{Write this up properly, and more generally, and use the indexed on num trials notation. Say that as long as the Q function converges to the optimal, beta is o(alpha) and alpha tends to zero, then search policy tends to optimal policy.}
-            If $\Qardents(s,a)\rap Q^*(s,a)$ then $\piardents \rap \pi^*$
-        \end{lemma}
-    
-        \begin{proofoutline}
-            A full proof to show that these limits converge correctly needs to make use of the dominated convergence theorem \todo{cite}. Also use this argument hashed out with gpt https://chatgpt.com/c/67b632f2-0554-8007-9d6c-d24b10a3cf99
-    
-            The outline argument is that in $\piardents$ that firstly $\lambda \rightarrow 0$ and so the limit of $\piardents$ will be the same as the limit of $\rhoardents$. 
-            
-            \todo{Words about the below maths, and below is very informal writing up}
-            \begin{align}
-                \frac{1}{\alpha(n)}\dot{Q}(s,a) + \frac{\beta(n)}{\alpha(n)} \bar{\cl{H}}_Q(s,a) 
-                    &\rightarrow \frac{1}{\alpha(n)}\dot{Q}(s,a) \\
-                \rho(a|s) &\rightarrow \frac{1}{Z} \exp\left(\frac{\dot{Q}(s,a)}{\alpha(n)}\right) \\
-                    &\rightarrow \one[a=a^*]
-            \end{align}
-    
-            \todo{Should probably show that softmax converges to max in limit}
-        \end{proofoutline}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        \todo{if search policy converges, then most visited recommendation converge}
-
-
-        \todo{Another proof about visits. For most visit recommendations, use this to justify that alpha can be arbitrary, but need beta equal to o(alpha), (which is alpha doesnt go to zero just means that beta goes to zero) in the DP case, and for the AR case need the same conditions with alpha to zero}
-        \begin{lemma}
-            \todo{write this up properly}
-            If $\pi\rap\pi_{\lim}$ such that $\pi_{\lim}(a*|s)>\pi(a|s)$ for all $a,s$, then the most visited recommendation policy will converge. Specifically, $\frac{N(s,a,n)}{N(s,n)} \rap \pi_{\lim}(a|s)$.
-        \end{lemma}
-        \begin{proof}
-            \todo{write this up properly}
-            First use Kolmogorovs strong law \todo{cite the source downloaded}, which valid because $\sum\frac{\bb{E}\one[a^i=a]^2}{k^2} \leq \sum \frac{1}{k^2} < \infty$. Using this gives
-            \begin{align}
-                \frac{N(s,a,n)}{N(s,n)}
-                    &= \frac{1}{N(s,n)} \sum_{i=1}^N(s,n) \one[a^i = a] \\
-                    &\rightarrow \bb{E} \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
-                    &= \lim_{n\rightarrow\infty} \bb{E} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
-                    &= \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\pi^i(a|s)}{n} \\
-                    &= \pi^i(a|s)
-            \end{align}
-    
-            Where the last line uses if $x_n \rightarrow x$ then $\sum_{i=1}^n \frac{x_i}{n} \rightarrow x$. \todo{cite this somehow? Cesaro summation?}
-        \end{proof}
-    
-        \todo{Write up results that use the above lemma to have consequence that most visited recommendation policy is consistent.}
-
-
-
-
-
-
-
-
-
-
-
-        \todo{if search policy converges and Q values converge, then V values converge.}
-
-
-        \todo{AR-DENTS can use the generalised Q convergence result, via the equations above still.}
-
-        \todo{AR-DENTS needs three steps for the induction, with the extra step of if Q values converge then policy converges as given above}
-
-        \begin{lemma}
-            \todo{clean up this writing}
-            If $\piardents\rap\pi^*$ (i.e. \todo{conditions from above result}), and $\Qardents \rap Q^*$, then $\Vardents \rap V^*$.
-        \end{lemma}
-        \begin{proofoutline}
-            \todo{clean}
-            Using the result above \todo{ref}, it must be that $\piardents(a|s) \rightarrow \pi^*(a|s) = \one[a^*_{|s} = a]$. Then recalling equation \todo{ref} that related the average returns values:
-            \begin{align}
-                \bar{V}(s) &= \sum_{a} \frac{N(s,a,n)}{N(s,n)} \bar{Q}(s,a) \\
-                    &\rap \sum_{a} \one[a^*_{|s}=a] \bar{Q}(s,a) \\
-                    &= \bar{Q}(s,a^*_{|s}) \\
-                    &\rap Q^*(s,a^*_{|s}) \\
-                    &= V^*(s).
-            \end{align}
-        \end{proofoutline}
-
-
-
-
-
-
-
-
-
-        \todo{Words about how doing the if V converges, the Q converges step.}
-
-        
-
-        \begin{theorem} \label{thrm:dkw_inequality}
-            Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
-            \begin{align}
-                \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
-            \end{align}
-        \end{theorem}
-        \begin{proof}
-            See \todo{fix cite}%\citeapp{dvoretzky1956asymptotic}.
-        \end{proof}
-        
-
-        The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
-        %
-        \begin{figure}
-            \centering
-            \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-            \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
-            \label{fig:dkw_diag}
-        \end{figure}
-        %
-        \begin{corollary} \label{cor:bound_transition_distribution}
-            Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
-            \begin{align}
-                \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
-            \end{align}
-            %
-            Consequently $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)} \rap p(s_{t+1}|s_t,a_t)$.
-        \end{corollary}
-        \begin{proofoutline}
-            By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
-
-            To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
-
-            \todo{Final bit holds by taking the limit, specify that it is with respect to N(s,a) tending to inf, not n this time. (Need to also use that N(s,a) goes to inf as n goes to inf from above)}
-        \end{proofoutline}
-
-
-        \todo{Result of how if V rap V*, then Q rap Q*. Follows immediately from the corollary above.}
-
-
-
-
-
-
-
-
-
-
-
-
-
-        \todo{Give the final theorems} Theorems \ref{thrm:4:bts_decay}, \ref{thrm:4:ar_bts}, \ref{thrm:4:dents_decay}, \ref{thrm:4:ar_dents}
-  
-
-
-
-
-
-
-
-
-
-
-
-        \todo{Use customthrms, repeat the BTS theorems, and say that they hold from setting beta to zero in the DENTS theorems above.}
-    
-        % \begin{customthm}{4.1}
-        %     For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\reg(s_0,\psi^n_{\textnormal{BTS}})] \leq C\exp(-kn)$, and also $\Vt{s_0}{N(s_0)} \rap V^*(s_0)$ as $n\rightarrow\infty$.
-        % \end{customthm}
-        % \begin{proof}
-        %     Follows from setting $\beta(m)=0$ and using Theorem \ref{thrm:dents}.
-        % \end{proof}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        \todo{This was before the AR proofs originally. Should really just make sure that this is covered in the UCT section in Ch2, and then recall it. Either in the preliminaries, or before the first place its needed in this chapter here where roughly here where it's needed.}
-
-        \todo{SOME of this should be integrated into the main arguments I think}
-
-        \todo{N(s) to N(s,n) stuff}
-
-        In this section informal proof outlines for theoretical results for AR-BTS and AR-DENTS are given. To begin with define the average return $\bar{V}^{N(s)}(s)$ for a decision node at $s$, and recall the definition of $\bar{Q}^{N(s,a)}(s, a)$:
-
+    \begin{defn}
+        A sequence of random variables $X_i$ \textnormal{converges in probability} to a random variable $X$, written as $X_n \rap X$, if for all $\varepsilon>0$ the following holds:
         \begin{align}
-            \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(s_t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1},  \label{appeq:ar_v} \\
-            \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
-                + \frac{\bar{R}(s_t,a_t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1},  \label{appeq:ar_q}
+            \Pr\left(\left|X_n - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ n \rightarrow \infty.
         \end{align}
-        %
-        where $\bar{R}(s_t)=\sum_{i=t}^H R(s_i,a_i)$ and $\bar{R}(s_t, a_t)=\sum_{i=t}^H R(s_i,a_i)$. Note that these average return values also satisfy the equations:
+    \end{defn}
+
+    \begin{defn}
+        A sequence of random variables $X_i$ \textnormal{converges almost surely} to a random variable $X$, written as $X_n \raas X$, if the following holds:
+        \begin{align}
+            \Pr\left(\lim_{n\rightarrow\infty} X_n = X\right) = 1.
+        \end{align}
+    \end{defn}
+    
+
+
+
+
+    % \todo{DEFINITELY APPENDIX MATERIAL}
+
+    % This section revisits \textit{simple regret} in more detail. Recall the definition of simple regret \todo{double check this is correct notation (brain ded today)}:
+    % %
+    % \begin{align} 
+    %     \sreg(s_t,\psi^n) &= V^*(s_t) - V^{\psi^n}(s_t), 
+    % \end{align}
+    % %
+    % where $\psi^n$ is the policy recommended after $n$ rounds or trials. 
+    
+    The definition of simple regret (Definition \ref{def:2:simple_regret}) used in this thesis is different to what has been considered by the tree search literature so far \todo{cite: mcts\_simple\_regret,brue1}, which only considers the \textit{immediate regret} of taking a single action step. However, the definition used in this thesis is a more natural extension to the simple regret considered for multi-armed bandit problems \todo{cite: simple\_regret\_short,simple\_regret\_long}, as it stems from a more general MDP planning problem that does not have to be solved using a tree search. For example, consider a non-tree search algorithm that outputs a recommendation policy rather than one action at a time. 
+
+    However, the \textit{immediate simple regret} will be a simpler quantity to work with for proofs:
+    \begin{defn}
+        The \textnormal{immediate simple regret} is defined as as:
         %
         \begin{align}
-            \bar{V}^{N(s_t)}(s_t) &= \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)} \bar{Q}^{N(s_t,a_t)}(s_t, a_t), \label{appeq:ar_v_rel} \\
-            \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
-                &= R(s_t,a_t) + \sum_{a\in\cl{A}} \frac{N(s')}{N(s_t,a_t)} \bar{V}^{N(s')}(s'). \label{appeq:ar_q_rel}
+            \immreg_I(s_t,\psi^n) =& V^*(s) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)].
+        \end{align}
+    \end{defn}
+
+    The differences between these alternative definitions of simple regret can be reconciled by showing that any bound and convergence results that hold for one must also hold for the other.
+
+    \begin{lemma} \label{lem:imm_simple_regret}
+        $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$ iff $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ for all $s_t\in\cl{S}$. Consequently, $\bb{E}\sreg(s_t,\psi^n)\rightarrow 0$ iff $\bb{E}\immreg(s_t,\psi^n)\rightarrow 0$.
+    \end{lemma}
+    \begin{proof}
+        Firstly, notice that the simple regret can be written recursively in terms of the immediate simple regret:
+        \begin{align}
+            \sreg(s_t,\psi^n) =& V^*(s_t) - V^{\psi^n}(s_t) \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[Q^{\psi^n}(s_t,a_t)] \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}[R(s_t,a_t) +    
+                    \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]] \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s)}\big[Q^*(s,a) - 
+                    \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^*(s_{t+1})]  \notag \\
+                    &+ \bb{E}_{s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[V^{\psi^n}(s_{t+1})]\big] \label{eq:simple_reg} \\
+                =& V^*(s_t) - \bb{E}_{a_t\sim\psi^n(s_t)}[Q^*(s_t,a_t)] \notag \\
+                    &+ \bb{E}_{a_t\sim\psi_n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[
+                        V^*(s_{t+1}) - V^{\psi^n}(s_{t+1})] \\
+                =& \immreg(s,\psi^n) + 
+                    \bb{E}_{a_t\sim\psi^n(s_t),s'\sim\Pr(\cdot|s_t,a_t)}[\sreg(s_{t+1},\psi^n)], \label{eq:regret_relation}
+        \end{align}
+        where line (\ref{eq:simple_reg}) uses $R(s,a) = Q^*(s,a) - \bb{E}_{s'\sim\Pr(\cdot|s,a)}[V^*(s')]$, a rearrangement of the Bellman optimality equation for $Q^*(s,a)$.
+        
+        This shows that if $\bb{E}\sreg(s_t,\psi^n)=O(f(n))$ then $\bb{E}\immreg(s_t,\psi^n)\leq \bb{E}\sreg(s_t,\psi^n) = O(f(n))$. Now suppose that $\bb{E}\immreg(s_t,\psi^n)=O(f(n))$ and assume an inductive hypothesis that $\bb{E}\sreg(s_{t+1},\psi^n)=O(f(n))$ for all $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$, then:
+        \begin{align}
+            \bb{E}\sreg(s_t,\psi^n) = \bb{E}\left[ O(f(n)) + \bb{E}_{a_t\sim\psi^n(s_t),s_{t+1}\sim\Pr(\cdot|s_t,a_t)}[O(f(n))] \right] = O(f(n)),
+        \end{align}
+        where the outer expectation is with respect $\psi^n$ (as the recommendation policy is the output of a random process).
+
+        \todo{Setting f(n) equal to one of the expected simple regret gives the last bit. As f(n) is O(f(n)).}
+    \end{proof}
+
+
+
+
+
+    \todo{Commented out corollary below. As we're now making N(s,a,n) explicit, exp(-kN(s,a,n)) is an f(n), so the above lemma is sufficient to handle the below.}
+    
+    \todo{Change any references to cor:imm\_to\_full\_simple\_regret to lem:imm\_simple\_regret instead.}
+
+    % It is useful to specialise Lemma \ref{lem:imm_simple_regret} specifically for the form of bounds used later. I.e. the simple regret at $s_t$ admits a regret bound exponential in $N(s_t)$, if and only if, the immediate simple regret admits a bound exponential in $N(s_t)$.
+    
+    % \begin{corollary} \label{cor:imm_to_full_simple_regret}
+    %     Consider any Boltzmann MCTS process. There exists $C_1,k_1>0$ such that $\bb{E}\sreg(s_t,\psi^n) \leq C_1\exp(-k_1 N(s_t))$ iff there exists $C_2,k_2>0$ such that $\bb{E}\immreg(s_t,\psi^n) \leq C_2\exp(-k_2 N(s_t))$.
+    % \end{corollary}
+    % \begin{proofoutline}
+    %     The proof follows similarly to Lemma \ref{lem:imm_simple_regret}. The additional nuance is that we need to apply Lemmas \ref{lem:sa_to_s} and \ref{lem:s_to_sa}. Note that the assumption of a minimum action probability in Lemma \ref{lem:sa_to_s} is satisfied, because there is a minimum positive probability of selecting an action in any Boltzmann MCTS process (Lemma \ref{lem:min_prob}). The inductive hypothesis for $s_{t+1}\in\bigcup_{a\in\cl{A}}\suc{s_t}{a}$ would give a bound with respect to $N(s_{t+1})$, and the lemmas are required to `translate' the bound into one with respect to $N(s_t)$.
+    % \end{proofoutline}
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Consistency Results} 
+\label{sec:4-5-3-consistency}
+
+    \bd{This subsection gives consistency results for (AR-)DENTS and consequently (AR-)BTS. It begins by showing that the Boltzmann search policies will lead to every state and state-action pair being visited infinitely often. Then a lot of inductive step lemmas, and then finally its all tied up in the theorems using inductive arguments.}
+
+
+
+
+
+
+
+
+
+    \todo{All nodes visited infinitely often}
+
+
+
+
+
+
+
+
+
+    \todo{Make this the main section showing consistency of Boltzmann MCTS processes and under what conditions. Have the missing proofs written up on ipad.}
+
+    \todo{Also write up the general steps from the ipad notes (which I think need a bit of correction.)}
+
+    Because the search temperature is now decayed, \todo{we} need to show that the exploration term in the search policies leads to actions being sampled infinitely often.
+
+
+    \todo{This lemma restated means that Boltzmann search policies will select all actions infinitely often.}
+    \todo{Check the variables in this proof are consistent with the definitions of N(s,a,m) etc}
+
+    \begin{lemma} \label{lem:inf_often_action_select}
+        Let $\rho^m$ be an arbitrary policy, and the following policy: \todo{handle when epsilon is greater than one? I think its just let ell be large enough argument}
+        \begin{align} 
+            \pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}, \label{appeq:ioas_policy}
+        \end{align} 
+        with $\lambda(m)=\min(1,\epsilon/\log(e+m))$, where $\epsilon\in(0,\infty)$. Let $a^m\sim \pi^m$ be the $m$th sampled action, and let $M(a,m)$ be the number of times action $a$ was selected in the first $m$ samples, i.e. $M(a,m)=\sum_{m=1}^m \one[a^m=a]$. Then for all $a\in\cl{A}$ we have $M(a,m)\raas\infty$ as $m\rightarrow \infty$.
+    \end{lemma}
+    \begin{proof}
+        First consider that if $M(a,m)\not\rightarrow\infty$ then it is logically equivalent to say that there exists some $\ell$ such that from $a^\ell$ onwards that there is some action which is never sampled again. To prove the result, argue by contradiction, and suppose that there is some $\ell\in\bb{N}$ and $b\in\cl{A}$ such that:
+        \begin{align}
+            \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b\right) > 0. \label{appeq:ioas_contradict}
+        \end{align}
+
+        However, from the definition of equation (\ref{appeq:ioas_policy}) it must be that:
+        \begin{align}
+            \Pr\left(a^m = b\right) \geq \frac{\lambda(m)}{|\cl{A}|} = \frac{\epsilon}{|\cl{A}| \log(e+m)}.
+        \end{align} 
+
+        And so using this lower bound to work out the probability of never sampling action $b$ again after the first $\ell-1$ samples gives:
+        \begin{align}
+            \Pr\left(\bigcap_{m=\ell}^\infty a^m \neq b \right)
+                &= \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
+                    \Pr(a^m \neq b) \\
+                &\leq \lim_{k\rightarrow\infty} \prod_{m=\ell}^k 
+                    \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right) \\
+                &\leq \lim_{k\rightarrow\infty} 
+                    \left( 1 - \frac{\epsilon}{|\cl{A}|\log(e+k)} \right)^{k-\ell} \label{appeq:ioas_one} \\
+                &= 0, \label{appeq:ioas_two}
         \end{align}
         %
-        \todo{should we do the rearrangement/working out for this?}
+        which is in contradiction to inequality (\ref{appeq:ioas_contradict}) that was assumed. Inequality (\ref{appeq:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final limit equality (\ref{appeq:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'Hopital's rule \todo{cite?} generously gives:
+        \begin{align}
+            \lim_{x\rightarrow \infty} \log f(x) 
+            &= \lim_{x\rightarrow \infty} x \log\left(1-\frac{1}{\log(x)}\right) \\
+            &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \\
+            &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x\log(x)(\log(x)-1)}}{-x^{-2}} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{\log(x)(\log(x)-1)} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{2\log(x)-1} \\
+            &= \lim_{x\rightarrow \infty} \frac{-x}{2} \\
+            &= -\infty.
+        \end{align} 
+        %
+        And thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
 
+        \todo{cut this down maybe, its a little excessive showing all of the working out?}
 
+        Hence, by contradiction, it must be the case that $\Pr(M(a,m)\not\rightarrow\infty) = 0$, or rather that $\Pr(M(a,m)\rightarrow\infty) = 1$ which is the desired result.
+    \end{proof}
+    %
+    \todo{Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used} 
 
-
-
-
-
-
-
-
-
-        \todo{Necessity for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
-        Firstly, it can be shown that using a non-decaying search temperature with AR-BTS is not guaranteed to recommend the optimal policy.
-        
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.7\textwidth]{figures/todo.jpg}
-            \caption{\todo{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
-            \label{fig:ar_gen_mdp}
-        \end{figure}
-
-        \begin{customprop}{B.1}
-            \todo{Haven't touched this, just c and p from neurips paper}
-
-            For any $\alpha_{\textnormal{fix}}>0$, there is an MDP $\cl{M}$ such that AR-BTS with $\alpha(m)=\alpha_{\textnormal{fix}}$ is not consistent: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})] \not\to 0$ as $n\to\infty$. 
-        \end{customprop}
-        \begin{proofoutline}
-            \todo{Haven't touched this, just c and p from neurips paper}
-
-            Consider the MDP given in Figure \ref{fig:ar_gen_mdp}. We can show inductively that (as $n\rightarrow\infty$) the value of $\bb{E}\bar{V}^{N(k)}(k)\leq 2E^{D-k+1} < 2$, where $E=e^2/(1+e^2)$ for $2\leq k \leq D$. The inductive step is as follows:
-            \begin{align}
-                \bb{E}\bar{V}^{N(k)}(k) =& \frac{\exp\left(\bar{V}^{N(k+1)}(k+1)\right)}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \bb{E}\bar{V}^{N(k+1)}(k+1) 
-                    + \frac{1}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \cdot 0 \\
-                    \leq& E \cdot \bb{E} \bar{V}^{N(k+1)}(k+1) \\
-                    \leq& E \cdot 2E^{D-k} \\
-                    =& 2E^{D-k+1}.
-            \end{align}
-
-            where we know that $\exp\left(\bar{V}^{N(k+1)}(k+1)\right)/\left(1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)\right) < E$, because the function $e^x/(1+e^x)$ is monotonically increasing in $x$, and $\bar{V}^{N(k+1)}(k+1) < 2$. Hence, by choosing an integer $D$ such that $D-1 \geq \log(1/3) / \log(E)$, we have $\bb{E}\bar{V}^{N(2)}(2)=2E^{D-1}\leq 2/3 < 1 = \bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)$. 
-
-            A full proof should show that AR-BTS does indeed converge to these expected values, possibly through concentration bounds. 
-            \todo{(was camera ready todo) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
-
-            Hence, AR-BTS does not converge to a simple regret of zero, because the expected Q-values as $n\rightarrow\infty$ are $\bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)=1$ and $\bb{E}\bar{Q}^{N(1,a_1)}(1,a_1)<2/3$, so AR-BTS would incorrectly recommend action $a_2$ from the root node. 
-            \todo{(Was camera ready todo) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
-        \end{proofoutline}
-
-
-
-
-        \todo{Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
-
-        \todo{Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
-
-
-
-
-
-
-
-
-
-        Here is a bunch of todo's had for the new parts of proofs
-
-
-        \todo{Generally look into how to justify that we take limits in parts. Got the dominated convergence theorem from here: https://math.stackexchange.com/questions/15240/when-can-you-switch-the-order-of-limits/15296\#15296. Probably just leave the places where we do it as handwavy proof outlines}
     
-        \todo{Which on that note, make sure we're using proof outline in this section, not proof}
+
+
+
+
+
+
+    \todo{Words about the consequences of this lemma?}
+
+    In direct consequence of Lemma \ref{lem:inf_often_action_select}, every reachable state (and state-action pair) will be visited infinitely often in a Boltzmann MCTS Process.
+
+    \begin{corollary} \label{cor:inf_often_visit_node}
+        For any Boltzmann MCTS Process (i.e. a MCTS algorithm using a search policy of the form $\pi^m(a)=(1-\lambda(m))\rho^m(a) + \lambda(m) \frac{1}{|\cl{A}|}$), all reachable states from the root node are visited infinitely often. Specifically, for any reachable $s\in\cl{S}$ is must be that $N(s,m)\raas\infty$ and $N(s,a,m)\raas\infty$ as $m\rightarrow\infty$. \todo{handle reachability somewhere better? just make some assumption at the start of the theory section saying we assume all s are reacahable?}
+    \end{corollary}
+    \begin{proofoutline}
+        This is a direct consequence of Lemma \ref{lem:inf_often_action_select} when applied inductively at each node.
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+
+
+    \todo{Now already get core BTS and DENTS results.} 
+
+    \todo{DP backups converge in limit (Dynamic Programming cite)}
+
+    \todo{And corollary is that DENTS with DP backups converges}
+
+    Theorem \ref{thrm:4:dents} and \ref{thrm:4:bts}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \todo{If Q values converge then can make search policy converge. Generalise the below to be for AR-DENTS and DENTS in one}
+
+
+
+
+
+    \todo{Words about the below, which gives conditions for the search policy to tend to the optimal policy, and should add somewhere that can't have the search policy converge to the optimal policy and get exp simple regret convergence in theory}
+
+    \begin{lemma}
+        \todo{Write this up properly, and more generally, and use the indexed on num trials notation. Say that as long as the Q function converges to the optimal, beta is o(alpha) and alpha tends to zero, then search policy tends to optimal policy.}
+        If $\Qardents(s,a)\rap Q^*(s,a)$ then $\piardents \rap \pi^*$
+    \end{lemma}
+
+    \begin{proofoutline}
+        A full proof to show that these limits converge correctly needs to make use of the dominated convergence theorem \todo{cite}. Also use this argument hashed out with gpt https://chatgpt.com/c/67b632f2-0554-8007-9d6c-d24b10a3cf99
+
+        The outline argument is that in $\piardents$ that firstly $\lambda \rightarrow 0$ and so the limit of $\piardents$ will be the same as the limit of $\rhoardents$. 
+        
+        \todo{Words about the below maths, and below is very informal writing up}
+        \begin{align}
+            \frac{1}{\alpha(n)}\dot{Q}(s,a) + \frac{\beta(n)}{\alpha(n)} \bar{\cl{H}}_Q(s,a) 
+                &\rightarrow \frac{1}{\alpha(n)}\dot{Q}(s,a) \\
+            \rho(a|s) &\rightarrow \frac{1}{Z} \exp\left(\frac{\dot{Q}(s,a)}{\alpha(n)}\right) \\
+                &\rightarrow \one[a=a^*]
+        \end{align}
+
+        \todo{Should probably show that softmax converges to max in limit}
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \todo{if search policy converges, then most visited recommendation converge}
+
+
+    \todo{Another proof about visits. For most visit recommendations, use this to justify that alpha can be arbitrary, but need beta equal to o(alpha), (which is alpha doesnt go to zero just means that beta goes to zero) in the DP case, and for the AR case need the same conditions with alpha to zero}
+    \begin{lemma}
+        \todo{write this up properly}
+        If $\pi\rap\pi_{\lim}$ such that $\pi_{\lim}(a*|s)>\pi(a|s)$ for all $a,s$, then the most visited recommendation policy will converge. Specifically, $\frac{N(s,a,n)}{N(s,n)} \rap \pi_{\lim}(a|s)$.
+    \end{lemma}
+    \begin{proof}
+        \todo{write this up properly}
+        First use Kolmogorovs strong law \todo{cite the source downloaded}, which valid because $\sum\frac{\bb{E}\one[a^i=a]^2}{k^2} \leq \sum \frac{1}{k^2} < \infty$. Using this gives
+        \begin{align}
+            \frac{N(s,a,n)}{N(s,n)}
+                &= \frac{1}{N(s,n)} \sum_{i=1}^N(s,n) \one[a^i = a] \\
+                &\rightarrow \bb{E} \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
+                &= \lim_{n\rightarrow\infty} \bb{E} \sum_{i=1}^n \frac{\one[a^i=a]}{n} \\
+                &= \lim_{n\rightarrow\infty} \sum_{i=1}^n \frac{\pi^i(a|s)}{n} \\
+                &= \pi^i(a|s)
+        \end{align}
+
+        Where the last line uses if $x_n \rightarrow x$ then $\sum_{i=1}^n \frac{x_i}{n} \rightarrow x$. \todo{cite this somehow? Cesaro summation?}
+    \end{proof}
+
+    \todo{Write up results that use the above lemma to have consequence that most visited recommendation policy is consistent.}
+
+
+
+
+
+
+
+
+
+
+
+    \todo{if search policy converges and Q values converge, then V values converge.}
+
+
+    \todo{AR-DENTS can use the generalised Q convergence result, via the equations above still.}
+
+    \todo{AR-DENTS needs three steps for the induction, with the extra step of if Q values converge then policy converges as given above}
+
+    \begin{lemma}
+        \todo{clean up this writing}
+        If $\piardents\rap\pi^*$ (i.e. \todo{conditions from above result}), and $\Qardents \rap Q^*$, then $\Vardents \rap V^*$.
+    \end{lemma}
+    \begin{proofoutline}
+        \todo{clean}
+        Using the result above \todo{ref}, it must be that $\piardents(a|s) \rightarrow \pi^*(a|s) = \one[a^*_{|s} = a]$. Then recalling equation \todo{ref} that related the average returns values:
+        \begin{align}
+            \bar{V}(s) &= \sum_{a} \frac{N(s,a,n)}{N(s,n)} \bar{Q}(s,a) \\
+                &\rap \sum_{a} \one[a^*_{|s}=a] \bar{Q}(s,a) \\
+                &= \bar{Q}(s,a^*_{|s}) \\
+                &\rap Q^*(s,a^*_{|s}) \\
+                &= V^*(s).
+        \end{align}
+    \end{proofoutline}
+
+
+
+
+
+
+
+
+
+    \todo{Words about how doing the if V converges, the Q converges step.}
+
     
-        \todo{Generally clean up the writing here.}
+
+    \begin{theorem} \label{thrm:dkw_inequality}
+        Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
+        \begin{align}
+            \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
+        \end{align}
+    \end{theorem}
+    \begin{proof}
+        See \todo{fix cite}%\citeapp{dvoretzky1956asymptotic}.
+    \end{proof}
+    
+
+    The Dvoretzky-Kiefer-Wolfowitz inequality is of interest because it allows the empirical transition probability $N(s_{t+1},n)/N(s_t,a_t,n)$ to be tightly bounded with the true transition probability $p(s_{t+1}|s_t,a_t)$. 
+    %
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
+        \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:bound_transition_distribution}.}
+        \label{fig:dkw_diag}
+    \end{figure}
+    %
+    \begin{corollary} \label{cor:bound_transition_distribution}
+        Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
+        \begin{align}
+            \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
+        \end{align}
+        %
+        Consequently $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)} \rap p(s_{t+1}|s_t,a_t)$.
+    \end{corollary}
+    \begin{proofoutline}
+        By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
+
+        To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
+
+        \todo{Final bit holds by taking the limit, specify that it is with respect to N(s,a) tending to inf, not n this time. (Need to also use that N(s,a) goes to inf as n goes to inf from above)}
+    \end{proofoutline}
+
+
+    \todo{Result of how if V rap V*, then Q rap Q*. Follows immediately from the corollary above.}
 
 
 
@@ -2166,8 +2313,7 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-    \subsection{Entropy Trap}
-    \label{sec:4-5-4-entropy-trap}
+    \todo{Give the final theorems} Theorems \ref{thrm:4:bts_decay}, \ref{thrm:4:ar_bts}, \ref{thrm:4:dents_decay}, \ref{thrm:4:ar_dents}
 
 
 
@@ -2179,151 +2325,317 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-        % \todo{Want to change this result (below) to be, for any temperature alpha, there is some MDP that MENTS is not consistent. Then for theory story it can be that there is always a way to set params in DENTS that it will converge, but for MENTS the parameters depends on the MDP. The MDP to do this has one initial choice, with a reward of one, and then the other option is an entropy chain again, where the length is long enough such that MENTS will chose the entropy chain option.}
+
+    \todo{Use customthrms, repeat the BTS theorems, and say that they hold from setting beta to zero in the DENTS theorems above.}
+
+    % \begin{customthm}{4.1}
+    %     For any MDP $\cl{M}$, after running $n$ trials of the BTS algorithm with a root node of $s_0$, there exists constants $C,k>0$ such that for all $\varepsilon>0$ we have $\bb{E}[\reg(s_0,\psi^n_{\textnormal{BTS}})] \leq C\exp(-kn)$, and also $\Vt{s_0}{N(s_0)} \rap V^*(s_0)$ as $n\rightarrow\infty$.
+    % \end{customthm}
+    % \begin{proof}
+    %     Follows from setting $\beta(m)=0$ and using Theorem \ref{thrm:dents}.
+    % \end{proof}
 
 
 
-        % \begin{figure}
-        %     \centering
-        %     \includegraphics[width=0.4\textwidth]{figures/todo.jpg}
-        %     \caption{\todo{Make fig and write caption for the MDP for the new proof.}}
-        %     \label{fig:ments_not_consistent_env}
-        % \end{figure}
 
 
-            
-        % \begin{customprop}{3.1}
-        %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
-        %     There exists an MDP $\cl{M}$ and temperature $\alpha$ such that $\bb{E}[\sreg(s_0,\mpsiments{n})] \not\to 0$ as $n\to\infty$. That is, MENTS is not consistent.
-        % \end{customprop}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \todo{This was before the AR proofs originally. Should really just make sure that this is covered in the UCT section in Ch2, and then recall it. Either in the preliminaries, or before the first place its needed in this chapter here where roughly here where it's needed.}
+
+    \todo{SOME of this should be integrated into the main arguments I think}
+
+    \todo{N(s) to N(s,n) stuff}
+
+    In this section informal proof outlines for theoretical results for AR-BTS and AR-DENTS are given. To begin with define the average return $\bar{V}^{N(s)}(s)$ for a decision node at $s$, and recall the definition of $\bar{Q}^{N(s,a)}(s, a)$:
+
+    \begin{align}
+        \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(s_t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1},  \label{appeq:ar_v} \\
+        \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
+            + \frac{\bar{R}(s_t,a_t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1},  \label{appeq:ar_q}
+    \end{align}
+    %
+    where $\bar{R}(s_t)=\sum_{i=t}^H R(s_i,a_i)$ and $\bar{R}(s_t, a_t)=\sum_{i=t}^H R(s_i,a_i)$. Note that these average return values also satisfy the equations:
+    %
+    \begin{align}
+        \bar{V}^{N(s_t)}(s_t) &= \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)} \bar{Q}^{N(s_t,a_t)}(s_t, a_t), \label{appeq:ar_v_rel} \\
+        \bar{Q}^{N(s_t,a_t)}(s_t, a_t) 
+            &= R(s_t,a_t) + \sum_{a\in\cl{A}} \frac{N(s')}{N(s_t,a_t)} \bar{V}^{N(s')}(s'). \label{appeq:ar_q_rel}
+    \end{align}
+    %
+    \todo{should we do the rearrangement/working out for this?}
+
+
+
+
+
+
+
+
+
+
+
+    \todo{Necessity for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
+    Firstly, it can be shown that using a non-decaying search temperature with AR-BTS is not guaranteed to recommend the optimal policy.
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/todo.jpg}
+        \caption{\todo{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
+        \label{fig:ar_gen_mdp}
+    \end{figure}
+
+    \todo{theorem restate}
+    % \begin{customprop}{B.1}
+    %     \todo{Haven't touched this, just c and p from neurips paper}
+
+    %     For any $\alpha_{\textnormal{fix}}>0$, there is an MDP $\cl{M}$ such that AR-BTS with $\alpha(m)=\alpha_{\textnormal{fix}}$ is not consistent: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})] \not\to 0$ as $n\to\infty$. 
+    % \end{customprop}
+    \begin{proofoutline}
+        \todo{Haven't touched this, just c and p from neurips paper}
+
+        Consider the MDP given in Figure \ref{fig:ar_gen_mdp}. We can show inductively that (as $n\rightarrow\infty$) the value of $\bb{E}\bar{V}^{N(k)}(k)\leq 2E^{D-k+1} < 2$, where $E=e^2/(1+e^2)$ for $2\leq k \leq D$. The inductive step is as follows:
+        \begin{align}
+            \bb{E}\bar{V}^{N(k)}(k) =& \frac{\exp\left(\bar{V}^{N(k+1)}(k+1)\right)}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \bb{E}\bar{V}^{N(k+1)}(k+1) 
+                + \frac{1}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \cdot 0 \\
+                \leq& E \cdot \bb{E} \bar{V}^{N(k+1)}(k+1) \\
+                \leq& E \cdot 2E^{D-k} \\
+                =& 2E^{D-k+1}.
+        \end{align}
+
+        where we know that $\exp\left(\bar{V}^{N(k+1)}(k+1)\right)/\left(1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)\right) < E$, because the function $e^x/(1+e^x)$ is monotonically increasing in $x$, and $\bar{V}^{N(k+1)}(k+1) < 2$. Hence, by choosing an integer $D$ such that $D-1 \geq \log(1/3) / \log(E)$, we have $\bb{E}\bar{V}^{N(2)}(2)=2E^{D-1}\leq 2/3 < 1 = \bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)$. 
+
+        A full proof should show that AR-BTS does indeed converge to these expected values, possibly through concentration bounds. 
+        \todo{(was camera ready todo) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
+
+        Hence, AR-BTS does not converge to a simple regret of zero, because the expected Q-values as $n\rightarrow\infty$ are $\bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)=1$ and $\bb{E}\bar{Q}^{N(1,a_1)}(1,a_1)<2/3$, so AR-BTS would incorrectly recommend action $a_2$ from the root node. 
+        \todo{(Was camera ready todo) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
+    \end{proofoutline}
+
+
+
+
+    \todo{Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
+
+    \todo{Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
+
+
+
+
+
+
+
+
+
+    Here is a bunch of todo's had for the new parts of proofs
+
+
+    \todo{Generally look into how to justify that we take limits in parts. Got the dominated convergence theorem from here: https://math.stackexchange.com/questions/15240/when-can-you-switch-the-order-of-limits/15296\#15296. Probably just leave the places where we do it as handwavy proof outlines}
+
+    \todo{Which on that note, make sure we're using proof outline in this section, not proof}
+
+    \todo{Generally clean up the writing here.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Entropy Trap}
+\label{sec:4-5-4-entropy-trap}
+
+
+
+
+
+
+
+
+
+
+
+    % \todo{Want to change this result (below) to be, for any temperature alpha, there is some MDP that MENTS is not consistent. Then for theory story it can be that there is always a way to set params in DENTS that it will converge, but for MENTS the parameters depends on the MDP. The MDP to do this has one initial choice, with a reward of one, and then the other option is an entropy chain again, where the length is long enough such that MENTS will chose the entropy chain option.}
+
+
+
+    % \begin{figure}
+    %     \centering
+    %     \includegraphics[width=0.4\textwidth]{figures/todo.jpg}
+    %     \caption{\todo{Make fig and write caption for the MDP for the new proof.}}
+    %     \label{fig:ments_not_consistent_env}
+    % \end{figure}
+
+
         
-        % \begin{proof}
-        %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
-        %     We give a proof by construction. Recall the modified 10-chain problem, with $R_f=1/2$ in Figure \ref{fig:dchain_illustration_tres}, and consider a MENTS process (i.e. running MENTS) with a temperature $\alphaments=1$ for $n$ trials. By considering the optimal soft Bellman equations (\ref{eq:v_soft_bellman}) and (\ref{eq:q_soft_bellman}), one can verify that $Q_{\sft}^*(1,2)=0.9$ and $Q_{\sft}^*(1,1)=\log\left(\exp(1/2)+\sum_{i=0}^8\exp(i/10)\right)\approx 2.74$. 
-            
-        %     Theorem \ref{thrm:ments_val_converge}, Lemma \ref{lem:stochastic_step} and Lemma \ref{lem:sa_to_s} implies that there is some $C,k>0$ for any $\varepsilon > 0$:
-        %     \begin{align}
-        %         \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(1,n)) = C\exp(-k\varepsilon^2 n).
-        %     \end{align}
-            
-        %     Letting $\varepsilon=1$ and using $Q_{\sft}^*(1,1)>5/2$ gives:
-        %     \begin{align}
-        %         \Pr\left(\mQments{N(1,1,n)}(1,1) < 3/2 \right) 
-        %             \leq& \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > 1 \right) \\
-        %             \leq& C\exp(-kn).
-        %     \end{align}
-            
-        %     And hence:
-        %     \begin{align}
-        %         \Pr(\mpsidents{n}(1)=1) > 1 - C\exp(-kn)
-        %     \end{align}
-            
-        %     Consider that the best simple regret an agent can achieve after selecting action 1 from the starting state is $1/10$. Let $M=\log(2C)/k$, so that $C\exp(-kM)=1/2$. Then, for all $n>M$ we have $\Pr(\psi^n_{\text{MENTS}}(1)=1)> 1/2$, and hence:
-        %     \begin{align}
-        %         \bb{E}\sreg(1,\mpsiments{n}) &> \frac{1}{10} \cdot \Pr(\psi^n_{\text{MENTS}}(1)=1) \\
-        %             &> \frac{1}{20}.
-        %     \end{align}
-        %     Thus $\bb{E}\sreg(1,\mpsidents{n})\not\rightarrow 0$.
-        % \end{proof}
-
-
-
-
-
-
-
-
+    % \begin{customprop}{3.1}
+    %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
+    %     There exists an MDP $\cl{M}$ and temperature $\alpha$ such that $\bb{E}[\sreg(s_0,\mpsiments{n})] \not\to 0$ as $n\to\infty$. That is, MENTS is not consistent.
+    % \end{customprop}
+    
+    % \begin{proof}
+    %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
+    %     We give a proof by construction. Recall the modified 10-chain problem, with $R_f=1/2$ in Figure \ref{fig:dchain_illustration_tres}, and consider a MENTS process (i.e. running MENTS) with a temperature $\alphaments=1$ for $n$ trials. By considering the optimal soft Bellman equations (\ref{eq:v_soft_bellman}) and (\ref{eq:q_soft_bellman}), one can verify that $Q_{\sft}^*(1,2)=0.9$ and $Q_{\sft}^*(1,1)=\log\left(\exp(1/2)+\sum_{i=0}^8\exp(i/10)\right)\approx 2.74$. 
         
-        An MDP can be constructed such that for any setting of $\alphaments$ MENTS will either not be consistent, or, will take exponentially long in the size of the state space of the MDP. This MDP is the \todo{whatever call the entropy trap env} first seen in \todo{ref to toy envs section figure}, where this phenomenon was demonstrated empirically \todo{ref to graph in toy envs section}. This figure is repeated in Figure \ref{fig:entropy_trap_repeat} \todo{for ease of reading}.
-
-
-
-        \begin{figure}
-            \centering
-            \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
-            \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero. \todo{this fig is copied, update caption?}}
-            \label{fig:entropy_trap_repeat}
-        \end{figure}
+    %     Theorem \ref{thrm:ments_val_converge}, Lemma \ref{lem:stochastic_step} and Lemma \ref{lem:sa_to_s} implies that there is some $C,k>0$ for any $\varepsilon > 0$:
+    %     \begin{align}
+    %         \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > \varepsilon \right) \leq C\exp(-k\varepsilon^2 N(1,n)) = C\exp(-k\varepsilon^2 n).
+    %     \end{align}
         
+    %     Letting $\varepsilon=1$ and using $Q_{\sft}^*(1,1)>5/2$ gives:
+    %     \begin{align}
+    %         \Pr\left(\mQments{N(1,1,n)}(1,1) < 3/2 \right) 
+    %             \leq& \Pr\left(\left| \mQments{N(1,1,n)}(1,1) - Q_{\sft}^*(1,1)\right| > 1 \right) \\
+    %             \leq& C\exp(-kn).
+    %     \end{align}
         
+    %     And hence:
+    %     \begin{align}
+    %         \Pr(\mpsidents{n}(1)=1) > 1 - C\exp(-kn)
+    %     \end{align}
         
-        \begin{theorem} \label{thrm:ments_bad_mdp}
-            Consider a MENTS process with arbitrary temperature $\alphaments$. There exists and MDP such that for any $\alphaments$ that MENTS is either not consistent, or requires an exponential number of trials in the size of the state space. More precisely, either $\mathbb{E}\sreg(s_0,\mpsiments{n})\not\rightarrow 0$ or $\mathbb{E}\sreg(1,\mpsiments{n}) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$, which implies that $\mathbb{E}\sreg(s_0,\psi^n_{MENTS})>0$ for $n<k^{|\cl{S}|}$. \todo{make sure this has same label and same notation as in Sec 4.3}
-        \end{theorem}
+    %     Consider that the best simple regret an agent can achieve after selecting action 1 from the starting state is $1/10$. Let $M=\log(2C)/k$, so that $C\exp(-kM)=1/2$. Then, for all $n>M$ we have $\Pr(\psi^n_{\text{MENTS}}(1)=1)> 1/2$, and hence:
+    %     \begin{align}
+    %         \bb{E}\sreg(1,\mpsiments{n}) &> \frac{1}{10} \cdot \Pr(\psi^n_{\text{MENTS}}(1)=1) \\
+    %             &> \frac{1}{20}.
+    %     \end{align}
+    %     Thus $\bb{E}\sreg(1,\mpsidents{n})\not\rightarrow 0$.
+    % \end{proof}
+
+
+
+
+
+
+
+
+    
+    An MDP can be constructed such that for any setting of $\alphaments$ MENTS will either not be consistent, or, will take exponentially long in the size of the state space of the MDP. This MDP is the \todo{whatever call the entropy trap env} first seen in \todo{ref to toy envs section figure}, where this phenomenon was demonstrated empirically \todo{ref to graph in toy envs section}. This figure is repeated in Figure \ref{fig:entropy_trap_repeat} \todo{for ease of reading}.
+
+
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
+        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero. \todo{this fig is copied, update caption?}}
+        \label{fig:entropy_trap_repeat}
+    \end{figure}
+    
+    
+    
+    % \begin{theorem} \label{thrm:ments_bad_mdp}
+    %     Consider a MENTS process with arbitrary temperature $\alphaments$. There exists and MDP such that for any $\alphaments$ that MENTS is either not consistent, or requires an exponential number of trials in the size of the state space. More precisely, either $\mathbb{E}\sreg(s_0,\mpsiments{n})\not\rightarrow 0$ or $\mathbb{E}\sreg(1,\mpsiments{n}) \geq c(1 - \frac{n}{k^{|\cl{S}|}})$, which implies that $\mathbb{E}\sreg(s_0,\psi^n_{MENTS})>0$ for $n<k^{|\cl{S}|}$. \todo{make sure this has same label and same notation as in Sec 4.3}
+    % \end{theorem}
+    \thrmMENTSbadmdp
+    
+    \begin{proofoutline}
+        \todo{remember this one was written in a bit of a rush, so probably want to make it a little clearer. Also need to make it consistent with the states and actions notation} 
+
+        \todo{Also a bunch of N(s) instead of N(s,n) in the proof that need to be fixed}
+
+        Proof is by construction. Consider the adapted-chain MDP \todo{update name for name change?} defined in Figure \ref{fig:entropy_trap_repeat}, which is parameterised by $D$ the length of the UCT gauntlet, and $K$, half the number of states in the entropy trap. To prove the claim, two cases need to be considered: when the temperature is sufficiently high for MENTS to get `caught' in the entropy trap when it is inconsistent; and, when the temperature is lower than this threshold.
         
-        \begin{proofoutline}
-            \todo{remember this one was written in a bit of a rush, so probably want to make it a little clearer. Also need to make it consistent with the states and actions notation} 
-
-            \todo{Also a bunch of N(s) instead of N(s,n) in the proof that need to be fixed}
-
-            Proof is by construction. Consider the adapted-chain MDP \todo{update name for name change?} defined in Figure \ref{fig:entropy_trap_repeat}, which is parameterised by $D$ the length of the UCT gauntlet, and $K$, half the number of states in the entropy trap. To prove the claim, two cases need to be considered: when the temperature is sufficiently high for MENTS to get `caught' in the entropy trap when it is inconsistent; and, when the temperature is lower than this threshold.
-            
-            Case 1: $\alphaments>\frac{1}{\log(2)K}$ (MENTS gets caught by the entropy trap).
-            
-            If $\alphaments>\frac{1}{\log(2)K}$, the soft value of E is greater than one for any policy over the actions, and $\phi$ is a uniform policy (note that because there are no MDP rewards after $E$, $\phi$ is both the initial policy for MENTS and the optimal soft policy \todo{only for the entropy trap section}): 
-            \begin{align}
-                    V_{\sft}^*(E) & = 0 + \alphaments \cdot \mathcal{H}(\phi) \\
-                        & = \alphaments \cdot \log(2)  K \\
-                        & > 1 \\
-                        & = V_{\sft}^*(F).
-            \end{align}
-            
-            Hence the optimal soft values (which MENTS converges to) will recommend going to state $E$ and gathering $0$ reward. Hence in this case the simple regret will converge to $1$ as the optimal value is $V^*(1)=1$. That is $\mathbb{E}\sreg(1,\mpsiments{n}) \rightarrow 1 > 0$.
-            
-            Case 2: $\alpha\leq\frac{1}{\log(2)K}$ \todo{asnother comment on this case, or remove comment from other case}
-            
-            In this case it is argued that with a low $\alphaments$ that MENTS will only have a low probability of ever hitting state $D$, that is, it requires a lot of trials to garuntee that at least one trial has reached state $D$, which is necessary to get the reward of $1$ (and simple regret of $0$).
-            
-            First consider the composed and simplified soft backup on the adapted-chain problem for any $0<i<D$ to get:
-            \begin{align}
-                    \mVments{N(i,n)}(i) & = \alpha \log\left( \frac{1}{\alpha} 
-                        \left( \frac{D-i}{D} + \mVments{N(i+1,n)}(i+1) \right)\right) \\
-                    & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \alpha\log(2) \label{mbm:one} \\
-                    & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \frac{1}{K}
-            \end{align}
-            
-            where inequality (\ref{mbm:one}) used the property of log-sum-exp that $\alpha \log \sum_{i=1}^\ell \exp (x_i/\alpha) \leq \max_i (x_i) + \alpha \log(\ell)$. Assume that $K \geq D$ and $\mVments{N(D)}(D)=0$ (it will be checked that these assumptions are valid later). Then, by induction, it holds that $\mVments{N(i)}(i)\leq \frac{D-(i-1)}{D}$:
-            \begin{align}
-                \mVments{N(i)}(i) 
-                & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1)}(i+1)\right) + \frac{\log(2)}{\log(K)} \\
-                & \leq \frac{D-i}{D} + \frac{1}{K} \\
-                & \leq \frac{D-i}{D} + \frac{1}{D} \\
-                & = \frac{D-(i-1)}{D}.
-            \end{align}
-            %
-            \todo{first line uses induction hypothesis, value at i plus one less than D-i/D.}
-            
-            Now let the event $Y(n)$ be that MENTS visits state $D$ in its $n$th trial. Again assuming that $\mVments{N(D,n)}(D)=0$, the probability of this event occuring is less than $2^{-D}$. Because given this assumption it has just been shown that $\mVments{N(i+1,n)}(i+1)\leq \frac{D-i}{D} = \mVments{N(G_{i},n)}(G_{i})$, \todo{we are considering the choice between Gi and i plus 1 from state i here, which isn't too clear right now} as there are only two actions and taking action $a_R$ to continue down the chain has a lower soft value estimate, it must be that $\mpiments{n}(a_R|i) < \frac{1}{2}$, and as such, it must be that $\Pr\left(Y(n) \middle| \mVments{N(D,n)}(D)=0\right) < \frac{1}{2^D}$. 
-            
-            Then let $Z(n)=\neg \bigcup_{j=1}^n Y(j)$ be the event that no trial of MENTS has visited state $D$ in any of the first $n$ trials. And note that $Z(n)$ implies that $\mVments{N(D,n)}(D)=0$: \todo{probably aught to say somewhere in the proofs section that all the initialisations are set to zero, and the theory is to analyse the algorithms by itself, without any informative prior knowledge of the mdp}
-            \begin{align}
-                \Pr(Z(n)) 
-                    &= \Pr\left(Z(n) \cap \mVments{N(D,n)}(D)=0\right) \\
-                    &= \Pr\left(\neg Y(n) \cap Z(n-1) \cap \mVments{N(D,n)}(D) = 0  \right) \\
-                    &= \Pr\left(\neg Y(n) \middle| Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) 
-                        \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
-                    &\geq (1-2^{-D}) \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
-                    &= \ldots \\
-                    &\geq (1-2^{-D})^n \Pr\left( Z(0) \cap \mVments{N(D)}(D)=0\right) \\
-                    &= (1-2^{-D})^n \\
-                    &\geq 1-n2^{-D},
-            \end{align}
-            where the penultimate line used $\Pr\left( Z(0) \cap \left(\mVments{N(D)}(D)=0\right)\right)=1$, as $Z(0)$ and $\mVments{N(D,n)}(D)=0$ are vacuously true at the start of running the algorithm, and in the final line used Bernoulli's inequality \todo{ref}.
-            
-            Informally, $Z(n)$ implies that $V^{\mpsiments{n}}(1) \leq \frac{9}{10}$, as no trial has even reached $D$ to be able to reach the reward of $1$ from $F$. And hence the expected simple regret in this environment of MENTS can be bounded below as follows:
-            \begin{align}
-                \mathbb{E}\sreg(1,\psi^n_{\text{MENTS}}) 
-                    & \geq \left(1-\frac{9}{10}\right) \Pr(Z(n)) \\
-                    & \geq \frac{1}{10} \left( 1-n2^{-D} \right).
-            \end{align}
-            
-            Finally, setting $K=D$, so that $|\cl{S}|=4D+3<5D$ for $D\in\bb{N}$ \todo{D more than 1} and so $D=\frac{|\cl{S}|-3}{4}>\frac{|S|}{5}$. Substituting this into the above inequality gives $\mathbb{E}\sreg(1,\mpsiments{n}) \geq 1 - \frac{n}{\sqrt[5]{2}^{|S|}}$, which is greater than $0$ for $n < \sqrt[5]{2}^{|S|}$. That is $c=\frac{1}{10}$ and $k=\sqrt[5]{2}$.
-        \end{proofoutline}
+        Case 1: $\alphaments>\frac{1}{\log(2)K}$ (MENTS gets caught by the entropy trap).
+        
+        If $\alphaments>\frac{1}{\log(2)K}$, the soft value of E is greater than one for any policy over the actions, and $\phi$ is a uniform policy (note that because there are no MDP rewards after $E$, $\phi$ is both the initial policy for MENTS and the optimal soft policy \todo{only for the entropy trap section}): 
+        \begin{align}
+                V_{\sft}^*(E) & = 0 + \alphaments \cdot \mathcal{H}(\phi) \\
+                    & = \alphaments \cdot \log(2)  K \\
+                    & > 1 \\
+                    & = V_{\sft}^*(F).
+        \end{align}
+        
+        Hence the optimal soft values (which MENTS converges to) will recommend going to state $E$ and gathering $0$ reward. Hence in this case the simple regret will converge to $1$ as the optimal value is $V^*(1)=1$. That is $\mathbb{E}\sreg(1,\mpsiments{n}) \rightarrow 1 > 0$.
+        
+        Case 2: $\alpha\leq\frac{1}{\log(2)K}$ \todo{asnother comment on this case, or remove comment from other case}
+        
+        In this case it is argued that with a low $\alphaments$ that MENTS will only have a low probability of ever hitting state $D$, that is, it requires a lot of trials to garuntee that at least one trial has reached state $D$, which is necessary to get the reward of $1$ (and simple regret of $0$).
+        
+        First consider the composed and simplified soft backup on the adapted-chain problem for any $0<i<D$ to get:
+        \begin{align}
+                \mVments{N(i,n)}(i) & = \alpha \log\left( \frac{1}{\alpha} 
+                    \left( \frac{D-i}{D} + \mVments{N(i+1,n)}(i+1) \right)\right) \\
+                & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \alpha\log(2) \label{mbm:one} \\
+                & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1,n)}(i+1)\right) + \frac{1}{K}
+        \end{align}
+        
+        where inequality (\ref{mbm:one}) used the property of log-sum-exp that $\alpha \log \sum_{i=1}^\ell \exp (x_i/\alpha) \leq \max_i (x_i) + \alpha \log(\ell)$. Assume that $K \geq D$ and $\mVments{N(D)}(D)=0$ (it will be checked that these assumptions are valid later). Then, by induction, it holds that $\mVments{N(i)}(i)\leq \frac{D-(i-1)}{D}$:
+        \begin{align}
+            \mVments{N(i)}(i) 
+            & \leq \max\left(\frac{D-i}{D},\mVments{N(i+1)}(i+1)\right) + \frac{\log(2)}{\log(K)} \\
+            & \leq \frac{D-i}{D} + \frac{1}{K} \\
+            & \leq \frac{D-i}{D} + \frac{1}{D} \\
+            & = \frac{D-(i-1)}{D}.
+        \end{align}
+        %
+        \todo{first line uses induction hypothesis, value at i plus one less than D-i/D.}
+        
+        Now let the event $Y(n)$ be that MENTS visits state $D$ in its $n$th trial. Again assuming that $\mVments{N(D,n)}(D)=0$, the probability of this event occuring is less than $2^{-D}$. Because given this assumption it has just been shown that $\mVments{N(i+1,n)}(i+1)\leq \frac{D-i}{D} = \mVments{N(G_{i},n)}(G_{i})$, \todo{we are considering the choice between Gi and i plus 1 from state i here, which isn't too clear right now} as there are only two actions and taking action $a_R$ to continue down the chain has a lower soft value estimate, it must be that $\mpiments{n}(a_R|i) < \frac{1}{2}$, and as such, it must be that $\Pr\left(Y(n) \middle| \mVments{N(D,n)}(D)=0\right) < \frac{1}{2^D}$. 
+        
+        Then let $Z(n)=\neg \bigcup_{j=1}^n Y(j)$ be the event that no trial of MENTS has visited state $D$ in any of the first $n$ trials. And note that $Z(n)$ implies that $\mVments{N(D,n)}(D)=0$: \todo{probably aught to say somewhere in the proofs section that all the initialisations are set to zero, and the theory is to analyse the algorithms by itself, without any informative prior knowledge of the mdp}
+        \begin{align}
+            \Pr(Z(n)) 
+                &= \Pr\left(Z(n) \cap \mVments{N(D,n)}(D)=0\right) \\
+                &= \Pr\left(\neg Y(n) \cap Z(n-1) \cap \mVments{N(D,n)}(D) = 0  \right) \\
+                &= \Pr\left(\neg Y(n) \middle| Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) 
+                    \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
+                &\geq (1-2^{-D}) \Pr\left( Z(n-1) \cap \mVments{N(D,n)}(D) = 0 \right) \\
+                &= \ldots \\
+                &\geq (1-2^{-D})^n \Pr\left( Z(0) \cap \mVments{N(D)}(D)=0\right) \\
+                &= (1-2^{-D})^n \\
+                &\geq 1-n2^{-D},
+        \end{align}
+        where the penultimate line used $\Pr\left( Z(0) \cap \left(\mVments{N(D)}(D)=0\right)\right)=1$, as $Z(0)$ and $\mVments{N(D,n)}(D)=0$ are vacuously true at the start of running the algorithm, and in the final line used Bernoulli's inequality \todo{ref}.
+        
+        Informally, $Z(n)$ implies that $V^{\mpsiments{n}}(1) \leq \frac{9}{10}$, as no trial has even reached $D$ to be able to reach the reward of $1$ from $F$. And hence the expected simple regret in this environment of MENTS can be bounded below as follows:
+        \begin{align}
+            \mathbb{E}\sreg(1,\psi^n_{\text{MENTS}}) 
+                & \geq \left(1-\frac{9}{10}\right) \Pr(Z(n)) \\
+                & \geq \frac{1}{10} \left( 1-n2^{-D} \right).
+        \end{align}
+        
+        Finally, setting $K=D$, so that $|\cl{S}|=4D+3<5D$ for $D\in\bb{N}$ \todo{D more than 1} and so $D=\frac{|\cl{S}|-3}{4}>\frac{|S|}{5}$. Substituting this into the above inequality gives $\mathbb{E}\sreg(1,\mpsiments{n}) \geq 1 - \frac{n}{\sqrt[5]{2}^{|S|}}$, which is greater than $0$ for $n < \sqrt[5]{2}^{|S|}$. That is $c=\frac{1}{10}$ and $k=\sqrt[5]{2}$.
+    \end{proofoutline}
 
 
-        \todo{Some note about how DENTS can handle this case by using entropy and then ignoring it for the recommendations. Moreover, by allowing the entropy temperature (beta) to be decayed, allows the entropy trap estimates to correctly converge to the correct value of zero, and could handle a case where there is something more complex than a single state with a reward of one when not taking the entropy trap.}
+    \todo{Some note about how DENTS can handle this case by using entropy and then ignoring it for the recommendations. Moreover, by allowing the entropy temperature (beta) to be decayed, allows the entropy trap estimates to correctly converge to the correct value of zero, and could handle a case where there is something more complex than a single state with a reward of one when not taking the entropy trap.}
 
-        \todo{Additionally, note that because the proofs for convergence for DENTS have constraints on parameters (or no constraints on params) that even on this case it will converge to the correct result.}
+    \todo{Additionally, note that because the proofs for convergence for DENTS have constraints on parameters (or no constraints on params) that even on this case it will converge to the correct result.}
 
 
 
