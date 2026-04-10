@@ -1711,7 +1711,7 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 % [X] First Draft
-% [ ] AI proofread/grammar check
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -1750,15 +1750,13 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
     The following assumptions are made for this section, which do not affect the asymptotic behaviour of the algorithms but simplify the proofs and presentation:
     \begin{itemize}
-        \item the unique state assumption (Section \ref{sec:2-4-0-notation}) remains and $\graphmode$ is set to false;
+        \item the unique state assumption (Section \ref{sec:2-4-0-notation}) remains, $\mctsmode$ is set to false and $\graphmode$ is set to false;
         \item heuristic values are set to zero, $\Vinit(s)=0$ and $\Qinit(s,a)=0$ for all $s\in\cl{S}$ and $a\in\cl{A}$;
-        \item the length of all trajectories and the planning horizon $H_{\thtspp}$, are equal to the horizon $H$ of the MDP;
-        \item the psuedo-visit biasing terms $\Nvbts$, $\Nqbts$, $\Nvdents$, $\Nqdents$, $\Nvarbts$, $\Nqarbts$, $\Nvardents$, $\Nqardents$, from Section \ref{sec:4-2-boltzmannsearch} are all set to zero.
+        \item the length of all trajectories and the planning horizon $H_{\thtspp}$ are equal to the horizon $H$ of the MDP;
+        \item the pseudo-visit biasing terms $\Nvbts$, $\Nqbts$, $\Nvdents$, $\Nqdents$, $\Nvarbts$, $\Nqarbts$, $\Nvardents$, $\Nqardents$, from Section \ref{sec:4-2-boltzmannsearch} are all set to zero.
     \end{itemize}
 
-    \bd{All of these assumptions are made to simplify the notation and presentation of the proofs, and do not affect the asymptotic behaviour of the algorithms.}
-
-    Finally, note that mathematically (AR-)BTS is a special case of (AR-)DENTS, with $\betadents(x)=0$ and $\betaardents(x)=0$. Results will be proven about (AR-)DENTS, and the corresponding results for BTS follow \bd{by this special case}.
+    Finally, note that mathematically (AR-)BTS is a special case of (AR-)DENTS, with $\betadents(x)=0$ and $\betaardents(x)=0$. Results will be proven about (AR-)DENTS, and the corresponding results for BTS follow as a direct consequence.
 
 
 
@@ -1770,8 +1768,8 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -1784,49 +1782,54 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
 \subsection{Notation}
 \label{sec:4-5-1-notation}
 
-    \todo{I think this subsection needs a lot of help from claude}
+    % 0. Clarifying notation 
+    Because of the unique state assumption (Section \ref{sec:2-4-0-notation}), any state $s_t \in \tau = (s_0,a_0,r_0,\ldots,s_{H-1},a_{H-1},r_{H-1},s_{H})$ may only appear at timestep $t$ in any trajectory. Throughout this chapter, $s_t$ and $a_t$ are used to denote an arbitrary state and action at an arbitrary timestep $t$.
 
-    Because of the unique state assumption (Section \ref{sec:2-4-0-notation}), any state $s_t \in \tau = (s_0,a_0,r_0,\ldots,s_{H-1},a_{H-1},r_{H-1},s_{H})$ may only appear at timestep $t$ in any trajectory.
+    When making arguments that apply to multiple algorithms, the general policies $\pi$ and $\psi$ are used. When making arguments about specific algorithms, subscripts are used, e.g. $\pibts$. 
 
-    \bd{start (maths in bd env gives compile warning)} When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$.\bd{end (maths in bd env gives compile warning)}  
-    
-    \todo{how to order and connect these sentences?}
-    
-    \bd{To reason about MCTS processes over time, it is necessary for notation to include either the number of trials run, or the number of times a node has been visited.}
+    % 1. Introduce trial superscripts
+    To reason about MCTS processes over multiple trials, the existing notation is extended with superscripts to track both the number of trials run and the number of times each node has been visited.
 
-    Most variables be denoted with a superscript $n$ to denote that it is the value used on the $n$th trial of MCTS. For example:
+    Most variables are denoted with a superscript $n$ to denote that it is the value used on the $n$th trial of MCTS. For example:
     \begin{itemize}
         \item 
             If an algorithm uses a search policy $\pi$ and outputs a recommendation policy $\psi$, then the search policy followed on the $n$th trial is denoted $\pi^n$, and the recommendation policy after $n$ trials is denoted $\psi^n$. 
         \item 
-            When it is necessary to reason about multiple trajectories, the superscript notation will also be used. The trajectory sampled in the $n$th trial is $\tau^n=(s_0^n,a_0^n,r_0^n,\ldots,s_{H-1}^n,a_{H-1}^n,r_{H-1}^n,s_{H}^n)$. If it is sampled from a search policy $\pi$, then $\tau^n\sim\pi^n$.
+            When it is necessary to reason about multiple trajectories, the superscript notation will also be used. The trajectory sampled in the $n$th trial is $\tau^n=(s_0^n,a_0^n,r_0^n,\ldots,s_{H-1}^n,a_{H-1}^n,r_{H-1}^n,s_{H}^n)$. If it is sampled from a search policy $\pi^n$, then $\tau^n\sim\pi^n$.
         \item 
             The search tree after $n$ trials is denoted $\cl{T}^n$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^n = \cl{T}^{n-1} \cup \{s\in\tau^n\} \cup \{(s,a)\in\tau^n\}$.
     \end{itemize}
 
-    It is useful to have additional notation for counting the number of times a node has been visited, and on what trials it was visited. Let $n$ be the total number of trials run so far, $\pi^m$ be the search policy used on the $m$th trial, and the $m$th trajectory be $\tau^m=(s_0^m,a_0^m,r_0^m,\ldots,s_{H-1}^m,a_{H-1}^m,r_{H-1}^m,s_{H}^m)\sim\pi^m$ for $1\leq m \leq n$. \bd{Because of the unique state assumption} Let $T^n(s_t)$ (and $T^n(s_t,a_t)$) be the set of trial indices that $s_t$ was visited on (and action $a_t$ selected) in the first $n$ trials \bd{reiterate that t is an arbitrary time step?}:
+    % 2. Introduce visit index sets + define visit counts
+    Let $T^n(s_t)$ and $T^n(s_t,a_t)$ denote the sets of trial indices on which $s_t$ was visited and action $a_t$ was selected respectively, in the first $n$ trials, where $t$ is the timestep at which the node appears in the trajectory:
     %
     \begin{align}
         T^n(s_t) &= \{i | 1\leq i\leq n, s^i_t = s_t \} \label{eq:4:index_set_s} \\
         T^n(s_t,a_t) &= \{i | 1\leq i\leq n, s^i_t = s_t, a^i_t = a_t \} \label{eq:4:index_set_sa}.
     \end{align}
-    %
-    The visit counts after $n$ trials can be written as sums of indicator random variables in the following ways, with $s_t\in\cl{S}$, $a_t\in\cl{A}$:
+
+    The visit counts after $n$ trials are defined as follows, with $s_t\in\cl{S}$ and $a_t\in\cl{A}$:
     %
     \begin{align}
-        N^n(s) &= \sum_{i=1}^n \one[s\in\tau^i] = |T^n(s)|, \\
-        N^n(s,a) &= \sum_{i\in T^n(s)} \one[a^i = a] = |T^n(s,a)|.
+        N^n(s_t) &= \sum_{i=1}^n \one[s^i_t = s_t] = |T^n(s_t)|, \\
+        N^n(s_t,a_t) &= \sum_{i\in T^n(s_t)} \one[a^i_t = a_t] = |T^n(s_t,a_t)|.
     \end{align}
 
-    And because of the unique state assumption, the index sets from equations (\ref{eq:4:index_set_s}) and (\ref{eq:4:index_set_sa}) can be used to index the sums for visit counts at successor nodes, where$s_{t+1}\in\suc{s_t}{a_t}$:
+    % 3. Connect index sets to visit counts
+    Under the unique state assumption, the visit counts can also be expressed in the following equivalent forms, which are more convenient for the proofs:
+    %
     \begin{align}
-        N^n(s_t,a_t) &= \sum_{i\in T^n(s_t)} \one[a^i_t = a_t], \label{eq:4:nsa_sum} \\
-        N^n(s_{t+1}) &= \sum_{i\in T^n(s_t,a_t)} \one[s^i_{t+1} = s_{t+1}] = |T^n(s_t,a_t)|. \label{eq:4:ns_sum}
+    N^n(s_t,a_t) &= \sum_{i\in T^n(s_t)} \one[a^i_t = a_t], 
+        \label{eq:4:nsa_sum} \\
+    N^n(s_{t+1}) &= \sum_{i\in T^n(s_t,a_t)} 
+        \one[s^i_{t+1} = s_{t+1}] = |T^n(s_t,a_t)|. 
+        \label{eq:4:ns_sum}
     \end{align}
     %
-    \bd{I want to make it clear that the index set Tn(s) is used for Nn(s,a) and index set for Tn(s,a) is used for Nn(s').}
+    The key observation is that $N^n(s_t,a_t)$ can be computed as a sum over the $N^n(s_t)$ trials on which $s_t$ was visited, and $N^n(s_{t+1})$ as a sum over the $N^n(s_t,a_t)$ trials on which $a_t$ was selected from $s_t$.
 
-    Value estimates are the one exception to the superscript notation to denote the number of trials. Superscripts for value estimates will denote the number of times that the value has been backed up. To differentiate this counting with respect to backups, instead of with respect to trials, a superscript with brackets will be used. For example, the backups for DENTS value estimates would be written as follows. Let $\tau^n \sim \mpidents{n}$ and $\tau^n=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the backups for $t=h-1,\ldots,0$ are: 
+    % 4. Introduce backup superscripts + give backup equations as an example
+    Value estimates are the one exception to the superscript notation to denote the number of trials. Superscripts for value estimates denote the number of times that the value has been backed up. To differentiate this counting with respect to backups, instead of with respect to trials, a superscript with brackets will be used. For example, the backups for DENTS value estimates would be written as follows. Let $\tau^n \sim \mpidents{n}$ be a trajectory sampled from the DENTS search policy on the $n$th trial. Let $\tau^n=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_{h})$. The backups for $t=h-1,\ldots,0$ are then: 
     %
     \begin{align}
         \mQdents{N^n(s_t,a_t)}(s_t,a_t) &= 
@@ -1841,11 +1844,22 @@ Entropy is widely used in the reinforcement learning literature, commonly introd
             \cl{H}(\mpidents{n}(\cdot | s_t)) 
                 + \sum_{a\in\cl{A}} \mpidents{n}(a_t|s_t)\mHQdents{N^n(s_t,a_t)}(s_t,a_t).
     \end{align}
-    %
-    
-    \todo{Add the following for simplification of notation:} where possible, the trial notation will be used for value estiamtes, i.e. $\mQdents{n}(s_t,a_t)=\mQdents{N^n(s_t,a_t)}(s_t,a_t)$
     
     For reference, all of the algorithms considered in this Section are written out in full with this additional notation in Appendix \ref{appsec:mcts_stoch_process} \todo{double check this ref}. \todo{make sure handle initv and initq properly in the appendix}
+
+
+
+
+
+
+
+
+    
+
+    
+    
+
+    
 
 
 
