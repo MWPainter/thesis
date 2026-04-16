@@ -237,6 +237,8 @@
 % Citing
 \newcommand{\etal}{et~al.\ }
 
+\newcommand{\proofsep}{\medskip\begin{center}\rule{0.4\linewidth}{0.4pt}\end{center}\medskip}
+
 
 % Sec 1.2 - Contributions (research questions)% Refer to questions
 % \newcommand{\timelimitedq}{\hyperlink{q1}{\textbf{Q1 - Time-Limited Planning}}}
@@ -277,6 +279,7 @@
 % Sec 2.2 - MDPs
 \newcommand{\suc}[2]{{\textnormal{Succ}(#1,#2)}}
 \newcommand{\terminal}{{\textnormal{\texttt{terminal}}}}
+\newcommand{\reachable}{{\textnormal{Reachable}}}
 
 % Sec 2.3 - RL macros
 \newcommand{\sft}{{\textnormal{sft}}}
@@ -316,10 +319,15 @@
 \newcommand{\buct}{{b_{\uct}}}
 \newcommand{\pirollout}{{\pi_{\rollout}}}
 \newcommand{\piuct}{{\pi_{\uct}}}
+\newcommand{\psiuct}{{\psi_{\uct}}}
+\newcommand{\mvuct}{{\texttt{mv}_{\uct}}}
 \newcommand{\Quct}{{\bar{Q}_{\uct}}}
 \newcommand{\Quctnorm}{{\bar{Q}^{\norm}_{\uct}}}
+\newcommand{\Quctbias}{{\bar{Q}^{\bias}_{\uct}}}
 \newcommand{\Vuct}{{\bar{V}_{\uct}}}
 \newcommand{\Nheuristic}{{N_{\textnormal{heuristic}}}}
+\newcommand{\Nvuct}{N^{\Vinit}_{\uct}}
+\newcommand{\Nquct}{N^{\Qinit}_{\uct}}
 
 \newcommand{\puct}{{\textnormal{PUCT}}}
 \newcommand{\bpuct}{{b_{\puct}}}
@@ -432,17 +440,26 @@
 % \newcommand{\ardents}{{\textnormal{AR-D}}}
 \newcommand{\ardents}{{\textnormal{AR-DNTS}}}
 \newcommand{\HQardents}{{\bar{\cl{H}}_{Q,\ardents}}}
+\newcommand{\mHQardents}[1]{{\bar{\cl{H}}^{(#1)}_{Q,\ardents}}}
 \newcommand{\HVardents}{{\bar{\cl{H}}_{V,\ardents}}}
 \newcommand{\piardents}{{\pi_{\ardents}}}
+\newcommand{\mpiardents}[1]{{\pi^{#1}_{\ardents}}}
 \newcommand{\rhoardents}{{\rho_{\ardents}}}
 \newcommand{\alphaardents}{{\alpha_{\ardents}}}
 \newcommand{\betaardents}{{\beta_{\ardents}}}
 \newcommand{\Qardents}{{\bar{Q}_{\ardents}}}
+\newcommand{\Qardentssoft}{{\hat{Q}^{\sft}_{\ardents}}}
+\newcommand{\Qardentsbias}{{\hat{Q}^{\sft,\bias}_{\ardents}}}
+\newcommand{\Qardentsnorm}{{\hat{Q}^{\sft,\norm}_{\ardents}}}
+\newcommand{\mQardents}[1]{{\hat{Q}^{(#1)}_{\ardents}}}
 \newcommand{\Vardents}{{\bar{V}_{\ardents}}}
+\newcommand{\mVardents}[1]{{\hat{V}^{(#1)}_{\ardents}}}
 \newcommand{\psiardents}{{\psi_{\ardents}}}
+\newcommand{\mpsiardents}[1]{{\psi^{#1}_{\ardents}}}
 \newcommand{\epsardents}{{\epsilon_{\ardents}}}
 \newcommand{\lambdaardents}{{\lambda(s,\epsardents)}}
 \newcommand{\mvardents}{{\textup{\texttt{mv}}_{\ardents}}}
+\newcommand{\mmvardents}[1]{{\textup{\texttt{mv}}^{#1}_{\ardents}}}
 \newcommand{\Nvardents}{N^{\Vinit}_{\ardents}}
 \newcommand{\Nqardents}{N^{\Qinit}_{\ardents}}
 
@@ -476,6 +493,20 @@
 
 % Sec 5.4 results
 \newcommand{\eum}{{\textnormal{EUM}}}
+
+
+
+
+
+
+% Appendix
+\newcommand{\uctbudget}{{\texttt{uct\_budget}}}
+\newcommand{\Nv}{N^{\Vinit}}
+\newcommand{\Nq}{N^{\Qinit}}
+\newcommand{\Qnorm}{{\bar{Q}^{\norm}}}
+\newcommand{\Qbias}{{\bar{Q}^{\bias}}}
+\newcommand{\alphadecay}{{\alpha_{\text{decay}}}}
+\newcommand{\betathresh}{{\beta_{\text{thresh}}}}
 
 
 
@@ -612,9 +643,9 @@
 \startappendices
 % Add or remove any appendices you'd like here:
 % \include{text/appendix}
-\include{text/appendix-ch4-alg-deets}
+\include{text/appendix-ch4-alg-ref}
 \include{text/appendix-ch4-expr-deets}
-\include{text/appendix-ch4-theory}
+% \include{text/appendix-ch4-theory}
 
 
 %%%%% REFERENCES

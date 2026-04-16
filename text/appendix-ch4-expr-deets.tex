@@ -1,17 +1,334 @@
-%\begin{savequote}[8cm]
-%\textlatin{Cor animalium, fundamentum e\longs t vitæ, princeps omnium, Microco\longs mi Sol, a quo omnis vegetatio dependet, vigor omnis \& robur emanat.}
-%
-%The heart of animals is the foundation of their life, the sovereign of everything within them, the sun of their microcosm, that upon which all growth depends, from which all power proceeds.
-%  \qauthor{--- William Harvey \cite{harvey_exercitatio_1628}}
-%\end{savequote}
+% [X] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 
 \chapter{\label{app:go-results}\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
 
 
+    This appenix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
+    \begin{itemize}
+        \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in \todo{ref FL and Sailing results};
+        \item Section \ref{appsec:4:hps} gives details on the hyperparameters used for the experiments in \todo{ref FL and Sailing results} and the optimisation process used to select them;
+        \item Section \ref{appsec:4:go} gives additional details for the Go experiments conducted in Section \todo{ref go results}, including hyperparameters and how they were selected;
+    \end{itemize}
 
 
-\section{Grid world hyper-parameter search and additional results} 
-\label{appsec:hps}
+
+
+\section{Additional DeterministicGridWorld, FrozenLake details}
+\label{appsec:4:envs}
+
+    Figure \ref{appfig:fl_maps} shows the maps used in the DeterministicGridWorld and FrozenLake environments. The 4x4 and 8x8 maps are the standard maps from the Gymnasium library \todo{cite}. The remaining maps are randomly generated, where the starting position is always the top left corner, the goal position is always the bottom right corner and the remaining positions are randomly sampled with a $\frac{1}{5}$ probability of being a hole. Rejection sampling is used to ensure that there is always a path from the starting position to the goal.
+
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFFFFFHF} \\
+            \texttt{FFFFFFFF} \\
+            \texttt{FHFHFFFF} \\
+            \texttt{FFFFFFHH} \\
+            \texttt{FFFHFFFF} \\
+            \texttt{FHHHFFFF} \\
+            \texttt{FFFFFHFF} \\
+            \texttt{FFFFFFFG} 
+            \caption{8x8 FrozenLake.}
+            \label{fig:fl8}
+        \end{subfigure}
+        % \hfill
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFHFFFHFFFFF} \\
+            \texttt{FFFFFFFHFFFF} \\
+            \texttt{HFFFFFHFFFFF} \\
+            \texttt{FHFFHFFFFFFF} \\
+            \texttt{HHFFFFFFFFFF} \\
+            \texttt{FHFFFFHFFFFF} \\
+            \texttt{FHFFFHHFHFFF} \\
+            \texttt{FFFFFFFFFHHG} 
+            \caption{8x12 FrozenLake.}
+            \label{fig:fl12}
+        \end{subfigure}
+        % \hfill
+        % \begin{subfigure}[b]{0.3\textwidth}
+        %     \centering
+        %     \texttt{SFHFFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FHFFFFHFFFFF} \\
+        %     \texttt{FFFHFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FFFFHFFFHFFF} \\
+        %     \texttt{FFHFFFFFFFFH} \\
+        %     \texttt{FFFFFFFFFFFG} 
+        %     \caption{8x12 Test FrozenLake.}
+        %     \label{fig:fl12test}
+        % \end{subfigure}
+        \caption[Maps used for the DeterministicGridWorld and FrozenLake environment.]{Maps used for the DeterministicGridWorld and FrozenLake environments. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{update these maps to the final maps used  and update caption.}}
+        \label{appfig:fl_maps}
+    \end{figure}
+
+
+
+
+
+
+
+
+\section{Hyperparameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments} 
+\label{appsec:4:hps}
+
+    This section is organised as follows:
+    \begin{itemize}
+        \item Section \ref{appsec:4:hyperparams} gives a list of shared and \bd{specific to a subset of algorithms} hyperparameters used for the experiments;
+        \item Section \ref{appsec:4:uct_general} describes how the common hyperparameters are integrated into prior algorithms, using UCT as an example;
+        \item Section \ref{appsec:4:hypersearch} gives details on the hyperparameter optimisation and the final hyperparameters that were selected.
+    \end{itemize}
+
+
+\subsection{Common Hyperparameters Reference}
+\label{appsec:4:hyperparams}
+
+    The following parameters were used by all algorithms considered in section \todo{ref gridworlds results}:
+    \begin{itemize}
+        \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
+        \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
+        \item $\normalisedq$ - if Q-values should be normalised before being used in the search policy;
+        \item $\initv$ - the heuristic value function;
+        \item $\initq$ - the heuristic Q-value function;
+        \item $\Nv$ - the number of pseudo-visits assigned to $\initv$ in backups;
+        \item $\Nq$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate;
+    \end{itemize}
+
+    The following parameters are used by specific algorithms:
+    \begin{itemize}
+        \item $\epsilon$ - the (uniform) exploration parameter used by algorithms using a Boltzmann search policy, e.g. MENTS, BTS;
+        \item $\alpha$ - the temperature parameter for algorithms using a maximum entropy objective, e.g. MENTS, RENTS, TENTS;
+        \item $\alpha(x)$ - the temperature schedule for Boltzmann distributions in BTS and DENTS;
+        \item $\beta(x)$ - the entropy weighting function for DENTS;
+        \item $b$ - the bias term used in UCB style policies, e.g. UCT, H-MCTS;
+        \item $\uctbudget$ - \todo{check if its seq halving into uct or uct into seq halving}, the budget for running UCT before swtiching to Sequential Halving in H-MCTS;
+    \end{itemize}
+
+    \bd{To be compatible with hyperparameter optimisation, the functional form of } $\alpha$ and $\beta$ \bd{need to be specified in a parameterised form.} For the experiments in Section \todo{ref gridworlds results}, the following forms were used:
+    \begin{align}
+        \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
+        \beta(x) &= \begin{cases}
+            \beta_c - \frac{\beta_c}{\betathresh}x & \text{if } x \leq \betathresh, \\
+            0 & \text{otherwise.}
+        \end{cases}
+    \end{align}
+
+    These functions are chosen so that the entropy weighting becomes negligible, and more specifically so that $\frac{\beta(x)}{\alpha(x)}$ tends to zero as $x$ tends to infinity.
+
+
+\subsection{Integration of Common Hyperparameters into Prior Algorithms}
+\label{appsec:4:uct_general}
+
+    Consider an algorithm with value estimates $\bar{V}(s)$ and $\bar{Q}(s,a)$. To use the $\Nq$ and $\normalisedq$ parameters, the biased Q-values $\Qnorm(s,a)$ used in the search policy are given by:
+    %
+    \begin{align}
+        \Qbias(s,a) &= \frac{N(s,a) \bar{Q}(s,a) +  \Nq \Qinit(s,a)}{N(s,a)+\Nq}, \\
+        \Qnorm(s,a) &= 
+        \begin{cases}
+            \frac{\Qbias(s,a)-\min_{a\in\cl{A}}\Qbias(s,a)}{\max_{a\in\cl{A}}\Qbias(s,a)-\min_{a\in\cl{A}}\Qbias(s,a)} & \text{if } \normalisedq, \\
+            \Qbias(s,a) & \text{otherwise.}
+        \end{cases}
+    \end{align}
+
+    All visit counts and value estimates are initialised to zero: $N(s)=0$, $N(s,a)=0$, $\bar{V}(s)=0$ and $\bar{Q}(s,a)=0$. While MCTS algorithms are often presented as initialising new leaf nodes directly with a visit and the heuristic value \todo{ref UCT init}, this biasing term can instead be encorporated into the backups instead, allowing the algorithm to be run with an without the $\mctsmode$ parameter.
+    
+    Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)$, the \textit{full backups} for the average returns $\bar{V}$ and $\bar{Q}$ including the biasing term for $t=h-1,\ldots,0$ are given by:
+    \begin{align}
+        \bar{Q}(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s'|s_t,a_t)}{N(s_t,a_t)} \bar{V}(s') \right), 
+                    \label{eq:dents_q_backup} \\ 
+        \bar{V}(s_t) &\leftarrow \frac{\Nv \Vinit(s_t)}{N(s_t)+\Nv} 
+            + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \bar{Q}(s_t,a).
+    \end{align}
+
+    \bd{In the main thesis the visit counts } $N(s'|s,a)$ \bd{are breifly mentioned in Section XXX, but not used for the general presentation to follow prior works presentation.} When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \todo{ref} and argued by \todo{cite kata go}. 
+
+    \bd{This is of particular importance for algorithms that used average returns that are typically computed using incremental backups. Note that the benefits of using} $\graphmode$ \bd{come when the unique state assumption does not hold. The correctness of using full backups when the unique state assumption does not hold is beyond the scope of this thesis} \todo{cite katago}.
+
+
+\subsubsection{UCT Implementation with Full Backups}
+\label{appsec:4:uct_full_backups}
+    As a worked example, the version of UCT used in experiments that utilises all of the parameters from Section \ref{appsec:4:hyperparams} is given. The algorithm is specified minimally using the \thtspp\ewe schema given in Section \ref{sec:2-4-2-thts}.
+
+    \paragraph{Value Estimates and Parameters.}
+    
+        \begin{itemize}
+            \item $\Vuct(s)$ - The value estimate for state $s$;
+            \item $\Quct(s,a)$ - The Q-value estimate for state $s$ and action $a$;
+            \item $N(s)$ - The visit count for state $s$;
+            \item $N(s,a)$ - The visit count for state $s$ and action $a$;
+            \item $\normalisedq$ - A flag indicating whether the Q-values should be normalised when used in the search policy;
+            \item $\Nvuct$ - The number of pseudo-visits to use for biasing the backups;
+            \item $\Nquct$ - The number of pseudo-visits to use for biasing the Q-values;
+            \item $\Vinit(s)$ - The heuristic value estimate for state $s$;
+            \item $\Qinit(s,a)$ - The heuristic Q-value estimate for state $s$ and action $a$;
+            \item $\buct$ - the bias parameter used in the UCT search policy;
+        \end{itemize}
+
+    \paragraph{Initialisation.}
+        \begin{align}
+            N(s) \leftarrow 0, \\
+            N(s,a) \leftarrow 0, \\
+            \Vuct(s) \leftarrow 0, \\
+            \Quct(s,a) \leftarrow 0.
+        \end{align}
+
+    \paragraph{Search Policy.}
+        Intermediate Q-values:
+        \begin{align}
+            \Quctbias(s,a) &= \frac{N(s,a) \Quct(s,a) +  \Nquct \Qinit(s,a)}{N(s,a)+\Nquct}, \\
+            \Quctnorm(s,a) &= 
+            \begin{cases}
+                \frac{\Quctbias(s,a)-\min_{a\in\cl{A}}\Quctbias(s,a)}{\max_{a\in\cl{A}}\Quctbias(s,a)-\min_{a\in\cl{A}}\Quctbias(s,a)} & \text{if } \normalisedq, \\
+                \Quctbias(s,a) & \text{otherwise.}
+            \end{cases}
+        \end{align}
+
+        Search policy:
+        \begin{align}
+            \piuct(s) &= \argmax_{a\in\cl{A}} \Quctnorm(s,a) + \buct \sqrt{\frac{\log(N(s))}{N(s,a)}}, 
+        \end{align}
+        
+
+    \paragraph{Backups.}
+        Let $\tau_{:h}=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\piuct$:
+        \begin{align}
+            \Quct(s_t,a_t) &\leftarrow 
+                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s'|s_t,a_t)}{N(s_t,a_t)} \Vuct(s') \right), 
+                        \label{eq:dents_q_backup} \\ 
+            \Vuct(s_t) &\leftarrow \frac{\Nv \Vinit(s_t)}{N(s_t)+\Nv} 
+                + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \Quct(s_t,a).
+        \end{align}
+
+    \paragraph{Recommendation Policy.}
+        \begin{align}
+            \psiuct(s)=\argmax_{a\in\cl{A}}\Quct(s,a),  \\
+            \mvuct(s) = \argmax_{a\in\cl{A}} N(s,a). 
+        \end{align}
+
+
+
+
+
+
+\subsection{Hyperparameter Optimisation}
+\label{appsec:4:hypersearch}
+
+    The parameters shared between all algorithms were set manually to the following values for all environments:
+    \begin{itemize}
+        \item $\mctsmode=\text{False}$ - the selection phase continues until the planning horizon or a terminal state is reached;
+        \item $\graphmode=\text{True}$ - transposition tables are used to store and re-use decision nodes when they are reached again via another path;
+        \item $\normalisedq=\text{True}$ - Q-values are linearly normalised before being used in the search policy;
+        \item $\Nv=0$ - the number of pseudo-visits assigned to $\initv$ in backups;
+        \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
+    \end{itemize}
+
+    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$.
+
+    To select the remaining hyperparameters for the experiments detailed in Section \todo{ref} the BayesOpt library \todo{cite} was used. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{l|c|c|c} 
+            Parameter   
+                & Minimum    
+                & Maximum    
+                & Scaling \\
+            \hline
+            $\epsilon$      & $10^{-6}$     & $1$       & Logarithmic \\
+            $\alpha$        & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
+            $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\betathresh$   & $10^{3}$      & $10^12$   & Logarithmic \\
+            $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\uctbudget$    & $1$           & $10^5$    & Linear 
+        \end{tabular}
+        \caption[The hyperparameter search space for gridworld experiments (Section \todo{ref})]{The hyperparameter search space for gridworld experiments (Section \todo{ref}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
+    \end{table}
+
+    Parameters were optimised using the \todo{ref} map for DeterministicGridWorld, the \todo{ref} map for FrozenLake and the \todo{ref} map for Sailing.
+
+    To evaluate the performance of a given set of parameters, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
+
+    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_hps}, \ref{table:frozenlake_hps}, \ref{table:sailing_north_hps} and \ref{table:sailing_south_east_hps} respectively.
+
+
+
+    \begin{table}[]
+        \centering
+        \begin{tabular}{l|c|c|c} 
+            Algorithm
+                & $\epsilon$ 
+                & $\alpha$        & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
+            $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\betathresh$   & $10^{3}$      & $10^{12}$   & Logarithmic \\
+            $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\uctbudget$    & $1$           & $10^5$    & Linear 
+            \hline
+            
+        \end{tabular}
+        \caption[The hyperparameter search space for gridworld experiments (Section \todo{ref})]{The hyperparameter search space for gridworld experiments (Section \todo{ref}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps}}
+    \end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    
+    TODO TODO TODO TODO TODO
+    brief description of hp opt
+    table giving ranges for parameters optimised over
+    give table for gridworld, frozen lake and sailing for the optimised parameters used in experiments
+
+
+
+
+
+    TODO TODO TODO
+    edit go stuff
+
+
+
+
+
+    UCT is a good example of how the common hyperparameters are integrated into existing algorithms. UCT is a tree search algorithm that uses a Boltzmann distribution to select actions at each decision node. The search policy that UCT follows is given by:
 
     \todo{This is copy and pasted from neurips at the moment. It doesn't account for the changes made to the algorithms or now using BayesOpt. Need to describe the parameter space searched over for each algorithm, how many Bayes trials were used and how each bayes tirla evaluated. And also give the final values used in tables. Manually setting Qinit function, but no prior knowledge used other than this.}
 
@@ -80,32 +397,6 @@
 
 
 
-\section{DENTS with a constant $\beta$} 
-\label{appsec:dents_mimic_ments}
-
-\htodo{this subsubsection currently just a c and p from neurips}
-
-\todo{Place this better? Or maybe just remove from thesis?}
-
-To empirically demonstrate that DENTS search policy can mimic the search policy of MENTS, we ran DENTS with $\alpha=1.0,\beta(m)=\alpha$ on the 10-chain environment, and compared it to MENTS with $\alpha=1.0$. We also ran DENTS with $\alpha=0.001, \beta(m)=\alpha$ in the Frozen Lake environment, and compared it to MENTS with $\alpha=0.001$ which is what was selected in the hpyerparameter search (Appendix \ref{app:hps}). Results are given in Figure \ref{fig:dbments}. Note that in the 10-chain, only MENTS has a dip in performance initially, which is due to the two algorithms using different recommendation policies.
-
-
-\begin{figure*}
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/temp/dbments/dbments_dchain.png}
-        \caption{10-chain.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/temp/dbments/dbments_fl.png}
-        \caption{Frozen Lake.}
-    \end{subfigure}
-    \caption{Comparing DENTS with MENTS, by setting $\beta_{\text{DENTS}}(m)=\alpha_{\text{MENTS}}, \alpha_{\text{DENTS}}=\alpha_{\text{MENTS}}$, where $\alpha_{\text{MENTS}}$ is the temperature used for MENTS, and $\alpha_{\text{DENTS}},\beta_{\text{DENTS}}$ are the temperatures used by DENTS.  \todo{Update fig?}}
-    \label{fig:dbments}
-\end{figure*}
-
 
 
 
@@ -125,7 +416,7 @@ To empirically demonstrate that DENTS search policy can mimic the search policy 
 
     \htodo{Just change the form of beta decay back to the inv sqrt used before. We tried lots of entropy things and nothing really worked.}
 
-    Recall from Appendix \ref{app:adapt_for_games} that we initialised values with the neural networks as $Q^{\text{init}}(s,a)=\log \tilde{\pi}(a|s)+B$ and $V^{\text{init}}(s)=\tilde{V}(s)$, where $B$ is a constant (adapted from Xiao \todo{fixcites} %\etal \cite{xiao2019maximum}). 
+    Recall from Appendix \ref{app:adapt_for_games} that we initialised values with the neural networks as $Q^{\text{init}}(s,a)=\log \tilde{\pi}(a|s)+B$ and $V^{\text{init}}(s)=\tilde{V}(s)$, where $B$ is a constant (adapted from Xiao \todo{fixcites}) %\etal \cite{xiao2019maximum}). 
     For these experiments we set a value of $B=\frac{-1}{|\mathcal{A}|}\sum_{a\in\mathcal{A}} \log\tilde{\pi}(a|s)$. Initialising the values in such a way tends to lead to the values of $Q^{\text{init}}(s,a)$ being in the range $[-20,20]$, to account for this, we scaled the results of the game to $100$ and $-100$, which means that any parameters selected are about $100$ times larger than they would be if we had not have used this scaling.
     
     In these experiments we used a recommendation policy that recommends the action that was sampled the most, i.e. $\psi(s)=\max_a N(s,a)$, as this tends to be more robust to any noise from neural network outputs.

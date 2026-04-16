@@ -6,7 +6,7 @@
     \item[CHVS] Convex Hull Value Set.
     \item[CMAB] Contextual Multi-Armed Bandit (problem).
     \item[CZ] Contextual Zooming. 
-    \item[DENTS] Decaying ENtropy Tree Search
+    \item[DENTS] Decaying ENtropy Tree Search.
     \item[EMAB] Exploring Multi-Armed Bandit (problem).
     \item[MAB] Multi-Armed Bandit (problem). 
     \item[MCCS] Minimal Convex Coverage Set.
@@ -53,6 +53,10 @@
         If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled from the distribution $f$.
     \item[$O(f(x))$]
         Big-O notation: $g(x) = O(f(x))$ if there exist constants $c > 0$ and $x_0$ such that $|g(x)| \leq c \cdot f(x)$ for all $x \geq x_0$. Used to describe an asymptotic upper bound on the growth rate of a function.
+    \item[$X_i\rap X$]
+        The sequence of random variables $X_i$ converges in probability to the random variable $X$. $\Pr\left(\left|X_i - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ i \rightarrow \infty$ for all $\varepsilon>0$.
+    \item[$X_i\raas X$]
+        The sequence of random variables $X_i$ converges almost surely to the random variable $X$. $\Pr\left(\lim_{i\rightarrow\infty} X_i = X\right) = 1$.
     % \\
     % %%%%%
     % % MABs - notation is local to background section + 
@@ -87,7 +91,7 @@
     % (MO)MDPs
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-            \Large\textbf{(Multi-Objective) Markov Decision Processes \\(Defined in Sections \ref{sec:2-2-mdps} and \ref{sec:2-5-morl})}\hfill\hfill
+            \Large\textbf{(Multi-Objective) Markov Decision Processes \\(Defined in Sections \ref{sec:2-2-mdps} and \ref{sec:2-6-morl})}\hfill\hfill
           }}]
     \item[$\cl{A}$]
         A (finite) set of actions.
@@ -114,6 +118,8 @@
         The reward at the $t$th timestep of a trajectory.
     \item[$\cl{S}$]
         A (finite) set of states.
+    \item[$\cl{S}_0$]
+        The set of reachable states from the starting state $s_0$ in an MDP.
     \item[$\suc{s}{a}$]
         The set of successor states of a state-action pair $(s,a)$, with respect to an MDP: $\suc{s}{a}=\{s'\in\cl{S}|p(s'|s,a)>0\}$.
     \item[$s_0$]
@@ -257,7 +263,7 @@
     % MENTS
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-        \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-3-ments})}\hfill\hfill
+        \Large\textbf{Maximum ENtropy Tree Search (Section \ref{sec:2-4-4-ments})}\hfill\hfill
     }}]
     \item[$\alphaments$] 
         The temperature parameter used in MENTS, which is the coefficient of the entropy terms in the maximum entropy objective.
@@ -280,7 +286,7 @@
     % MORL
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-        \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-5-morl})}\hfill\hfill
+        \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-6-morl})}\hfill\hfill
       }}]
     \item[$CCS(\Pi)$] 
         A convex coverage set of policies, which contains at least one policy that maximises the linear utility $u_{\lin}(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
@@ -317,7 +323,7 @@
     % % CHVI
     % %%%%%
     % \item[{\parbox[t]{\textwidth}{
-    %     \Large\textbf{Convex Hull Value Iteration \\(Section \ref{sec:2-5-1-chvi})}\hfill\hfill
+    %     \Large\textbf{Convex Hull Value Iteration \\(Section \ref{sec:2-6-1-chvi})}\hfill\hfill
     %   }}]
     % \item[Q value set]
     % \item[Scalar Q value]

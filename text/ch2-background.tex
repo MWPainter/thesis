@@ -10,6 +10,9 @@
 % [ ] Nick comments
 % [ ] Final revision
 
+% [ ] Latex problems
+% [X] Latex labels
+
 
 
 
@@ -39,15 +42,15 @@
 
     \minitoc
 
-    This chapter introduces the fundamental concepts which are used throughout this thesis, in particular Section \ref{sec:2-4-1-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
+    This chapter introduces the fundamental concepts which are used throughout this thesis, in particular Section \ref{sec:2-4-2-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
 
-    Section \ref{sec:2-1-mab} briefly covers Multi-Armed Bandit problems, which are commonly used to study decision making algorithms and as a building block in Monte Carlo Tree Search methods. In particular, \textit{Contextual} Multi-Armed Bandit problems (Section \ref{sec:2-1-2-contextual-mab}) are covered, which will be relevant in the design and analysis of the multi-objective algorithms discussed in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. 
+    Section \ref{sec:2-1-mab} briefly covers Multi-Armed Bandit problems, which are commonly used to study decision making algorithms and as a building block in Monte Carlo Tree Search methods. In particular, \textit{Contextual} Multi-Armed Bandit problems (Section \ref{sec:2-1-3-contextual-mab}) are covered, which will be relevant in the design and analysis of the multi-objective algorithms discussed in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. 
     
     Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl} outline the sequential decision-making framework used in this thesis. Additionally, the Maximum Entropy Reinforcement Learning framework is covered (Section \ref{sec:2-3-1-merl}) which is a major topic discussed in Chapter \ref{ch:4-dents}.
     
     Section \ref{sec:2-4-thts} covers the Monte Carlo Tree Search framework which will be used for solving sequential decision-making problems. 
 
-    Finally, Section \ref{sec:2-5-morl} covers the Multi-Objective Reinforcement Learning framework, which is used to study sequential decision-making algorithms with multiple objectives.
+    Finally, Section \ref{sec:2-6-morl} covers the Multi-Objective Reinforcement Learning framework, which is used to study sequential decision-making algorithms with multiple objectives.
 
     % Finally, Section \ref{sec:2-6-sampling} discusses sampling from categorical distributions efficiently.
 
@@ -80,7 +83,7 @@
     
     The MAB problem was first considered by \citet{mab_og} in 1952, in the context of clinical trials. In a clinical trial, each patient is treated with one of two possible treatments, where the effectiveness of each treatment is unknown. In this setting, it is essential that the best treatment is given to as many patients as possible, while each treatment needs to be considered to determine its effectiveness. The balance between \textit{exploring} to find the best treatment (arm) and \textit{exploiting} the best treatment (arm) is known as the \textit{exploration-exploitation trade-off}.
 
-    The remainder of this section will formalise the MAB problem, give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}, and consider two variations on the MAB problem (Sections \ref{sec:2-1-1-exploring-mab} and \ref{sec:2-1-2-contextual-mab}) that are relevant in this thesis.
+    The remainder of this section will formalise the MAB problem, give details of the widely used Upper Confidence Bound (UCB) algorithm \cite{ucb}, and consider two variations on the MAB problem (Sections \ref{sec:2-1-2-exploring-mab} and \ref{sec:2-1-3-contextual-mab}) that are relevant in this thesis.
 
 
 
@@ -100,7 +103,7 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm}
-\label{sec:2-1-0-ucb}
+\label{sec:2-1-1-ucb}
 
     Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Let $f(1),\ldots,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),\ldots,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,\ldots,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ over $\{1,\ldots,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
 
@@ -162,7 +165,7 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Exploring Bandits}
-\label{sec:2-1-1-exploring-mab}
+\label{sec:2-1-2-exploring-mab}
 
     In the pure exploration problem for $K$-armed bandits \cite{exploring_bandit}, the format of each round is changed slightly. The agent still pulls an arm each round and receives a reward from the environment, but after, the agent is given an opportunity to recommend which arms are the best. This better reflects scenarios where time is spent planning before any action is taken in the real world. Because the agent is only assessed on the quality of the recommendations, the agent is free to purely explore using its arm pulls and only needs to exploit when providing a recommendation. 
 
@@ -227,7 +230,7 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Contextual Bandits} % and Contextual Zooming}
-\label{sec:2-1-2-contextual-mab}
+\label{sec:2-1-3-contextual-mab}
 
     The Contextual Multi-Armed Bandit (CMAB) problem \cite{cz,cmab_alt,cz_long} is another extension of the MAB problem, where the agent is provided with a context $w\in\cl{W}$ at the start of each round. After the arm $x\in\cl{X}$ is selected, the reward is sampled from the distribution $f(w,x)$, with mean $\mu(w,x)$, which also depends on the context. For each round $m$, a strategy maps contexts to arms via $\sigma^m(w)$. Figure \ref{fig:2:cmab_problem} gives an overview of the CMAB problem.
 
@@ -334,10 +337,22 @@
         \end{align}
     \end{defn}
 
-    In this thesis, MDPs may contain \textit{trap states}, which are states that, once reached, can never be left, and no further reward is obtained.
+    The set of reachable states from the starting state $s_0$ can then be defined as the smallest set closed under the successor relation:
+
+    \begin{defn}
+        \label{def:2:reachable}
+        The set of \textnormal{reachable states} $\cl{S}_0$ from 
+        the starting state $s_0$ is the smallest set satisfying:
+        \begin{align}
+            s_0 \in \cl{S}_0, \qquad 
+            s \in \cl{S}_0 \Rightarrow \bigcup_{a \in \cl{A}} \suc{s}{a} \subseteq \cl{S}_0.
+        \end{align}
+    \end{defn}
+
+    In this thesis, MDPs may contain \textit{trap states}, which are states that, once reached, can never be left and from which no further reward is obtained.
     \begin{defn}
         \label{def:2:terminal}
-        A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The the set of terminal states is denoted $\terminal\subseteq\cl{S}$.
+        A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The set of terminal states is denoted $\terminal\subseteq\cl{S}$.
     \end{defn}
 
     A \textit{policy} maps each state to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
@@ -622,7 +637,7 @@
 
     Trial-Based Heuristic Tree Search (THTS) \cite{thts} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
 
-    \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-1-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises \mctsone\ewe algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-3-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
+    \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-2-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises \mctsone\ewe algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-4-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
     
     
 
@@ -644,10 +659,10 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Notation}
-\label{sec:2-4-0-notation}
+\label{sec:2-4-1-notation}
     To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
-    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-5-morl}, the timestep parameter is dropped for the remainder of this thesis.
+    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
 
     \begin{figure}
         \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
@@ -684,11 +699,11 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Trial Based Heuristic Tree Search}
-\label{sec:2-4-1-thts}
+\label{sec:2-4-2-thts}
 
     \thtspp\ewe \cite{thtspp} provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates \mctsone\ewe algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alpha_go,alpha_go_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
 
-    Each trial has an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-3-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Contexts allow algorithms to store additional information within a trial without altering the interface. Beyond the scope of this thesis, contexts enable algorithms that require additional per-trial state to be implemented in \thtspp, such as Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
+    Each trial has an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-4-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Contexts allow algorithms to store additional information within a trial without altering the interface. Beyond the scope of this thesis, contexts enable algorithms that require additional per-trial state to be implemented in \thtspp, such as Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
     \begin{defn}
         \label{def:2:thts_context}
         A \textnormal{context} is an arbitrary key-value store used to store any per-trial data.
@@ -730,7 +745,7 @@
         \label{fig:2:transposition_table_example}
     \end{figure}
 
-    If the unique state assumption (Section \ref{sec:2-4-0-notation}) is set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
+    If the unique state assumption (Section \ref{sec:2-4-1-notation}) is set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
 
     Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} illustrates the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
 
@@ -862,7 +877,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Upper Confidence Bound Applied to Trees (UCT)}
 \label{sec:2-4-2-uct}
 
-    Upper Confidence Bound Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-1-thts}.
+    Upper Confidence Bound Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-2-thts}.
 
     The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. The parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy, which is useful if the Q-values can vary in magnitude throughout the search tree. Typically \mctsmode\ewe is set to True for UCT, and this section assumes that this is the case.
 
@@ -922,7 +937,7 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Predictor-UCT (PUCT)}
-\label{sec:2-4-2-puct}
+\label{sec:2-4-3-puct}
 
     \todo{Maybe move to related work Ch3, Sec 2.4 either is THTS with all the algorithms, or THTS with a couple examples. PUCT, RENTS, TENTS can go in the related work section. Should also define MaxUCT.}
 
@@ -963,7 +978,7 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Maximum Entropy Tree Search}
-\label{sec:2-4-3-ments}
+\label{sec:2-4-4-ments}
 
     Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
     \begin{align}
@@ -1016,8 +1031,68 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
+\section{Convergence of Random Variables}
+\label{sec:2-5-convergence}
+
+    This section introduces the two modes of convergence used in the proofs in this thesis and states existing results that will be used.
+
+    \begin{defn}
+        \label{def:2:convergence_in_probability}
+        A sequence of random variables $X_i$ \textnormal{converges in probability} to a random variable $X$, written as $X_i \rap X$, if for all $\varepsilon>0$ the following holds:
+        \begin{align}
+            \Pr\left(\left|X_i - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ i \rightarrow \infty.
+        \end{align}
+    \end{defn}
+
+    \begin{defn}
+        \label{def:2:convergence_almost_surely}
+        A sequence of random variables $X_i$ \textnormal{converges almost surely} to a random variable $X$, written as $X_i \raas X$, if the following holds:
+        \begin{align}
+            \Pr\left(\lim_{i\rightarrow\infty} X_i = X\right) = 1.
+        \end{align}
+    \end{defn}
+
+    Almost sure convergence is a stronger condition than convergence in probability: almost sure convergence implies convergence in probability, but not vice versa \cite{prob_and_measure}.
+
+    The Dvoretzky-Kiefer-Wolfowitz (DKW) inequality \cite{dkw_inequality} bounds the maximum difference between the empirical distribution of samples and the true distribution:
+
+    \begin{theorem} 
+        \label{thrm:2:dkw_inequality}
+        Let $\{X_i\}_{i=1}^m$ be random variables drawn from a probability distribution with a cumulative distribution function of $F$. Let the empirical cumulative distribution function be $F_m(x)=\frac{1}{m} \sum_{i=1}^m \one[X_i < x]$. Then the Dvoretzky-Kiefer-Wolfowitz inequality is:
+        \begin{align}
+            \Pr\left(\sup_x |F_m(x)-F(x)| > \varepsilon\right) \leq 2\exp\left(-2m\varepsilon^2\right).
+        \end{align}
+    \end{theorem}
+
+    The DKW inequality is used in Chapters \ref{ch:4-dents} and \ref{ch:5-chmcts} to bound the error when using the empirical visit count ratio $\frac{N(s')}{N(s,a)}$ as an approximation to the transition probability $p(s'|s,a)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [X] TODOs
+% [X] Spell check
+% [X] Citations + Refs
+% [X] LitRev sync
+% [X] Abbreviations sync
+% [X] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Multi-Objective Reinforcement Learning}
-\label{sec:2-5-morl}
+\label{sec:2-6-morl}
 
 This thesis follows a utility-based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} which is depicted in Figure \ref{fig:2:mo_decision_support}. In the decision support scenario, an algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions, from which a user then picks their most preferred option to be used. This scenario is useful when a user's preferences over the multiple objectives are unknown or difficult to specify in advance. 
 
@@ -1027,7 +1102,7 @@ This thesis follows a utility-based approach to multi-objective reinforcement le
     \label{fig:2:mo_decision_support}
 \end{figure}
 
-This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-5-1-chvi}, a multi-objective extension of Value Iteration is given.
+This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
 
 To specify problems with multiple objectives, the reward function of an MDP is changed to give a vector of rewards, rather than a scalar reward:
 \begin{defn}
@@ -1114,7 +1189,7 @@ Undominated sets often have an infinite cardinality, and as such are infeasible 
     A set $CS(\Pi;u)\subseteq U(\Pi)$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
     \begin{align}
         \forall \bff{w}\in\Delta^D.\ \exists \pi\in CS(\Pi;u).\ \forall \pi'\in\Pi: \nonumber \\ 
-        \quad u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:coverage_set}
+        \quad u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{eq:2:coverage_set}
     \end{align}
 
     In particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
@@ -1127,7 +1202,7 @@ A convex coverage set may contain redundant policies and is not necessarily mini
     A set $MCCS(\Pi)\subseteq \Pi$ is a \textnormal{minimal convex coverage set} if it is a convex coverage set and if the following holds
     \begin{align}
      \forall \pi\in MCCS(\Pi).\ \exists \bff{w}\in\Delta^D.\ \forall \pi'\in MCCS(\Pi)-\{\pi\}: \nonumber \\
-     \quad u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{cond:min_convex_coverage_set}
+     \quad u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{eq:2:min_convex_coverage_set}
     \end{align}
 \end{defn} 
 
@@ -1137,7 +1212,7 @@ A convex coverage set may contain redundant policies and is not necessarily mini
     \label{fig:2:convex_hull_geometry} 
 \end{figure}
 
-When computing solution sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy or solution set (for example, Convex Hull Value Iteration covered in Section \ref{sec:2-5-1-chvi}). This thesis will refer to the values obtained by a set of policies as a \textit{value set}:
+When computing solution sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy or solution set (for example, Convex Hull Value Iteration covered in Section \ref{sec:2-6-1-chvi}). This thesis will refer to the values obtained by a set of policies as a \textit{value set}:
 \begin{defn}
     \label{def:2:mo_value_set}
     The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
@@ -1202,7 +1277,7 @@ The Pareto front can be related to the previously defined solution sets if \text
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Convex Hull Value Iteration}
-\label{sec:2-5-1-chvi}
+\label{sec:2-6-1-chvi}
 
     Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
@@ -1234,23 +1309,23 @@ The Pareto front can be related to the previously defined solution sets if \text
     
     Note that if a policy is extracted for every weight vector $\bff{w}\in\Delta^D$, the resulting set of policies forms a convex coverage set.
     
-    \begin{figure}
-        \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
-        \caption[A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set.]{A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set. The hyperplane running through $\bff{v}_i$ with normal $\bff{w}_i=\frac{\bff{v}_i-\bff{v}_\bot}{\Vert\bff{v}_i-\bff{v}_\bot\Vert_2}$ is tangential to the geometric convex hull. Hence $\bff{v}_i$ is the optimal value for the weight $\bff{w}_i$ and following the CHVI policy in Equation (\ref{eq:2:chvi_policy}) will give the desired value $\bff{v}_i$.}
-        \label{fig:2:convex_hull_extract_policy_weight} 
-    \end{figure}
+    % \begin{figure}
+    %     \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
+    %     \caption[A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set.]{A visualisation, reusing the convex hull from Figure \ref{fig:2:convex_hull_geometry}, demonstrating how to compute a weight vector that can be used to extract a specific value from a vector set. The hyperplane running through $\bff{v}_i$ with normal $\bff{w}_i=\frac{\bff{v}_i-\bff{v}_\bot}{\Vert\bff{v}_i-\bff{v}_\bot\Vert_2}$ is tangential to the geometric convex hull. Hence $\bff{v}_i$ is the optimal value for the weight $\bff{w}_i$ and following the CHVI policy in Equation (\ref{eq:2:chvi_policy}) will give the desired value $\bff{v}_i$.}
+    %     \label{fig:2:convex_hull_extract_policy_weight} 
+    % \end{figure}
 
-    If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, an appropriate weight can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
-    \begin{align}
-        (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
-    \end{align} 
+    % If the user would rather select a particular value from the CHVS, say $\bff{v}\in\Vchvi(s_0;0)$, rather than provide a weight, an appropriate weight can be computed. Let $\bff{v}_\bot$ be a \textit{reference point}, defined at each index as:
+    % \begin{align}
+    %     (v_{\bot})_i = \min \{v'_i | \bff{v}'\in\Vchvi(s_0;0) \}. \label{eq:2:chvi_ref_point}
+    % \end{align} 
 
-    The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as illustrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
-    \begin{align}
-        \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
-    \end{align}
+    % The vector that runs from $\bff{v}_\bot$ to $\bff{v}$ provides an appropriate weighting over objectives for which $\bff{v}$ will produce the largest utility out of $\hat{\bfcl{V}}(s_0;0)$, as illustrated in Figure \ref{fig:2:convex_hull_extract_policy_weight}. Hence, to extract a policy that achieves the value $\bff{v}$ the weight $\bff{w}$ should be set to:
+    % \begin{align}
+    %     \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
+    % \end{align}
 
-    and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}). 
+    % and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}). 
 
 
 
