@@ -10,15 +10,41 @@
 % [ ] Nick comments
 % [ ] Final revision
 
+
+
+
+
+
+
+
+
+
+
 \chapter{\label{app:go-results}\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
 
 
-    This appenix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
+    This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
     \begin{itemize}
         \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in \todo{ref FL and Sailing results};
         \item Section \ref{appsec:4:hps} gives details on the hyperparameters used for the experiments in \todo{ref FL and Sailing results} and the optimisation process used to select them;
-        \item Section \ref{appsec:4:go} gives additional details for the Go experiments conducted in Section \todo{ref go results}, including hyperparameters and how they were selected;
+        \item Section \ref{appsec:4:go_hps} gives additional details on the Go experiments, including hyperparameter selection;
     \end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -75,6 +101,21 @@
         \caption[Maps used for the DeterministicGridWorld and FrozenLake environment.]{Maps used for the DeterministicGridWorld and FrozenLake environments. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{update these maps to the final maps used  and update caption.}}
         \label{appfig:fl_maps}
     \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -239,7 +280,7 @@
 
     Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$.
 
-    To select the remaining hyperparameters for the experiments detailed in Section \todo{ref} the BayesOpt library \todo{cite} was used. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
+    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \todo{cite}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
 
     \begin{table}[]
         \centering
@@ -254,7 +295,7 @@
             $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
             $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\betathresh$   & $10^{3}$      & $10^12$   & Logarithmic \\
+            $\betathresh$   & $10^{3}$      & $10^{12}$ & Logarithmic \\
             $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\uctbudget$    & $1$           & $10^5$    & Linear 
         \end{tabular}
@@ -263,131 +304,191 @@
 
     Parameters were optimised using the \todo{ref} map for DeterministicGridWorld, the \todo{ref} map for FrozenLake and the \todo{ref} map for Sailing.
 
-    To evaluate the performance of a given set of parameters, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
+    To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
 
-    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_hps}, \ref{table:frozenlake_hps}, \ref{table:sailing_north_hps} and \ref{table:sailing_south_east_hps} respectively.
+    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively.
 
-
+    %
+    % DeterministicGridWorld
+    %
 
     \begin{table}[]
         \centering
-        \begin{tabular}{l|c|c|c} 
-            Algorithm
-                & $\epsilon$ 
-                & $\alpha$        & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
-            $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\betathresh$   & $10^{3}$      & $10^{12}$   & Logarithmic \\
-            $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\uctbudget$    & $1$           & $10^5$    & Linear 
-            \hline
-            
-        \end{tabular}
-        \caption[The hyperparameter search space for gridworld experiments (Section \todo{ref})]{The hyperparameter search space for gridworld experiments (Section \todo{ref}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps}}
-    \end{table}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c}
+                Algorithm & $b$ & $\uctbudget$ \\
+                \hline
+                UCT     & $7.00$ & \\
+                MaxUCT  & $6.86$ & \\
+                H-MCTS  & $1.50$ & $9.95\times10^4$ \\
+            \end{tabular}
+            \caption{UCT-based search algorithms.}
+        \end{subtable}
     
-
+        \vspace{1em}
     
-    TODO TODO TODO TODO TODO
-    brief description of hp opt
-    table giving ranges for parameters optimised over
-    give table for gridworld, frozen lake and sailing for the optimised parameters used in experiments
-
-
-
-
-
-    TODO TODO TODO
-    edit go stuff
-
-
-
-
-
-    UCT is a good example of how the common hyperparameters are integrated into existing algorithms. UCT is a tree search algorithm that uses a Boltzmann distribution to select actions at each decision node. The search policy that UCT follows is given by:
-
-    \todo{This is copy and pasted from neurips at the moment. It doesn't account for the changes made to the algorithms or now using BayesOpt. Need to describe the parameter space searched over for each algorithm, how many Bayes trials were used and how each bayes tirla evaluated. And also give the final values used in tables. Manually setting Qinit function, but no prior knowledge used other than this.}
-
-    To select hyper-parameters for the experiments detailed in Section \ref{sec:gridworlds}, we performed a hyper-parameter search. The search was run on the 8x12 Frozen Lake environment from Figure \ref{fig:fl12}, and the results in Section \ref{sec:gridworlds} were run on the 8x12 Frozen Lake envrionment from Figure \ref{fig:fl12test}. For the Sailing problem, we performed the search using an initial wind direction of North, and the result in Section \ref{sec:results} used an initial wind direction of South-East.
-
-    To avoid the search space from becoming too large, we set some parameters manually. A good rule of thumb for initial values is to assure that $Q^{\text{init}}_{\text{sft}}(s,a) < Q_{\sft}^*(s,a)$ and $Q^{\text{init}}(s,a) < Q^*(s,a)$. Explicitly this means that an initial value of zero is \textit{not} a good choice for the Sailing problem, as rewards are negative (i.e. it has costs). In the Sailing environment, we actually set the initial values to $-200$, so that they were equal to the lowest possible return from a trial (the trial length was set to $50$, and an agent can incur a cost of at most $-4$ per timestep). To simplify the search space, we initially set the decay function in DENTS to $\beta(m)=\alpha/\log(e+m)$ and tune it after. 
-
-    For the remaining parameters, we considered all combinations of the following values:
-    \begin{itemize}
-        \item \textit{UCT Bias}: \todo{cite}%\citeapp{prst}
-            , 100.0, 10.0, 1.0, 0.1;
-        \item \textit{MENTS exploration coefficient}: 2.0, 1.0, 0.3, 0.1, 0.03, 0.01;
-        \item \textit{Temperature}: 100.0, 10.0, 1.0, 0.1, 0.01, 0.001;
-        \item \textit{HMCTS UCT budget}: 100000, 30000, 10000, 3000, 1000, 300, 100, 30, 10.
-    \end{itemize}
-
-    Where a UCT bias of \todo{cite}%\citeapp{prst}
-    refers to the adaptive bias introduced by Keller and Eyerich \todo{cite}%\citeapp{prst}
-    , and `temperature' refers to the relevant temperature for the algorithm (i.e. search temperature in BTS and DENTS, and the temperature for Shannon/Relative/Tsallis entropy in MENTS/RENTS/DENTS). After that search, for DENTS we considered the decay functions of the form $\beta(m)=\beta_{\text{init}}/\log(e+m)$ and considered the following values:
-    \begin{itemize}
-            \item \textit{DENTS initial entropy temperature} ($\beta_{\text{init}}$): 100.0, 10.0, 1.0, 0.1.
-    \end{itemize}
-    The final set of hyperparameters is given in Tables \ref{table:hyper_fl} and \ref{table:hyper_s}, which were used in the gridworld experiments in Section \ref{sec:gridworlds}. Not included in the tables: \todo{cite}%\citeapp{prst}
-    was selected for the UCT bias in both Frozen Lake and the Sailing problem.
-
-    \begin{table}[]
-        \centering
-        \begin{tabular}{r|ccc} 
-            Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
-            \hline
-            MENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
-            RENTS       & 2.0                                   & 0.001                     & 0                                                                     \\
-            TENTS       & 1.0                                   & 0.001                     & 0                                                                     \\
-            BTS         & 2.0                                   & 0.1                       & 0                                                                     \\
-            DENTS       & 1.0                                   & 0.1                       & 0                                                                     \\
-        \end{tabular}
-        \caption[Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}]{Final hyperparameters used for Frozen Lake in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
-        was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
-        was selected for the bias and 3000 for the UCT budget in HMCTS and $\beta_{\text{init}}=1.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_fl}}
-    \end{table}
-
-    \begin{table}[]
-        \centering
-        \begin{tabular}{r|ccc} 
-            Algorithm   & Exploration Parameter ($\epsilon$)    & Temperature ($\alpha$)    & Initial Values ($Q^{\text{init}}$, $Q^{\text{init}}_{\text{sft}}$)    \\
-            \hline
-            MENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
-            RENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
-            TENTS       & 2.0                                   & 0.1                       & -200                                                                  \\
-            BTS         & 1.0                                   & 10.0                      & -200                                                                  \\
-            DENTS       & 1.0                                   & 10.0                      & -200                                                                  \\
-        \end{tabular}
-        \caption[Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}]{Final hyperparameters used for the Sailing Problem in Section \ref{sec:gridworlds}. Not included in the table: \todo{cite}%\citeapp{prst}
-        was selected for the bias in UCT, \todo{cite}%\citeapp{prst}
-        was selected for the bias and 30 for the UCT budget in HMCTS and $\beta_{\text{init}}=10.0$ was selected as the initial entropy temperature for DENTS. \label{table:hyper_s}}
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c|c|c|c|c}
+                Algorithm
+                    & $\epsilon$
+                    & $\alpha$
+                    & $\alpha_0$
+                    & $\alphadecay$
+                    & $\beta_c$
+                    & $\betathresh$ \\
+                \hline
+                MENTS & $1.00$ & $6.81\times10^{-4}$ & & & & \\
+                RENTS & $1.00$ & $1.34\times10^{-4}$ & & & & \\
+                TENTS & $1.00$ & $9.20\times10^{-5}$ & & & & \\
+                BTS   & $1.00$ & & $1.00\times10^{-5}$ & $3.16$ & & \\
+                DENTS & $0.744$ & & $4.04\times10^{-3}$ & $0.977$ 
+                    & $3.36\times10^{-4}$ & $10^{12}$ \\
+            \end{tabular}
+            \caption{Boltzmann-based search algorithms.}
+        \end{subtable}
+    
+        \caption[Hyperparameters for DeterministicGridWorld experiments.]{Hyperparameters used for  DeterministicGridWorld experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \label{table:gridworld_params}
     \end{table}
 
 
 
+    %
+    % FrozenLake
+    %
+    \begin{table}[]
+        \centering
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c}
+                Algorithm & $b$ & $\uctbudget$ \\
+                \hline
+                UCT     & $7.07$ & \\
+                MaxUCT  & $2.58$ & \\
+                H-MCTS  & $6.81$ & $28$ \\
+            \end{tabular}
+            \caption{UCT-based search algorithms.}
+        \end{subtable}
+    
+        \vspace{1em}
+    
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c|c|c|c|c}
+                Algorithm
+                    & $\epsilon$
+                    & $\alpha$
+                    & $\alpha_0$
+                    & $\alphadecay$
+                    & $\beta_c$
+                    & $\betathresh$ \\
+                \hline
+                MENTS & $0.248$ & $1.02\times10^{-2}$ & & & & \\
+                RENTS & $0.432$ & $2.89\times10^{-3}$ & & & & \\
+                TENTS & $0.288$ & $1.01\times10^{-2}$ & & & & \\
+                BTS   & $0.460$ & & $0.134$ & $4.82\times 10^{-2}$ & & \\
+                DENTS & $0.444$ & & $0.264$ & $0.200$ & $9.17\times10^{-4}$ & $1.38\times10^4$ \\
+            \end{tabular}
+            \caption{Boltzmann-based search algorithms.}
+        \end{subtable}
+    
+        \caption[Hyperparameters for FrozenLake experiments.]{Hyperparameters used for  FrozenLake experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \label{table:frozenlake_params}
+    \end{table}
+
+
+
+    %
+    % Sailing (North)
+    %
+    \begin{table}[]
+        \centering
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c}
+                Algorithm & $b$ & $\uctbudget$ \\
+                \hline
+                UCT     & $9.48\times10^{-2}$ & \\
+                MaxUCT  & $9.05\times10^{-2}$ & \\
+                H-MCTS  & $8.10\times10^{-2}$ & $32$ \\
+            \end{tabular}
+            \caption{UCT-based search algorithms.}
+        \end{subtable}
+    
+        \vspace{1em}
+    
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c|c|c|c|c}
+                Algorithm
+                    & $\epsilon$
+                    & $\alpha$
+                    & $\alpha_0$
+                    & $\alphadecay$
+                    & $\beta_c$
+                    & $\betathresh$ \\
+                \hline
+                MENTS & $1.00$ & $5.40\times10^{-4}$ & & & & \\
+                RENTS & $0.319$ & $1.57\times10^{-4}$ & & & & \\
+                TENTS & $1.00$ & $7.61\times10^{-4}$ & & & & \\
+                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.16\times10^{-3}$ & & \\
+                DENTS & $0.971$ & & $1.02\times10^{-5}$ & $0.813$ 
+                    & $1.14\times10^{-3}$ & $2.18\times10^{4}$ \\
+            \end{tabular}
+            \caption{Boltzmann-based search algorithms.}
+        \end{subtable}
+    
+        \caption[Hyperparameters for Sailing(North) experiments.]{Hyperparameters used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \label{table:sailing_north_params}
+    \end{table}
+
+
+
+    %
+    % Sailing (South-East)
+    %
+    \begin{table}[]
+        \centering
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c}
+                Algorithm & $b$ & $\uctbudget$ \\
+                \hline
+                UCT     & $0.181$ & \\
+                MaxUCT  & $0.226$ & \\
+                H-MCTS  & $0.145$ & $100$ \\
+            \end{tabular}
+            \caption{UCT-based search algorithms.}
+        \end{subtable}
+    
+        \vspace{1em}
+    
+        \begin{subtable}{\textwidth}
+            \centering
+            \begin{tabular}{l|c|c|c|c|c|c}
+                Algorithm
+                    & $\epsilon$
+                    & $\alpha$
+                    & $\alpha_0$
+                    & $\alphadecay$
+                    & $\beta_c$
+                    & $\betathresh$ \\
+                \hline
+                MENTS & $1.00$ & $6.05\times10^{-4}$ & & & & \\
+                RENTS & $1.00$ & $1.00\times10^{-5}$ & & & & \\
+                TENTS & $1.00$ & $3.24\times10^{-3}$ & & & & \\
+                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.17\times10^{-3}$ & & \\
+                DENTS & $1.00$ & & $1.01\times10^{-5}$ & $9.91\times10^{2}$ 
+                    & $1.01\times10^{-5}$ & $3.91\times10^{4}$ \\
+            \end{tabular}
+            \caption{Boltzmann-based search algorithms.}
+        \end{subtable}
+
+        \caption[Hyperparameters for Sailing(South-East) experiments.]{Hyperparameters used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \label{table:sailing_south_east_params}
+    \end{table}
 
 
 
@@ -410,33 +511,66 @@
 
 
 
-\section{Additional Go details, results and discussion} 
+
+
+
+
+
+
+
+
+
+
+
+\section{Additional Details for Go Experiments} 
 \label{appsec:go_hps}
-    \todo{Everything in this section this in this appendix is C and P from NeruIPS Go parameter tuning section.}
 
-    \htodo{Just change the form of beta decay back to the inv sqrt used before. We tried lots of entropy things and nothing really worked.}
+    Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round robin tournament was used to select the hyperparameters. This section gives the results of the round robin tournaments.
 
-    Recall from Appendix \ref{app:adapt_for_games} that we initialised values with the neural networks as $Q^{\text{init}}(s,a)=\log \tilde{\pi}(a|s)+B$ and $V^{\text{init}}(s)=\tilde{V}(s)$, where $B$ is a constant (adapted from Xiao \todo{fixcites}) %\etal \cite{xiao2019maximum}). 
-    For these experiments we set a value of $B=\frac{-1}{|\mathcal{A}|}\sum_{a\in\mathcal{A}} \log\tilde{\pi}(a|s)$. Initialising the values in such a way tends to lead to the values of $Q^{\text{init}}(s,a)$ being in the range $[-20,20]$, to account for this, we scaled the results of the game to $100$ and $-100$, which means that any parameters selected are about $100$ times larger than they would be if we had not have used this scaling.
+    For PUCT, the parameters used were copied from the reported values for Kata Go and Alpha Go Zero \todo{fix cites} %\citeapp{katago,silver2017mastering}. 
+
+    This section is organised as follows:
+    \begin{itemize}
+        \item Section \ref{appsec:go_hps_ar_ments} outlines the implementation of the AR-MENTS, AR-RENTS and AR-TENTS algorithms;
+        \item Section \ref{appsec:round_robin} gives details on the round robin tournament used to select the hyperparameters for Go experiments;
+        \item Section \ref{appsec:go_ar_vs_bellman} gives results for matches between the Bellman and average return versions of each algorithm.
+    \end{itemize}
+
+
+
+
+
+
+\subsection{AR-MENTS, AR-RENTS and AR-TENTS}
+\label{appsec:go_hps_ar_ments}
+
+    \bd{TO implement AR-MENTS the AR-DENTS} (Section \ref{appsec:ardents}) \bd{algorithm was used, but with} $\beta(x)=\alpha(x)=\alpha_{\text{fix}}$. Implementing AR-RENTS and AR-TENTS is similar, replacing the used of Shannon entropy $\cl{H}$ in the backups by the corresponding relative entropy and Tsallis entropy functions. For AR-TENTS, the search policy uses the \textit{sparsemax} function used in TENTS instead of the softmax function. 
+
+
+
+
+
+\subsection{Go Round Robin Hyperparameter Selection}
+\label{appsec:round_robin}
+
+    The following parameters were tuned for the BTS, DENTS, MENTS, RENTS and TENTS algorithms:
+    \begin{itemize}
+        \item $\epsilon$ - the exploration parameter used by algorithms using a Boltzmann search policy, e.g. MENTS, BTS;
+        \item $\epsilon_{\tilde{\lambda}}$ - the weighting of the prior policy used by algorithms using a Boltzmann search policy, e.g. BTS;
+        \item $\alpha$ - the temperature parameter for algorithms using a maximum entropy objective, e.g. MENTS, RENTS, TENTS;
+        \item $\alpha_{\text{init}}$ - the initial temperature parameter for BTS and DENTS algorithms;
+        \item $\beta_{\text{init}}$ - the initial entropy coefficient for DENTS algorithms. 
+    \end{itemize}
+
+    The temperature and entropy coefficient functions used in BTS and DENTS for Go experiments were of the form $\alpha(x)=\alpha_{\text{init}}/\sqrt{x}$ and $\beta(x)=\beta_{\text{init}}/\sqrt{x}$ respectively. For DENTS, only the entropy coefficient was tuned independently and used the parameters tuned for BTS.
     
-    In these experiments we used a recommendation policy that recommends the action that was sampled the most, i.e. $\psi(s)=\max_a N(s,a)$, as this tends to be more robust to any noise from neural network outputs.
+    Parameters are tuned one at a time, with a round robin tournament used to select the best value for each parameter, keeping the remaining parameters fixed. The parameter that won the most matches is selected, with ties broken by the agent that won the most games. If the winning agent had the largest or smallest value, then another tournament is run adjusting the values accordingly.
+
+    These tuning tournaments were run using the game of 9x9 Go with a komi of 6.5, and giving each algorithm 2.5 seconds per move. 
+
+    Initially the values of $\epsilon$ and $\epsilon_{\tilde{\lambda}}$ were set to $0.03$ and $1.0$ respectively and the search temperatures were tuned first. Tables \ref{tab:w001} and \ref{tab:x001} give results of tuning the initial search temperature $\alpha_{\text{init}}$ for BTS and AR-BTS respectively. 
     
-    To select each parameter we ran a round robin tournament where we varied the value of one parameter. The agent that won the most games was used to select the parameter moving forward, and in the case of a tie we used the agent which won the most games. If the winning agent had the largest or smallest value, then we ran another tournament adjusting the values accordingly.
-    
-    We tuned all of these algorithms using the game of 9x9 Go with a komi of 6.5, and giving each algorithm 2.5 seconds per move. For our final results we used the same parameters on 19x19 Go with a komi of 7.5, giving each algorithm 5.0 seconds per move.
-
-
-
-
-
-
-\subsection{Parameter selection for Go and supplimentary results} \label{app:go_hps}
-
-    In this section we work through the process used to select parameters for the Go round robin tournament used in Section \ref{sec:go}. Predominantly parameters were chosen by playing out games of Go between agents. The parameters used for PUCT were copied from Kata Go and Alpha Go Zero \todo{fix cites} %\citeapp{katago,silver2017mastering}. 
-    
-    Initially we set the values of $\epsilon,\epsilon_{\tilde{\lambda}}$ to $0.03,1.0$. In Tables \ref{tab:w001} and \ref{tab:x001} we give results of tuning the search temperature for BTS and AR-BTS. For AR-BTS we tried different values of $\alpha_{\text{init}}$ in $\alpha(m)=\alpha_{\text{init}}/\sqrt{m}$.
-    
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -447,10 +581,10 @@
                                     0.1          & 14-1 & 10-5 & 11-4 & - & 15-0   		\\
                                     0.03         & 13-2 & 5-10 & 8-7 & 13-2 &   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for BTS. The value of 1.0 won all four of its matches so was selected. \label{tab:w001}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS.]{Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS. The value of 1.0 won all four of its matches so was selected. \label{tab:w001}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -461,17 +595,17 @@
                                     0.1              & 15-0  & 11-4  & 9-6  & -     & 9-6  \\
                                     0.03              & 14-1  & 8-7  & 4-11  & 8-7  &   -   \\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha_{\text{init}}$ for AR-BTS. The value of 0.1 won all four of its matches so was selected. \label{tab:x001}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS.]{Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS. The value of 0.1 won all four of its matches so was selected. \label{tab:x001}}
+    \end{table}
     
     
     
     
     
     
-    We then tuned the weighting of the prior policy $\epsilon_{\tilde{\lambda}}$. In Tables \ref{tab:w020} and \ref{tab:x020} we give results of tuning the prior policy weight for BTS and AR-BTS.
+    $\epsilon_{\tilde{\lambda}}$ was tuned next, using the selected values of $\alpha_{\text{init}}$ for BTS and AR-BTS. Tables \ref{tab:w020} and \ref{tab:x020} give results for the round robin tournament to select the prior policy weight for BTS and AR-BTS.
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 10  & 5   & 3   & 2    & 1    \\ 
@@ -482,10 +616,10 @@
                                     2          & 15-0 & 12-3 & 12-3 & - & 10-5   		\\
                                     1         & 15-0 & 14-1 & 12-3 & 9-6 &   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the weighting of the prior policy $\epsilon_{\tilde{\lambda}}$ for BTS. The value of 2.0 won the most matches so was selected. \label{tab:w020}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for BTS.]{Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for BTS. The value of 2.0 won the most matches so was selected. \label{tab:w020}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 2   & 1   & 0.75    & 0.5    \\ 
@@ -496,17 +630,16 @@
                                     0.75          & 11-4 & 10-5 & 12-3 & - & 14-1   		\\
                                     0.5         & 11-4 & 13-2 & 9-6 & 7-8 &   -   	\\   
         \end{tabular}
-        \caption{Results for round robin to select the weighting of the prior policy $\epsilon_{\tilde{\lambda}}$ for AR-BTS. The value of 1.0 won the most matches so was selected. \label{tab:x020}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS.]{Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS. The value of 1.0 won the most matches so was selected. \label{tab:x020}}
+    \end{table}
     
     
     
     
     
+    Next the exploration parameter $\epsilon$ was tuned, using the selected values of $\alpha_{\text{init}}$ and $\epsilon_{\tilde{\lambda}}$ for BTS and AR-BTS. Tables \ref{tab:w030} and \ref{tab:x030} give results for the round robin tournament to select the exploration parameter for BTS and AR-BTS. Although the lowest value of 0.001 was selected for AR-BTS, it is close enough to zero such that very few actions are randomly sampled. A round robin with values between $10^{-3}$ and $10^{-5}$ was tried, but all matches resulted in draws.
     
-    Following that, we then tuned MENTS exploration parameter $\epsilon$. In Tables \ref{tab:w030} and \ref{tab:x030} we give results of tuning the exploration parameter for BTS and AR-BTS. Although we selected the lowest value we tried here, we note that with such a value that a random action would have been sampled very few times, so the result of the hyperparameter selection was essentially that $\epsilon$ should be as low as possible.
-    
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -517,10 +650,10 @@
                                     0.003          & 13-2 & 9-6 & 11-4 & - & 11-4   		\\
                                     0.001         & 12-3 & 11-4 & 8-7 & 9-6 &   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the exploration parameter $\epsilon$ for BTS. The value of 0.003 won the most matches so was selected. \label{tab:w030}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\epsilon$ for BTS.]{Round robin hyperparameter selection for $\epsilon$ for BTS. The value of 0.003 won the most matches so was selected. \label{tab:w030}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -531,8 +664,8 @@
                                     0.003          & 15-0 & 14-0 & 14-1 & - & 13-2   		\\
                                     0.001         & 14-1 & 14-1 & 14-1 & 15-0 &   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the exploration parameter $\epsilon$ for AR-BTS. The value of 0.001 won the most matches so was selected. \label{tab:x030}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\epsilon$ for AR-BTS.]{Round robin hyperparameter selection for $\epsilon$ for AR-BTS. The value of 0.001 won the most matches so was selected. \label{tab:x030}}
+    \end{table}
     
     
     
@@ -540,14 +673,20 @@
     
     
     
+    To tune the MENTS, RENTS and TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for BTS were used, and the value of $\alpha$ varied. Similarly, to tune the AR-MENTS, AR-RENTS and AR-TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for AR-BTS were used, and the value of $\alpha$ varied. Results of the round robin tournaments to select the temperature parameter $\alpha$ are given in the following tables:
+    \begin{itemize}
+        \item MENTS - Table \ref{tab:w040};
+        \item AR-MENTS - Table \ref{tab:x040};
+        \item RENTS - Table \ref{tab:w050};
+        \item AR-RENTS - Table \ref{tab:x050};
+        \item TENTS - Table \ref{tab:w060};
+        \item AR-TENTS - Table \ref{tab:x060}.
+    \end{itemize}
     
     
-    Then we tuned the (fixed and constant) search temperatures for MENTS, AR-MENTS, RENTS, AR-RENTS, TENTS and AR-TENTS in tables \ref{tab:w040}, \ref{tab:x040},\ref{tab:w050}, \ref{tab:x050},\ref{tab:w060} and \ref{tab:x060}.
     
     
-    
-    
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -558,10 +697,10 @@
                                     0.1          &  4-11 		&   4-11		&   0-15		& -     	&  4-11 		\\
                                     0.03         &   	2-13	&  2-13 		&  0-15 		&   0-15		&   -   	\\      
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for MENTS. The value of 1.0 won the most matches so was selected. \label{tab:w040}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for MENTS.]{Round robin hyperparameter selection for $\alpha$ for MENTS. The value of 1.0 won the most matches so was selected. \label{tab:w040}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -572,10 +711,10 @@
                                     0.1          &   15-0		&  9-6 		&  9-6 		& -     	&  15-0 		\\
                                     0.03         &   15-0		&  8-7 		&  9-6 		& 14-1  		&   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for AR-MENTS. The value of 0.3 won the most matches so was selected. \label{tab:x040}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for AR-MENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-MENTS. The value of 0.3 won the most matches so was selected. \label{tab:x040}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -586,10 +725,10 @@
                                     0.1          &   3-12		&  2-13 		& 1-14  		& -     	&  3-12 		\\
                                     0.03         &   3-12		&  0-15 		&  0-15 		&  0-15 		&   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for RENTS. The value of 1.0 won the most matches so was selected. \label{tab:w050}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for RENTS.]{Round robin hyperparameter selection for $\alpha$ for RENTS. The value of 1.0 won the most matches so was selected. \label{tab:w050}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -600,10 +739,10 @@
                                     0.1          &  15-0 		&   10-5		&   13-2		& -     	&  15-0 		\\
                                     0.03         &  13-2 		&  13-2 		&  12-3 		&   	14-1	&   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for AR-RENTS. The value of 0.3 won the most matches so was selected. \label{tab:x050}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for AR-RENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-RENTS. The value of 0.3 won the most matches so was selected. \label{tab:x050}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 300  & 100   & 30   & 10    & 3    \\ 
@@ -614,10 +753,10 @@
                                     10          &  0-15 		&  2-13 		& 2-13  		& -     	& 6-9  		\\
                                     3         &  1-14 		& 1-14  		& 2-13  		&  5-10 		&   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for TENTS. The value of 30.0 won the most matches so was selected. \label{tab:w060}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for TENTS.]{Round robin hyperparameter selection for $\alpha$ for TENTS. The value of 30.0 won the most matches so was selected. \label{tab:w060}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 30  & 10   & 3   & 1    & 0.3    \\ 
@@ -628,8 +767,8 @@
                                     1          &   	15-0	&  15-0 		&  14-1 		& -     	& 15-0  		\\
                                     0.3         &   15-0		&   	15-0	&   14-1		& 15-0  		&   -   	\\    
         \end{tabular}
-        \caption{Results for round robin to select the temperature parameter $\alpha$ for AR-TENTS. The value of 3.0 won the most matches so was selected. \label{tab:x060}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\alpha$ for AR-TENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-TENTS. The value of 3.0 won the most matches so was selected. \label{tab:x060}}
+    \end{table}
     
     
     
@@ -639,11 +778,10 @@
     
     
     
+    Finaly, for \mbox{(AR-)DENTS}, all parameters were copied from \mbox{(AR-)BTS}, and the entropy temperature $\beta$ was tuned. Tables \ref{tab:w070} and \ref{tab:x070} give results for the round robin tournament to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS and AR-DENTS respectively.
     
-    Finally, we considered entropy temperatures of the form $\beta(m)=\beta_{\text{init}}\frac{1+\exp(-5)}{1+\exp(m-5)}$ for DENTS and AR-DENTS, and tuned the value of $\beta_{\text{init}}$, in Tables \ref{tab:w070} and \ref{tab:x070} for DENTS and AR-DENTS respectively.
     
-    
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -654,10 +792,10 @@
                                     0.003            & 7-8 & 13-2 & 13-2 & - & 10-5  		\\
                                     0.001           & 13-2 & 13-2 & 11-4 & 11-4 &  - 		\\
         \end{tabular}
-        \caption{Results for round robin to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\beta_{\text{init}}$ for DENTS.]{Round robin hyperparameter selection for $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
+    \end{table}
     
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -668,43 +806,55 @@
                                     0.1            & 12-3 & 12-3 & 12-3 & - & 11-4  		\\
                                     0.03            & 12-3 & 13-2 & 13-2 & 14-1 &  - 		\\
         \end{tabular}
-        \caption{Results for round robin to select the initial entropy temperature $\beta_{\text{init}}$ for AR-DENTS. The value of 0.3 won the most matches so was selected. \label{tab:x070}}
-    \end{table*}
+        \caption[Round robin hyperparameter selection for $\beta_{\text{init}}$ for AR-DENTS.]{Round robin hyperparameter selection for $\beta_{\text{init}}$ for AR-DENTS. The value of 0.3 won the most matches so was selected. \label{tab:x070}}
+    \end{table}
     
     
     
     
     
+
+
+
+
+\subsection{Average Returns vs Bellman Updates for Go}
+\label{appsec:go_ar_vs_bellman}
+
+    After tuning all of the algorithms, each algorithm using Bellman updates played a match against its average returns counterpart, with results given in Table \ref{tab:y10}. Across all matches, the average returns algorithms won each match by a significant margin. 
     
+    \bd{My hypothesis for this is that average returns are less sensitive to any noisy outputs from the neural networks, as taking a maximum over random variables is more sensitive to extreme values than averages. Additionally, the neural networks are trained using PUCT and so are trained to work with average returns. It could be the case that if the neural networks were fine-tuned or trained using the Bellman versions of the algorithms that the performance would be closer or better from the Bellman versions.}
     
-    After tuning all of the algorithms, we compared each algorithm to their AR version in table \ref{tab:y10}, and the AR versions universally outperformed their counterparts. We used all of the selected parameters in 19x19 Go to run our final experiments given in Table \ref{table:go_results}.
-    
-    
-    
-    \begin{table*}[]
+    \begin{table}[]
     \centering
         \begin{tabular}{l|cccccc}
-            \textbf{Black \textbackslash White}     & MENTS     & AR-MENTS  & BTS       & AR-BTS    & DENTS     & AR-DENTS  \\ 
+            \textbf{Black \textbackslash White} & BTS     & AR-BTS   \\ 
+            \hline                    
+                BTS             &   -       & 16-9    \\
+                AR-BTS          & 22-3      &   -     \\      
             \hline
-                                    MENTS           &   -       & 0-25      &           &           &           &           \\
-                                    AR-MENTS        & 25-0      &   -       &           &           &           &           \\
-                                    BTS             &           &           &   -       & 16-9      &           &           \\
-                                    AR-BTS          &           &           & 22-3      &   -       &           &           \\
-                                    DENTS           &           &           &           &           &   -       & 21-4      \\
-                                    AR-DENTS        &           &           &           &           & 22-3      & -         \\      
+            \textbf{Black \textbackslash White} & DENTS     & AR-DENTS   \\ 
             \hline
-            \textbf{Black \textbackslash White}     & RENTS     & AR-RENTS  & TENTS     & AR-TENTS  &           &           \\ 
+                DENTS           &   -       & 21-4      \\
+                AR-DENTS        & 22-3      & -         \\  
             \hline
-                                    RENTS           &   -       & 2-23      &           &           &           &           \\
-                                    AR-RENTS        & 24-1      &   -       &           &           &           &           \\
-                                    TENTS           &           &           &   -       & 8-17      &           &           \\
-                                    AR-TENTS        &           &           & 23-2      & -         &           &           \\         
+            \textbf{Black \textbackslash White} & MENTS     & AR-MENTS   \\ 
+            \hline
+                MENTS           &   -       & 0-25      \\
+                AR-MENTS        & 25-0      &   -       \\            
+            \hline
+            \textbf{Black \textbackslash White} & RENTS     & AR-RENTS  \\ 
+            \hline
+                RENTS           &   -       & 2-23      \\
+                AR-RENTS        & 24-1      &   -       \\        
+            \hline
+            \textbf{Black \textbackslash White} & TENTS & AR-TENTS   \\ 
+            \hline
+                TENTS           &   -       & 8-17      \\
+                AR-TENTS        & 23-2      & -         \\         
         \end{tabular}
-        \caption{Results for the matches of each algorithm against its AR version.\label{tab:y10}}
-    \end{table*}
+        \caption{Results for matches between the average return and Bellman versions of BTS, DENTS, MENTS, RENTS and TENTS.\label{tab:y10}}
+    \end{table}
     
     
-    
-    Finally, we also ran AR-BTS against Kata Go directly limiting each algorithm to 1600 trials. KataGo beat AR-BTS by 31-19, confirming that the aditional exploration is outweighed by the information contained in the neural networks, and in Go the Boltzmann search algorithms gain their advantage via the Alias method and being able to run more trials quickly.
 
 
