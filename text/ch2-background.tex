@@ -126,6 +126,7 @@
     \textit{Regret} is a common metric used to analyse the performance of algorithms for MAB problems, which is the difference between the cumulative reward obtained and the maximal expected reward that could be obtained with full knowledge of $\{f(i)\}$.
 
     \begin{defn}
+        \label{def:2:cumulative_regret}
         The \textnormal{(cumulative) regret} of strategy $\sigma$ after $n$ rounds in the MAB process is:
         \begin{align}
             \creg_{\mab}(n,\sigma) = n\mu^* - \sum_{m=1}^n y^m, \label{eq:2:cumulative_regret_def}

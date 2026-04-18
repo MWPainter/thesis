@@ -1,27 +1,57 @@
-% \begin{savequote}[8cm]
-% \textlatin{Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...}
 
-% There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
-%   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
-% \end{savequote}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \chapter{\label{ch:6-simplexmaps}Simplex Maps for Multi-Objective Monte Carlo Tree Search} 
 
     \minitoc
 
 
 
-
-
-
-
-
-
-
-
-
-
-    New Ch5 plan:
+    New Ch6 plan:
     \begin{itemize}
         \item Intro, introduce and motivate simplex maps, motivate by move to weight space, more efficient lookups and ability to use entropy again
         \item Define simplex map interface and implementation
@@ -43,18 +73,38 @@
 
 
 
-
-
-
-
-
-
-
-
-
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Introduction}
 \label{sec:6-1-intro}
 
+    \todo{list}
+    \begin{itemize}
+        \item CZT was able to run many more trials and handled stochastic environments better than CH
+        \item Ideally would like something more compatible with BTS and DENTS
+        \item Mention the Lizotte works which are in weight space version of CHVI essentially
+        \item Say that the approach is to use a adaptive subdivision like CZT, and other related works such as HOO
+        \item Discuss underlying algorithms used for adaptive meshes
+        \item Mention that there is an area of numerical analysis dedicated to this type of method, called the finite element method, and adaptive meshes are a subfield of this, and the finite element method is about numerically solving differential equations and fluid dynamics problems. Add reference on this %https://www.researchgate.net/profile/Jorge-Hernandez-Hernandez/post/Does_gmsh_always_output_the_nodes_and_elements_of_a_mesh_in_ascending_order/attachment/59d6577e79197b80779adcb3/AS%3A534590315917312%401504467671741/download/Finite+elements+Method.pdf
+    \end{itemize}  
+
+    New Ch6 plan:
+    \begin{itemize}
+        \item Intro, introduce and motivate simplex maps, motivate by move to weight space, more efficient lookups and ability to use entropy again
+    \end{itemize}
+
+    %
+    % Old plan
+    %
     \todo{list}
     \begin{itemize}
         \item high level overview of simplex maps work
@@ -63,42 +113,213 @@
         \item Motivated by CHMCTS being slow
     \end{itemize}  
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Simplex Maps}
 \label{sec:6-2-simplexmaps}
 
-    \todo{list}
-    \begin{itemize}
-        \item Define simplex map interface
-        \item Give details on how to efficiently implement the interface with tree structures
-        \item (Good diagram is everything here I think)
-    \end{itemize}
 
-\section{Simplex Maps in Tree Search}
-\label{sec:6-3-mapsintrees}
 
-    \todo{list}
-    \begin{itemize}
-        \item Come up with better title for section
-        \item Use simplex maps interface to create algorithms from the dents work 
-        \item Give a high level idea of what $\delta$ parameter is (used in theory section)
-    \end{itemize}
 
-\section{Theoretical Results}
-\label{sec:6-4-theory}
+New Ch6 plan:
+\begin{itemize}
+    \item Motivate by want more efficient lookups/data structure but still same interface
+    \item Define simplex map interface and implementation
+    \item Discussion around the complexity of simplex maps
+    \item Use a hypercube example to illustrate that the neighbourhood can still be with respect to dimension and this is seems unnavoidable in general
+    \item However, lookups are much more efficient in practise
+    \item Mention that this stuff does work in 2D, and examples are given in 2D and 3D, because there are complexities when dimension increases above 2D
+    \item And sharing values between vertices will cut out a lot of computation when there is no improvement
+\end{itemize}
 
-    \todo{list}
-    \begin{itemize}
-        \item Convergence can build ontop of DENTS results
-        \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
-        \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
-        \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
-    \end{itemize}
+%
+%Old plan
+%
 
+
+\todo{list}
+\begin{itemize}
+    \item Define simplex map interface
+    \item Give details on how to efficiently implement the interface with tree structures
+    \item (Good diagram is everything here I think)
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Simplex Maps for Tree Search}
+\label{sec:6-3-algorithms}
+
+
+
+
+New Ch6 plan:
+\begin{itemize}
+    \item Algos, BTS and DENTS using simplex maps as a baseline
+    \item Empirical results
+    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
+    \item Maybe some theory, probably bootstrap of the ch4 + ch5 results
+\end{itemize}
+
+%
+% Old plan
+%
+\todo{list}
+\begin{itemize}
+    \item Come up with better title for section
+    \item Use simplex maps interface to create algorithms from the dents work 
+    \item Give a high level idea of what $\delta$ parameter is (used in theory section)
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Empirical Results}
-\label{sec:6-5-results}
+\label{sec:6-4-results}
 
-    \todo{list}
-    \begin{itemize}
-        \item Results from MO-Gymnasium
-        \item Compare algorithms using expected utility
-    \end{itemize}
+
+
+
+New Ch6 plan:
+\begin{itemize}
+    \item Empirical results
+    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
+    \item Maybe some theory, probably bootstrap of the ch4 + ch5 results
+    \item Scalability on DST
+    \item Scalability test with respect to dimension?
+\end{itemize}
+
+%
+% Old plan
+%
+\todo{list}
+\begin{itemize}
+    \item Results from MO-Gymnasium
+    \item Compare algorithms using expected utility
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Theoretical Discussion}
+\label{sec:6-5-theory}
+
+
+
+
+New Ch6 plan:
+\begin{itemize}
+    \item Maybe give some discussion on theory
+    \item General argument is that all of the vertices will converge eventually
+    \item For interpolated weights, the values will be correct within some epsilon of the true value
+    \item Basically say that can follow the same argument again of all actions selected from the search policies
+    \item Because exponential amount of data needed for correct solution, number of trials cannot be made better than exponential
+\end{itemize}
+
+%
+% Old plan
+%
+\todo{list}
+\begin{itemize}
+    \item Convergence can build ontop of DENTS results
+    \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
+    \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
+    \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
+\end{itemize}
+
+
+
+
+
+
+
+

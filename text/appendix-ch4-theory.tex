@@ -19,181 +19,98 @@
 
 \chapter{\label{app:theory-ch4}Additional Theoretical Results For Chapter 4}
 
-
-\htodo{Change N(s,m) to N(s,n) and then change N(s,n) to N to pow n of s.}
-
-\todo{Currently a pasting ground for things cutting from theory section in Ch4 to make story not sound rubbish.}
-
-\todo{Go through captions and make sure that we have short versions for all}
+This appendix provides the full definition of the DENTS stochastic process in Section \ref{appsec:dents_stoch_process} and the proofs for exponential convergence results for BTS and DENTS are given in Section \todo{ref}.
 
 
 
-\section{The MCTS Stochastic Process}
-\label{appsec:mcts_stoch_process}
+\section{The DENTS Stochastic Process}
+\label{appsec:dents_stoch_process}
 
-    \todo{Words about how this is a lengthier version of the notation and preliminaries section? Make this section consistent with that section too}
-
-    \todo{<beg> In main prose, but edited heavily. Keep some amount of this? Definitely keep the T and N stuff.}
-
-        \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
-
-        When reasoning about a \textit{MCTS stochastic process} the following notations will be helpful.
-        \begin{itemize}
-            \item 
-                The search policy used on the $m$th trial is $\pi^m$, and if the process were stopped after $m$ trials, the recommendation policy that the algorithm would output is denoted $\psi^m$. Where if the process is run for $n$ trials, then $m$ ranges from $1$ to $n$.
-            \item 
-                The $m$ trajectory sampled is $\tau^m=(s_0^m,a_0^m,...,s_{h-1}^m,a_{h-1}^m,s_{h}^m)$ \todo{add reward, also make it h subscript m instead of h?}, and is sampled using the search policy $\tau^m \sim \pi^m$ (that is $a^m_i \sim \pi^m(\cdot|s^m_i)$ and $s^m_{i+1} \sim p(\cdot | s^m_i, a^m_i)$). \todo{comment that $k$th trial is run until h where s subscript h is termal in some thtspp sense. Comment about how the superscripts on s a and r will be used when necessary, but not always}
-            \item 
-                The search tree after $m$ trials is denoted $\cl{T}^m$, the initial search tree is $\cl{T}^0=\{s_0\}$, and $\cl{T}^k = \cl{T}^{k-1} \cup \tau^k$.
-        \end{itemize}
-
-        When making arguments that apply to multiple algorithms the general policies $\pi$ and $\psi$ will be used, and when making arguments about specific algorithms the subscripts will be used, such as $\pibts$. Note that superscript is used to index with respect to the trial, and superscript with parenthasis is used to denote the number of visits.
-
-        In the proofs of following sections, it will be useful to write the number of times state~$s$ was visited in the first $m$ trials as $N(s,m)$, and the number of times action~$a$ was selected from state~$s$ in the first m trials as $N(s,a,m).$ Additionally, it will be useful to write these quantities in terms of indicator random variables. 
-
-        Let $T(s_t,m)$ (and $T(s_t,a_t,m)$) be the set of trajectory indices that $s_t$ was visited on (and action $a_t$ selected) in the first $m$ trials, that is: \todo{this can avoid using s subscript t}
-        %
-        \begin{align}
-            T(s_t,m) &= \{i | i\leq m, s^i_t = s_t \} \\
-            T(s_t,a_t,m) &= \{i | i\leq m, s^i_t = s_t, a^i_t = a_t \}.
-        \end{align}
-        %
-        This allows the counts $N^m(s_t),$ $N^m(s_t,a_t)$ and $N^m(s_{t+1})$ (with $s_{t+1}\in\suc{s_t}{a_t}$) to be written as sums of indicator random variables in the following ways:
-        %
-        \begin{align}
-            N(s_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t] = |T(s_t,m)|, \\
-            N(s_t,a_t,m) &= \sum_{i=1}^m \one[s^i_t=s_t,a^i_t=a_t] = |T(s_t,a_t,m)|, \\ 
-            N(s_t,a_t,m) &= \sum_{i\in T(s_t,m)} \one[a^i_t = a_t], \label{eq:4:nsa_sum} \\
-            N(s_{t+1},m) &= \sum_{i\in T(s_t,a_t,m)} \one[s^i_{t+1} = s_{t+1}]. \label{eq:4:ns_sum}
-        \end{align}
-        %
-        Additionally, the assumption that for any two states $s,s'\in\cl{S}$ that $s=s'$ if and only if the trajectories leading to them are identical is made. This assumption is purely to simplify notation, so that nodes in the tree have a one-to-one correspondence with states (or state-action pairs). \todo{move this up}
-
-
-    \todo{<end> In main prose, but edited heavily. Keep some amount of this?}
-
-
-
-    \todo{do we do anything at all with the UCT process?}
-    \todo{Maybe just write it out for completeness}
-
-    \todo{Also add the backups for the number of visit function N into the backups in the full definitions in the appendices.}
-
-    \todo{Also add the updates to the search tree. (Union of search tree with the trials.)}
-
-    \todo{Handle setting the value at the end of the trial to Vinit in these processes too}
-
-    \subsection{The UCT process.} 
-    	The UCT search policy can be defined as:
-        %
-        \begin{align}
-            \pi_{\textnormal{UCT}}^n(s_t) &= \max_{a\in\cl{A}} \text{UCB}^n(s_t,a), \\
-            \text{UCB}^n(s_t, a) &= 
-                    \begin{cases}
-                        \infty & \text{if } N(s_t,a)=0 \\
-                        \bar{Q}^{N(s_t,a)}(s_t, a)+c \sqrt{\frac{\log N(s_t)}{N(s_t, a)}} & \text{if } N(s_t,a)>0
-                    \end{cases}
-        \end{align}
-        %
-        \noindent where, after $n$ trials, $\bar{Q}^{N(s,a)}(s,a)$ is the empirical estimate of the value at node $(s,a)$, where action~$a$ has been selected $N(s, a)$ from state~$s$. The backup consists of updating empirical estimates for $t=h-1,...,0$:
-        %
-        \begin{align}
-            \bar{V}^{N(s_t)+1}(s_t) &= \bar{V}^{N(s_t)}(s_t) + \frac{\bar{R}(t) - \bar{V}^{N(s_t)}(s_t)}{N(s_t) + 1}, \label{appeq:uct_vbar} \\
-            \bar{Q}^{N(s_t,a_t)+1}(s_t, a_t) &= \bar{Q}^{N(s_t,a_t)}(s_t, a_t) + \frac{\bar{R}(t) - \bar{Q}^{N(s_t,a_t)}(s_t, a_t)}{N(s_t, a_t) + 1}, \label{appeq:uct_qbar}
-        \end{align}
-        %
-        \noindent where $\bar{R}(t) = V^{\text{init}}(s_h) + \sum_{i=t}^{h-1} R(s_i,a_i)$, and values are initialised as $\bar{V}^1(s)=V^{\text{init}}(s)$ and $\bar{Q}^0(s,a)=0$. 
+    The DENTS stochastic process formalises the DENTS algorithm as a stochastic process, which is defined as follows. This section uses the notation and assumptions established in \todo{ref to ch4}. 
     
+    All value estimates are initialised to zero for all $s\in\cl{S}$ and $a\in\cl{A}$:
+    \begin{align}
+        \mVdents{0}(s) = 0, \quad \mQdents{0}(s,a) = 0, \quad \mHVdents{0}(s) = 0, \quad \mHQdents{0}(s,a) = 0.
+    \end{align}
 
+    On the $n$th trial, a trajectory is sampled using the search policy $\tau^n \sim \mpidents{n}$. Where for all $s,a\in\cl{S}\times\cl{A}$, the search policy is defined as:
+    %
+    \begin{align}
+        \mQdentssft{N^n(s,a)}(s,a) &= \mQdents{N^n(s,a)}(s,a) + \betadents(N^n(s))\mHQdents{N^n(s,a)}(s,a), \label{appeq:dents_q_sft} \\
+        \mrhodents{m}(a|s) &= \frac{
+                \exp\left(\frac{\mQdentssft{N^n(s,a)}(s,a)}{\alphadents(N(s,m))}\right)
+            }{
+                \sum\limits_{a'\in\cl{A}} \exp\left(\frac{\mQdentssft{N^n(s,a')}(s,a')}{\alphadents(N^n(s))}\right)
+            }.  \label{appeq:full_rho} \\
+        \lambda^m(s,\epsdents) &= \min\left(1, \frac{\epsdents}{\log(e+N^{n-1}(s))}\right),  \\
+        \mpidents{n}(a|s) &= (1-\mlambdadents{n})\mrhodents{n}(a|s) + \frac{\mlambdadents{n}}{|\cl{A}|}. 
+            \label{appeq:dents_search_policy}  \\
+    \end{align}
+
+    Letting $\tau^n=(s^n_0,a^n_0,r^n_0,\ldots,s^n_{H-1},a^n_{H-1},r^n_{H-1},s^n_{H})$, the DENTS value and entropy estimates are computed as follows for $t=H-1,\ldots,0$:
+    %
+    \begin{align}
+        \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
+                \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
+            \label{appeq:dp_q_backup} \\ 
+        \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
+            \label{appeq:dp_v_backup} \\
+        \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+            \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
+        \mHVdents{N(s_t)}(s_t) &= 
+            \cl{H}(\mpidents{m}(\cdot | s_t)) 
+                + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
+    \end{align}
+
+    Recall that the visit counts are \textit{defined} as a sum of indicator random variables using the sampled trajectories:
+    \begin{align}
+        N^n(s_t) &= \sum_{i=1}^n \one[s^i_t = s_t], \\
+        N^n(s_t,a_t) &= \sum_{i=1}^n \one[s^i_t = s_t \cap a^i_t = a_t].
+    \end{align}
+
+    And note that if $s\not\in\tau^n$, then $N^n(s)=N^{n-1}(s)$, and similarly if $(s,a)\not\in\tau^n$, then $N^n(s,a)=N^{n-1}(s,a)$. More specifically, this implies, for example, that if $s\not\in\tau^n$ then:
+    \begin{align}
+        \mVdents{N^n(s)}(s) = \mVdents{N^{n-1}(s)}(s).
+    \end{align}
+
+    Finally, the maximum value and most visited recommendation policies after $n$ trials are respectively defined as:
+    \begin{align}
+        \mpsidents{n}(s) &= \argmax_{a\in\cl{A}}\mQdents{N^n(s,a)}(s,a), \\
+        \mmvdents{n}(s) &= \argmax_{a\in\cl{A}} N^n(s,a).
+    \end{align}
     
     
     
-    \subsection{The MENTS Process}
     
-        Below is a complete summary of the MENTS process, for reference. On the $m$th trial, the MENTS process follows the search policy:
+    
 
-        \todo{make ments section in ch2 use consistent definitions of alphaments, lambdaments and so on}
-
-        \begin{align}
-            \mpiments{m}(a|s) &= (1-\mlambdaments{m})\mrhoments{m}(a|s) + \frac{\mlambdaments{m}}{|\cl{A}|}, 
-                        \label{appeq:ments_soft_policy} \\ 
-            \mrhoments{m}(a|s) &= \exp\left(
-                \frac{1}{\alphaments}\left(\mQments{N(s,a,m-1)}(s,a)-\mVments{N(s,m-1)}(s)\right)\right). \\
-            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right),
-        \end{align}
-        %
-        where $\epsments\in(0,\infty)$ is an exploration parameters, and $\alphaments$ is the temperature parameter. 
-
-        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \piments^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the MENTS value estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
-        \begin{align}
-            \mVments{N(s_t,m)}(s_t) &= 
-                \alphaments \log \sum_{a\in\cl{A}} \exp \left(
-                    \frac{1}{\alphaments}\mQments{N(s_t,a,m)}(s_t,a) \right), \label{appeq:soft_v_backup} \\
-            \mQments{N(s_t,a_t,m)}(s_t,a_t) &= 
-                R(s_t,a_t) + \sum_{s'\in\suc{s}{a}} \left( 
-                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVments{N(s',m)}(s') \right). \label{appeq:soft_q_backup}
-        \end{align}
-
-        \todo{also want something about initialisation and everything in line with thtspp}
-        %
-        % The soft (Q-)values are initialised as $\Vst{s}{1}=V^{\text{init}}(s)$ and $\Qst{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$).
-
-        \todo{recommendation policies and some comment about it being the soft values used?}
-        \begin{align}
-            \mpsiments{m}(s) &= \argmax_{a\in\cl{A}}\mQments{N(s,a,m)}(s,a), \\
-            \mmvments{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
-        \end{align}
+    \subsection{The AR-DENTS Process}
+            
+        \todo{Copy DENTS after its written. Swap out notation and backups.}
 
 
 
 
 
-    \subsection{The DENTS Process}
 
-        \todo{this whole sections math is pretty mess and a struggle to fit onto one line at a time. Maybe it suffices to just wordily describe the values of the sufixed values?}
 
-        Follow policy: 
-        %
-        \todo{add more wordy things. Some things we said here before were: (1) defining beta} $\beta : \bb{R}\rightarrow [0,\infty)$ be a bounded function; \todo{(2) defined epsilon as exploration policy; (3) in Neurips we defined the propto version of rho and also the full version saying ``becasue we need to reason about the search policy we give the exact form,'' for the moment I've kept both. I think just copy the full version where relevent in the proofs.}
-        %
-        \begin{align}
-            \mpidents{m}(a|s) &= (1-\mlambdadents{m})\mrhodents{m}(a|s) + \frac{\mlambdadents{m}}{|\cl{A}|}, 
-                \label{appeq:dents_search_policy}  \\
-            \mrhodents{m}(a|s) &\propto \exp\left(\frac{1}{\alphadents(N(s,m))}
-                \left(\mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a) \right)\right). \\
-            \mrhodents{m}(a|s) &= \frac{
-                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a,m-1)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a,m-1)}(s,a)   \right)\right)
-                }{\sum\limits_{a'\in\cl{A}} \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a',m-1)}(s,a') + \betadents(N(s,m))\mHQdents{N(s,a',m-1)}(s,a')  \right)\right)}.  
-                \label{appeq:full_rho} \\
-            \lambda^m(s,x) &= \min\left(1, \frac{x}{\log(e+N(s,m-1))}\right), 
-        \end{align}
 
-        The $m$th trajectory is sampled using the search policy: $\tau^m \sim \pidents^m$. Letting $\tau^m=(s_0,a_0,r_0,...,s_{h-1},a_{h-1},r_{h-1},s_{h})$, the DENTS value and entropy estimates are computed using backups for $t=h-1, ..., 0$: \todo{either add the superscript m into every s and a, or update words to say implicit}
-        \begin{align}
-            \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
-                R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
-                    \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
-                \label{appeq:dp_q_backup} \\ 
-            \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
-                \label{appeq:dp_v_backup} \\
-            \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
-                \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
-            \mHVdents{N(s_t)}(s_t) &= 
-                \cl{H}(\mpidents{m}(\cdot | s_t)) 
-                    + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
-        \end{align}
+    \subsection{The (AR-)BTS process.}
 
-        \todo{also want something about initialisation and everything in line with thtspp}
-        %
-        % The (Q-)values are initialised as $\Vt{s}{1}=V^{\text{init}}(s)$ and $\Qt{s}{a}{0}=Q^{\text{init}}_{\sft}(s)$ (typically $Q^{\text{init}}_{\sft}(s)=0$). The entropy values are initialised as $\cl{H}_Q^{0}(s,a)=0$ and $\cl{H}_V^{1}(s) = \cl{H}(\pi^n_{\text{DENTS}}(\cdot | s_t))$, where the node for $s$ is created on the $n$th trial
+        The \mbox{(AR-)BTS} process is a special case of the \mbox{(AR-)DENTS} process when $\betadents(x)=0$. 
 
-        \todo{recommendation policies word stuff}
-        \begin{align}
-            \mpsidents{m}(s) &= \argmax_{a\in\cl{A}}\mQdents{N(s,a,m)}(s,a), \\
-            \mmvdents{m}(s) &= \argmax_{a\in\cl{A}} N(s,a,m).
-        \end{align}
+
+
+
+        
+
+
+
+
+
+    \todo{Move to preliminaries. Something like: these intermediate values are useful in the proofs for exponential convergence results.}    
+
 
         \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
         %
@@ -225,21 +142,6 @@
 
 
 
-
-    \subsection{The AR-DENTS Process}
-            
-        \todo{Copy DENTS after its written. Swap out notation and backups.}
-
-
-
-
-
-
-
-
-    \subsection{The (AR-)BTS process.}
-
-        The (AR-)BTS process is a special case of the (AR-)DENTS process when $\betadents(x)=0$. As such, results about BTS will be corollaries from proofs about the (AR-)DENTS process.
 
 
 
@@ -290,6 +192,16 @@
 
 \section{Exponential Convergence Results}
 \label{appsec:exp}
+
+    This section provides the proofs of exponential convergence results for the DENTS, AR-DENTS, BTS and AR-BTS stochastic processes. It is structured similarly to Section \ref{sec:4-5-theory} as follows:
+    \begin{enumerate}
+        \item \todo{todo}
+    \end{enumerate}
+
+
+
+
+
 
 
     \todo{This section give proofs for exponential convergence results for DENTS and MENTS}, it is structured as follows:

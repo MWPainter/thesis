@@ -1,32 +1,80 @@
-% \begin{savequote}[8cm]
-% \textlatin{Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...}
 
-% There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
-%   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
-% \end{savequote}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 
-\chapter{\label{ch:5-chmcts}Convex Hull Monte Carlo Tree Search} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\chapter{\label{ch:5-chmcts}Convex Hull Monte Carlo Tree Search}
 
     \minitoc
 
-
-
-
-
-
-    New Ch5 plan:
+    This chapter considers multi-objective Monte Carlo Tree Search 
+    (MOMCTS) for the decision support scenario (\todo{ref back to ch2 fig}) with linear utilities, where the agent must plan for an unknown weight vector $\bff{w}$ over the objectives. Two approaches are considered in this chapter, the first following the same design paradigm as UCT where an algorithm for CMAB problems (Section \ref{sec:2-1-3-contextual-mab}) is applied at each decision node; the second is to maintain a convex hull value set at each node in the 
+    search tree, representing the set of achievable expected returns 
+    across all possible weightings over the objectives which is updated using convex hull backups (Section \ref{sec:2-6-1-chvi}). 
+    
+    This chapter is organised as follows:
     \begin{itemize}
-        \item Intro, introduce and motivate contextual tree search, forward ref to 
-        \item Algos, contextual zooming (motivate by parallel to UCT)
-        \item Algos, convex hull backups
-        \item Algos, why no entropy
-        \item Optimizations, solved labelling (ref LRTDP)
-        \item Optimizations, pruning the number of points in the convex hull
-        \item Empirical results
-        \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
-        \item Theory, reproduce the CHMCTS results, and say that garunteed to eventually produce optimal (lemmas are actions selected inf often)
-        \item No theory for CZT directly, makes a heuristic adaptation from the base work, and the proofs are very complex in themselves (would add like 50 pages of maths) 
-        \item Conclusion, wrap up, motivate move to simplex maps (convex hull slow) and weight space (entropy)
+        \item Section \ref{sec:5-1-intro} motivates the 
+            multi-objective decision making framework used in this 
+            chapter, and generalises the notions of simple and cumulative regret to 
+            \textit{contextual simple regret} and 
+            \textit{contextual cumulative regret} for the multi-objective setting;
+        \item Section \ref{sec:5-2-czt} introduces 
+            \textit{Contextual Zooming for Trees} (CZT), a 
+            MOMCTS algorithm following the same design paradigm 
+            as UCT;
+        \item Section \ref{sec:5-3-chmcts} generalises prior work 
+            in MOMCTS to stochastic environments through 
+            \textit{convex hull backups};
+        \item Section \ref{sec:5-5-results} presents empirical 
+            results on Deep Sea Treasure environments and a range 
+            of multi-objective environments from the 
+            Multi-Objective Gymnasium library \todo{cite?};
+        \item Section \ref{sec:5-6-theory} provides a brief 
+            theoretical discussion of the MOMCTS algorithms 
+            introduced in this chapter.
     \end{itemize}
 
 
@@ -40,20 +88,7 @@
 
 
 
-    should have a QHull reference when talking about the implementation
 
-    say that we prune using that, unless it is a degenerate case where we fall back to using the linear programming method
-
-
-    for theory would just like to have convergence, use ch4 proofs and UCT picks actions inf often as lemma and use CHVI proofs 
-
-    Allude to that boltzmann probably gives exp contextual simple regret, and PUCT gives similar contextual cumulative regret, and the lower bound from exploring bandits means simple regret of UCT methods has a lower bound
-
-
-
-    also more critical to look into litrev for what results about MORL there are, shimons paper probably helpful
-
-    want to cite if someone has done that linear scalarisation iff making local decisions result
 
 
 
@@ -63,209 +98,312 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
-% [ ] Citations
-% [X] LitRev sync
+% [ ] Citations + Refs
+% [ ] LitRev sync
 % [ ] Abbreviations sync
 % [ ] Thesis questions ref/answers
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-    \todo{Move into correct place and update notation appropriately for the chapter. Add pre-amble saying about how its an algorithm for CMAB, but only introduce here because used in one place only}
-
-    \citet{cz} introduce the Contextual Zooming (CZ) algorithm to solve CMAB problems. CZ achieves a contextual regret of $O(n^{\frac{1+c}{2+c}}\log(T))$ over the first $n$ rounds, using the \textit{doubling trick} \cite{doubling_trick}, where $c$ is the \textit{(Lebesgue) covering dimension} of the similarity space $\cl{W}\times\cl{X}$. Within this thesis, the covering dimension coincides with the standard notion of dimension: $\cl{W}\times\cl{X}$ has covering dimension $c$, if it embeds into $\bb{R}^{c}$.
-    
-    The CZ algorithm uses a set of balls in the similarity space, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with centre $(w,x)$ and radius $r$ is defined as $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
-
-    Each round, CZ applies two rules: a \textit{selection rule}, which selects a ball $B^m$ from $A^m$; and an \textit{activation rule} which optionally adds a ball with smaller radius to $A^m$. 
-
-    Given a context $w^m$, the selection rule proceeds as follows: let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received over the first $m$ rounds when ball $B$ was selected.
-    \begin{align}
-        N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
-        \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
-    \end{align}
-
-    Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius:
-    \begin{align}
-        \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
-    \end{align}
-
-    The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
-    \begin{align}
-        \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
-    \end{align}
-
-    Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
-    \begin{align}
-        \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
-    \end{align}
-
-    The ball $B^m$ selected on the $m$th round with context $w^m$ is chosen as follows:
-    \begin{align}
-        I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
-        B^m &= \argmax_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
-    \end{align}
-    where $d(B,B')$ is the distance between the centres of balls $B,B'$ according to the metric $d$. 
-
-    Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$).
-
-    The activation rule is applied when the confidence radius of the selected ball $B^m$ is smaller than its radius, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and centre $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    \bd{list, brain dumping it out.}
-    
-    This chapter\dots
-
-    \begin{itemize}
-        \item Sec 5.1, introduction. Starting with existing MOMCTS methods discussed in Ch3 \todo{ref}. These algorithms come in two flavours. One where a point estimate is maintained, and one where a convex hull is maintained. This section demonstrates why point estimates are not sufficient, and 
-        \item Sec 5.2, convex hull monte carlo tree search
-        \item Sec 5.3, contextual zooming for trees
-        \item Sec 5.5, results
-        \item Sec 5.6, theoretical results
-    \end{itemize}
-
-    \todo{link back to questions and how we're answering them here}
-
-
-\section{Introduction}
+\section{Introduction and Motivation}
 \label{sec:5-1-intro}
 
-    \todo{list}
-    \begin{itemize}
-        \item high level overview of CHMCTS work
-        \item discuss how CHMCTS answers the research questions from introduction chapter
-        \item moving into multi-objective land now
-        \item Comment about CHVI and prior MOMCTS work motivating this
-    \end{itemize} 
-    
-    First prior multi-objective MCTS (MOMCTS) algorithms are discussed. Specifically, 
+    This section motivates the use of \textit{contextual tree search} 
+    for planning in multi-objective settings, and highlights why 
+    consistent action selection with respect to a fixed objective 
+    is a necessary component of effective MOMCTS. The notions of 
+    cumulative and simple regret are then generalised to the 
+    multi-objective setting.
 
-    \bd{Point estimates insufficient can be copies from CHMCTS paper}
+\subsection{Consistent Action Selection}
 
-    \bd{In prior methods that use a convex hull} \todo{ref} \bd{, the environment is assumed to be deterministic, and backups can be seen to be a special case of Convex Hull backups from Chapter 2} \todo{ref}. \bd{Therefore, for the remainder of this chapter, most algorithms will use convex hull backups, similar to Convex Hull Value Iteration (todo ref), as in the deteminstic MOMDP case it reduces to the original algorithms, and extends them for stochastic MOMDPs. As such, this chapter, will predominantly focus on how perform action selection in MOMCTS (exploration?)}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+        \caption[A motivating example MOMDP for contextual tree search.]{Tree 
+        MOMDP, with two actions at the root. From the first action, rewards of 
+        $(1,0)$, $(0.5,0.5)$ and $(0,0.75)$ are available. From the second, 
+        rewards of $(0.75,0)$, $(0.5,0.5)$ and $(0,1)$ are available. The 
+        convex hull value set is formed of $\{(1,0),(0,1)\}$.}
+        \label{fig:5:motivating_example}
+    \end{figure}
 
-    \bd{this paper (below) talks about the need for making consistent action selections. Because the aim is to discover for all weights w an optimal policy. Given a w, actions should be taken consistently to try and maximise the objective.}
+    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, 
+    with two objectives. The convex hull value set of the MOMDP is $\{(1,0),(0,1)\}$: the reward $(1,0)$ is only reachable via the left action, and $(0,1)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
 
-    \bd{The hypervolume is the area under the convex hull. The optimal convex hull is the unique convex hull that maximised the hypervolume. The premise of some of the prior work is to maximise the hypervolume at every node. Or the premise is to select from the ``optimal actions'' that lie on the convex hull. However, reducing the problem back to discovering the optimal policies from the root node, this objective is a bit excessive. The optimal convex hull is not needed at non root nodes. } \todo{wrote a bit about this in confirmation in a wordy way, copy that?} \bd{Consider a 2d problem, with two actions, which correspond to optimising each of the objectives. Once a step has been taken in the MOMDP, the agent has in some sence committed to a weighting over the objectives, and it does not make sense for the agent to then select actions to optimise the other objective, as if the agent wanted to optimise the other objective it would have made a different first step. This has also been observed by XXX et al, who do YYY to solve this issue. In this work, a different solution is considered, by turning the problem into a contextual one.}
+    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(1,0)$ is consistent with the implicit commitment made at the root node.
 
-    \todo{want details in contextual tree search, but want to link to it from here. The detail above really should go below in sec 5.1.1}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+        \caption[A motivating example MOMDP for contextual tree search.]{\todo{update caption with }}
+        \label{fig:5:motivating_vanmoffaert}
+    \end{figure}
 
-    \bd{This example, and an example from XXX et al, are given in subsection TODO ref, to concretely demonstrate these issues.}
+    The problem of \textit{consistent action selection} is also discussed by \todo{citet vanmoffaert14a}. They compute and track Pareto-optimal policies using an adaptation of Q-learning and highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step but fails to follow any single globally optimal path.
 
-    \todo{Demonstrate the need for consistent action selection according to objectives. This paper talks about the same issue: https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf, so should read, cite and discuss. They essentially use some policy tracking}
-    
-
-
-
-
-
-    
-    \subsection{Contextual Tree Search}
-    \label{sec:5-1-1-context} % used to be sec:5-2-context
-
-        \todo{Talk about how values can be extracted from the convex hull objects given a context, and how this can be used to solve this consistent action problem. Refer back to section 2, and say that for decision support, when a policy is chosen, it implies a weight vector, which can be used to extract the policies.}
-
-        \todo{use this to highlight that the intuition, of maximising the hypervolume or trying to find an optimal convex hull at every node is unnecessary. And leads to suboptimal behaviour and exploration.}
-
-        \todo{Use the simple example of reward in dim 1 for action 1 and reward in dim 2 for action 2}
-
-        \todo{Also make a simple 3 step example demonstrating what the vanmoffaert paper does, where there is a joint state on the two optimal paths. Which is an example of just picking actions from even the optimal convex hull at each step does not mean that you are following an optimal policy.}
-
-        \bd{So the main things to highlight with these two examples. One, that taking the objective to compute each local convex hull (the full convex hulls at not root node) is not necessary, and leads to suboptimal exploration. Two, that even if you are given all of the optimal convex hulls at every state, that some form of context or history is required to follow a globally optimal policy.}
-
-        \todo{Argue that in the case of decision support, if a context/weight vector can be obtained from the selection of a policy by the user, then the weight vector is a natural choice (and sufficient) for the context. As once given a context, the optimal choice is defined at every step. (And reference the theory section (and quote the result here).)}
-
-        \todo{Front load results on the 2 action tree search. Demonstrate that the prior works dont do well on it, and show that ours does.}
-
-        \todo{Introduce contextual (simple) regret}
+    \todo{actually add cite to bibtex}
+    % https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
 
 
+\subsection{Contextual Tree Search}
 
+    \todo{citet vanmoffaert and double check} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
+    In the \thtspp\ewe framework, the context weight $\bff{w}$ is sampled during the \samplecontext\ewe function (Section \ref{sec:2-4-1-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
 
+    \begin{defn}
+        \label{def:5:context_policy}
+        A \textnormal{contextual policy} $\pi(a|s;\bff{w})$ is a 
+        policy that may depend on the context weight vector 
+        $\bff{w}\in\Delta^{D}$, where $\pi(a|s;\bff{w})$ gives 
+        the probability of selecting action $a$ at state $s$ under 
+        weight $\bff{w}$.
 
-        \todo{Below is brain dumping this section on 22 feb. Didn't look at CHMCTS paper at all when writing it.} 
+        A policy $\pi$ is \textnormal{context independent} if 
+        $\pi(a|s;\bff{w}) = \pi(a|s;\bff{w}')$ for all 
+        $\bff{w},\bff{w}'\in\Delta^{D}$ and all $s\in\cl{S}$, 
+        $a\in\cl{A}$. Otherwise, $\pi$ is 
+        \textnormal{context dependent}.
+    \end{defn}
 
+    To reason about the performance of a contextual tree search algorithm, the notions of cumulative and simple regret are generalised to \textit{contextual cumulative regret} and \textit{contextual simple regret}. These definitions reduce to the standard definitions (Definitions \ref{def:2:cumulative_regret} and \ref{def:2:simple_regret}) when $D=1$.
 
-        This subsection discusses the use of \textit{contextual tree search} for planning in multi-objective settings. \bd{And highlights why any multi-objective tree search algorithm needs to be contextual to run effectively through an example MOMDP.}
-    
-        \todo{Example MOMDP where the rewards are a circle. Have an image of the rewards, have an example of the 2 action 2D, and 3 action 2D envioronments. Also want to cite the EUM point generation that we used to generate points uniformly on a hypersphere, which allows the environment to be generate for an arbitrary (num actions, dimension) pair}
-    
-        In previous work \todo{refs back to litrev}, the rough intuition used is at every node in the tree that a full convex hull is desirable, and maps action selection in a variety of ways to try and achieve this.
-    
-        Using this example MOMDP \todo{reffering to the 3d one?}, where there are $M$ actions, it is quite clear from inspection what policies form the Convex Hull. $\phi^i(s)=a_{\cl{M}(i)}$ is the optimal policy for the \bd{weight vector} $\bff{w}^i=\bff{R}(\cdot,a_{\cl{M}(i)})$ \todo{probably want to fix up notation}. The convex hull is from inspection $\{\phi^i | 1\leq i \leq M\}$. 
-    
-        \bd{The point of this MOMDP is that really is that its easy to know optimal CH from inspection, and should be relatively easy to solve for any tree search algorithm.}
-    
-        To motivate why contextual tree search is a necessary component of MOMCTS, consider $s_0\rightarrow a_0 \rightarrow s_1$ \todo{clean notation} and that from state $s_1$ onwards, we know that the optimal action must be to continue taking $a_0$ until the trial ends. In some sense, the actions for the remainder of the trial should be consistent with any actions previously taken in the trial. Otherwise, the search policy will be essentially flipping between trying to optimse for different combinations of objectives and in effect optimising for none of them. \todo{This paragraph very brain dump}.
-        
-        The proposal in this thesis is for every trial to sample a \textit{context} weight vector, where for now it will be assumed that $\bff{w}^i \sim U(\Delta^D)$ \todo{just realised the Delta in BTS section might be overloaded notation? ALSO double check what notation used for simplex. ALso clean this equation up.} This context is then used to allow algorithms to follow a consistent objective over all actions in a trial. \todo{There may be other ways to achieve this, but the proposal of contextual tree search solves this problem relatively simply}
-    
-        \todo{Some experiments showing that the prior work on MOMCTS fails horribly on this MOMDP.}
-    
-    
-    
-        \bd{As the work in this chapter will follow the typical pattern of taking a multi-armed bandit problem and applying it to a sequential decision making problem, the theoretical quantity that will be considered in this chapter is contextual (cumulative) regret.}
-    
-        \todo{Define the typical MAB problem figure, and contextual regret equation.}
-    
-    
-    
-    
-    
-    
-        \todo{HERE HERE HERE HERE. NExt = write up the typical MAB problem figure and defn contextual regret. With new command local. Then move onto defining contextual zooming for trees and CHMCTS. Doesn't matter if the notation is a bit off, as long as the equations which are slow to type out are typed out.}
+    \begin{defn}
+        \label{def:5:contextual_cumulative_regret}
+        The \textnormal{contextual cumulative regret} after $n$ 
+        rounds is:
+        \begin{align}
+            \text{CR}_n = \sum_{m=1}^n \left( 
+                \max_{a\in\cl{A}} (\bff{w}^m)^\top \bff{Q}^*(s_0, a) 
+                - (\bff{w}^m)^\top \bff{Q}^*(s_0, a^m) 
+            \right),
+        \end{align}
+        where $a^m$ is the action selected in round $m$ and 
+        $\bff{Q}^*(s,a)$ is the optimal multi-objective Q-value 
+        vector at $(s,a)$.
+    \end{defn}
 
+    \begin{defn}
+        \label{def:5:contextual_simple_regret}
+        The \textnormal{contextual simple regret} of a 
+        recommendation policy $\psi$ at state $s_0$ is:
+        \begin{align}
+            \text{SR}(\bff{w}, \psi) = \max_{a\in\cl{A}} 
+                \bff{w}^\top \bff{Q}^*(s_0,a) 
+                - \bff{w}^\top \bff{Q}^*(s_0, \psi(s_0;\bff{w})),
+        \end{align}
+        where $\psi(s_0;\bff{w})$ is the action recommended by 
+        $\psi$ under weight $\bff{w}$.
+    \end{defn}
 
+    Several prior MOMCTS works \todo{cite}, discussed in Section \todo{ref ch3}, use a context-independent search policy. It is shown in Section \ref{sec:5-6-theory} that any context-independent search policy suffers linear contextual cumulative regret, and any context-independent recommendation policy suffers linear contextual simple regret.
 
-        \todo{make defn}
-        Given that the multi-objective problem is now being posed as a contextual problem, it is necessary to allow for policies to depend on the context weight. Given a weight $\bff{w}\in\Delta^D$, the probability of samping action $a$ from policy $\pi$ at state $s$ will now be written $\pi(a|s;\bff{w})$.
-
-        Additionally, \textit{context dependent} policy will refer to policies that can vary for different weights, and \textit{context independent} policies are ones that give the same distribution for all weights. That is, a policy $\pi$ is context independent if $\pi(a|s;\bff{w}) = \pi(a|s;\bff{w}')$ for all $\bff{w},\bff{w}'\in\Delta^D$. \todo{How to handle that context dependent could learn a context independent? Maybe rephrase?}
-
-
+    \todo{Theorem that context independent search policy suffers linear contextual cumulative regret AND context independent recommendation policy suffers linear contextual simple regret}
 
 
 
 
 
-    
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Contextual Zooming for Trees}
-\label{sec:5-3-czt}
+\label{sec:5-2-czt}
 
-    \todo{part 1: say that a common approach from tree search is to think about each node as solving a (non-stationary) multi-armed bandit problem}
+    A common design paradigm in MCTS is to adapt a MAB algorithm 
+    to run at each decision node of the search tree, treating the 
+    node as a (non-stationary) bandit problem. UCT follows this 
+    paradigm by running UCB at each node (Section 
+    \ref{sec:2-4-2-uct}). Following the same methodology, 
+    \textit{Contextual Zooming for Trees} (CZT) runs the 
+    \textit{Contextual Zooming} (CZ) algorithm \cite{cz} on a 
+    non-stationary contextual multi-armed bandit problem at each 
+    decision node, where the context is the weight vector $\bff{w}$ 
+    sampled at the start of the trial. The relationship between 
+    these algorithms is illustrated in Figure \ref{fig:5:czt_diagram}.
 
-    \todo{part 2: following a similar approach, contextual zooming is an approach for contextual bandits }
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/todo.jpg}
+        \caption[Design paradigm for CZT.]{The design paradigm 
+        for CZT. UCB is lifted to UCT by applying it at each node 
+        of the search tree. CZ generalises UCB to contextual bandits. 
+        CZT follows both directions, applying CZ at each node of 
+        the search tree.}
+        \label{fig:5:czt_diagram}
+    \end{figure}
 
-    \todo{part 3: have a diagram of a box, UCB right to UCT, UCB down to CZ, UCT down to CZT, CZ right arrow to CZT}
+    It is worth noting that CZ is motivated in the cumulative regret 
+    setting, rather than the exploration setting. As such, CZT 
+    inherits this orientation and is not specifically designed with 
+    the exploration setting in mind. CZT is considered in this 
+    chapter for two reasons: it follows the same design paradigm 
+    as UCT, providing a natural contextual analogue; and it serves 
+    as a contextual search policy baseline, since no such baseline 
+    currently exists in the MOMCTS literature.
 
-    \todo{part 4: describe the algorithm. say that it's for a fixed number of trials. talk about doubling trick and how it can be used to bound contextual regret for unknown number of trials. In practise just use the equations without thinking about it.}
+    \subsection{The Contextual Zooming Algorithm}
+    \label{sec:5-2-1-cz}
 
-    \todo{part 5: subsection on CH-CZT, which is just using the convex hull backups for the recommendation policy.}
+    The Contextual Zooming algorithm \cite{cz} solves contextual 
+    multi-armed bandit (CMAB) problems (Section 
+    \ref{sec:2-1-3-contextual-mab}), achieving a contextual 
+    cumulative regret of $O(n^{\frac{1+c}{2+c}}\log(T))$ over 
+    the first $n$ rounds using the \textit{doubling trick} 
+    \cite{doubling_trick}, where $c$ is the \textit{covering 
+    dimension} of the similarity space $\cl{W}\times\cl{X}$. 
+    Within this thesis, the covering dimension coincides with 
+    the standard notion of dimension: $\cl{W}\times\cl{X}$ has 
+    covering dimension $c$ if it embeds into $\bb{R}^c$.
+
+    The CZ algorithm maintains a set of \textit{active balls} 
+    in the similarity space. Let $A^m$ denote the set of active 
+    balls at the start of the $m$th round. A ball with centre 
+    $(w,x)$ and radius $r$ is defined as 
+    $\{(w',x')\in\cl{W}\times\cl{X} \mid d((w,x),(w',x')) < r\}$.
+
+    Each round, CZ applies two rules: a \textit{selection rule}, 
+    which selects a ball $B^m$ from $A^m$; and an 
+    \textit{activation rule}, which optionally adds a ball with 
+    smaller radius to $A^m$.
+
+    Given a context $w^m$, the selection rule proceeds as follows. 
+    Let $N^m(B)$ be the number of times ball $B\in A^m$ has been 
+    selected in the first $m$ rounds, and $\bar{y}^m(B)$ the 
+    average reward received when ball $B$ was selected:
+    \begin{align}
+        N^m(B) &= \sum_{i=1}^m \one[B=B^i], 
+            \label{eq:5:cz_num_ball_selected} \\
+        \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m 
+            y^i \one[B=B^i]. 
+            \label{eq:5:cz_ball_avg_reward}
+    \end{align}
+
+    Let $r(B)$ denote the radius of ball $B$ and let 
+    $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, 
+    which excludes all balls of smaller radius:
+    \begin{align}
+        \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} 
+            B' \right). \label{eq:5:cz_domain}
+    \end{align}
+
+    The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on 
+    the $m$th round is:
+    \begin{align}
+        \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. 
+            \label{eq:5:cz_conf_radius}
+    \end{align}
+
+    Let $\relevant^m(w,A^m)$ denote the set of balls relevant 
+    for context $w$, i.e. balls containing an arm $x$ such that 
+    $(w,x)$ is in the domain of the ball:
+    \begin{align}
+        \relevant^m(w,A^m) = \{ B\in A^m \mid \exists x\in\cl{X}.\ 
+            (w,x)\in\dom^m(B)\}.
+    \end{align}
+
+    The ball $B^m$ selected on the $m$th round with context 
+    $w^m$ is chosen as:
+    \begin{align}
+        I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), 
+            \label{eq:5:cz_pre_index} \\
+        B^m &= \argmax_{B\in\relevant^m(w^m,A^m)} r(B) + 
+            \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), 
+            \label{eq:5:cz_ball_selection}
+    \end{align}
+    where $d(B,B')$ is the distance between the centres of balls 
+    $B$ and $B'$ according to the metric $d$. The arm sampled 
+    by CZ is then drawn uniformly from the domain of $B^m$: 
+    $x^m_{\cz} \sim \text{Uniform}(\{x\in\cl{X} \mid 
+    (w^m,x)\in\dom^m(B^m)\})$.
+
+    The activation rule is applied when the confidence radius 
+    of the selected ball $B^m$ falls below its radius, i.e. 
+    if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this 
+    case, a new ball $B'$ is added with radius 
+    $r(B')=\frac{1}{2}r(B^m)$ and centre $(w^m,x^m)$, so that 
+    $A^{m+1}=A^m\cup\{B'\}$. Otherwise $A^{m+1}=A^m$.
+
+    \subsection{Algorithm Definition}
+    \label{sec:5-2-2-czt-defn}
+
+    \textit{Contextual Zooming for Trees} (CZT) adapts CZ to 
+    run at each decision node of a \thtspp\ewe search tree, in 
+    the same way that UCT adapts UCB. Each decision node 
+    $s\in\cl{T}$ maintains its own set of active balls 
+    $A^{N(s)}$, indexed by the visit count $N(s)$.
+
+    The context weight $\bff{w}$ is sampled at the start of 
+    each trial by the \samplecontext\ewe function and passed 
+    to the \selectaction\ewe function at each decision node. 
+    The \selectaction\ewe function runs the CZ selection rule 
+    at the current node using the current context $\bff{w}$, 
+    with the similarity space $\cl{W}\times\cl{X} = 
+    \Delta^D\times\cl{A}$ and the metric \bd{$d$ defined as 
+    the metric used in the CZ algorithm --- fill in appropriate 
+    metric for weight-action space}.
+
+    The \initv\ewe function initialises a new decision node 
+    $s$ with an empty set of active balls $A^0 = \{B_0\}$, 
+    where $B_0$ is an initial ball covering the full similarity 
+    space \bd{with radius chosen appropriately}. The visit count 
+    is initialised to $N(s)=0$.
+
+    The \backupv\ewe function applies the CZ activation rule 
+    after each visit to the node, and increments the visit 
+    count $N(s)$.
+
+    The recommendation policy of CZT selects the arm $x^*$ 
+    that maximises the empirical average reward under the 
+    current context $\bff{w}$: \todo{psi to psiczt}
+    \begin{align}
+        \psi(s;\bff{w}) = \argmax_{a\in\cl{A}} 
+            \bar{y}^{N(s)}(B^*(a,\bff{w})),
+    \end{align}
+    where $B^*(a,\bff{w})$ is the active ball containing 
+    $({\bff{w}},a)$ \bd{with smallest radius --- check this 
+    is the right recommendation rule for CZ}.
+
+
+    \todo{diffs of CZT to CZ. Round limit is varaible. CZ either uses a fixed number of rounds, or adapts it used doubling trick. Doubling trick allows results to be extended in theory, in practise we dont want to throw away all of our data at regular intervals. So the differences are that the current number of trials is used n, instead of the total number of rounds T. Second difference is the additional heuristic activation rule that was added to avoid adding many balls too fast. Also specialisation of the metric space}
+
+    \todo{Something about to highlight that the adaptions from CZ are minimal}
+
+    % \subsection{CH-CZT}
+    % \label{sec:5-2-3-ch-czt}
+
+    % \bd{CH-CZT is a variant of CZT that uses convex hull 
+    % backups for the recommendation policy, rather than the 
+    % CZ recommendation rule. The search policy remains the 
+    % same as CZT, but the recommendation policy uses the 
+    % convex hull value set maintained by the CHMCTS backups 
+    % (Section \ref{sec:5-3-chmcts}) to select the action 
+    % that maximises $\bff{w}^\top \bff{V}$ for the current 
+    % context. This combines the contextual exploration of 
+    % CZT with the richer value representation of CHMCTS.}
 
 
 
@@ -273,23 +411,6 @@
 
 
 
-    A common design choice in tree search for sequential decision making is to use a relevant multi-armed bandit algoroithm at each deicison node of the tree. For example, the UCT algorithm adapts the UCB algorithm at each node, to run on a non-stationary MAB problem at each node. 
-
-    Since Section \ref{sec:5-1-1-context} motivated viewing multi-objective MCTS from a contextual viewpoint. This Section considers utilising the \textit{Contextual Zooming} alogirithm \todo{ref in ch2} for contextual multi-armed bandits to give the \textit{Contextual Zooming for Trees} (CZT) algorithm.
-
-    \bd{Following a similar methodology to UCT --- which runs UCB on a non-stationary multi-armed bandit problem at each node in the search tree --- \textit{Contextual Zooming for Trees} (CZT) runs \textit{Contextual Zooming} (Chapter 2, TODO REF) on a non-stationary contextual multi-armed bandit problem at each node in the search tree.}
-
-    It's worth noting that because the CZT algorithm is following the ``UCT formula'', and that the contextual zooming algorithm is motivated in the \bd{standard} reinforcement learning setting, as opposed to the exploration setting. \bd{As such CZT in some sense is not designed with the exploration setting in mind.}
-
-    \todo{Consdier this algo for two reasons: follow same design as UCT and contextual search policy baseline (as non  exist really).}
-
-    % (This para was at the start, but dont want to start with it anymore)
-    % \bd{taking a slight tangent from the exploration reinforcment learning setting, this section introduces Contextual Zooming for Trees, which will be used as a baseline contextual algorithm in experiments and considered for an action selection mechanism.}
-
-    \todo{Box diagram}
-
-    \todo{Revise contextual zooming algorithm}
-        
 
 
 
@@ -297,406 +418,745 @@
 
 
 
-    
 
 
 
 
 
 
+
+
+
+
+
+
+\section{Contextual Zooming for Trees}
+\label{sec:5-2-czt}
+
+
+New Ch5 plan:
+\begin{itemize} 
+    \item Algos, contextual zooming (motivate by parallel to UCT)
+\end{itemize}
+
+
+
+
+
+box diagram is ucb right to uct (bandit to tree search direction), ucb down to cz (mab to cmab direction), and CZT follows both direcitons
+- this is just a diagram to indicate why this algorithm exists and how it was designed
+
+
+
+
+
+
+
+\todo{BELOW is original Contextual Zooming writing from Ch2 for CMAB problems}
+
+\todo{Move into correct place and update notation appropriately for the chapter. Add pre-amble saying about how its an algorithm for CMAB, but only introduce here because used in one place only}
+
+\citet{cz} introduce the Contextual Zooming (CZ) algorithm to solve CMAB problems. CZ achieves a contextual regret of $O(n^{\frac{1+c}{2+c}}\log(T))$ over the first $n$ rounds, using the \textit{doubling trick} \cite{doubling_trick}, where $c$ is the \textit{(Lebesgue) covering dimension} of the similarity space $\cl{W}\times\cl{X}$. Within this thesis, the covering dimension coincides with the standard notion of dimension: $\cl{W}\times\cl{X}$ has covering dimension $c$, if it embeds into $\bb{R}^{c}$.
+
+The CZ algorithm uses a set of balls in the similarity space, called \textit{active balls}. Let $A^m$ denote the set of active balls at the start of the $m$th round. A ball with centre $(w,x)$ and radius $r$ is defined as $\{(w',x')\in\cl{W}\times\cl{X}\ |\ d((w,x),(w',x')) < r \}$. 
+
+Each round, CZ applies two rules: a \textit{selection rule}, which selects a ball $B^m$ from $A^m$; and an \textit{activation rule} which optionally adds a ball with smaller radius to $A^m$. 
+
+Given a context $w^m$, the selection rule proceeds as follows: let $N^m(B)$ be the number of times that a ball $B\in A^m$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the average reward received over the first $m$ rounds when ball $B$ was selected.
+\begin{align}
+    N^m(B) &= \sum_{i=1}^m \one[B=B^m], \label{eq:2:cz_num_ball_selected} \\
+    \bar{y}^m(B) &= \frac{1}{N^m(B)} \sum_{i=1}^m y^m \one[B=B^m]. \label{eq:2:cz_ball_avg_reward}
+\end{align}
+
+Let $r(B)$ denote the radius of ball $B$ and let $\dom^m(B)$ be the domain of ball $B$ on the $m$th round, which is the subset of $B$ that excludes all balls of smaller radius:
+\begin{align}
+    \dom^m(B) = B - \left( \bigcup_{B'\in A^m:r(B')<r(B)} B' \right). \label{eq:2:cz_domain}
+\end{align}
+
+The \textit{confidence radius} $\conf^m(B)$ of ball $B$ on the $m$th round is:
+\begin{align}
+    \conf^m(B) = 4\sqrt{\frac{\log T}{1+N^{m-1}(B)}}. \label{eq:2:cz_conf_radius}
+\end{align}
+
+Let $\relevant^m(w,A^m)$ denote the set of balls that are relevant for context $w$ on the $m$th round, which is the set of balls that contain an arm $x$ such that $(w,x)$ is in the domain of the ball:
+\begin{align}
+    \relevant^m(w,A^m) = \{ B\in A^m | \exists x\in\cl{X}. (w,x)\in\dom^m(B)\}.
+\end{align}
+
+The ball $B^m$ selected on the $m$th round with context $w^m$ is chosen as follows:
+\begin{align}
+    I^m(B) &= \bar{y}^{m-1}(B) + r(B) + \conf^m(B), \label{eq:2:cz_pre_index} \\
+    B^m &= \argmax_{B\in\relevant^m(w^m,A^m)} r(B) + \min_{B'\in A^m} \left( I^m(B') + d(B,B') \right), \label{eq:2:cz_ball_selection}
+\end{align}
+where $d(B,B')$ is the distance between the centres of balls $B,B'$ according to the metric $d$. 
+
+Once a ball has been selected, the arm sampled by CZ, $x^m_{\cz}$, is sampled randomly from the domain of ball $B^m$ (from the set $\{x\in\cl{X}|(w^m,x)\in\dom^m(B^m)\}$).
+
+The activation rule is applied when the confidence radius of the selected ball $B^m$ is smaller than its radius, i.e. if $\conf^{m+1}(B^m) \leq r(B^m) < \conf^m(B^m)$. In this case, a new ball $B'$ is added to the set of active balls, with radius $r(B')=\frac{1}{2}r(B^m)$ and centre $(w^m,x^m)$. If a new ball is added, then $A^{m+1}=A^m\cup \{B'\}$ and otherwise $A^{m+1}=A^m$.
+
+
+
+
+%
+% Previous plan for this section
+%
+\todo{part 1: say that a common approach from tree search is to think about each node as solving a (non-stationary) multi-armed bandit problem}
+
+\todo{part 2: following a similar approach, contextual zooming is an approach for contextual bandits }
+
+\todo{part 3: have a diagram of a box, UCB right to UCT, UCB down to CZ, UCT down to CZT, CZ right arrow to CZT}
+
+\todo{part 4: describe the algorithm. say that it's for a fixed number of trials. talk about doubling trick and how it can be used to bound contextual regret for unknown number of trials. In practise just use the equations without thinking about it.}
+
+\todo{part 5: subsection on CH-CZT, which is just using the convex hull backups for the recommendation policy.}
+
+
+%
+% Previous attempt at writing this section
+% 
+
+
+A common design choice in tree search for sequential decision making is to use a relevant multi-armed bandit algoroithm at each deicison node of the tree. For example, the UCT algorithm adapts the UCB algorithm at each node, to run on a non-stationary MAB problem at each node. 
+
+Since Section \ref{sec:5-1-1-context} motivated viewing multi-objective MCTS from a contextual viewpoint. This Section considers utilising the \textit{Contextual Zooming} alogirithm \todo{ref in ch2} for contextual multi-armed bandits to give the \textit{Contextual Zooming for Trees} (CZT) algorithm.
+
+\bd{Following a similar methodology to UCT --- which runs UCB on a non-stationary multi-armed bandit problem at each node in the search tree --- \textit{Contextual Zooming for Trees} (CZT) runs \textit{Contextual Zooming} (Chapter 2, TODO REF) on a non-stationary contextual multi-armed bandit problem at each node in the search tree.}
+
+It's worth noting that because the CZT algorithm is following the ``UCT formula'', and that the contextual zooming algorithm is motivated in the \bd{standard} reinforcement learning setting, as opposed to the exploration setting. \bd{As such CZT in some sense is not designed with the exploration setting in mind.}
+
+\todo{Consdier this algo for two reasons: follow same design as UCT and contextual search policy baseline (as non  exist really).}
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
 \section{Convex Hull Monte Carlo Tree Search}
 \label{sec:5-3-chmcts}
 
-    \todo{part 1: give generalised CHMCTS backups}
-
-    \todo{part 2: say that this generalises the prior works from ch3}
-
-    \todo{part 3: state the search policies of the prior works, and label them}
-
-    \todo{part 4: dont know if can be bothered to implement, but updating N(s) by w and making it a visitation vector now makes more sense than just a count.}
 
 
+Taking parallels to single objective, this section is like using Bellman backups, rather than using average returns.
+
+
+New Ch5 plan:
+\begin{itemize} 
+    \item Algos, convex hull backups
+    \item Algos, why no entropy
+\end{itemize}
+
+
+%
+% From intro originally
+%
+\bd{In prior methods that use a convex hull} \todo{ref} \bd{, the environment is assumed to be deterministic, and backups can be seen to be a special case of Convex Hull backups from Chapter 2} \todo{ref}. \bd{Therefore, for the remainder of this chapter, most algorithms will use convex hull backups, similar to Convex Hull Value Iteration (todo ref), as in the deteminstic MOMDP case it reduces to the original algorithms, and extends them for stochastic MOMDPs. As such, this chapter, will predominantly focus on how perform action selection in MOMCTS (exploration?)}
+
+
+%
+% Original plan for this section
+%
+
+\todo{part 1: give generalised CHMCTS backups}
+
+\todo{part 2: say that this generalises the prior works from ch3}
+
+\todo{part 3: state the search policies of the prior works, and label them}
+
+\todo{part 4: dont know if can be bothered to implement, but updating N(s) by w and making it a visitation vector now makes more sense than just a count.}
 
 
 
+%
+% More polished writing actually have
+%
+This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises the prior work in multi-objective MCTS \todo{ref ch3} to handle stochastic environments by using backups over \textit{Convex Hull Value Sets} from Chapter 2 \todo{ref ch2}. First the backups, which will be common across all of the following algorithms.
 
-    This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises the prior work in multi-objective MCTS \todo{ref ch3} to handle stochastic environments by using backups over \textit{Convex Hull Value Sets} from Chapter 2 \todo{ref ch2}. First the backups, which will be common across all of the following algorithms.
+Let ALG be a substitute acronym for any of the following algorithms. At each decision node $s$ a value set is maintained $\Valg(s)$, and at chance nodes $(s,a)$ the value set $\Qalg(s)$ is maintained. The search policy, $\pialg(\cdot|s,\bff{w})$, is \textit{contextual} and will depend on a randomly sampled $\bff{w}\in\Delta^D$ for each trial. \bd{Assume for now that the search policy is defined, as it will differ for each algorithm.}
 
-    Let ALG be a substitute acronym for any of the following algorithms. At each decision node $s$ a value set is maintained $\Valg(s)$, and at chance nodes $(s,a)$ the value set $\Qalg(s)$ is maintained. The search policy, $\pialg(\cdot|s,\bff{w})$, is \textit{contextual} and will depend on a randomly sampled $\bff{w}\in\Delta^D$ for each trial. \bd{Assume for now that the search policy is defined, as it will differ for each algorithm.}
+Given a context objective $\bff{w}\in\Delta^D$ and a trajectory $\tau=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pialg$ \todo{want the w in the pialg bit somehow? Maybe make it superscript? But dont want it to mess with notation for theory.} the value estimates are updated for $t=h-1,...,0$:
+\begin{align}
+    \Valg(s_t) &\leftarrow \cprune \left( \bigcup_{a_t\in\cl{A}} \Qalg(s_t,a_t) \right), 
+        \label{eq:5:chmcts_v_backup} \\
+    \Qalg(s_t,a_t) &\leftarrow \bff{R}(s_t,a_t) + \sum_{s'\in\suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)}\Valg(s'). 
+        \label{eq:5:chmcts_q_backup}
+\end{align}
 
-    Given a context objective $\bff{w}\in\Delta^D$ and a trajectory $\tau=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pialg$ \todo{want the w in the pialg bit somehow? Maybe make it superscript? But dont want it to mess with notation for theory.} the value estimates are updated for $t=h-1,...,0$:
+where the $\cprune$ operation is defined in \eqref{eq:2:cprune_def}, \bd{but repeated here for clarity} over an arbitrary set of vectors $\bfcl{V}$:
+\begin{align}
+    \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:5:cprune_def}
+\end{align}
+
+Additionally, because the search policies are contextual \todo{in the following subsections (todo ref)}, it will be useful to define \textit{contextual value estimates}, given a context objective $\bff{w}\in\Delta^D$ as follows:
+\begin{align}
+    \Valgctx{\bff{w}}(s) &= \max \{\bff{w}^\top \bff{v} | \bff{v}\in\Valg(s) \}, \label{eq:5:contextual_value} \\
+    \Qalgctx{\bff{w}}(s,a) &= \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qalg(s) \}. \label{eq:5:contextual_qvalue}
+\end{align} 
+
+\todo{define the policies for the algorithms in chapter 3. also think want to justify the equivalence, because they will use some } $\bar{\bff{R}}$ \todo{in the updates to the convex hulls. Decompose} $\bar{\bff{R}}(s_t) = \bff{R}(s_t,a_t) + \bar{\bff{R}}(s_{t+1})$, and say that this would only get added to CHVS at $s_t$ iff at $t+1$ the second part was added to the convex hull.
+
+\todo{should just write up the ch3 stuff before writing this tidbit}
+
+The algorithms described in Chapter 3 \todo{ref} can be realised using the above backups, with the search policies taking the following form:
+\begin{align}
+    \pialg(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+        \zetaalg(\bfcl{Q}(s,a)) + \calg \sqrt{\frac{\log(N(s))}{N(s,a)}} \right]
+\end{align}
+
+\todo{write up the policies for the ch3 algorithms by defining zeta for the different algorithms. And highlight the context independence from not depending on the weight}
+
+\todo{correct that pareto ucb uses a different search policy too}
+
+
+%
+% Unpolished writing linking into the actual algorithm definitions
+%
+
+Below = previous writing on this
+
+\todo{list}
+\begin{itemize}
+    \item Give convex hull monte carlo tree search
+    \item Contextual zooming with the convex hull backups
+\end{itemize}
+
+\todo{Discuss property of extracting from convex hull}
+
+\todo{A range of action selection methods will be used.}
+
+Now that contextual tree search has been motivated, \textit{Convex Hull Monte Carlo Tree Search} is given in a form that generalises the works of \todo{cite lots}.
+
+\todo{CHMCTS backups}
+
+\todo{Contextual Search policy}
+
+\todo{Restate and name the prior works search policies}
+
+The algorithms considered in \todo{ref ch4} can be converted into contextual multi-objective algorithms by using the contextual values $\Valgctx{\bff{w}}(s)$ and $\Qalgctx{\bff{w}}(s,a)$ for decision making.
+
+
+%
+% Speciic algorithm definitions (partially written)
+%
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{CH-CZT}
+\label{sec:5-3-1-chczt}
+
+    \todo{move }
+
+
+    Additionally, there is nothing preventing CZT from keeping convex hull value set estimates at each of it's nodes. This algorithm is referred to as Contextual Zooming for Trees with Convex Hull backups (CH-CZT). In such a case, the backups from \todo{ref eqns} are included, to update the value set estimates \todo{notation}, which are then used for recommnedations \todo{as follows}. In essence, this algorithm runs CZT, but adds an aditional convex hull backup which is used for recommendations.
+
+
+    \todo{this should mostly be copying out from the chmcts paper.}
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{CH-UCT}
+\label{sec:5-3-2-chuct}
+
+    \todo{part 1: give action selection for CH-UCT and talk about it}
+
+    \todo{part 2: discuss more?}
+
+
+    A natural way to extend the UCT search policy for contextual tree search is to use the contextual value estimates \eqref{eq:5:contextual_value} and \eqref{eq:5:contextual_qvalue} in the UCT search policy. Call this algorithm \textit{UCT with Convex Hulls} (CH-UCT). This gives the following search policy:
     \begin{align}
-        \Valg(s_t) &\leftarrow \cprune \left( \bigcup_{a_t\in\cl{A}} \Qalg(s_t,a_t) \right), 
-            \label{eq:5:chmcts_v_backup} \\
-        \Qalg(s_t,a_t) &\leftarrow \bff{R}(s_t,a_t) + \sum_{s'\in\suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)}\Valg(s'). 
-            \label{eq:5:chmcts_q_backup}
+        \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+            \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(N(s))}{N(s,a)}} \right].
     \end{align}
 
-    where the $\cprune$ operation is defined in \eqref{eq:2:cprune_def}, \bd{but repeated here for clarity} over an arbitrary set of vectors $\bfcl{V}$:
+    \bd{One issue is that the confidence interval terms are shared between all possible context objectives, and may assign a high confident, or tight bound, for contexts that haven't been explored down this path much.} A hueristic way to solve this is to a vectorised visit counts $\bff{M}(s)$, $\bff{M}(s,a)$. These values are backed up after a trial for context $\bff{w}$ as follows:
     \begin{align}
-        \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:5:cprune_def}
+        \bff{M}(s) \leftarrow \bff{M}(s) + \bff{w}, \\
+        \bff{M}(s,a) \leftarrow \bff{M}(s,a) + \bff{w}.
     \end{align}
 
-    Additionally, because the search policies are contextual \todo{in the following subsections (todo ref)}, it will be useful to define \textit{contextual value estimates}, given a context objective $\bff{w}\in\Delta^D$ as follows:
+    Then a contextual visit count can be defined, and used in the search policy as follows:
     \begin{align}
-        \Valgctx{\bff{w}}(s) &= \max \{\bff{w}^\top \bff{v} | \bff{v}\in\Valg(s) \}, \label{eq:5:contextual_value} \\
-        \Qalgctx{\bff{w}}(s,a) &= \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qalg(s) \}. \label{eq:5:contextual_qvalue}
-    \end{align} 
-
-    \todo{define the policies for the algorithms in chapter 3. also think want to justify the equivalence, because they will use some } $\bar{\bff{R}}$ \todo{in the updates to the convex hulls. Decompose} $\bar{\bff{R}}(s_t) = \bff{R}(s_t,a_t) + \bar{\bff{R}}(s_{t+1})$, and say that this would only get added to CHVS at $s_t$ iff at $t+1$ the second part was added to the convex hull.
-
-    \todo{should just write up the ch3 stuff before writing this tidbit}
-
-    The algorithms described in Chapter 3 \todo{ref} can be realised using the above backups, with the search policies taking the following form:
-    \begin{align}
-        \pialg(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
-            \zetaalg(\bfcl{Q}(s,a)) + \calg \sqrt{\frac{\log(N(s))}{N(s,a)}} \right]
+        M(s;\bff{w}) &= \bff{w}^\top \bff{M}(s) \\
+        M(s,a;\bff{w}) &= \bff{w}^\top \bff{M}(s,a) \\
+        \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
+            \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(M(s;\bff{w}))}{M(s,a;\bff{w})}} \right].
     \end{align}
 
-    \todo{write up the policies for the ch3 algorithms by defining zeta for the different algorithms. And highlight the context independence from not depending on the weight}
+    Note that the original value of $N(s)$ is still needed in the convex hull backups for Q-value sets, to empirically estimate the transition distribution $p(s'|s,a)\approx \frac{N(s')}{N(s,a)}$, however this can be recovered from the vectorised visit count by summing over the values of the vector:
+    \begin{align}
+        N(s) &= \sum_{i=1}^D M(s)_i \\
+        N(s,a) &= \sum_{i=1}^D M(s,a)_i.
+    \end{align}
 
-    \todo{correct that pareto ucb uses a different search policy too}
+    \todo{notation above isn't clean.}
+    
+
+
+
+
+    \todo{Why doesnt a CH-UCT withe confidence bounds around the DP values you get from the convex hulls still work? Couldn't we do a k-d tree of visit counts for contexts, or some other way of counting how often a context has been searched for? There would be some lemma that the number of visits, is correct, for some epsilon ball around the weight, which the epsilon gives a small enough error in the value to be fine, except for the visit from the nodes above it in the kd tree. ANd then require exp many more trials to count for each level of the tree.}
+
+    \todo{Add to ORIMenu to just submit some arxiv shit for something like ``an addendum to convex hull monte carlo tree search'', where we basically copy past this chapter. Actually, I think just take this chapter and publish it with the definitions cut down. Say for litreview either look at the CHMCTS or Thesis literature reviews.}
+
+    \todo{Quote theory results}
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{CH-BTS}
+\label{sec:5-3-3-chbts}
+
+    \todo{part 1: give action selection for CH-DENTS and talk about it}
+
+    \todo{part 2: say CH-BTS is same without entropy backup}
+
+    \todo{part 2: discuss entropy, say that it's just an approximate exploration bonus now}
 
 
 
 
 
-    Below = previous writing on this
 
-    \todo{list}
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Optimisations}
+\label{sec:5-4-optimisations}
+
+New Ch5 plan:
+\begin{itemize} 
+    \item Optimizations, solved labelling (ref LRTDP)
+    \item Optimizations, pruning the number of points in the convex hull
+\end{itemize}
+
+Give claude the docstring for the solved labelling
+
+Give claude the docstring for the pruning points in the convex hull
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Empirical Results}
+\label{sec:5-5-results}
+
+
+
+New Ch5 plan:
+\begin{itemize} 
+    \item Empirical results
+    \item Say that when possible (have a cpp port) use CHVI as a baseline and also CHVI with prioritised sweeping
+\end{itemize}
+
+should have a QHull reference when talking about the implementation
+
+say that we prune using that, unless it is a degenerate case where we fall back to using the linear programming method
+
+this was the fastest option available
+
+%
+% Original plan for this section
+%
+
+\todo{part 0: discuss the evaluation prodceedure, and how the results are evaluated.}
+
+\todo{part 1: run algorithms on the tree envs that show the context dependent stuff better}
+
+\todo{part 1a: run algorithms with and without vectorised visit counts and show this helps with exploration?}
+
+\todo{part 2: run on suite of mo-gym environments}
+
+\todo{part 3: find environments where the convex hull blows up to motivate ch6. Give the CH fully and plot it out.}
+
+\todo{part 3a: also consider showing some of the optimal convex hulls where possible}
+
+%
+% Original brain dumping
+%
+
+\todo{should really reference back to the ch4 evaluation proceedure too}
+
+\todo{list}
+\begin{itemize}
+    \item Results from CHMCTS paper
+    \item Get same plots from C++ code, but compare expected utility, rather than the confusing hypervolume ratio stuff
+\end{itemize}
+
+\bd{A range of algorithms will be considered in this experimental section. Firstly, for baselines, the convex hull backup versions of algorithms from Ch3 (REF) will be used. Additionally, CZT, CH-CZT, CH-UCT, CH-BTS and CH-DENTS will be considered}
+
+
+
+
+
+This section provides an empirical evalutation of the algorithms developed in this chapter. The baseline algorithms considered will also be CHMCTS algorithms, using the action selection methods outline in Sections \todo{ref litrev and above}. 
+
+\bd{This para is very braindump.} It is worth noting that in multi-objective MCTS algorithms that the accuracy and quality of the convex hull at the root node is the primary concern, even when a multi-objective MCTS algorithm is used in an \textit{online} manor, where tree search is interleaved between actions taken by the agent. Once a policy has been selected at the initial state it implicitly defines a weighting over the objectives as detailed in Section \todo{ref sec 2}. And following the discussion from \todo{ref above}, to follow an optimal policy the actions need to be taken consistently with respect to the same objective weights. As such, a more efficient online algorithm will be to run the multi-objective tree search from the initial state, and run a single-objective MCTS algorithm in a scalarised single-objective MDP for the remaining actions. Where in the scalarised reward is $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
+
+
+
+
+\subsection{Evaluation Proceedure} 
+
+    To evaluate the quality of the convex hull at the root node, the following metrics from the multi-objective literature \cite{morl_survey} are considered: \textit{Expected Utility Metric}, \textit{Hypervolume Metric} and a \textit{Sparsity Metric}. \todo{Add EUM and HV and Sparsity here or in ch2? }
+
+    To evaluate the quality of the convex hull at the root node, where the optimal convex hull is not known a-priori, the \textit{Expected Utility Metric}, \textit{}
+
+    Firstly, given a context $\bff{w}$ and CHMCTS search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\text{alg}}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
+    % 
+    \begin{align}
+        \texttt{complete}(\psi_{\text{alg}})(a|s;\bff{w}) =
+        \begin{cases}
+            1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s;\bff{w}), \\
+            0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s;\bff{w}), \\
+            \frac{1}{|\cl{A}|}      & \text{ otherwise.}
+        \end{cases} \label{eq:full_Recommend}
+    \end{align}
+    % 
+    \todo{should reword to account for CZT and how it does the same thing}
+
+    The Convex Hull (of policies) can then be written as 
+    \begin{align}
+        \Psi_{\text{alg}} = \{\texttt{complete}(\psi_{\text{alg}})\ |\ \bff{w}\in\Delta^D \}.
+    \end{align}
+
+    This Convex Hull of policies is then evaluated using the \textit{Expected Utility Metric} (\eum), which is defined as:
+    \begin{align}
+        \eum(\Psi_{\text{alg}}) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
+            \max_{\psi\in\Psi_{\text{alg}}} \bff{w}^\top \bff{V}^{\psi}(s_0)
+         \right],
+    \end{align}
+    %
+    where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
+    \begin{align}
+        \eum(\Psi_{\text{alg}}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{V}^{\tau(\bff{w})},
+    \end{align}
+    %
+    where $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
+
+    For the results given in \todo{ref}, the number of sampled used to approximate the \eum\ewe was XXX. That is $|E(\Delta^D)| = XXX$.
+
+    \todo{double check this is consistent with the litrev paper on MORL and also cite it. Also what are the other metrics?}
+
+    Experiments are run with \mctsmode\ewe turned off, as no memory issues were encountered during the evalutation.
+
+    Similarly to the gridworld environments in Chapter \todo{ref}, the BayesOpt package \cite{bayesopt} was used to tune the hyperparameters of all algorithms in this chapter. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \todo{new appendix? join the appendix?}.
+
+
+
+
+
+\subsection{Environments}
+
+    The MO-Gymnasium \todo{cite} suite of environments was used to evaluate the algorithms. 
+
+    \todo{Pick a couple envs to describe in more detail, and refer to cite for full details}
+
+    Additionally, the Deep Sea Treasure is used, and the \todo{extended? (whatever the updated one is)} are used. \todo{Also mention that we can generate maps of varying size to perform a scalability analysis}
+
+
+
+
+
+
+
+\subsection{Results and Discussion}
+
+    \todo{Paste in results and talk about them}
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Theoretical Discussion}
+\label{sec:5-6-theory}
+
+
+    Theory results:
     \begin{itemize}
-        \item Give convex hull monte carlo tree search
-        \item Contextual zooming with the convex hull backups
+        \item Non-contextual policies garunteed to have a linear contextual simple regret
+        \item Convex Hull algorithms garunteed to converge (lemma that UCT style policy picks actions inf often and reuse ch4 result for BTS), and mainly reproduce the result from CHVI
+        \item Highlight that one step of the convex hull proof holds iff linear utility, use it to say that MOMCTS with value sets doesn't really work for non-linear utility functions
+        \item Reconcile with prior work by saying that the histories are taken into account, and the pareto fronts stored are globally
+        \item But generally highlight that this is a limitation of using MOMCTS, that optimisation at the level of actions is correct if and only if the utility function is linear. Give an example MOMDP where to get the optimal value doesnt allow for chebychev scalarization over value sets
+        \item Discuss the difference between Contextual Zooming and CZT, cite a doubling trick and say that it can be used to generalise CZ to an algorithm for CMAB problems without a fixed number of rounds. Hypothesise that CZT contextual cumulative regret matches that of CZ, but the proofs of CZ are very complex themselves, and UCT theory is also long and hard, so not going to attempt to prove it.
     \end{itemize}
 
+    
+    From Van Moffaert paper: %https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
 
+    As a result, the Bellman equation no longer holds and the learning algorithm is not proven to converge to the optimal policy (Perny and Weng, 2010; Roijers et al., 2013). Nevertheless, even without this theoretical guarantee, a Chebyshev scalarized MORL algorithm can obtain high-quality solutions (Van Moffaert et al., 2013b). 
 
-    \todo{Discuss property of extracting from convex hull}
 
-    \todo{A range of action selection methods will be used.}
+   
 
-    Now that contextual tree search has been motivated, \textit{Convex Hull Monte Carlo Tree Search} is given in a form that generalises the works of \todo{cite lots}.
 
-    \todo{CHMCTS backups}
 
-    \todo{Contextual Search policy}
 
-    \todo{Restate and name the prior works search policies}
+New Ch5 plan:
+\begin{itemize} 
+    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
+    \item Theory, reproduce the CHMCTS results, and say that garunteed to eventually produce optimal (lemmas are actions selected inf often)
+    \item No theory for CZT directly, makes a heuristic adaptation from the base work, and the proofs are very complex in themselves (would add like 50 pages of maths) 
+\end{itemize}
 
 
 
+for theory would just like to have convergence, use ch4 proofs and UCT picks actions inf often as lemma and use CHVI proofs 
 
-    The algorithms considered in \todo{ref ch4} can be converted into contextual multi-objective algorithms by using the contextual values $\Valgctx{\bff{w}}(s)$ and $\Qalgctx{\bff{w}}(s,a)$ for decision making.
+Allude to that boltzmann probably gives exp contextual simple regret, and PUCT gives similar contextual cumulative regret, and the lower bound from exploring bandits means simple regret of UCT methods has a lower bound
 
+\todo{Update theory appendix to be more general theory appendix. First section is additional results from literature, like hoeffdings. Include proof of UCT policy selecting any action infinitely often for an arbitrary Q value here. second section is exponential consistency proofs, split into three subsections, dents process, preliminary lemmas and the proofs.}
 
 
 
 
 
+also more critical to look into litrev for what results about MORL there are, shimons paper probably helpful
 
-    \subsection{CH-CZT}
-    \label{sec:5-3-1-chczt}
+want to cite if someone has done that linear scalarisation iff making local decisions result
 
-        \todo{move }
 
+%
+% Original brain dumping on this
+%
 
-        Additionally, there is nothing preventing CZT from keeping convex hull value set estimates at each of it's nodes. This algorithm is referred to as Contextual Zooming for Trees with Convex Hull backups (CH-CZT). In such a case, the backups from \todo{ref eqns} are included, to update the value set estimates \todo{notation}, which are then used for recommnedations \todo{as follows}. In essence, this algorithm runs CZT, but adds an aditional convex hull backup which is used for recommendations.
+\todo{part 1: all the (relevant) search policies will select actions infinitely often.}
 
+\todo{part 1a: BTS and DENTS follows from ch4. For UCT can argue that if select one argument a finite number of times. Then use the confidence interval term to arrive at contradiction}
 
+\todo{part 2: convex hull backups perform the scalarised backups for all possible weights over the objective.}
 
+\todo{write up proofs wrote up on ipad. Used this gpt convo in cleaning up details: https://chatgpt.com/c/67fa9295-0cb8-8007-88fd-5bec1ac5393b}
 
+\todo{part 2a: refer back to convergence of backups in ch4, clean up and DKW stuff need to}
 
+\todo{part 3: if values converge to optimal, then contextual simple regret tends to zero}
 
-        \todo{this should mostly be copying out from the chmcts paper.}
+\todo{part 4: mention that CZT proofs would be much more complex, and given the other algorithms do better. Mention a lower bound which comes from the CZ regret bound. And that this algorithm could be preferable in not in exploring context.}
 
+\todo{part 4a: similar with CH-UCT to CZT}
 
+\todo{part 5: any proofs for CH-UCT and/or CZT? Which wouldn't be a disaster trying to proove?
 
 
-    \subsection{CH-UCT}
-    \label{sec:5-3-2-chuct}
 
-        \todo{part 1: give action selection for CH-UCT and talk about it}
+}
 
-        \todo{part 2: discuss more?}
 
 
 
+Below is what we initially wrote in this section.
 
+\todo{See if with chatgpt help can crack out a rough proof outline? Because assuming no noise in the reward function, the leaf nodes clearly converge with same rate. Just really need the induction step. Feel like it should be very do-able, by bootstrapping on the CZT proofs.}
 
-        A natural way to extend the UCT search policy for contextual tree search is to use the contextual value estimates \eqref{eq:5:contextual_value} and \eqref{eq:5:contextual_qvalue} in the UCT search policy. Call this algorithm \textit{UCT with Convex Hulls} (CH-UCT). This gives the following search policy:
-        \begin{align}
-            \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
-                \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(N(s))}{N(s,a)}} \right].
-        \end{align}
+\todo{Can easily show that CH converges, by using every action sampled infinitly often still, and bootstrap off the convex hull convergence proof.}
 
-        \bd{One issue is that the confidence interval terms are shared between all possible context objectives, and may assign a high confident, or tight bound, for contexts that haven't been explored down this path much.} A hueristic way to solve this is to a vectorised visit counts $\bff{M}(s)$, $\bff{M}(s,a)$. These values are backed up after a trial for context $\bff{w}$ as follows:
-        \begin{align}
-            \bff{M}(s) \leftarrow \bff{M}(s) + \bff{w}, \\
-            \bff{M}(s,a) \leftarrow \bff{M}(s,a) + \bff{w}.
-        \end{align}
+\todo{One thing need to prove is that our form of backups converges, because we're using the sample averages our backups are slightly different. Should}
 
-        Then a contextual visit count can be defined, and used in the search policy as follows:
-        \begin{align}
-            M(s;\bff{w}) &= \bff{w}^\top \bff{M}(s) \\
-            M(s,a;\bff{w}) &= \bff{w}^\top \bff{M}(s,a) \\
-            \pichuct(s|\bff{w}) &= \argmax_{a\in\cl{A}} \left[
-                \Qchuctctx{\bff{w}}(s,a) + \cchuct \sqrt{\frac{\log(M(s;\bff{w}))}{M(s,a;\bff{w})}} \right].
-        \end{align}
+\todo{Remainder of properties bootstrap off the proofs in Ch4. Every action is sampled inf often, hence the convex hull backups converge. Don't bother showing convergence rates. Just show that they are consistent.}
 
-        Note that the original value of $N(s)$ is still needed in the convex hull backups for Q-value sets, to empirically estimate the transition distribution $p(s'|s,a)\approx \frac{N(s')}{N(s,a)}$, however this can be recovered from the vectorised visit count by summing over the values of the vector:
-        \begin{align}
-            N(s) &= \sum_{i=1}^D M(s)_i \\
-            N(s,a) &= \sum_{i=1}^D M(s,a)_i.
-        \end{align}
+\todo{Also want to show that given any convex hull value estimates, that following the policy extracted from convex hulls does give the same multi-objective value.}
 
-        \todo{notation above isn't clean.}
-        
+basically this would say
+\begin{align}
+    \pi(s;w) &= \argmax_{a\in\cl{A}} \circ{\bff{Q}}(s,a;w) \\
+    w^\top\bff{V}^\pi(s;w) &= w^\top \bb{E}_{a\sim\pi}[ \bff{Q}^\pi(s,a;w)] \\
+        &= \circ{\bff{Q}}(s,a;w) \\
+    w^\top\bff{Q}^\pi(s,a;w) &= ...    
+\end{align}
 
+So say that the value of the policy by taking the maimum from value estimates, will achieve the value estimates. We've been handwavy around empirical distriubtion vs actual transition distribution. But basically the argument is inductive, and holds trivially for leaf nodes.
 
 
 
-        \todo{Why doesnt a CH-UCT withe confidence bounds around the DP values you get from the convex hulls still work? Couldn't we do a k-d tree of visit counts for contexts, or some other way of counting how often a context has been searched for? There would be some lemma that the number of visits, is correct, for some epsilon ball around the weight, which the epsilon gives a small enough error in the value to be fine, except for the visit from the nodes above it in the kd tree. ANd then require exp many more trials to count for each level of the tree.}
 
-        \todo{Add to ORIMenu to just submit some arxiv shit for something like ``an addendum to convex hull monte carlo tree search'', where we basically copy past this chapter. Actually, I think just take this chapter and publish it with the definitions cut down. Say for litreview either look at the CHMCTS or Thesis literature reviews.}
 
-        \todo{Quote theory results}
 
+% Chebyshev scalarisation proof
+% Assumes standard amsmath / amssymb / amsthm setup.
+ 
+\begin{prop}
+    Let $u(w, x, z) = \min_{i} w_i \lvert x_i - z_i \rvert$ denote the Chebyshev
+    scalarisation, and consider the vectors
+    \[
+      a = (10, 0), \quad b = c = (1, 1), \quad d = (0, 10),
+    \]
+    together with a reference point $z \in \mathbb{R}^2$ satisfying $z_i < \min\{a_i, b_i, c_i, d_i\}$
+    componentwise. Let $w = (w_1, w_2)$ be any weight vector with $w_1, w_2 > 0$ and
+    $w_1 + w_2 = 1$. Then
+    \[
+      u(w, b, z) > u(w, a, z) \quad \text{or} \quad u(w, c, z) > u(w, d, z).
+    \]
+\end{prop}
+     
+    \begin{proof}
+    The componentwise inequality $z_i < \min\{a_i, b_i, c_i, d_i\}$ permits the absolute
+    values to be dropped, so that
+    \[
+      u(w, x, z) = \min_{i} w_i (x_i - z_i)
+    \]
+    for each of $x \in \{a, b, c, d\}$. The shifted coordinates
+    \[
+      \alpha_i = a_i - z_i, \qquad
+      \beta_i  = b_i - z_i = c_i - z_i, \qquad
+      \delta_i = d_i - z_i
+    \]
+    are therefore all strictly positive. From $z_1 < 0$ and $z_2 < 0$ (which follow from
+    $z < d$ and $z < a$ respectively), the following strict inequalities are obtained:
+    \begin{equation}\label{eq:key-ineqs}
+      \alpha_2 = -z_2 < 1 - z_2 = \beta_2,
+      \qquad
+      \delta_1 = -z_1 < 1 - z_1 = \beta_1.
+    \end{equation}
+    Since $b = c$, the equality $u(w, b, z) = u(w, c, z)$ holds throughout.
+     
+    Suppose, for contradiction, that both disjuncts fail, i.e.
+    \begin{align}
+      \min(w_1 \alpha_1,\, w_2 \alpha_2) &\geq \min(w_1 \beta_1,\, w_2 \beta_2), \label{eq:A} \\
+      \min(w_1 \delta_1,\, w_2 \delta_2) &\geq \min(w_1 \beta_1,\, w_2 \beta_2). \label{eq:D}
+    \end{align}
+     
+    From \eqref{eq:A}, the left-hand side is bounded above by $w_2 \alpha_2$, so
+    \[
+      w_2 \alpha_2 \;\geq\; \min(w_1 \beta_1,\, w_2 \beta_2).
+    \]
+    By \eqref{eq:key-ineqs} we have $w_2 \alpha_2 < w_2 \beta_2$, whence the minimum on
+    the right cannot equal $w_2 \beta_2$. It follows that
+    \begin{equation}\label{eq:from-A}
+      \min(w_1 \beta_1,\, w_2 \beta_2) = w_1 \beta_1, \qquad \text{so} \qquad w_1 \beta_1 \leq w_2 \beta_2.
+    \end{equation}
+     
+    By the analogous argument applied to \eqref{eq:D}, using $w_1 \delta_1 < w_1 \beta_1$,
+    \begin{equation}\label{eq:from-D}
+      \min(w_1 \beta_1,\, w_2 \beta_2) = w_2 \beta_2, \qquad \text{so} \qquad w_2 \beta_2 \leq w_1 \beta_1.
+    \end{equation}
+     
+    Combining \eqref{eq:from-A} and \eqref{eq:from-D} yields $w_1 \beta_1 = w_2 \beta_2$.
+    Substituting back into \eqref{eq:A} gives $w_2 \alpha_2 \geq w_1 \beta_1 = w_2 \beta_2$,
+    i.e.\ $\alpha_2 \geq \beta_2$, contradicting \eqref{eq:key-ineqs}.
+     
+    The assumption that both disjuncts fail is therefore untenable, and at least one of
+    $u(w, b, z) > u(w, a, z)$ or $u(w, c, z) > u(w, d, z)$ must hold.
+    \end{proof}
+     
+    \begin{remark}
+    The argument relies only on the strict inequalities $a_2 < b_2$ and $d_1 < c_1$
+    (together with $b = c$). Consequently the proposition generalises: whenever a common
+    point $b = c$ strictly dominates $a$ in one coordinate and $d$ in the other, no
+    single Chebyshev weight vector can simultaneously render both $a$ preferable to $b$
+    and $d$ preferable to $c$.
+    \end{remark}
+
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\section{Summary}
+\label{sec:5-7-summary}
 
-
-
-
-
-
-    \subsection{CH-BTS}
-    \label{sec:5-3-3-chbts}
-
-        \todo{part 1: give action selection for CH-DENTS and talk about it}
-
-        \todo{part 2: say CH-BTS is same without entropy backup}
-
-        \todo{part 2: discuss entropy, say that it's just an approximate exploration bonus now}
-
-
-        
-
-
-
-
-    \subsection{CH-DENTS}
-    \label{sec:5-3-4-chdents}
-
-        \todo{part 1: give action selection for CH-DENTS and talk about it}
-
-        \todo{part 2: say CH-BTS is same without entropy backup}
-
-        \todo{part 2: discuss entropy, say that it's just an approximate exploration bonus now}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Results}
-\label{sec:5-4-results}
-
-    \todo{part 0: discuss the evaluation prodceedure, and how the results are evaluated.}
-
-    \todo{part 1: run algorithms on the tree envs that show the context dependent stuff better}
-
-    \todo{part 1a: run algorithms with and without vectorised visit counts and show this helps with exploration?}
-
-    \todo{part 2: run on suite of mo-gym environments}
-
-    \todo{part 3: find environments where the convex hull blows up to motivate ch6. Give the CH fully and plot it out.}
-
-    \todo{part 3a: also consider showing some of the optimal convex hulls where possible}
-
-
-
-
-    \todo{list}
     \begin{itemize}
-        \item Results from CHMCTS paper
-        \item Get same plots from C++ code, but compare expected utility, rather than the confusing hypervolume ratio stuff
+        \item This chapter introduced Contextual Zooming for Trees (CZT), a contextual multi-armed bandit algorithm that is used for decision making in multi-objective settings.
+        \item The chapter also introduced Convex Hull Monte Carlo Tree Search (CHMCTS), which generalises the prior work in multi-objective MCTS to handle stochastic environments by using backups over Convex Hull Value Sets.
+        \item The chapter also discussed the theoretical properties of the CZT and CHMCTS algorithms.
     \end{itemize}
 
-    \bd{A range of algorithms will be considered in this experimental section. Firstly, for baselines, the convex hull backup versions of algorithms from Ch3 (REF) will be used. Additionally, CZT, CH-CZT, CH-UCT, CH-BTS and CH-DENTS will be considered}
+    New Ch5 plan:
+    \begin{itemize} 
+        \item Conclusion, wrap up, motivate move to simplex maps (convex hull slow) and weight space (entropy)
+    \end{itemize}
 
+    future work includes using the biasing terms from Ch4 in these algorithms too, currently result essentially set the psuedo visits to 0. 
 
+    future work includes using more efficient weight space data structure (value curves) instead of convex hulls
 
 
 
-    This section provides an empirical evalutation of the algorithms developed in this chapter. The baseline algorithms considered will also be CHMCTS algorithms, using the action selection methods outline in Sections \todo{ref litrev and above}. 
 
-    \bd{This para is very braindump.} It is worth noting that in multi-objective MCTS algorithms that the accuracy and quality of the convex hull at the root node is the primary concern, even when a multi-objective MCTS algorithm is used in an \textit{online} manor, where tree search is interleaved between actions taken by the agent. Once a policy has been selected at the initial state it implicitly defines a weighting over the objectives as detailed in Section \todo{ref sec 2}. And following the discussion from \todo{ref above}, to follow an optimal policy the actions need to be taken consistently with respect to the same objective weights. As such, a more efficient online algorithm will be to run the multi-objective tree search from the initial state, and run a single-objective MCTS algorithm in a scalarised single-objective MDP for the remaining actions. Where in the scalarised reward is $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
-    
 
-
-
-    \subsection{Evaluation Proceedure} 
-
-        To evaluate the quality of the convex hull at the root node, the following metrics from the multi-objective literature \cite{morl_survey} are considered: \textit{Expected Utility Metric}, \textit{Hypervolume Metric} and a \textit{Sparsity Metric}. \todo{Add EUM and HV and Sparsity here or in ch2? }
-
-        To evaluate the quality of the convex hull at the root node, where the optimal convex hull is not known a-priori, the \textit{Expected Utility Metric}, \textit{}
-
-        Firstly, given a context $\bff{w}$ and CHMCTS search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\text{alg}}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
-        % 
-        \begin{align}
-            \texttt{complete}(\psi_{\text{alg}})(a|s;\bff{w}) =
-            \begin{cases}
-                1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s;\bff{w}), \\
-                0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s;\bff{w}), \\
-                \frac{1}{|\cl{A}|}      & \text{ otherwise.}
-            \end{cases} \label{eq:full_Recommend}
-        \end{align}
-        % 
-        \todo{should reword to account for CZT and how it does the same thing}
-
-        The Convex Hull (of policies) can then be written as 
-        \begin{align}
-            \Psi_{\text{alg}} = \{\texttt{complete}(\psi_{\text{alg}})\ |\ \bff{w}\in\Delta^D \}.
-        \end{align}
-
-        This Convex Hull of policies is then evaluated using the \textit{Expected Utility Metric} (\eum), which is defined as:
-        \begin{align}
-            \eum(\Psi_{\text{alg}}) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
-                \max_{\psi\in\Psi_{\text{alg}}} \bff{w}^\top \bff{V}^{\psi}(s_0)
-             \right],
-        \end{align}
-        %
-        where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
-        \begin{align}
-            \eum(\Psi_{\text{alg}}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{V}^{\tau(\bff{w})},
-        \end{align}
-        %
-        where $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
-
-        For the results given in \todo{ref}, the number of sampled used to approximate the \eum\ewe was XXX. That is $|E(\Delta^D)| = XXX$.
-
-        \todo{double check this is consistent with the litrev paper on MORL and also cite it. Also what are the other metrics?}
-
-        Experiments are run with \mctsmode\ewe turned off, as no memory issues were encountered during the evalutation.
-
-        Similarly to the gridworld environments in Chapter \todo{ref}, the BayesOpt package \cite{bayesopt} was used to tune the hyperparameters of all algorithms in this chapter. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \todo{new appendix? join the appendix?}.
-
-
-
-    
-
-    \subsection{Environments}
-
-        The MO-Gymnasium \todo{cite} suite of environments was used to evaluate the algorithms. 
-
-        \todo{Pick a couple envs to describe in more detail, and refer to cite for full details}
-
-        Additionally, the Deep Sea Treasure is used, and the \todo{extended? (whatever the updated one is)} are used. \todo{Also mention that we can generate maps of varying size to perform a scalability analysis}
-
-
-    
-
-
-
-    
-    \subsection{Results and Discussion}
-
-        \todo{Paste in results and talk about them}
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Theory}
-\label{sec:5-5-theory}
-
-    \todo{part 1: all the (relevant) search policies will select actions infinitely often.}
-
-    \todo{part 1a: BTS and DENTS follows from ch4. For UCT can argue that if select one argument a finite number of times. Then use the confidence interval term to arrive at contradiction}
-
-    \todo{part 2: convex hull backups perform the scalarised backups for all possible weights over the objective.}
-
-    \todo{write up proofs wrote up on ipad. Used this gpt convo in cleaning up details: https://chatgpt.com/c/67fa9295-0cb8-8007-88fd-5bec1ac5393b}
-
-    \todo{part 2a: refer back to convergence of backups in ch4, clean up and DKW stuff need to}
-
-    \todo{part 3: if values converge to optimal, then contextual simple regret tends to zero}
-
-    \todo{part 4: mention that CZT proofs would be much more complex, and given the other algorithms do better. Mention a lower bound which comes from the CZ regret bound. And that this algorithm could be preferable in not in exploring context.}
-
-    \todo{part 4a: similar with CH-UCT to CZT}
-
-    \todo{part 5: any proofs for CH-UCT and/or CZT? Which wouldn't be a disaster trying to proove?
-    
-    
-    
-    }
-
-
-
-
-    Below is what we initially wrote in this section.
-
-    \todo{See if with chatgpt help can crack out a rough proof outline? Because assuming no noise in the reward function, the leaf nodes clearly converge with same rate. Just really need the induction step. Feel like it should be very do-able, by bootstrapping on the CZT proofs.}
-
-    \todo{Can easily show that CH converges, by using every action sampled infinitly often still, and bootstrap off the convex hull convergence proof.}
-
-    \todo{One thing need to prove is that our form of backups converges, because we're using the sample averages our backups are slightly different. Should}
-
-    \todo{Remainder of properties bootstrap off the proofs in Ch4. Every action is sampled inf often, hence the convex hull backups converge. Don't bother showing convergence rates. Just show that they are consistent.}
-
-    \todo{Also want to show that given any convex hull value estimates, that following the policy extracted from convex hulls does give the same multi-objective value.}
-
-    basically this would say
-    \begin{align}
-        \pi(s;w) &= \argmax_{a\in\cl{A}} \circ{\bff{Q}}(s,a;w) \\
-        w^\top\bff{V}^\pi(s;w) &= w^\top \bb{E}_{a\sim\pi}[ \bff{Q}^\pi(s,a;w)] \\
-            &= \circ{\bff{Q}}(s,a;w) \\
-        w^\top\bff{Q}^\pi(s,a;w) &= ...    
-    \end{align}
-
-    So say that the value of the policy by taking the maimum from value estimates, will achieve the value estimates. We've been handwavy around empirical distriubtion vs actual transition distribution. But basically the argument is inductive, and holds trivially for leaf nodes.
-
-
-
-
-
+    From Van Moffaert paper: %https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
+    Lizotte et al. (2010) reduce the asymptotic space and time complexity of the bootstrapping rule by simultaneously learning several value functions corresponding to different weights and by calculating their piecewise linear spline representation. Recently, they validated their work on clinical trial data for three objectives, although the practical possibilities for higher dimensional spaces are not straightforward (Lizotte et al., 2012).
 
 
 
