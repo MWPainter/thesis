@@ -147,6 +147,7 @@
 
 
 \subsection{Contextual Tree Search}
+\label{sec:5-1-1-contextual_tree_search}
 
     \todo{citet vanmoffaert and double check} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
@@ -233,18 +234,6 @@
 \section{Contextual Zooming for Trees}
 \label{sec:5-2-czt}
 
-    A common design paradigm in MCTS is to adapt a MAB algorithm 
-    to run at each decision node of the search tree, treating the 
-    node as a (non-stationary) bandit problem. UCT follows this 
-    paradigm by running UCB at each node (Section 
-    \ref{sec:2-4-2-uct}). Following the same methodology, 
-    \textit{Contextual Zooming for Trees} (CZT) runs the 
-    \textit{Contextual Zooming} (CZ) algorithm \cite{cz} on a 
-    non-stationary contextual multi-armed bandit problem at each 
-    decision node, where the context is the weight vector $\bff{w}$ 
-    sampled at the start of the trial. The relationship between 
-    these algorithms is illustrated in Figure \ref{fig:5:czt_diagram}.
-
     \begin{figure}
         \centering
         \includegraphics[width=0.5\textwidth]{figures/todo.jpg}
@@ -256,43 +245,30 @@
         \label{fig:5:czt_diagram}
     \end{figure}
 
-    It is worth noting that CZ is motivated in the cumulative regret 
-    setting, rather than the exploration setting. As such, CZT 
-    inherits this orientation and is not specifically designed with 
-    the exploration setting in mind. CZT is considered in this 
-    chapter for two reasons: it follows the same design paradigm 
-    as UCT, providing a natural contextual analogue; and it serves 
-    as a contextual search policy baseline, since no such baseline 
-    currently exists in the MOMCTS literature.
+    A common design paradigm in MCTS is to adapt a MAB algorithm to run at each decision node of the search tree, treating the node as a (non-stationary) bandit problem. UCT follows this paradigm by running UCB at each node (Section \ref{sec:2-4-2-uct}). 
+    
+    The \textit{Contextual Zooming} (CZ) algorithm \cite{cz,cz_long} is a generalisation of the UCB algorithm to contextual bandits (Section \ref{sec:2-1-3-contextual-mab}). Following the same methodology, \textit{Contextual Zooming for Trees} (CZT) runs the CZ algorithm at each decision node of the search tree. The relationship between these algorithms is illustrated in Figure \ref{fig:5:czt_diagram}.
+    
+    CZT is presented is in this section in the context of MOMCTS, where the context is the weight vector $\bff{w}$ sampled at the start of each trial. Although CZ, and by extension CZT, is not motivated by the exploration setting this thesis focusses on, it is \bd{introduced to fill a gap in the MOMCTS literature}.
 
-    \subsection{The Contextual Zooming Algorithm}
-    \label{sec:5-2-1-cz}
+\subsection{The Contextual Zooming Algorithm}
+\label{sec:5-2-1-cz}
 
-    The Contextual Zooming algorithm \cite{cz} solves contextual 
-    multi-armed bandit (CMAB) problems (Section 
-    \ref{sec:2-1-3-contextual-mab}), achieving a contextual 
-    cumulative regret of $O(n^{\frac{1+c}{2+c}}\log(T))$ over 
-    the first $n$ rounds using the \textit{doubling trick} 
-    \cite{doubling_trick}, where $c$ is the \textit{covering 
-    dimension} of the similarity space $\cl{W}\times\cl{X}$. 
-    Within this thesis, the covering dimension coincides with 
-    the standard notion of dimension: $\cl{W}\times\cl{X}$ has 
-    covering dimension $c$ if it embeds into $\bb{R}^c$.
+    The Contextual Zooming algorithm \cite{cz,cz_long} solves contextual multi-armed bandit problems (Section \ref{sec:2-1-3-contextual-mab}) where the similarity space $\cl{W}\times\cl{X}$ is compact and the mean reward function $\mu$ is Lipschitz continuous. 
+    
+    CZ is presented \bd{below} in the context of contextual tree search (Section \ref{sec:5-1-1-contextual_tree_search}), where the context is the weight vector $\bff{w}$ sampled at the start of each trial (i.e. $\cl{W} = \Delta^D$). 
 
-    The CZ algorithm maintains a set of \textit{active balls} 
-    in the similarity space. Let $A^m$ denote the set of active 
-    balls at the start of the $m$th round. A ball with centre 
-    $(w,x)$ and radius $r$ is defined as 
-    $\{(w',x')\in\cl{W}\times\cl{X} \mid d((w,x),(w',x')) < r\}$.
+    \todo{justify that W times X is a metric space. Discrete set is }
+    
+    The CZ algorithm maintains a set of \textit{active balls} that cover the similarity space. Let $A^m(s)$ denote the set of active balls at decision node $s$ with $m=N(s)$ visits, where a ball with centre $(w,x)$ and radius $r$ is defined as $\{(w',x')\in\cl{W}\times\cl{X} \mid d((w,x),(w',x')) < r\}$.
 
-    Each round, CZ applies two rules: a \textit{selection rule}, 
-    which selects a ball $B^m$ from $A^m$; and an 
-    \textit{activation rule}, which optionally adds a ball with 
-    smaller radius to $A^m$.
+    \bd{Each ball will have an associated visit count} $M(B^m(s))$ \bd{and average reward} $\bar{y}^m(B^m(s))$. \todo{update notation to be a V value function}.
 
-    Given a context $w^m$, the selection rule proceeds as follows. 
-    Let $N^m(B)$ be the number of times ball $B\in A^m$ has been 
-    selected in the first $m$ rounds, and $\bar{y}^m(B)$ the 
+    Each round, CZ applies two rules: a \textit{selection rule}, which selects a ball $B^m(s)$ from $A^m(s)$, as part of the \selectaction\ewe function; and an \textit{activation rule}, which optionally adds a ball with smaller radius to $A^m(s)$, as part of the \backupv\ewe function.
+    
+\paragraph{Selection Rule}
+
+    Given the context weight $w^n\sim\samplecontext(s)$ for the $n$th trial, the selection rule proceeds as follows. Let $M(B^m(s))$ be the number of times ball $B^m(s)\in A^m(s)$ has been selected in the first $m$ rounds, and $\bar{y}^m(B)$ the 
     average reward received when ball $B$ was selected:
     \begin{align}
         N^m(B) &= \sum_{i=1}^m \one[B=B^i], 
@@ -356,6 +332,8 @@
     $s\in\cl{T}$ maintains its own set of active balls 
     $A^{N(s)}$, indexed by the visit count $N(s)$.
 
+    \todo{initial set of active balls to A many balls, one for each action.}
+
     The context weight $\bff{w}$ is sampled at the start of 
     each trial by the \samplecontext\ewe function and passed 
     to the \selectaction\ewe function at each decision node. 
@@ -365,6 +343,8 @@
     \Delta^D\times\cl{A}$ and the metric \bd{$d$ defined as 
     the metric used in the CZ algorithm --- fill in appropriate 
     metric for weight-action space}.
+
+    \todo{d underscore czt is defined by a standard construction, where the distance between each action is some large constant C underscore czt}
 
     The \initv\ewe function initialises a new decision node 
     $s$ with an empty set of active balls $A^0 = \{B_0\}$, 
@@ -389,6 +369,12 @@
 
 
     \todo{diffs of CZT to CZ. Round limit is varaible. CZ either uses a fixed number of rounds, or adapts it used doubling trick. Doubling trick allows results to be extended in theory, in practise we dont want to throw away all of our data at regular intervals. So the differences are that the current number of trials is used n, instead of the total number of rounds T. Second difference is the additional heuristic activation rule that was added to avoid adding many balls too fast. Also specialisation of the metric space}
+
+    using the \textit{doubling trick} \cite{doubling_trick}
+
+    achieving a contextual cumulative regret of $O(n^{\frac{1+c}{2+c}}\log(n))$ over the first $n$ rounds, where $c$ is the \textit{covering dimension}\footnote{In the context of this thesis, the covering dimension coincides with the standard notation of dimension. That is, if $\cl{W}\times\cl{X}$ embeds into $\bb{R}^c$, then the covering dimension is $c$.} of the similarity space $\cl{W}\times\cl{X}$.
+
+    CZ starts with a single ball covering the full similarity space, and then adds balls with smaller radius as needed. CZT starts with a set of balls, one for each action, and then adds balls with smaller radius as needed.
 
     \todo{Something about to highlight that the adaptions from CZ are minimal}
 
