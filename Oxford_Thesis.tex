@@ -273,6 +273,7 @@
 \newcommand{\mpa}{{\textnormal{MPA}}}
 \newcommand{\relevant}{{\textnormal{\texttt{relevant}}}}
 \newcommand{\sreg}{{\textnormal{\texttt{sim\_regr}}}}
+\newcommand{\ctxsreg}{{\textnormal{\texttt{ctx\_sim\_regr}}}}
 \newcommand{\ucb}{{\textnormal{UCB}}}
 \newcommand{\uniform}{{\textnormal{uniform}}}
 
@@ -305,6 +306,7 @@
 \newcommand{\thtspp}{{\textnormal{\texttt{THTS++}}}}
 \newcommand{\graphmode}{{\textnormal{\texttt{transposition\_table}}}}
 \newcommand{\Vinit}{{\hat{V}_{\textnormal{heuristic}}}}
+\newcommand{\Vinitbff}{{\hat{\bff{V}}_{\textnormal{heuristic}}}}
 \newcommand{\Vh}{{\hat{V}_{\textnormal{h}}}}
 
 
@@ -369,6 +371,10 @@
 
 % Sec 2.6 - Sampling macros
 \newcommand{\thresh}{{\texttt{thrsh}}}
+
+% gOOD TURING 
+\newcommand{\missingmass}{{\textnormal{\texttt{missing\_mass}}}}
+\newcommand{\goodturingestimate}{{\textnormal{\texttt{missing\_mass}}_{\textnormal{GT}}}}
 
 % Sec 4.1 
 \newcommand{\sparse}{{\textnormal{sparse}}}
@@ -470,17 +476,36 @@
 
 
 
-% Sec 5.2 - CHMCTS
+% Sec 5.2 - CZT
+\newcommand{\czt}{\textnormal{\texttt{CZT}}}
+\newcommand{\bczt}{b_{\czt}}
+\newcommand{\dczt}{d_{\textnormal{czt}}}
+\newcommand{\Cczt}{C_{\textnormal{czt}}}
+\newcommand{\ball}{\textnormal{\texttt{ball}}}
+\newcommand{\Vczt}{\bar{V}_{\czt}}
+\newcommand{\Qczt}{\bar{\bff{Q}}_{\czt}}
+\newcommand{\pre}{\textnormal{\texttt{pre}}}
+\newcommand{\Ipreczt}{I^{\pre}_{\czt}}
+\newcommand{\Iczt}{I_{\czt}}
+\newcommand{\selectball}{\textnormal{\texttt{select\_ball}}}
+\newcommand{\piczt}{\pi_{\czt}}
+\newcommand{\psiczt}{\psi_{\czt}}
+\newcommand{\Mmin}{M_{\textnormal{min}}}
+
+
+
+% Sec 5.3 - CHMCTS
 \newcommand{\alg}{{\textnormal{ALG}}}
 \newcommand{\Valg}{{\hat{\bfcl{V}}_{\alg}}}
 \newcommand{\Qalg}{{\hat{\bfcl{Q}}_{\alg}}}
 \newcommand{\Valgctx}[1]{{\hat{V}^{#1}_{\alg}}}
 \newcommand{\Qalgctx}[1]{{\hat{Q}^{#1}_{\alg}}}
 \newcommand{\pialg}{{\pi_{\alg}}}
+\newcommand{\psialg}{{\pi_{\alg}}}
 \newcommand{\calg}{{c_{\alg}}}
 \newcommand{\zetaalg}{{\zeta_{\alg}}}
 
-% Sec 5.2.1 - CH-UCT
+% Sec 5.3.1 - CH-UCT
 \newcommand{\chuct}{{\textnormal{CH-UCT}}}
 \newcommand{\Vchuct}{{\hat{\bfcl{V}}_{\chuct}}}
 \newcommand{\Qchuct}{{\hat{\bfcl{Q}}_{\chuct}}}
@@ -489,6 +514,30 @@
 \newcommand{\pichuct}{{\pi_{\chuct}}}
 \newcommand{\cchuct}{{c_{\chuct}}}
 \newcommand{\zetachuct}{{\zeta_{\chuct}}}
+
+
+% CHBTS
+\newcommand{\chbts}{{\textnormal{CH-BTS}}}
+\newcommand{\alphachbts}{{\alpha_{\chbts}}}
+\newcommand{\epschbts}{{\epsilon_{\chbts}}}
+\newcommand{\lambdachbts}{{\lambda_{\chbts}(s,\epschbts)}}
+\newcommand{\rhochbts}{{\rho_{\chbts}}}
+\newcommand{\pichbts}{{\pi_{\chbts}}}
+\newcommand{\Vchbts}{{\hat{\bfcl{V}}_{\chbts}}}
+\newcommand{\Qchbts}{{\hat{\bfcl{Q}}_{\chbts}}}
+\newcommand{\Vchbtsctx}[1]{{\hat{V}^{#1}_{\chbts}}}
+\newcommand{\Qchbtsctx}[1]{{\hat{Q}^{#1}_{\chbts}}}
+
+
+
+% Pateto CHMCTS
+\newcommand{\pareto}{{\textnormal{P-CHMCTS}}}
+\newcommand{\bpareto}{{b_{\pareto}}}
+\newcommand{\Vpareto}{{\hat{\bfcl{V}}_{\pareto}}}
+\newcommand{\Qpareto}{{\hat{\bfcl{Q}}_{\pareto}}}
+\newcommand{\Vparetoconf}{{\hat{\bfcl{V}}^{\conf}_{\pareto}}}
+\newcommand{\Vparetou}{{\hat{\bfcl{V}}^{U}_{\pareto}}}
+\newcommand{\pipareto}{{\pi_{\pareto}}}
 
 
 

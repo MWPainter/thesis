@@ -205,6 +205,23 @@
 
 
 
+    Claude suggestion on how to justify use of linear utilities in this thesis:
+    How I'd actually write this in the thesis. \todo{see comment}
+% I'd lead with (1), which is the most defensible and most specific to your technical contribution — it justifies the assumption in terms of what the assumption buys you. Then a paragraph of (2) to position the work within MORL more broadly. (3) is worth a sentence or two as a decision-theoretic grounding but can be compressed. (4) is a citation, not really a paragraph.
+% Something like:
+
+% *"This thesis restricts attention to linear utility functions of the form u(v⃗)=w⃗⋅v⃗u(\vec{v}) = \vec{w} \cdot \vec{v}
+% u(v)=w⋅v. This restriction is not merely a convenience: linear utilities are exactly the class for which the Bellman expectation operator commutes with scalarisation (a consequence of the characterisation of functions satisfying f(E[X⃗])=E[f(X⃗)]f(\mathbb{E}[\vec{X}]) = \mathbb{E}[f(\vec{X})]
+% f(E[X])=E[f(X)] as the affine functions). Consequently, they are the maximal class for which vector-valued dynamic programming reduces to scalar dynamic programming via a post-hoc argmax, and for which the convex coverage set suffices in place of the full Pareto coverage set. Broader utility classes either require tracking the entire PCS — generally non-convex and potentially exponentially larger — or abandoning the expectation-based formulation in favour of distributional return representations. The linear case additionally subsumes, as a family, the single-weight formulations standard in single-objective RL, and aligns with the dominant convention in the MORL literature [cite Roijers et al., 2013]."*
+
+% That's ~150 words and I think it covers the assumption pretty comprehensively for a thesis. You can expand with a concrete example (e.g. "a Chebyshev utility min⁡iwivi\min_i w_i v_i
+% mini​wi​vi​ can favour points strictly interior to the convex hull, so the CCS is no longer sufficient") if you want to make the point more tangible.
+
+
+% THIS IS IMPORTANT:
+% One thing worth flagging: you should also be honest about what the assumption rules out. The classic counterexample is risk-aversion over returns (where you care about variance, not just mean) — this is genuinely outside the scope, and it's worth a sentence acknowledging that rather than pretending linear utility is universal.
+
+
 
 
 

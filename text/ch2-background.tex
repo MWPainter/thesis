@@ -2,8 +2,8 @@
 % [X] AI proofread/grammar check
 % [ ] TODOs
 % [X] Spell check
-% [X] Citations + Refs
-% [X] LitRev sync
+% [ ] Citations + Refs
+% [ ] LitRev sync
 % [X] Abbreviations sync
 % [X] Thesis questions ref/answers
 % [ ] Proofread
@@ -11,7 +11,7 @@
 % [ ] Final revision
 
 % [ ] Latex problems
-% [X] Latex labels
+% [ ] Latex labels
 
 
 
@@ -902,11 +902,11 @@ def backup_phase($\tau_{:h}$, ctx)
     In UCT the backups $\backupv$ and $\backupq$ update the (sample average) value estimates incrementally. For $t=h-1,\ldots,0$:
     \begin{align}
         \Quct(s_t,a_t) &\leftarrow 
-            \frac{N(s_t,a_t)-1}{N(s_t,a_t)} \left(\Quct(s_t,a_t) 
-                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t,a_t)} \right), \label{eq:2:uct_backup_q} \\
+            \frac{N(s_t,a_t)-1}{N(s_t,a_t)} \Quct(s_t,a_t) 
+                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t,a_t)} , \label{eq:2:uct_backup_q} \\
         \Vuct(s_t) &\leftarrow 
-            \frac{N(s_t)-1}{N(s_t)} \left( \Vuct(s_t) 
-                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t)} \right). \label{eq:2:uct_backup_v} 
+            \frac{N(s_t)-1}{N(s_t)} \Vuct(s_t) 
+                + \frac{\Vinit(s_h) + \sum_{i=t}^{h-1} r_i}{N(s_t)} . \label{eq:2:uct_backup_v} 
     \end{align}  
 
     There are two common approaches for implementing $\Vinit$ in UCT. The first approach uses a function approximation $\Vinit=\tilde{V}$ \cite{alpha_go_zero,alpha_zero,a0c}, where $\tilde{V}$ is often a neural network that aims to approximate the optimal value function $V^*$. The second approach uses a \textit{rollout}, which completes the trajectory from the selection phase using a \textit{rollout policy} and uses the rewards from the rollout to give a heuristic value estimate \cite{mcts_survey,offlineonlineuct,prost,bus}. If no informative policy is available for $\pirollout$, then a uniformly random policy is often used \cite{mcts_survey,rand_mc_est_orig}. 
@@ -1025,8 +1025,8 @@ def backup_phase($\tau_{:h}$, ctx)
 % [X] AI proofread/grammar check
 % [X] TODOs
 % [X] Spell check
-% [X] Citations + Refs
-% [X] LitRev sync
+% [ ] Citations + Refs
+% [ ] LitRev sync
 % [X] Abbreviations sync
 % [X] Thesis questions ref/answers
 % [ ] Proofread
@@ -1055,6 +1055,9 @@ def backup_phase($\tau_{:h}$, ctx)
 
     Almost sure convergence is a stronger condition than convergence in probability: almost sure convergence implies convergence in probability, but not vice versa \cite{prob_and_measure}.
 
+
+
+
     The Dvoretzky-Kiefer-Wolfowitz (DKW) inequality \cite{dkw_inequality} bounds the maximum difference between the empirical distribution of samples and the true distribution:
 
     \begin{theorem} 
@@ -1066,6 +1069,46 @@ def backup_phase($\tau_{:h}$, ctx)
     \end{theorem}
 
     The DKW inequality is used in Chapters \ref{ch:4-dents} and \ref{ch:5-chmcts} to bound the error when using the empirical visit count ratio $\frac{N(s')}{N(s,a)}$ as an approximation to the transition probability $p(s'|s,a)$.
+
+
+
+    The \textit{Good-Turing estimate} \todo{cite} addresses a related but distinct problem: rather than bounding the error in the empirical distribution, it estimates the total probability mass of outcomes that have not yet been observed.
+    %\cite{good_turing} 
+    % Good-Turing paper is Good (1953)
+
+    % The \textit{Good-Turing estimate} \todo{add cite} provides an estimate of the total probability mass assigned to outcomes that have not yet been observed in a finite sample. It is used in settings where the support of a distribution is unknown, and where some outcomes may not appear in a sample of finite size.
+
+    Let $f$ be a probability mass function over the categories $\cl{C}=\{C_1,\ldots,C_k\}$, where the number of categories $k$ is unknown or potentially infinite. Let $X_1,\ldots,X_m$ be $m$ independent samples drawn from $f$, and let $M(C)$ be the number of times category $C$ was observed:
+    \begin{align}
+        M(C) = \sum_{i=1}^m \one[X_i=C].
+    \end{align}
+
+    Let $\cl{C}_{\textnormal{obs}} = \{C\in\cl{C} \mid M(C)>0\}$ be the set of observed categories. The \textit{missing mass} is the total probability of unobserved categories:
+    \begin{align}
+        \missingmass = \sum_{C\in\cl{C} - \cl{C}_{\textnormal{obs}}} f(C).
+    \end{align}
+    
+    The Good-Turing estimate of the missing mass is:
+    \begin{align}
+        \goodturingestimate = \frac{M_1}{m}, \label{eq:2:good_turing}
+    \end{align}
+    where $M_1 = |\{C\in\cl{C}_{\textnormal{obs}} \mid M(C)=1\}|$ is the number of categories observed exactly once (the number of \textit{singletons}).
+
+    \todo{citet mcallester\_schapire}
+    %\citet{good_turing_bound}
+    %McAllester and Schapire (2000), "On the convergence rate of Good-Turing estimators
+    show that the Good-Turing estimate satisfies the following bound.
+    %
+    \begin{theorem}
+        \label{thrm:2:good_turing_bound}
+        For $0<\delta\leq 1$, the Good-Turing estimate (Equation \ref{eq:2:good_turing}) satisfies the following bound: 
+        \begin{align}
+            \Pr\left(\missingmass \leq \goodturingestimate + \sqrt{\frac{\log(1/\delta)}{2m}}\right) \geq 1-\delta.
+            \label{eq:2:good_turing_bound}
+        \end{align}
+    \end{theorem}
+
+    The Good-Turing estimate is used in Chapter \ref{ch:5-chmcts} to bound the probability mass of unobserved successor states when computing the solved value of a chance node $(s,a)$ (Section \ref{sec:5-6-optimisations}).
 
 
 
@@ -1143,14 +1186,13 @@ Similarly, multi-objective variants of the (Q-)value of a policy are defined:
 In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there may be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
 
 \begin{defn}
-    \label{def:2:simplex}
-    \label{def:2:weight}
-    The \textnormal{($D$-dimensional) Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one. More formally, the $D$ dimensional simplex is 
+    \label{def:2:simplex_and_weight}
+    The \textnormal{$D$-dimensional Unit Simplex} consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one\footnote{Note that the $D$-dimensional simplex is actually the $(D-1)$ simplex. The notation $\Delta^D$ is adopted here to emphasise that weight vectors have $D$ components.}. More formally, the $D$-dimensional simplex is 
     \begin{align}
         \Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}. \label{eq:2:simplex_def}
     \end{align}
 
-    The elements of the $D$-dimensional Simplex will be referred to as \textnormal{weight vectors} (or just \textnormal{weights}) in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
+    The elements of the $D$-dimensional simplex will be referred to as \textnormal{weight vectors} (or just \textnormal{weights}) in this thesis, as they will be used to specify preferences over the $D$ dimensions of the reward function.
 \end{defn}
 
 \begin{defn}
