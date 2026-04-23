@@ -1038,6 +1038,8 @@
 \section{Empirical Results}
 \label{sec:4-4-results}
 
+    \todo{Clean up plots, legend placement etc.}
+
 
 
     \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
@@ -2500,7 +2502,7 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Entropy Trap}
+\subsection{The Entropy Trap}
 \label{sec:4-5-4-entropy-trap}
 
     This subsection provides the proof of Theorem \ref{thrm:ments_bad_mdp}, that informally says that for any temperature either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy. The core of the argument reduces to bounding the \textit{hitting time} of the state $\schain{E}$ --- the number of trials required for MENTS to first reach the end of the D-chain portion of the Entropy Trap MDP. For reference, the Entropy Trap MDP is repeated in Figure \ref{fig:entropy_trap_repeat}, with additional state labels added for the proof.

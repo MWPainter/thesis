@@ -37,8 +37,8 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -48,24 +48,26 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\chapter{\label{ch:6-simplexmaps}Simplex Maps for Multi-Objective Monte Carlo Tree Search} 
+\chapter{\label{ch:6-simplexmaps}Simplex Maps for Multi-Objective Monte Carlo Tree Search}
 
-    \minitoc
+\minitoc
 
+    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, and 
+    per-vertex entropy estimates allow entropy-based 
+    exploration to be lifted to the multi-objective setting.
 
-
-    New Ch6 plan:
+    The remainder of this chapter is organised as follows:
     \begin{itemize}
-        \item Intro, introduce and motivate simplex maps, motivate by move to weight space, more efficient lookups and ability to use entropy again
-        \item Define simplex map interface and implementation
-        \item Discussion around the complexity of simplex maps
-        \item Use a hypercube example to illustrate that the neighbourhood can still be with respect to dimension and this is seems unnavoidable in general
-        \item However, lookups are much more efficient in practise
-        \item And sharing values between vertices will cut out a lot of computation when there is no improvement
-        \item Algos, BTS and DENTS using simplex maps as a baseline
-        \item Empirical results
-        \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
-        \item Maybe some theory, probably bootstrap of the ch4 + ch5 results
+        \item 
+            Section \ref{sec:6-1-intro} motivates the simplex map approach, drawing on the empirical results of Chapter \ref{ch:5-chmcts};
+        \item 
+            Section \ref{sec:6-2-simplexmaps} defines the simplex map data structure, describing its interface (Section \ref{sec:6-2-1-interface}), implementation (Section \ref{sec:6-2-2-implementation}) and a brief discussion on the computational complexity of the operations (Section \ref{sec:6-2-3-complexity});
+        \item 
+            Section \ref{sec:6-3-algorithms} introduces MOMCTS algorithms using simplex maps as a value representation, generalising BTS and DENTS to the multi-objective setting;
+        \item 
+            Section \ref{sec:6-4-results} presents empirical results 
+            using the same experimental setup as Chapter 
+            \ref{ch:5-chmcts}, with CZT and CHMCTS algorithms as baselines.
     \end{itemize}
 
 
@@ -76,8 +78,8 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -87,40 +89,96 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\section{Introduction}
+\section{Introduction and Motivation}
 \label{sec:6-1-intro}
 
-    \todo{list}
-    \begin{itemize}
-        \item CZT was able to run many more trials and handled stochastic environments better than CH
-        \item Ideally would like something more compatible with BTS and DENTS
-        \item Mention the Lizotte works which are in weight space version of CHVI essentially
-        \item Say that the approach is to use a adaptive subdivision like CZT, and other related works such as HOO
-        \item Discuss underlying algorithms used for adaptive meshes
-        \item Mention that there is an area of numerical analysis dedicated to this type of method, called the finite element method, and adaptive meshes are a subfield of this, and the finite element method is about numerically solving differential equations and fluid dynamics problems. Add reference on this %https://www.researchgate.net/profile/Jorge-Hernandez-Hernandez/post/Does_gmsh_always_output_the_nodes_and_elements_of_a_mesh_in_ascending_order/attachment/59d6577e79197b80779adcb3/AS%3A534590315917312%401504467671741/download/Finite+elements+Method.pdf
-    \end{itemize}  
+    This section discusses some of the limitations of the algorithms introduced in Chapter \ref{ch:5-chmcts}, and motivates the use of simplex maps as a more scalable alternative that supports entropy-based exploration.
 
-    New Ch6 plan:
-    \begin{itemize}
-        \item Intro, introduce and motivate simplex maps, motivate by move to weight space, more efficient lookups and ability to use entropy again
-    \end{itemize}
+\subsection{Limitations of CHMCTS and CZT}
 
-    %
-    % Old plan
-    %
-    \todo{list}
-    \begin{itemize}
-        \item high level overview of simplex maps work
-        \item discuss how simplex maps answer the research questions from introduction chapter
-        \item staying in multi-objective land now
-        \item Motivated by CHMCTS being slow
-    \end{itemize}  
+    \todo{update stochastic DST to whatever we call it in results}
+
+    The empirical results of Chapter \ref{ch:5-chmcts} 
+    \todo{ref results section} highlight a failure case for CHMCTS, where it is outperformed by CZT in the stochastic DST environment.
+
+    While convex hull value sets provide an accurate representation of achievable returns encountered during the search --- which is beneficial in the exploration setting --- they become computationally expensive in stochastic environments. The number of points in the intermediate convex hull value sets can grow rapidly, causing a significant increase in the computational cost of each backup and a corresponding reduction in the number of trials that can be run within a fixed time budget.
+
+    In contrast, CZT avoids this issue: by limiting the rate of ball additions via the $\Mmin$ parameter, it can run a comparable number of trials per unit time in stochastic environments. Despite this advantage, CZT still exhibits the exploration 
+    limitations similar to those described in Chapter \ref{ch:4-dents}: it tends to exploit 
+    aggressively and does not explore sufficiently, in the same way that UCT can get stuck in 
+    local optima in the single-objective setting. As 
+    shown in Figure \todo{ref ch5 fig}, while CZT outperforms CHMCTS algorithms on the stochastic DST environment, it still recommends suboptimal actions compared to CHVI.
+
+    CZT also suffers from the undesirable property that it will always add 
+    new balls to the cover, regardless of whether further 
+    refinement is warranted. This was addressed in practice 
+    by introducing a minimum visit threshold $\Mmin$ before 
+    a new ball is created (Section \ref{sec:5-2-czt}), but 
+    this is an ad hoc fix rather than a principled solution. 
+
+\subsection{Motivation for Working in Weight Space}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+        \caption[Convex hull value set and corresponding value curve.]{A convex hull value set (left) and its corresponding value curve in weight space (right). Each point in objective space corresponds to a line in weight space. In bold the maximum linear utility $\max_{\bff{v}\in\bfcl{V}}\bff{w}^\top\bff{v}$ as a function of the weight vector $\bff{w}\in\Delta^D$ is shown, i.e. the \textit{value curve}.}
+        \label{fig:6:value_curve}
+    \end{figure}
+
+    Convex hull value sets operate in \textit{objective space}, 
+    representing the set of achievable expected return vectors. 
+    An alternative perspective is to consider the 
+    \textit{value curve} in weight space: the function 
+    $\bff{w} \mapsto \max_{\bff{v}\in\bfcl{V}} 
+    \bff{w}^\top\bff{v}$ that maps each weight vector to the 
+    maximum linear utility achievable under that weight. This 
+    value curve is a piecewise-linear, concave function over 
+    $\Delta^D$, and is illustrated in Figure 
+    \ref{fig:6:value_curve}. Maintaining an estimate of this 
+    function directly over the weight space, rather than 
+    maintaining the full convex hull value set, suggests a 
+    more scalable approach. 
+    
+    Working in weight space has led to more scalable approaches in the prior literature. For example, \todo{citet lizotte2dim} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions. \todo{cite lizotteNdim}
+
+    Following the argument made in Section \ref{sec:5-7-entropy-convex-hulls}, working in objective space also does not naturally support entropy-based exploration, and moving to weight space provides a natural way to support entropy-based exploration.
+
+    While CZT does operate in weight space, each ball covers a region of the weight space and maintains a single value estimate for that entire region. As such, they cannot naturally store an entropy estimate associated with a single weight vector.
+
+\subsection{Adaptive Subdivisions of the Weight Space}
+
+    This chapter investigates the use of an \textit{adaptive 
+    subdivision} of the weight space as an alternative 
+    representation. Rather than covering the weight space 
+    with balls, the simplex $\Delta^D$ is triangulated into 
+    a set of simplices, each associated with a vertex at 
+    which a value estimate and entropy estimate are 
+    maintained. The triangulation is refined adaptively 
+    during the search, subdividing regions of the weight 
+    space where the value function varies across the region and leaving regions where the value is uniform intact.
+
+    Adaptive subdivisions have been used in a range of 
+    settings. \textit{Hierarchical Optimistic Optimisation} (HOO) \todo{cite HOO} is an algorithm for continuous-armed bandit problems and uses a tree of 
+    hierarchically nested sets to adaptively search a 
+    continuous domain, refining the cover in regions of 
+    high estimated value. Unlike the approach of this chapter, HOO focuses on identifying a single region of high value rather than estimating the value function across the entire domain.
+    
+    In numerical analysis, the finite element method \cite{fem} is a method for solving partial differential equations by discretising the domain into a mesh and solving the equation on each element. 
+    \textit{Adaptive} finite element methods \cite{adaptive_fem} 
+    alternate between solving a partial differential equation 
+    over a mesh and refining the mesh in regions where the 
+    solution is not yet well resolved, a paradigm widely 
+    used in fluid dynamics and structural mechanics. The 
+    simplex map data structure introduced in this chapter 
+    draws on similar principles, adapting the resolution of 
+    the weight space cover to the demands of the search.
+
+    A substantial body of work has studied adaptive mesh refinement strategies for triangulations. In particular, \textit{longest edge bisection} (LEB) \cite{mesh_refine,simplex_refine} is a popular refinement strategy that splits the longest edge of a simplex into two equal length edges. It has been shown in two and three dimensions that iterative LEB of a unit simplex produces a finite set of similarity classes of simplices \cite{leb_2d_similarity_angle,leb_2d_similarity_general,leb_3d_similarity_general_nd_hypothesis} \todo{fix cites}. For higher dimensions the LEB refinement is conjectured to produce finitely many similarity classes, but a proof remains an open problem \cite{leb_nd_regular_empirical} \todo{fix cite}.
 
 
 
 
 
-    Motivation is, CH sucks for stochastic environments, but CZT sucks in exploration. Idea is want something combining the best of both. An adaptive subdivision like CZT, ideally with an ability to not arbitrarily split when unecessary. But also able to use max and entropy properly. Actually probably can do this with ball list too?
 
 
 
@@ -129,15 +187,8 @@
 
 
 
-
-
-
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
+% [X] First Draft
+% [X] AI proofread/grammar check
 % [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -150,31 +201,243 @@
 \section{Simplex Maps}
 \label{sec:6-2-simplexmaps}
 
+    This section defines the \textit{simplex map} data structure. Section \ref{sec:6-2-1-interface} describes the interface that a simplex map provides, Section \ref{sec:6-2-2-implementation} describes the implementation, and Section \ref{sec:6-2-3-complexity} discusses the complexity of simplex maps operations compared to CZT and CHMCTS.
 
 
 
-New Ch6 plan:
-\begin{itemize}
-    \item Motivate by want more efficient lookups/data structure but still same interface
-    \item Define simplex map interface and implementation
-    \item Discussion around the complexity of simplex maps
-    \item Use a hypercube example to illustrate that the neighbourhood can still be with respect to dimension and this is seems unnavoidable in general
-    \item However, lookups are much more efficient in practise
-    \item Mention that this stuff does work in 2D, and examples are given in 2D and 3D, because there are complexities when dimension increases above 2D
-    \item And sharing values between vertices will cut out a lot of computation when there is no improvement
-\end{itemize}
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Interface}
+\label{sec:6-2-1-interface}
 
-%
-%Old plan
-%
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+        \caption[Illustration of a simplex map.]{Illustration of a simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ with $D=3$. (Left) The graph of vertices $(\VSM,\ESM)$ is shown. (Right) The corresponding binary tree of simplices $\TSM$.}
+        \label{fig:6:simplex_map}
+    \end{figure}
+
+    A simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ consists of a set of vertices $\VSM \subseteq \Delta^D$, a set of undirected edges $\ESM \subseteq \VSM \times \VSM$, a binary tree of simplices $\TSM$ and a function $\fSM$ mapping vertices to value estimates. The root node of $\TSM$ is the unit simplex and the tree is formed using longest edge bisections so that the leaf nodes of the tree form a triangulation of the unit simplex. Figure \ref{fig:6:simplex_map} illustrates a simplex map with $D=3$.
 
 
-\todo{list}
-\begin{itemize}
-    \item Define simplex map interface
-    \item Give details on how to efficiently implement the interface with tree structures
-    \item (Good diagram is everything here I think)
-\end{itemize}
+
+    \begin{description}
+        \item[$\fcs(\GSM, \bff{w})$:] 
+            Given a weight vector $\bff{w}\in\Delta^D$, returns the leaf node in the binary tree of simplices $\TSM$ that contains $\bff{w}$.
+        \item[$\fcv(\GSM, \bff{w})$:] 
+            Given a weight vector $\bff{w}\in\Delta^D$, finds the (approximately) closest vertex in the simplex map $\wSM\in\VSM$ and returns the corresponding value estimate $\fSM(\wSM)$.
+        \item[$\update(\GSM,\wSM,\bff{v})$:] 
+            Updates the value estimate at the vertex $\wSM\in\VSM$ to $\bff{v}$. That is, it performs the update $\fSM(\wSM) \leftarrow \bff{v}$.
+        \item[$\push(\GSM,\wSM)$:] 
+            Given a vertex $\wSM\in\VSM$, attempts to share its value estimate with its neighbours in the vertex graph via breadth-first search. A neighbour $\wSMprime\in\VSM$ accepts the value from $\wSM$ if it is an improvement under $\wSMprime$'s own weight vector:
+            \begin{align}
+                \fSM(\wSMprime) \leftarrow \fSM(\wSM) \quad 
+                \text{if } \wSMprime^\top \fSM(\wSM) > 
+                \wSMprime^\top \fSM(\wSMprime).
+                \label{eq:6:sm_message_passing}
+            \end{align}
+            %
+            If the value estimate at $\wSMprime$ is updated, then the breadth-first search is continued from $\wSMprime$, up to a maximum push radius $\pushradius$.
+        \item[$\splitsimplex(\GSM,\SSM)$:]
+            Given a leaf simplex $\SSM\in\TSM$, performs a longest edge bisection and adds the two new simplices in the tree.
+    \end{description}
+
+    This interface is sufficient to define MOMCTS algorithms using simplex maps. In particular, if the value estimates $\fSM$ of a simplex map $\GSM$ represent multi-objective Q-values at a chance node $(s,a)$, then the following can be used as a contextual value estimate:
+    %
+    \begin{align}
+        \Qsmctx{\bff{w}}(s,a) 
+            &= \bff{w}^\top \fSM(\wSM) \quad \text{where } \wSM = \fcv(\GSM, \bff{w}).
+        \label{eq:6:sm_contextual_qvalue}
+    \end{align}
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Implementation}
+\label{sec:6-2-2-implementation}
+
+    Further details on the implementation of simplex maps 
+    are given in this section. Some implementation details 
+    are simpler in two dimensions than in the general 
+    $D$-dimensional case; $D=3$ is used for examples 
+    throughout.
+
+    Conforming triangulations are described first, followed by the initialisation and implementation of each operation.
+
+    An additional auxiliary structure, called the \textit{bipartite triangulation graph} (BTG), is used in the implementation 
+    but not defined explicitly to avoid unnecessary complexity. 
+    The BTG consists of edges of $\ESM$ on one side and the leaf simplices of $\TSM$ on the other. The BTG is used to determine adjacency between simplices and to support the conformity checks described below.
+
+    Throughout this thesis, $\Delta^D$ refers to the 
+    $D$-dimensional unit simplex with $D$ vertices (Definition 
+    \todo{ref}). In geometry it is more common to 
+    refer to this object as the \textit{$(D-1)$-simplex}, 
+    since it forms a $(D-1)$-dimensional space in 
+    $\bb{R}^D$. For example, when $D=3$ the simplex is a 
+    triangle, which is geometrically a $2$-simplex. As this section discusses some geometric concepts, the correct geometric terminology is used here.
+
+    \paragraph{Conforming Triangulations.}
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with the non-conforming simplex highlighted in red.}
+            \label{fig:6:conforming_triangulation}
+        \end{figure}
+
+        Two simplices are \textit{adjacent} if they share at least one point. A pair of simplices are said to be \textit{conforming} if the intersection of the two simplices is exactly a point, edge or face of \textit{both} simplices. A triangulation is \textit{conforming} if every pair of adjacent simplices is conforming. Figure \ref{fig:6:conforming_triangulation} illustrates a conforming and non-conforming triangulation.
+        
+        It has been shown that recursive longest edge bisection, in a general $D$-dimensions, produces a conforming triangulation within a finite number of steps \cite{mesh_refine_framework,mesh_refine,simplex_refine}.
+
+        The implementation of the $\fcv$ operation assumes that 
+        the nearest vertex to any point $\bff{w}$ lies either 
+        in the simplex containing $\bff{w}$ or in an adjacent 
+        simplex. This assumption is supported by the conjectured 
+        result that LEB refinement produces a finite number of 
+        similarity classes in higher dimensions 
+        \cite{leb_nd_regular_empirical}.
+
+        The BTG can be used to determine if a simplex in $\TSM$ is conforming by checking if the number of connections in the BTG is equal to the number of edges of a simplex. For example, in Figure \ref{fig:6:conforming_triangulation}, the non-conforming simplex is highlighted in red. It has 3 edges, but is adjacent to 4 edges of $\ESM$ of the vertex graph.
+
+        The simplex map is implemented to be \textit{eventually conforming}, meaning that a non-conforming triangulation is tolerated temporarily, and after every operation described in Section \ref{sec:6-2-1-interface}, a non-conforming simplex is identified and the $\splitsimplex$ operation is performed on it. 
+
+
+    \paragraph{Initialisation.}
+
+        The simplex map is initialised with the unit simplex $\Delta^D$, whose $D$ vertices are the standard basis vectors $\bff{e}_1,\ldots,\bff{e}_D\in\bb{R}^D$. 
+        The edges are initialised to connect every pair of 
+        vertices, and the binary tree is initialised to a 
+        single root node containing the unit simplex. The 
+        value estimates are initialised to zero.
+
+
+    \paragraph{$\fcs(\GSM, \bff{w})$:}
+
+        To find the simplex in the triangulation that contains a weight vector $\bff{w}\in\Delta^D$, the triangulation is traversed by the binary tree $\TSM$ using a sequence of halfspace checks at each internal node. 
+
+    \paragraph{$\fcv(\GSM, \bff{w})$:}
+
+        In the case of $D=2$, the closest vertex can be found exactly by returning the closest endpoint of the line segment (1-simplex) containing $\bff{w}$.
+
+        For the general case of $D>2$, the closest vertex can be found approximately. First the simplex containing $\bff{w}$ is found using $\fcs$. 
+        Then the \textit{$k$-ring} ($k$-step neighbourhood) of simplices is checked for the closest vertex to $\bff{w}$. 
+
+        $k$ is technically a parameter used in the simplex map implementation, but it is always set to 1 in this thesis. The assumption is made that the nearest vertex to $\bff{w}$ is either on the simplex containing $\bff{w}$ or an adjacent simplex. 
+        This assumption is supported by the conjecture that LEB refinement produces finitely many similarity classes \cite{leb_nd_regular_empirical}, which would enforce that the diameter of adjacent simplices is bounded, and ensure that the nearest vertex cannot lie far from the containing simplex.
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+            \caption[Closest vertex lookup examples.]{Closest vertex lookup examples. In all subfigures, the weight vector $\bff{w}$ is shown in red, and the closest vertex in the triangulation is shown in blue. (a) Finding the closest vertex in $D=2$. (b) Example where the closest vertex is in a neighbouring simplex. (c) Example where the triangulation is non-conforming and the closest vertex is not in a neighbouring simplex.}
+            \label{fig:6:vertex_lookup_examples}
+        \end{figure}
+
+        Figure \ref{fig:6:vertex_lookup_examples} illustrates that for $D=3$, setting $k=0$ is insufficient and that a neighbouring triangle may contain the closest vertex to $\bff{w}$. Also illustrated for $D=3$ is that $k=1$ is insufficient to find the closest vertex if the triangulation is non-conforming.
+
+    \paragraph{$\splitsimplex(\GSM,\SSM)$:}
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green edges are added to $\ESM$ and the red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
+            \label{fig:6:split_operation}
+        \end{figure}
+
+        Let $\SSM=\{\wSMi{1},\wSMi{2},\wSMi{3},\ldots,\wSMi{D}\}$, where without loss of generality $(\wSMi{1},\wSMi{2})$ is the longest edge. The new vertex $\wSMi{\text{mid}}=\frac{1}{2}(\wSMi{1}+\wSMi{2})$ is added to $\VSM$, the edge $(\wSMi{1},\wSMi{2})$ is removed from $\ESM$ and edges to connect the new vertex are added:
+        \begin{align}
+            \ESM \leftarrow \left(\ESM - \{(\wSMi{1},\wSMi{2})\}\right) \cup \{(\wSM,\wSMi{\text{mid}}) \mid \wSM\in\SSM\}.
+        \end{align}
+        %
+        Figure \ref{fig:6:split_operation} illustrates this operation. Finally, the new vertex $\wSMi{\text{mid}}$ inherits its value estimate from the values of the edge that was split:
+        \begin{align}
+            \fSM(\wSMi{\text{mid}}) \leftarrow \begin{cases}
+                \fSM(\wSMi{1}) & \text{if } \wSMi{\text{mid}}^\top \fSM(\wSMi{1}) > \wSMi{\text{mid}}^\top \fSM(\wSMi{2}), \\
+                \fSM(\wSMi{2}) & \text{otherwise}.
+            \end{cases}
+            \label{eq:6:sm_split}
+        \end{align}
+
+        The BTG is updated accordingly; the details are omitted as they do not affect the algorithm semantics.
+
+    \paragraph{$\update$ and $\push$:} 
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
+            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, where the red vertex is pushing its values estimate, the red arrows indicate the direction of value propagation and the blue vertex does not accept or propagate the value.}
+            \label{fig:6:push_operation}
+        \end{figure}
+        
+        The descriptions of $\update$ and $\push$ given in Section \ref{sec:6-2-1-interface} are sufficient to implement these operations. $\push$ is illustrated in Figure \ref{fig:6:push_operation}. The function $\fSM$ is implemented as a hash map from vertices to value estimates.
+
+
+
+
+
+
+
+% [X] First Draft
+% [X] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Complexity Discussion}
+\label{sec:6-2-3-complexity}
+
+    The computational cost of simplex map operations is briefly compared to those of CHMCTS and CZT as follows.
+
+    For CHMCTS, using $K_{\text{CH}}$ to denote the number of points 
+    in a convex hull value set, taking the union of two 
+    value sets during the $\Valg$ backup 
+    (Equation~\ref{eq:5:chmcts_v_backup}) costs $\Omega(K_{\text{CH}})$. 
+    However, computing the $\Qalg$ backup 
+    (Equation~\ref{eq:5:chmcts_q_backup}) requires adding 
+    two value sets, which involves computing a Minkowski 
+    sum of $\Omega(K_{\text{CH}}^2)$ candidate points before pruning. 
+    This provides intuition for why CHMCTS becomes 
+    significantly slower in stochastic environments, where 
+    intermediate value sets grow large.
+
+    For CZT, the cost of selection scales with the number of active balls via Equation (\ref{eq:5:cz_index}), which grows unboundedly over time.
+
+    For simplex maps, under the assumption that LEB 
+    refinement produces finitely many similarity classes, 
+    the maximum number of edges incident to any vertex 
+    is $O(2^D)$, and the BTG has a similar bound on its 
+    degree. Simplex lookups via the binary tree cost roughly 
+    $O(D\log(K_{\SM}))$, where $K_{\SM}$ is the number of vertices 
+    and the factor of $D$ comes from the halfspace checks 
+    at each internal node.
+
+    Therefore, for an MOMDP where the number of achievable values grows large, i.e. $K_{\text{CH}}\gg 2^D$, the computational complexity of CHMCTS will dominate the complexity of simplex map operations. Conversely, when an MOMDP has a small number of achievable values, simplex maps may introduce additional computational overhead over CHMCTS, as the order of vertices in the simplex map will still be $\Omega(2^D)$.
+
+
+
+
 
 
 
@@ -204,6 +467,90 @@ New Ch6 plan:
 \label{sec:6-3-algorithms}
 
 
+    This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates.
+
+    Each decision node $s$ and chance node $(s,a)$ keeps an associated simplex map $\GSMD(s,a)
+
+
+
+
+
+
+
+
+
+
+    \textit{Convex Hull BTS} (CH-BTS) uses the BTS search policy (Section \ref{sec:4-2-1-bts}) within the CHMCTS framework, using contextual value estimates in place of the scalar Bellman value estimates:
+    \begin{align}
+        \rhochbts(a|s;\bff{w}) &\propto \exp\left(
+            \frac{\Qchbtsctx{\bff{w}}(s,a)}
+            {\alphachbts(N(s))}\right), 
+            \label{eq:5:chbts_rho} \\
+        \pichbts(a|s;\bff{w}) &= (1-\lambdachbts)
+            \rhochbts(a|s;\bff{w}) 
+            + \frac{\lambdachbts}{|\cl{A}|}, 
+            \label{eq:5:chbts_policy} \\
+        \lambda(s,\epsilon) &= \min\left(1, 
+            \frac{\epsilon}{\log(e+N(s))}\right),
+    \end{align}
+    where $\alphachbts(x) > 0$ is a temperature function and $\epschbts \in [0,\infty)$ is an exploration parameter. As in BTS, the temperature function controls the trade-off between exploration and exploitation, and the exploration parameter ensures that all actions are eventually explored.
+
+
+
+    \paragraph{Algorithm Definition}
+
+    \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates} as an exploration bonus. DENTS uses Bellman value estimates $\Vdents$ and $\Qdents$ similarly to BTS, but also uses entropy value estimates, $\HVdents$ and $\HQdents$, which are Monte Carlo estimates of the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in its search policy, and discard it for recommendations.
+
+    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, $\alphadents(x)>0$ and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
+    
+    The Q-values used during search are computed as follows:
+    \begin{align}
+        \Qdentssoft(s,a) &= \Qdents(s,a)+\betadents(N(s))\HQdents(s,a), \\
+        \Qdentsbias(s,a) &= \frac{N(s,a) \Qdentssoft(s,a) +  \Nqdents \Qinit(s,a)}{N(s,a)+\Nqdents}, \\
+        \Qdentsnorm(s,a) &= 
+        \begin{cases}
+            \frac{\Qdentsbias(s,a)-\min_{a\in\cl{A}}\Qdentsbias(s,a)}{\max_{a\in\cl{A}}\Qdentsbias(s,a)-\min_{a\in\cl{A}}\Qdentsbias(s,a)} & \text{if } \normalisedq, \\
+            \Qdentsbias(s,a) & \text{otherwise.}
+        \end{cases}
+    \end{align}
+
+    The DENTS search policy is similar to BTS: 
+    %
+    \begin{align}
+        \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
+                    \label{eq:dents_search_policy} \\ 
+        \rhodents(a|s) &\propto \exp\left(\frac{\Qdentsnorm(s,a)}{\alphadents(N(s))}\right),
+                    \label{eq:dents_value_policy} \\
+        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
+    \end{align}
+
+    The $\initv$ and $\initq$ functions are also similar to BTS, setting: $N(s)=0$, $N(s,a)=0$, $\Vdents(s)=\Vinit(s)$ and $\Qdents(s,a)=\Qinit(s,a)$. Additionally, the entropy value estimates are initialised to zero: $\HVdents(s)=0$ and $\HQdents(s,a)=0$.
+
+    Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pidents$, the $\backupq$ and $\backupv$ functions update the entropy value estimates for $t=h-1,\ldots,0$:
+    \begin{align}
+        \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
+            \label{eq::4dents_entropy_q_backup} \\
+        \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
+            \label{eq:4:dents_entropy_v_backup} 
+    \end{align}
+    %
+    where $\cl{H}$ is the Shannon entropy function. The Bellman value estimates are updated similarly to BTS, for $t=h-1,\ldots,0$:
+    \begin{align}
+        \Qdents(s_t,a_t) &\leftarrow 
+            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vdents(s') \right), 
+                    \label{eq:dents_q_backup} \\ 
+        \Vdents(s_t) &\leftarrow \frac{\Nvdents \Vinit(s_t) + N(s_t) \max_{a\in\cl{A}} \Qdents(s_t,a)}{N(s_t)+\Nvdents}.
+                    \label{eq:4:dents_backup_v} 
+    \end{align}
+
+    The recommendation policies for DENTS are also defined identically to BTS:
+    \begin{align}
+        \psidents(s) = \argmax_{a\in\cl{A}}\Qdents(s,a), \label{eq:4:psidents} 
+    \end{align}
+
+
+
+\todo{Ref the conforming triangulation stuff here}
 
 
 New Ch6 plan:
@@ -252,8 +599,10 @@ New Ch6 plan:
 \section{Empirical Results}
 \label{sec:6-4-results}
 
+\todo{Clean up plots, legend placement etc.}
 
 
+\todo{Refer to ch5 results for evaluation procedure and environments. State that picking CZT, CHBTS (and maybe CHUCT) as baselines for this ch. And then give results for SMBTS and SMDENTS}
 
 New Ch6 plan:
 \begin{itemize}
@@ -288,6 +637,54 @@ New Ch6 plan:
 
 
 
+% % [ ] First Draft
+% % [ ] AI proofread/grammar check
+% % [ ] TODOs
+% % [ ] Spell check
+% % [ ] Citations + Refs
+% % [ ] LitRev sync
+% % [ ] Abbreviations sync
+% % [ ] Thesis questions ref/answers
+% % [ ] Proofread
+% % [ ] Nick comments
+% % [ ] Final revision
+% \section{Theoretical Discussion}
+% \label{sec:6-5-theory}
+
+
+
+
+% New Ch6 plan:
+% \begin{itemize}
+%     \item Maybe give some discussion on theory
+%     \item General argument is that all of the vertices will converge eventually
+%     \item For interpolated weights, the values will be correct within some epsilon of the true value
+%     \item Basically say that can follow the same argument again of all actions selected from the search policies
+%     \item Because exponential amount of data needed for correct solution, number of trials cannot be made better than exponential
+% \end{itemize}
+
+% %
+% % Old plan
+% %
+% \todo{list}
+% \begin{itemize}
+%     \item Convergence can build ontop of DENTS results
+%     \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
+%     \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
+%     \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
+% \end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
 % [ ] First Draft
 % [ ] AI proofread/grammar check
 % [ ] TODOs
@@ -299,36 +696,11 @@ New Ch6 plan:
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\section{Theoretical Discussion}
-\label{sec:6-5-theory}
+\section{Summary}
+\label{sec:6-6-summary}
 
+    \todo{Summary of contributions}
 
+    \bd{For future work, some further approximations, such as subsampling the neighbours in the message passing could be considered.}
 
-
-New Ch6 plan:
-\begin{itemize}
-    \item Maybe give some discussion on theory
-    \item General argument is that all of the vertices will converge eventually
-    \item For interpolated weights, the values will be correct within some epsilon of the true value
-    \item Basically say that can follow the same argument again of all actions selected from the search policies
-    \item Because exponential amount of data needed for correct solution, number of trials cannot be made better than exponential
-\end{itemize}
-
-%
-% Old plan
-%
-\todo{list}
-\begin{itemize}
-    \item Convergence can build ontop of DENTS results
-    \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
-    \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
-    \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
-\end{itemize}
-
-
-
-
-
-
-
-
+    \bd{For future work, include bias terms similar to the ones in ch4. Say that we didn't include them in Ch6, and they were not added in ch5 so that ch5 and ch6 results are comparible.}

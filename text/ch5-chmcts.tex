@@ -130,8 +130,7 @@
         \label{fig:5:motivating_example}
     \end{figure}
 
-    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, 
-    with two objectives. The convex hull value set of the MOMDP is $\{(1,0),(0,1)\}$: the reward $(1,0)$ is only reachable via the left action, and $(0,1)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
+    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set of the MOMDP is $\{(1,0),(0,1)\}$: the reward $(1,0)$ is only reachable via the left action, and $(0,1)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
 
     Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(1,0)$ is consistent with the implicit commitment made at the root node.
 
@@ -359,6 +358,8 @@
     \end{enumerate}
 
     CZ \todo{cite} extends its regret analysis from a fixed number of rounds $T$ to an unknown number of rounds using the \textit{doubling trick} \cite{doubling_trick}. The doubling trick runs an independent instance of the algorithm for $T$ rounds, then $2T$ rounds, then $4T$ rounds and so on. In practice, however, discarding all accumulated data at each doubling interval is undesirable. Instead, in CZT the number of visits $N(s)$ at the current node is used directly in place of $T$, which avoids the need for the doubling trick at the cost of losing regret guarantees.
+
+    \todo{Make sure to comment about how CZT without the additional activation rule leads to a blowup in the number of balls and is very slow.}
     
 
 
@@ -388,7 +389,7 @@
 
     This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS \todo{ref ch3} to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-litrev}.
 
-    The common \thtspp\ewe framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
+    The common \thtspp\ewe framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-3-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
@@ -548,14 +549,6 @@
 \subsection{Prior Search Policies}
 \label{sec:5-3-5-prior}
 
-    \newcommand{\HV}{{\textnormal{HV}}}
-    \newcommand{\lambdalebesgue}{{\lambda_{\textnormal{Lebesgue}}}}
-    \newcommand{\rref}{\bff{r}_{\textnormal{ref}}}
-    \newcommand{\rrefcomp}{\left(r_{\textnormal{ref}}\right)}
-    \newcommand{\hchmcts}{{\textnormal{H-CHMCTS}}}
-    \newcommand{\zetahchmcts}{{\zeta_{\hchmcts}}}
-    \newcommand{\Qchmcts}{{\hat{\bfcl{Q}}_{\chmcts}}}
-
     The MOMCTS algorithms discussed in Chapter \ref{ch:3-litrev} can be recovered within the CHMCTS framework by substituting appropriate search policies. In general, prior work uses search policies of the following form:
     \begin{align}
         \pialg(a|s;\bff{w}) = \argmax_{a\in\cl{A}} \left[
@@ -588,48 +581,52 @@
             \HV(\bfcl{V};\bff{r}) = \lambdalebesgue\left(
                 \bigcup_{\bff{v}\in\bfcl{V}} 
                 \{\bff{x}\in\bb{R}^D \mid 
-                \rref \leq \bff{x} \leq \bff{v}\}
+                \rref \preceq \bff{x} \preceq \bff{v}\}
             \right),
         \end{align}
-        where $\lambda$ denotes the Lebesgue measure and 
-        $\rref \leq\bff{x}\leq\bff{v}$ is interpreted 
-        componentwise.
+        where $\lambdalebesgue$ denotes the Lebesgue measure and $\preceq$ is Pareto domination (Definition \ref{def:2:pareto_front}). 
     \end{defn}
 
-    That is $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, and $\rref$ is a parameter of the algorithm.
+    That is, $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, where $\rref$ is a parameter of the algorithm.
     
 \paragraph{Chebyshev CHMCTS (C-CHMCTS).}
 
-    \todo{cite and ref} use the \textit{Chebyshev distance} as the scalarisation function $\zetaalg$ in the search policy:
+    \todo{cite and ref} use the \textit{Chebyshev utility}:
 
     \begin{defn}
-        \label{def:5:chebyshev_distance}
-        Let $\bff{v},\bff{v}'\in\bb{R}^D$ be two vectors. The \textnormal{Chebyshev distance} between $\bff{v}$ and $\bff{v}'$ is:
+        \label{def:5:chebyshev_utility}
+        Let $\bff{v},\ruto\in\bb{R}^D$ and $\bff{w}\in\Delta^D$. The \textnormal{Chebyshev utility} of $\bff{v}$ with respect to $\bff{w}$ and $\ruto$ is:
         \begin{align}
-            \textnormal{Chebyshev}(\bff{v},\bff{v}') = \max_{d=1,\ldots,D} |v_d - v'_d|.
+            \ucheby(\bff{v};\bff{w},\ruto) = - \max_{i=1,\ldots,D} w_i |v_i - \rutocomp_i|.
         \end{align}
     \end{defn}
+
+    The scalarisation function for C-CHMCTS is:
+    \begin{align}
+        \zetcchmcts(\bfcl{V};\bff{w},\ruto) = \max_{\bff{v}\in\bfcl{V}} \ucheby(\bff{v};\bff{w},\ruto),
+    \end{align}
+    %
+    where $\ruto$ is a \textit{utopian point} satisfying $\ruto \succeq \bff{v}$ for all $\bff{v}\in\bfcl{V}$ and is a parameter of the algorithm.
 
 \paragraph{Pareto CHMCTS (P-CHMCTS).}
 
     The notable exception to this form is Pareto MCTS \todo{cite}, which uses a Pareto UCB algorithm \todo{cite} at each decision node, and does not fit directly into the template of Equation (\ref{eq:5:prior_policy}). \textit{Pareto CHMCTS} (P-CHMCTS) is the algorithm that results from running Pareto UCB at each decision node within the CHMCTS framework.
 
-    \bd{Pareto UCB adds a multi-objective, UCB style, confidence interval term to each value in the convex hull Q-value set to compute a new convex hull value set.}
-
+    Pareto UCB adds a UCB-style bonus to each vector in the value set:
     \begin{align}
         \Vparetoconf(s) &= \cprune\left( \Vparetou(s) \right), \\
         \Vparetou(s) &= \left\{ 
-            \left(\bff{q} + U(s,a)\bff{1}, a \right)
+            \left(\bff{q} + U_{\textnormal{pucb}}(s,a)\bff{1}, a \right)
             \mid a \in \cl{A}, \bff{q} \in \Qpareto(s,a)
         \right\}, \\
-        U(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}. \\
+        U_{\textnormal{pucb}}(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}. \\
     \end{align}
     %
-    where $\bpareto > 0$ is a bias parameter and \bd{Note about slight abuse of notation where values are tagged with their action.}
+    where $\bpareto > 0$ is a bias parameter and where the notation $(\bff{q}, a)$ tags each vector with its corresponding action to allow the action to be recovered after the $\cprune$ operation.
 
     The search policy samples a point uniformly randomly from the \textit{confidence value set}, and selects the corresponding action. That is:
     \begin{align}
-        \pipareto(a|s;\bff{w}) =  \sum_{(\bff{v},a')\in\Vparetoconf(s)} \frac{\one[a=a']}{|\Vparetou(s)|}.
+        \pipareto(a|s;\bff{w}) =  \sum_{(\bff{v},a')\in\Vparetoconf(s)} \frac{\one[a=a']}{|\Vparetoconf(s)|}.
     \end{align}
 
 
@@ -645,18 +642,13 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Optimisations}
-\label{sec:5-6-optimisations}
+\label{sec:5-3-6-optimisations}
 
     Two practical optimisations are used in the implementation of CHMCTS: \textit{solved labelling}, which avoids wasting computation on well-explored parts of the search tree; and \textit{size pruning}, which limits the number of points stored in each convex hull value set.
 
 \paragraph{Solved Labelling.}
 
-    \newcommand{\unsolved}{{\textnormal{\texttt{unsolved}}}}
-    \newcommand{\unsolvedtol}{{\textnormal{\texttt{unsolved}}_{\textnormal{tol}}}}
-    \newcommand{\deltaunsolved}{{\delta_{\textnormal{unsolved}}}}
-    \newcommand{\sucobs}[2]{{\textnormal{Succ}_{\textnormal{obs}}(#1,#2)}}
-
-    In planning, \textit{labelling} \todo{cite lrtdp} is used to mark nodes as solved and prune them from further consideration, avoiding wasted computation on parts of the tree that are already solved. A node is marked as solved when its value estimate has converged to the true value, \bd{which is enabled in the context of planning with full knowledge of the transition distribution}. In the setting considered here, the true transition distribution $p(\cdot|s,a)$ is unknown, so a probabilistic analogue for labelling is used instead.
+    In planning, \textit{labelling} \todo{cite lrtdp} is used to mark nodes as solved and prune them from further consideration, avoiding wasted computation on parts of the tree that are already solved. A node is marked as solved when its value estimate has converged to the true value, which requires knowledge of the true transition distribution. \todo{double check lrtdp paper} In the setting considered here, the true transition distribution $p(\cdot|s,a)$ is unknown, so a probabilistic analogue for labelling is used instead.
 
     Each chance node $(s,a)$ is assigned an \textit{unsolved value} $\unsolved(s,a)\in[0,1]$, where $\unsolved(s,a)=0$ indicates that the node is solved and $\unsolved(s,a)=1$ indicates that it is unsolved. The solved value of a node is an upper bound on the probability that the node's value estimate has not yet converged.
 
@@ -667,18 +659,16 @@
 
     The unsolved values are updated during the backpropagation phase of \thtspp\ewe and used during the selection phase to filter out actions that have already been solved, to a tolerance of $\unsolvedtol$, with high probability. That is, at a decision node $s$, any action $a$ with $\unsolved(s,a) \leq \unsolvedtol$ is filtered out before selecting an action. The remainder of this section describes how the unsolved values are propagated through chance nodes, that is, how the value of $\unsolved(s,a)$ is computed.
 
-    Ideally $\unsolved(s,a)$ would be computed either as an expectation or maximisation over the successor states. \bd{The issue with expectations is that the expectation using the empirical distribution may be overly optimistic (for example if there is only one child) about how solved the node is. The issue with maximisation is when there a successor state that is only sampled with low probability.} \bd{Some connecting hence like sentence}. \bd{Use an upper bound on the expected value instead}
+    % Ideally $\unsolved(s,a)$ would be computed either as an expectation or maximisation over the successor states. Using the empirical distribution directly may be overly optimistic when few successor states have been observed, and using a maximisation over successor states penalises nodes with low-probability transitions that are rarely visited. An upper bound on the expected unsolved value is used instead, which accounts for both the estimation error in the empirical distribution and the probability mass of unobserved successor states.
 
-    The solved value of a chance node $(s,a)$ is computed as an upper bound on the expected solved values of its successor states, using the empirical transition distribution $\frac{N(s')}{N(s,a)}$ as a proxy for the true distribution $p(s'|s,a)$. Since the true distribution is unknown, the bound must account for the estimation error in the empirical distribution. Let $\deltaunsolved > 0$ be a confidence parameter, \bd{and we will design the update for unsolved(s,a) such that}:
+    The solved value of a chance node $(s,a)$ is computed as an upper bound on the expected solved values of its successor states, using the empirical transition distribution $\frac{N(s')}{N(s,a)}$ as a proxy for the true distribution $p(s'|s,a)$. Since the true distribution is unknown, the bound must account for the estimation error in the empirical distribution. Let $\deltaunsolved > 0$ be a confidence parameter. The unsolved value $\unsolved(s,a)$ is defined as an upper bound satisfying:
     \begin{align}
         \Pr\left(\bb{E}_{s'\sim p(\cdot|s,a)}[\unsolved(s')] \leq \unsolved(s,a)\right) \geq 1-\deltaunsolved. \label{eq:5:unsolved_chance_defn}
     \end{align}
 
     In words, with probability at least $1-\deltaunsolved$, the expected solved value of the children of chance node $(s,a)$ is bounded by the upper bound $\unsolved(s,a)$.
 
-    \bd{Connecting sentence?}
-
-    The expected solved value is decomposed into contributions from observed and unobserved successor states:
+    To derive this bound, the expected unsolved value is decomposed into contributions from observed and unobserved successor states:
     \begin{align}
         \mathbb{E}[\unsolved(s')] 
             =& \sum_{s'\in\sucobs{s}{a}} 
@@ -708,9 +698,9 @@
             = \sum_{s'\in\suc{s}{a}}\frac{\one\left[N(s')=1\right]}{N(s,a)}.
     \end{align}
 
-    For the unobserved successors, since solved values lie in $[0,1]$ and unsolved nodes, the contribution of unobserved successors (\ref{eq:5:local7}) is bounded by the missing mass using Theorem \ref{thrm:2:good_turing_bound} with probability at least $1-\frac{\deltaunsolved}{2}$:
+    For the unobserved successors, since $\unsolved(s')\leq 1$ for all $s'$, the contribution of unobserved successors (\ref{eq:5:local7}) is bounded by the missing mass using Theorem \ref{thrm:2:good_turing_bound} with probability at least $1-\frac{\deltaunsolved}{2}$:
     \begin{align}
-        \sum_{s'\in\sucobs{s}{a}} p(s'|s,a) 
+        \sum_{s'\not\in\sucobs{s}{a}} p(s'|s,a) 
         \leq \goodturingestimate(s,a) + \sqrt{\frac{\log(2/\deltaunsolved)}{N(s,a)}}.
     \end{align}
     
@@ -730,13 +720,13 @@
 
     As the search progresses, the convex hull value sets at each node may grow large, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \todo{cite}. % \cite{nsga2}.
 
-    The crowding distance of a point $\bff{v}$ in a set $\bfcl{V}$ measures how isolated $\bff{v}$ is from its neighbours in objective space. For each objective dimension $d=1,\ldots,D$, the points in $\bfcl{V}$ are sorted by their $d$th coordinate. The boundary points (those with the smallest and largest values in dimension $d$) are assigned an infinite crowding distance and are always retained. For interior points, the crowding distance contribution from dimension $d$ is:
+    The crowding distance of a point $\bff{v}$ in a set $\bfcl{V}$ measures how isolated $\bff{v}$ is from its neighbours in objective space. For each objective dimension $i=1,\ldots,D$, the points in $\bfcl{V}$ are sorted by their $i$th coordinate. The boundary points (those with the smallest and largest values in dimension $i$) are assigned an infinite crowding distance and are always retained. For interior points, the crowding distance contribution from dimension $i$ is:
     \begin{align}
-        \textnormal{cd}_d(\bff{v}) = 
-            \frac{v^+_d - v^-_d}{\max_{\bff{v}'\in\bfcl{V}} 
-            v'_d - \min_{\bff{v}'\in\bfcl{V}} v'_d},
+        \textnormal{cd}_i(\bff{v}) = 
+            \frac{v^+_i - v^-_i}{\max_{\bff{v}'\in\bfcl{V}} 
+            v'_i - \min_{\bff{v}'\in\bfcl{V}} v'_i},
     \end{align}
-    where $v^+_d$ and $v^-_d$ are the $d$th coordinates of the nearest neighbours of $\bff{v}$ above and below in dimension $d$ respectively. The total crowding distance is $\textnormal{cd}(\bff{v}) = \sum_{d=1}^D \textnormal{cd}_d(\bff{v})$. When the value set exceeds $K_{\max}$ points, the $K_{\max}$ points with the largest crowding distances are retained, preserving the spread of the convex hull.
+    where $v^+_i$ and $v^-_i$ are the $i$th coordinates of the nearest neighbours of $\bff{v}$ above and below in dimension $i$ respectively. The total crowding distance is $\textnormal{cd}(\bff{v}) = \sum_{i=1}^D \textnormal{cd}_i(\bff{v})$. When the value set exceeds $K_{\max}$ points, the $K_{\max}$ points with the largest crowding distances are retained, preserving the spread of the convex hull.
 
 
 % [ ] First Draft
@@ -751,24 +741,20 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsection{Entropy and Convex Hulls}
-\label{sec:5-7-entropy-convex-hulls}
+\label{sec:5-3-7-entropy-convex-hulls}
 
     \begin{figure}
         \centering
         \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[Entropy and convex hull value sets.]{\bd{A 
-        figure illustrating that a single point on the convex 
-        hull may be optimal for many different weight vectors, 
-        each corresponding to a different policy with a 
-        different entropy value.} \todo{two convex hulls, one with two weights with same value, and a downstream state with different values for the same two weights}}
+        \caption[Entropy and convex hull value sets.]{A convex hull value set where a single point is optimal for two different weight vectors $\bff{w}$ and $\bff{w}'$. Although both weight vectors achieve the same value at the root state (a), they induce different policies at downstream states (b), resulting in different entropy values. \todo{make figs for two convex hulls, one with two weights with same value, and a downstream state with different values for the same two weights}}
         \label{fig:5:entropy_convex_hull}
     \end{figure}
 
     Convex hull value sets represent the set of achievable expected returns in \textit{objective space}, storing value vectors attainable by different policies. Entropy, by contrast, is a property of a policy rather than a value vector: it measures the uncertainty of the action distribution induced by a policy at each state.
 
-    A key observation is that a single point on the convex hull does not correspond to a unique policy, illustrated in Figure \ref{fig:5:entropy_convex_hull}. Since the contextual policies considered in this chapter depend on the weight vector $\bff{w}$, a given value vector $\bff{v}\in\Valg(s)$ may be optimal for many different weight vectors, each inducing a different policy $\pi(\cdot|s;\bff{w})$ with a different entropy. 
+    A key observation is that a single point on the convex hull does not correspond to a unique policy, as illustrated in Figure \ref{fig:5:entropy_convex_hull}. Since the contextual policies considered in this chapter depend on the weight vector $\bff{w}$, a given value vector $\bff{v}\in\Valg(s)$ may be optimal for many different weight vectors, each inducing a different policy $\pi(\cdot|s;\bff{w})$ with a different entropy. 
 
-    As a result, there is not a principled way to associate a single entropy value with a point on the convex hull. This is the fundamental reason why the entropy-based exploration used in DENTS (Chapter \ref{ch:4-dents}) does not extend naturally to the multi-objective setting with convex hull value sets, and motivates the simplex map approach introduced in Chapter \ref{ch:6-simplexmaps}.
+    As a result, there is no principled way to associate a single entropy value with a point on the convex hull. This is the fundamental reason why the entropy-based exploration used in DENTS (Chapter \ref{ch:4-dents}) does not extend naturally to the multi-objective setting with convex hull value sets, and motivates the simplex map approach introduced in Chapter \ref{ch:6-simplexmaps}.
 
 
 
@@ -807,6 +793,8 @@
 % [ ] Final revision
 \section{Empirical Results}
 \label{sec:5-5-results}
+
+\todo{Clean up plots, legend placement etc.}
 
 
 
@@ -949,14 +937,45 @@ This section provides an empirical evalutation of the algorithms developed in th
 \section{Theoretical Discussion}
 \label{sec:5-6-theory}
 
+    This section \bd{provides some theoretical discussion around CHMCTS and MOMCTS in general.} It is structured as follows:
+    \begin{itemize}
+        \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
+        \item Section \ref{sec:5-6-2-convergence_of_chmcts} outlines convergence proofs for CHMCTS;
+        \item Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} discusses a fundimental assumption made in MOMCTS algorithms and \bd{shows that MOMCTS algorithms using this assumption can only compute optimal policies for linear utility functions}.
+    \end{itemize}
 
-    \todo{
-        1. Intro
-        2. CHVI theorem state and generalise results
-        3. Contextual policy proof copy from CHMCTS
-        4. Per-step action selection
-    }
+    
 
+
+\subsection{Context Independent Policies}
+\label{sec:5-6-1-context_independent_policies}
+
+    1. PREAMBLE
+    2. Figure
+    3. THeorem copy
+
+
+
+\subsection{Convergence of CHMCTS}
+\label{sec:5-6-2-convergence_of_chmcts}
+
+    1. Preamble - say not going to actually prove things
+    2. Quote CHVI theorem
+    3. Define optimal CHVS (or check that it was defined in Ch2)
+    4. CHMCTS values converge to optimal CHVS (proof = it would contradict CHVI theorem)
+    6. General UCB picks all actions inf often
+    5. Just give an example translation from DENTS results to CHMCTS results
+    7. CHUCT converges
+
+
+
+\subsection{The Fundamental Assumption of MOMCTS}
+\label{sec:5-6-3-fundamental_assumption_of_momcts}
+
+    1. Preamble - define the setup
+    2. General utility, and the form of the search/recommendation policy
+    3. Wordy description of the offending MOMDP with chebyshev utility
+    4. Theorem
 
     % The essential feature of your example is that b=cb = c
     % b=c dominates aa
