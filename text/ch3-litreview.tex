@@ -7,272 +7,338 @@
 %   \qauthor{--- Johann Wolfgang von Goethe \cite{von_goethe_wilhelm_1829}}
 % \end{savequote}
 
-\chapter{\label{ch:3-litreview}Literature Review}
+\chapter{\label{ch:3-litreview}Related Work}
 
     \minitoc
 
 
 
-
-    \todo{should add some boltzmann search stuff here too}
-
-    \todo{Change chapter title to related work rather than literature review}
+    \todo{Uncomment the lots of messy notes in this chapter and clean up}
 
 
 
 
 
 
+\subsection{Multi-Armed Bandits}
+\label{sec:3-1-mab}
+
+
+    \paragraph{Sequential Halving}
+
+        \todo{Cite and summarise}
 
 
 
 
+    \paragraph{Exp3}
+        
+        \todo{cite and summarise}
 
-    \todo{currently this is a copy and paste of what I originally wrote for background chapter} \ref{ch:2-background}. Deleted parts which are irrelevant for litreview here (and vice versa for the background section).
-
-    \todo{I'm also going to use this as a space to paste papers I should write about as they come up while writing later chapters}
-
-    \section{Multi-Armed Bandits}
-    \label{sec:3-1-mab}
     
-        \todo{Maybe dont need to cover this in litrev, but should talk about exploring bandits, UCT and contextual bandits either in background or in litrev}
-    
-        \todo{linUCB for contextual bandits}
-        think this is the linucb paper: https://arxiv.org/pdf/1003.0146
-    
-        Designing multi-objective multi-armed bandits algorithms: a study
-        - Madalina M. Drugan and Ann Nowe
 
-        \todo{MAB book}
 
-        Talk about Exp3?
+    \paragraph{Contextual Zooming}
 
-        Contextual Zooming 
+        \todo{cite and summarise}
+
+
+
+
+
+
 
 \section{Reinforcement Learning}
-    \label{sec:3-2-rl}
+\label{sec:3-2-rl}
+
+
+    \paragraph{Entropy Regularisation}
+
+        \todo{cite some examples of entropy regularisation. Say that only a one step entropy is used}
+
+
+    \paragraph{Maximum Entropy Reinforcement Learning}
+
+        \todo{cite and describe the deep maximum entropy rl papers}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%     \todo{should add some boltzmann search stuff here too}
+
+%     \todo{Change chapter title to related work rather than literature review}
+
+
+
+
+
+
+
+% THTS + RTDP to the boltzmann exploration stuff too
+% \todo{Update ch4 section introducing BTS to account for it not being original}
+
+
+
+
+
+
+
+
+
+%     \todo{currently this is a copy and paste of what I originally wrote for background chapter} \ref{ch:2-background}. Deleted parts which are irrelevant for litreview here (and vice versa for the background section).
+
+%     \todo{I'm also going to use this as a space to paste papers I should write about as they come up while writing later chapters}
+
+%     \section{Multi-Armed Bandits}
+%     \label{sec:3-1-mab}
     
-        \todo{Intro should say that look at Sutton and Barto and something else for deep RL, for a more complete overview. 
-        Here we will just discuss papers that consider entropy in their work, as thats the most relevant part for this 
-        thesis.}
+%         \todo{Maybe dont need to cover this in litrev, but should talk about exploring bandits, UCT and contextual bandits either in background or in litrev}
+    
+%         \todo{linUCB for contextual bandits}
+%         think this is the linucb paper: https://arxiv.org/pdf/1003.0146
+    
+%         Designing multi-objective multi-armed bandits algorithms: a study
+%         - Madalina M. Drugan and Ann Nowe
+
+%         \todo{MAB book}
+
+%         Talk about Exp3?
+
+%         Contextual Zooming 
+
+% \section{Reinforcement Learning}
+%     \label{sec:3-2-rl}
+    
+%         \todo{Intro should say that look at Sutton and Barto and something else for deep RL, for a more complete overview. 
+%         Here we will just discuss papers that consider entropy in their work, as thats the most relevant part for this 
+%         thesis.}
     
     
-        \todo{list}
-        \begin{itemize}
-            \item Talk about entropy and some of that work (probably a subsection)
-        \end{itemize}
+%         \todo{list}
+%         \begin{itemize}
+%             \item Talk about entropy and some of that work (probably a subsection)
+%         \end{itemize}
     
-        \todo{In the entropy bit talk add this, removed from ch2: Note that there are other forms of entropy, such as relative and Tsallis entropy, which can be used in place of Shannon entropy (TODO cite). For the work considered in this thesis, the other forms of entropy can be used by replacing the definition of $\cl{H}$ by the relevant definition.}
+%         \todo{In the entropy bit talk add this, removed from ch2: Note that there are other forms of entropy, such as relative and Tsallis entropy, which can be used in place of Shannon entropy (TODO cite). For the work considered in this thesis, the other forms of entropy can be used by replacing the definition of $\cl{H}$ by the relevant definition.}
 
-        \todo{talk about some deep learning methods here}
+%         \todo{talk about some deep learning methods here}
 
-        \todo{Talk about entropy in (deep) RL methods too. Say that it is primarily introduced primarily for an exploration benifit. A3C ``prevent converging to deterministic suboptimal behaviour''. While there is some additional. Intro in the soft Q learning provides some alternative motivations, "In some cases, we might actually prefer to learn stochastic
-        behaviors. In this paper, we explore two potential reasons
-        for this: exploration in the presence of multimodal objectives, and compositionality attained via pretraining. Otherbenefits include robustness in the face of uncertain dynamics (Ziebart, 2010), imitation learning (Ziebart et al., 2008), and improved convergence and computational properties (Gu et al., 2016a). Multi-modality also has application in real robot tasks, as demonstrated in (Daniel et al., 2012). However, in order to learn such policies, we must define an objective that promotes stochasticity.". ANd also talks about adversarital pertobations. So basically: good for meta learning/pretraining/foundation models, good for robustness against uncertain dynamics. BASICALLY, HERE we want to talk about the other reasons why we might want to use maximum entropy.}
-        % - Soft Q-learning original: https://arxiv.org/pdf/1702.08165 
-        % - SAC: https://arxiv.org/pdf/1801.01290 
-        % - SAC paper 2: https://arxiv.org/pdf/1801.01290 
-        % - SAC paper 3: https://arxiv.org/abs/1812.11103 
-        % - Some theory paper about bias in natural actor critic algorithms: https://proceedings.mlr.press/v32/thomas14.html (just want to know what a natural actor critic algorithm is)
-        % - Equivalence from soft Q learning to a policy gradient method: https://arxiv.org/pdf/1704.06440 (has some of the ideas we had about how if you have a soft V and policy, then you have soft Q idea, which is why keeping link)
-        % - A3C uses entropy in experiments (minor ref to it): https://arxiv.org/pdf/1602.01783 
-        % - OG use of entropy in policy gradient: ""Function Optimization Using Connectionist Reinforcement Learning Algorithms"" 
-        % -- https://www.researchgate.net/publication/2703232_Function_Optimization_Using_Connectionist_Reinforcement_Learning_Algorithms "
+%         \todo{Talk about entropy in (deep) RL methods too. Say that it is primarily introduced primarily for an exploration benifit. A3C ``prevent converging to deterministic suboptimal behaviour''. While there is some additional. Intro in the soft Q learning provides some alternative motivations, "In some cases, we might actually prefer to learn stochastic
+%         behaviors. In this paper, we explore two potential reasons
+%         for this: exploration in the presence of multimodal objectives, and compositionality attained via pretraining. Otherbenefits include robustness in the face of uncertain dynamics (Ziebart, 2010), imitation learning (Ziebart et al., 2008), and improved convergence and computational properties (Gu et al., 2016a). Multi-modality also has application in real robot tasks, as demonstrated in (Daniel et al., 2012). However, in order to learn such policies, we must define an objective that promotes stochasticity.". ANd also talks about adversarital pertobations. So basically: good for meta learning/pretraining/foundation models, good for robustness against uncertain dynamics. BASICALLY, HERE we want to talk about the other reasons why we might want to use maximum entropy.}
+%         % - Soft Q-learning original: https://arxiv.org/pdf/1702.08165 
+%         % - SAC: https://arxiv.org/pdf/1801.01290 
+%         % - SAC paper 2: https://arxiv.org/pdf/1801.01290 
+%         % - SAC paper 3: https://arxiv.org/abs/1812.11103 
+%         % - Some theory paper about bias in natural actor critic algorithms: https://proceedings.mlr.press/v32/thomas14.html (just want to know what a natural actor critic algorithm is)
+%         % - Equivalence from soft Q learning to a policy gradient method: https://arxiv.org/pdf/1704.06440 (has some of the ideas we had about how if you have a soft V and policy, then you have soft Q idea, which is why keeping link)
+%         % - A3C uses entropy in experiments (minor ref to it): https://arxiv.org/pdf/1602.01783 
+%         % - OG use of entropy in policy gradient: ""Function Optimization Using Connectionist Reinforcement Learning Algorithms"" 
+%         % -- https://www.researchgate.net/publication/2703232_Function_Optimization_Using_Connectionist_Reinforcement_Learning_Algorithms "
 
-        % - should also include the other recent popularisation of the idea from a mixture of maximum entropy inverse reinforcement learning etc
-        % -- basically see the related work bit talking about max entropy in SAC (https://arxiv.org/pdf/1801.01290)
-
-
-        Entropy widely used in RL literature. Most commonly used for regularization when learning a policy \cite{ppo,a3c,reinforce_ment}. This is significantly different to the maximum entropy setting, where entropy is used in the loss function to prevent the policy from degenerating into a deterministic policy. While it is motivated similarly, promoting the policy to remain stochastic and enable exploration. 
-
-        The significant difference between \textit{entropy regularization} and \textit{maximum entropy reinforcement learning} is that the former is that from some state $s_t$, regularization only includes the entropy of the policy at $s_t$, while the latter includes the entropy of the policy at all states $s_t,s_{t+1},...$ in the objective/loss function.
-
-        Probably write this a bit better, say that entropy regularization dates back to the REINFORCE/MENT paper, but is consistently used to the modern day.
+%         % - should also include the other recent popularisation of the idea from a mixture of maximum entropy inverse reinforcement learning etc
+%         % -- basically see the related work bit talking about max entropy in SAC (https://arxiv.org/pdf/1801.01290)
 
 
-        Old entropy stuff from ch4 before rewrite:
-        Loosely, the maximum entropy principle says that given partial knowledge about a probability distribution, the least biased estimate of the probability distribution is the one that maximises the entropy \cite{max_ent}. This principle can naturally be applied to inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}, where the goal is to learn the transition/reward functions from a set of expert trajectories.
+%         Entropy widely used in RL literature. Most commonly used for regularization when learning a policy \cite{ppo,a3c,reinforce_ment}. This is significantly different to the maximum entropy setting, where entropy is used in the loss function to prevent the policy from degenerating into a deterministic policy. While it is motivated similarly, promoting the policy to remain stochastic and enable exploration. 
 
-    In contrast, in maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}) entropy is added directly into the objective function to be optimised, rather than using entropy as a constraint to disambiguate between multiple optimal policies. While the maximum entropy objective does yield a unique optimal policy (with respect to the maximum entropy objective), the policy is not guaranteed to align with the standard objective.
+%         The significant difference between \textit{entropy regularization} and \textit{maximum entropy reinforcement learning} is that the former is that from some state $s_t$, regularization only includes the entropy of the policy at $s_t$, while the latter includes the entropy of the policy at all states $s_t,s_{t+1},...$ in the objective/loss function.
+
+%         Probably write this a bit better, say that entropy regularization dates back to the REINFORCE/MENT paper, but is consistently used to the modern day.
+
+
+%         Old entropy stuff from ch4 before rewrite:
+%         Loosely, the maximum entropy principle says that given partial knowledge about a probability distribution, the least biased estimate of the probability distribution is the one that maximises the entropy \cite{max_ent}. This principle can naturally be applied to inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}, where the goal is to learn the transition/reward functions from a set of expert trajectories.
+
+%     In contrast, in maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}) entropy is added directly into the objective function to be optimised, rather than using entropy as a constraint to disambiguate between multiple optimal policies. While the maximum entropy objective does yield a unique optimal policy (with respect to the maximum entropy objective), the policy is not guaranteed to align with the standard objective.
 
 
 
-\section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
-\label{sec:3-3-thts}
+% \section{Trial-Based Heuristic Tree Search and Monte-Carlo Tree Search}
+% \label{sec:3-3-thts}
 
-    \todo{Rename this subsection to just Trial Based Search I think makes sense}
+%     \todo{Rename this subsection to just Trial Based Search I think makes sense}
 
-    \todo{talk about UCT, and multiarmed bandits. Specifically that the theoretical lower bound is log T and UCT achieves log T lower bound. Define cumulative regret here.}
+%     \todo{talk about UCT, and multiarmed bandits. Specifically that the theoretical lower bound is log T and UCT achieves log T lower bound. Define cumulative regret here.}
 
-    \subsection{Trial Based Heuristic Tree Search}
-    \label{sec:3-3-1-thts}
+%     \subsection{Trial Based Heuristic Tree Search}
+%     \label{sec:3-3-1-thts}
 
-    \todo{THTS paper, talk about the differences that the paper has to our presentation of \thtspp}
+%     \todo{THTS paper, talk about the differences that the paper has to our presentation of \thtspp}
 
-    \todo{cut from ch2: Finally we will briefly point out the differences between \thtspp and the original THTS schema in subsection}
+%     \todo{cut from ch2: Finally we will briefly point out the differences between \thtspp and the original THTS schema in subsection}
 
-    \todo{talk about how these methods are still relevant with deep learning because of algorithms that use both, such as alpha zero}
+%     \todo{talk about how these methods are still relevant with deep learning because of algorithms that use both, such as alpha zero}
 
-    \subsection{Monte-Carlo Tree Search}
-    \label{sec:3-3-2-mcts}
+%     \subsection{Monte-Carlo Tree Search}
+%     \label{sec:3-3-2-mcts}
 
-        \todo{list}
-        \begin{itemize}
-            \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
-            \item Should talk about multi-armed bandits here?
-        \end{itemize}
+%         \todo{list}
+%         \begin{itemize}
+%             \item Talk about the things that are ambiguous from literature (e.g. people will just say UCT, which originally presented doesn't run in \mctsmode, but often assumed it does)
+%             \item Should talk about multi-armed bandits here?
+%         \end{itemize}
 
-        https://inria.hal.science/inria-00164003/document
+%         https://inria.hal.science/inria-00164003/document
 
-        https://pdf.sciencedirectassets.com/271585/1-s2.0-S0004370211X0005X/1-s2.0-S000437021100052X/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQD9RsWMAYu3%2FOp3q84XQxgXZSJu1ro47zi2n0qpNmiCqgIhAI1eHuLsQQl17RAoIFgBtR3%2FPM0H20wp7ZR0JMKY8%2BXvKrMFCBwQBRoMMDU5MDAzNTQ2ODY1IgyvTCG1aOE8jXlA0mUqkAUaXoeXDK%2FuPq2vxhn8b8oJiIs0VWF%2Fz5dXieRnNRSdidyAlHTgTL%2FMk7zzFv3QlVahMdYxel3yR2R6CwKBh70S7%2F%2FqrjycAs1dJnrXzyLXcoQWkGK6cPJRipwbb9e2VSINYFD%2B%2FR9lsgfJeNFwQ34fjU5A6i8GtNlbIxzAPzCjuD917RaI8NwpEKkpITCN5rMCjLDyn1erq8eJLWaRUGzLK6Rw4P4yPqdUuN95GBQzH5v4yTBmHTFEZWV7Qo9DIjtZCWHH94MjRF%2FEJLXCCOVl%2FXZPiJE32TxzWTaPRMKrK%2BfcJKIA7XK5OQmKm6ZnoVHJ%2Bpe%2BeU4yowQ9y94taJg%2BRkmwYxo7hpvM%2Fn%2FOJXWEHoNdmzFGyRrh7c3BcZuC3ks0JvSVysrUCIVYtfYBoWv4lQjkvwowSk85Jt0lDmw8z2v4bue2eMuTBOr2b2qJdwlL%2B8N4cEVW3REQGlzCWgmBC7ejRZrKJf0a45a%2BFYoLB8863CuUVAE5hNI2ejk6VVjx1KzVVwKg%2FFs79Vl%2B9TLOTmp81Sf%2BOz9bWiLWlOg6ODoH471OIIrIjtqwqPyAYDonfWV6e9310cVybw9brOT8RmzyVTcSdn53Z8%2FQ5A9Zipc%2BTQnabVNoTXKWYvwc9Ft58R4jQB6CfElBuYwT9j1oWZJ7lMCtrvu7hLjJhZTDsNOhLMnesZhJgvE0Pwd9TgL47XZ38ywJAevAwYzNepSm4Z7kl4Vr6XnwI%2FQ%2BqcbDvgZvXrjOUM50zL7kP8%2F4s%2BuYFe%2Fm%2BWTN5fIheCTCLjxB7Gu7256ughbuGDx00dfrrMl1PmL7Io30xJcR5mXNZrtbGKZbjCQinEWdqePKQXpT8ocigl4Z6Cl2xSENUnlFXjC78qG3BjqwAfwxXWnpAfKLLT77NLhG9odOj4ATbBB%2By%2Fk8O05cucn5kmfNhHuVUXeykHPF62kzrgyQoHSaUP5%2F2z9%2BatMMSAlsHJ3c2x92dxYCGPznq8sL389fCg0HHjwqGAi87ZcCouF3s0hnAm24Z0JlccwBQVQJtAmw4dK9cga4hX2SI56L2LdTXdG7hZwl4oiebkJzrshvvu58uwgUCeXP4MGTc%2F3H1POY%2FWz8dNW6O6Ezps1y&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240916T191757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY7DGERLEO%2F20240916%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=11d9f9868c6673196775da132a8740868fa2d847ec6360c1aca200f81d5a8377&hash=52c9fb808b53db2de3707a108ac18ed2947a59edd0a196796786c95ccb886590&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S000437021100052X&tid=spdf-15f46672-522e-44ca-acda-a9a267e67be4&sid=e64211ca7bf86246de9b4168365ef85d587egxrqb&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=010259065a53515c5052&rr=8c433317ee01bef3&cc=gb
+%         https://pdf.sciencedirectassets.com/271585/1-s2.0-S0004370211X0005X/1-s2.0-S000437021100052X/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQD9RsWMAYu3%2FOp3q84XQxgXZSJu1ro47zi2n0qpNmiCqgIhAI1eHuLsQQl17RAoIFgBtR3%2FPM0H20wp7ZR0JMKY8%2BXvKrMFCBwQBRoMMDU5MDAzNTQ2ODY1IgyvTCG1aOE8jXlA0mUqkAUaXoeXDK%2FuPq2vxhn8b8oJiIs0VWF%2Fz5dXieRnNRSdidyAlHTgTL%2FMk7zzFv3QlVahMdYxel3yR2R6CwKBh70S7%2F%2FqrjycAs1dJnrXzyLXcoQWkGK6cPJRipwbb9e2VSINYFD%2B%2FR9lsgfJeNFwQ34fjU5A6i8GtNlbIxzAPzCjuD917RaI8NwpEKkpITCN5rMCjLDyn1erq8eJLWaRUGzLK6Rw4P4yPqdUuN95GBQzH5v4yTBmHTFEZWV7Qo9DIjtZCWHH94MjRF%2FEJLXCCOVl%2FXZPiJE32TxzWTaPRMKrK%2BfcJKIA7XK5OQmKm6ZnoVHJ%2Bpe%2BeU4yowQ9y94taJg%2BRkmwYxo7hpvM%2Fn%2FOJXWEHoNdmzFGyRrh7c3BcZuC3ks0JvSVysrUCIVYtfYBoWv4lQjkvwowSk85Jt0lDmw8z2v4bue2eMuTBOr2b2qJdwlL%2B8N4cEVW3REQGlzCWgmBC7ejRZrKJf0a45a%2BFYoLB8863CuUVAE5hNI2ejk6VVjx1KzVVwKg%2FFs79Vl%2B9TLOTmp81Sf%2BOz9bWiLWlOg6ODoH471OIIrIjtqwqPyAYDonfWV6e9310cVybw9brOT8RmzyVTcSdn53Z8%2FQ5A9Zipc%2BTQnabVNoTXKWYvwc9Ft58R4jQB6CfElBuYwT9j1oWZJ7lMCtrvu7hLjJhZTDsNOhLMnesZhJgvE0Pwd9TgL47XZ38ywJAevAwYzNepSm4Z7kl4Vr6XnwI%2FQ%2BqcbDvgZvXrjOUM50zL7kP8%2F4s%2BuYFe%2Fm%2BWTN5fIheCTCLjxB7Gu7256ughbuGDx00dfrrMl1PmL7Io30xJcR5mXNZrtbGKZbjCQinEWdqePKQXpT8ocigl4Z6Cl2xSENUnlFXjC78qG3BjqwAfwxXWnpAfKLLT77NLhG9odOj4ATbBB%2By%2Fk8O05cucn5kmfNhHuVUXeykHPF62kzrgyQoHSaUP5%2F2z9%2BatMMSAlsHJ3c2x92dxYCGPznq8sL389fCg0HHjwqGAi87ZcCouF3s0hnAm24Z0JlccwBQVQJtAmw4dK9cga4hX2SI56L2LdTXdG7hZwl4oiebkJzrshvvu58uwgUCeXP4MGTc%2F3H1POY%2FWz8dNW6O6Ezps1y&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240916T191757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTY7DGERLEO%2F20240916%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=11d9f9868c6673196775da132a8740868fa2d847ec6360c1aca200f81d5a8377&hash=52c9fb808b53db2de3707a108ac18ed2947a59edd0a196796786c95ccb886590&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S000437021100052X&tid=spdf-15f46672-522e-44ca-acda-a9a267e67be4&sid=e64211ca7bf86246de9b4168365ef85d587egxrqb&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=010259065a53515c5052&rr=8c433317ee01bef3&cc=gb
 
-        \todo{removed from ch2, this can be litrev: add polynomial UCT here? and or prioritised UCT from alpha go here?}
+%         \todo{removed from ch2, this can be litrev: add polynomial UCT here? and or prioritised UCT from alpha go here?}
 
-        \todo{removed from ch2: add stuff about regret here, give the O(logn) bound for UCT, and also talk about the papers that }
+%         \todo{removed from ch2: add stuff about regret here, give the O(logn) bound for UCT, and also talk about the papers that }
 
-        \todo{removed from ch4: H-MCTS algorithm <TODO: cite>%\cite{karnin2013almost} 
-            which combines UCT and Sequential Halving.}
-            \bd{H-MCTS is used as an UCT style MCTS algorithm that is also designed using simple regret for comparison. (this was in intro to section 4.4, DENTS results section)} 
+%         \todo{removed from ch4: H-MCTS algorithm <TODO: cite>%\cite{karnin2013almost} 
+%             which combines UCT and Sequential Halving.}
+%             \bd{H-MCTS is used as an UCT style MCTS algorithm that is also designed using simple regret for comparison. (this was in intro to section 4.4, DENTS results section)} 
     
 
-        \todo{Should make sure to talk about all of the MCTS algorithms designed around simple regret. Confirm the claim that they all are really just some mix of uniform and UCT}
+%         \todo{Should make sure to talk about all of the MCTS algorithms designed around simple regret. Confirm the claim that they all are really just some mix of uniform and UCT}
 
-        \todo{should talk about MCTS methods that use simple regret, specifically H-MCTS and probably BRUE etc}
+%         \todo{should talk about MCTS methods that use simple regret, specifically H-MCTS and probably BRUE etc}
 
-        \todo{Also talk about Trial-Based RTDP here}
+%         \todo{Also talk about Trial-Based RTDP here}
 
 
-        % Something wrote at some point
+%         % Something wrote at some point
 
-        \todo{introduce RENTS and TENTS outside of the introduction}
-        Entropy is widely used in the reinforcement learning literature, commonly introduced to promote exploration and discourage convergence to suboptimal deterministic policies \cite{ppo,deep_energy_policies,a3c,reinforce_ment}. MENTS (Section \ref{sec:2-4-4-ments}), RENTS and TENTS (Section \ref{sec:3-3-3-rents-some-tents}) are all MCTS algoritms that optimise for maximum entropy objectives. While RENTS and TENTS will be considered as baselines in empirical experiments, MENTS will be used to facilitate and provide discussion around the use of entropy and maximum entropy objective.
+%         \todo{introduce RENTS and TENTS outside of the introduction}
+%         Entropy is widely used in the reinforcement learning literature, commonly introduced to promote exploration and discourage convergence to suboptimal deterministic policies \cite{ppo,deep_energy_policies,a3c,reinforce_ment}. MENTS (Section \ref{sec:2-4-4-ments}), RENTS and TENTS (Section \ref{sec:3-3-3-rents-some-tents}) are all MCTS algoritms that optimise for maximum entropy objectives. While RENTS and TENTS will be considered as baselines in empirical experiments, MENTS will be used to facilitate and provide discussion around the use of entropy and maximum entropy objective.
 
-        \todo{make sure H-MCTS, (BRUE), RENTS and TENTS baselines all introduced in related work section here.}
+%         \todo{make sure H-MCTS, (BRUE), RENTS and TENTS baselines all introduced in related work section here.}
         
 
 
-    \subsection{Maximum Entropy Tree Search}
-    \label{sec:3-3-3-rents-some-tents}
+%     \subsection{Maximum Entropy Tree Search}
+%     \label{sec:3-3-3-rents-some-tents}
 
-        \todo{MENTS, RENTS and TENTS}
+%         \todo{MENTS, RENTS and TENTS}
 
-\section{Multi-Objective Reinforcement Learning}
-\label{sec:3-4-morl}
+% \section{Multi-Objective Reinforcement Learning}
+% \label{sec:3-4-morl}
 
-    \todo{list}
-    \begin{itemize}
-        \item Should talk about multi-objective and/or contextual multi-armed bandits here?
-        \item Bunch of the work covered in recent MORL survey \cite{morl_survey}
-        \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
-    \end{itemize}
-
-
-    \todo{removed from ch2: comment here or in literature review about there being more types of scalariation function that arent necessarily weighted by a weight, and ESR vs SER stuff}
-
-    \todo{talk about more of the MORL survey, including some of the other motivating scenarios}
+%     \todo{list}
+%     \begin{itemize}
+%         \item Should talk about multi-objective and/or contextual multi-armed bandits here?
+%         \item Bunch of the work covered in recent MORL survey \cite{morl_survey}
+%         \item Mention some deep MORL stuff, say that this work (given AlphaZero) is adjacent work
+%     \end{itemize}
 
 
-    \todo{Talk about the better way of doing CHVI? https://www.jmlr.org/papers/volume13/lizotte12a/lizotte12a.pdf and Efficient reinforcement learning with multiple reward functions for randomized controlled trial analysis. Also by Lizotte. But also say that its approximate for $D>2$ and so we stick with the slower one? But the CHVS operations can be computed more efficiently in $D=2$ using this stuff. Did it for the python implementation.}
+%     \todo{removed from ch2: comment here or in literature review about there being more types of scalariation function that arent necessarily weighted by a weight, and ESR vs SER stuff}
 
-    \todo{also need to talk about the MO sequential decision survey. Define Pareto Front. Say that the Pareto Front "Definition 3 If the utility function u is any monotonically increasing function, then the Pareto Front (PF) is the undominated set [Roijers et al., 2013]:"}
-
-    \todo{need to talk about this because some prior/related work uses PF rather than CH}
-
-    \todo{cover some inner loop and outer loop things? Roijers computing CCS work? See what MORL survey says about it}
-
-    \todo{Maybe talk about the \textit{witness algorithm} for Partially Observable MDPs as its very similar to CHVI stuff}
-
-    Ann Nowe papers:
-
-    https://www.jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
-
-    https://arxiv.org/pdf/2402.07182
-
-    https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1611.pdf
-
-    \todo{Go through Roijers and Ann Nowe and Mykel Kochenderfer}
-
-    \todo{Deep MORL things in MO-gymnasium}
-
-    \todo{Some of the outer and inner loop things - prism, computing convex coverage sets}
+%     \todo{talk about more of the MORL survey, including some of the other motivating scenarios}
 
 
-    \todo{Mention the prior work that uses Point Estimates, and make a brief (informal) argument for why this is insufficient, and say that won't be considering this approach in this thesis, or even implementing it as baseline}
+%     \todo{Talk about the better way of doing CHVI? https://www.jmlr.org/papers/volume13/lizotte12a/lizotte12a.pdf and Efficient reinforcement learning with multiple reward functions for randomized controlled trial analysis. Also by Lizotte. But also say that its approximate for $D>2$ and so we stick with the slower one? But the CHVS operations can be computed more efficiently in $D=2$ using this stuff. Did it for the python implementation.}
+
+%     \todo{also need to talk about the MO sequential decision survey. Define Pareto Front. Say that the Pareto Front "Definition 3 If the utility function u is any monotonically increasing function, then the Pareto Front (PF) is the undominated set [Roijers et al., 2013]:"}
+
+%     \todo{need to talk about this because some prior/related work uses PF rather than CH}
+
+%     \todo{cover some inner loop and outer loop things? Roijers computing CCS work? See what MORL survey says about it}
+
+%     \todo{Maybe talk about the \textit{witness algorithm} for Partially Observable MDPs as its very similar to CHVI stuff}
+
+%     Ann Nowe papers:
+
+%     https://www.jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
+
+%     https://arxiv.org/pdf/2402.07182
+
+%     https://www.ifaamas.org/Proceedings/aamas2024/pdfs/p1611.pdf
+
+%     \todo{Go through Roijers and Ann Nowe and Mykel Kochenderfer}
+
+%     \todo{Deep MORL things in MO-gymnasium}
+
+%     \todo{Some of the outer and inner loop things - prism, computing convex coverage sets}
 
 
-    This paper make similar arguments to the ones I'm making in Ch5, should talk about it here too
-    % https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
+%     \todo{Mention the prior work that uses Point Estimates, and make a brief (informal) argument for why this is insufficient, and say that won't be considering this approach in this thesis, or even implementing it as baseline}
 
 
-
-    Claude suggestion on how to justify use of linear utilities in this thesis:
-    How I'd actually write this in the thesis. \todo{see comment}
-% I'd lead with (1), which is the most defensible and most specific to your technical contribution — it justifies the assumption in terms of what the assumption buys you. Then a paragraph of (2) to position the work within MORL more broadly. (3) is worth a sentence or two as a decision-theoretic grounding but can be compressed. (4) is a citation, not really a paragraph.
-% Something like:
-
-% *"This thesis restricts attention to linear utility functions of the form u(v⃗)=w⃗⋅v⃗u(\vec{v}) = \vec{w} \cdot \vec{v}
-% u(v)=w⋅v. This restriction is not merely a convenience: linear utilities are exactly the class for which the Bellman expectation operator commutes with scalarisation (a consequence of the characterisation of functions satisfying f(E[X⃗])=E[f(X⃗)]f(\mathbb{E}[\vec{X}]) = \mathbb{E}[f(\vec{X})]
-% f(E[X])=E[f(X)] as the affine functions). Consequently, they are the maximal class for which vector-valued dynamic programming reduces to scalar dynamic programming via a post-hoc argmax, and for which the convex coverage set suffices in place of the full Pareto coverage set. Broader utility classes either require tracking the entire PCS — generally non-convex and potentially exponentially larger — or abandoning the expectation-based formulation in favour of distributional return representations. The linear case additionally subsumes, as a family, the single-weight formulations standard in single-objective RL, and aligns with the dominant convention in the MORL literature [cite Roijers et al., 2013]."*
-
-% That's ~150 words and I think it covers the assumption pretty comprehensively for a thesis. You can expand with a concrete example (e.g. "a Chebyshev utility min⁡iwivi\min_i w_i v_i
-% mini​wi​vi​ can favour points strictly interior to the convex hull, so the CCS is no longer sufficient") if you want to make the point more tangible.
-
-
-% THIS IS IMPORTANT:
-% One thing worth flagging: you should also be honest about what the assumption rules out. The classic counterexample is risk-aversion over returns (where you care about variance, not just mean) — this is genuinely outside the scope, and it's worth a sentence acknowledging that rather than pretending linear utility is universal.
+%     This paper make similar arguments to the ones I'm making in Ch5, should talk about it here too
+%     % https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
 
 
 
+%     Claude suggestion on how to justify use of linear utilities in this thesis:
+%     How I'd actually write this in the thesis. \todo{see comment}
+% % I'd lead with (1), which is the most defensible and most specific to your technical contribution — it justifies the assumption in terms of what the assumption buys you. Then a paragraph of (2) to position the work within MORL more broadly. (3) is worth a sentence or two as a decision-theoretic grounding but can be compressed. (4) is a citation, not really a paragraph.
+% % Something like:
+
+% % *"This thesis restricts attention to linear utility functions of the form u(v⃗)=w⃗⋅v⃗u(\vec{v}) = \vec{w} \cdot \vec{v}
+% % u(v)=w⋅v. This restriction is not merely a convenience: linear utilities are exactly the class for which the Bellman expectation operator commutes with scalarisation (a consequence of the characterisation of functions satisfying f(E[X⃗])=E[f(X⃗)]f(\mathbb{E}[\vec{X}]) = \mathbb{E}[f(\vec{X})]
+% % f(E[X])=E[f(X)] as the affine functions). Consequently, they are the maximal class for which vector-valued dynamic programming reduces to scalar dynamic programming via a post-hoc argmax, and for which the convex coverage set suffices in place of the full Pareto coverage set. Broader utility classes either require tracking the entire PCS — generally non-convex and potentially exponentially larger — or abandoning the expectation-based formulation in favour of distributional return representations. The linear case additionally subsumes, as a family, the single-weight formulations standard in single-objective RL, and aligns with the dominant convention in the MORL literature [cite Roijers et al., 2013]."*
+
+% % That's ~150 words and I think it covers the assumption pretty comprehensively for a thesis. You can expand with a concrete example (e.g. "a Chebyshev utility min⁡iwivi\min_i w_i v_i
+% % mini​wi​vi​ can favour points strictly interior to the convex hull, so the CCS is no longer sufficient") if you want to make the point more tangible.
 
 
-\section{Multi-Objective Monte Carlo Tree Search}
-\label{sec:3-5-momcts}
-
-    \todo{I think this whole section can just go in litrev}
-
-    \todo{list}
-    \begin{itemize}
-        \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
-        \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
-        \hide{\item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic}
-        \item Different flavours copy UCT action selection, but with different variants
-        \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
-    \end{itemize}
-
-    \todo{There has been some prior work in multi-objective MCTS which we will outline here}
-
-    \todo{Write out implementations of prior works using THTS}
+% % THIS IS IMPORTANT:
+% % One thing worth flagging: you should also be honest about what the assumption rules out. The classic counterexample is risk-aversion over returns (where you care about variance, not just mean) — this is genuinely outside the scope, and it's worth a sentence acknowledging that rather than pretending linear utility is universal.
 
 
 
-    \todo{define pareto front}
 
 
-    % perez algorithms
-    \todo{perez algorithms}
-    %\todo{http://www.diego-perez.net/papers/OnlineOfflineMOMCTS_CIG13.pdf}
-    %\todo{http://www.diego-perez.net/papers/MOMCTS_TCIAIG2014.pdf}
-    %\todo{https://repository.essex.ac.uk/19035/}
+% \section{Multi-Objective Monte Carlo Tree Search}
+% \label{sec:3-5-momcts}
 
-    % Xu - chebychev
-    \todo{https://ieeexplore.ieee.org/document/8107102}
+%     \todo{I think this whole section can just go in litrev}
+
+%     \todo{list}
+%     \begin{itemize}
+%         \item Define the old methods (using the CH object methods, so clear that not doing direct arithmetic)
+%         \item Mention that old method could be written using the arithmetic of CHMCTS (but they don't) 
+%         \hide{\item TODO: write about \& make sure its implemented - its because just updating for 1 is more efficient in deterministic, and say that the additions can be implemented as updating for 1 value when determinstic}
+%         \item Different flavours copy UCT action selection, but with different variants
+%         \item Link back to contributions and front load our results showing that all of the old methods don't explore correctly
+%     \end{itemize}
+
+%     \todo{There has been some prior work in multi-objective MCTS which we will outline here}
+
+%     \todo{Write out implementations of prior works using THTS}
+
+
+
+%     \todo{define pareto front}
+
+
+%     % perez algorithms
+%     \todo{perez algorithms}
+%     %\todo{http://www.diego-perez.net/papers/OnlineOfflineMOMCTS_CIG13.pdf}
+%     %\todo{http://www.diego-perez.net/papers/MOMCTS_TCIAIG2014.pdf}
+%     %\todo{https://repository.essex.ac.uk/19035/}
+
+%     % Xu - chebychev
+%     \todo{https://ieeexplore.ieee.org/document/8107102}
     
-    % Chen - Pareto
-    \todo{https://www.roboticsproceedings.org/rss15/p72.pdf}
-    \todo{https://arxiv.org/abs/2111.01825}
+%     % Chen - Pareto
+%     \todo{https://www.roboticsproceedings.org/rss15/p72.pdf}
+%     \todo{https://arxiv.org/abs/2111.01825}
 
-    % wang - one of the multi obj mcts
-    \todo{https://proceedings.mlr.press/v25/wang12b/wang12b.pdf}
+%     % wang - one of the multi obj mcts
+%     \todo{https://proceedings.mlr.press/v25/wang12b/wang12b.pdf}
 
-    % Hayes - distributional MCTS
-    \todo{https://ifmas.csc.liv.ac.uk/Proceedings/aamas2021/pdfs/p1530.pdf}
-    % Hayes - havent read
-    \todo{https://link.springer.com/article/10.1007/s10458-022-09596-0}
+%     % Hayes - distributional MCTS
+%     \todo{https://ifmas.csc.liv.ac.uk/Proceedings/aamas2021/pdfs/p1530.pdf}
+%     % Hayes - havent read
+%     \todo{https://link.springer.com/article/10.1007/s10458-022-09596-0}
 
 
-    \todo{
-        Some stuff we wrote that didnt use in ch2. Might want to talk about it with eval:
+%     \todo{
+%         Some stuff we wrote that didnt use in ch2. Might want to talk about it with eval:
                 
-        Moreover, in the case of MCTS algorithms, by having the user select a preferred policy, it implicitly forces the user to chose a preference over the objectives, as the policy corresponds to a weight vector that it is optimal for. As MCTS algorithms are often used in an online fashion, where planning is interleaved with execution, this implicitly selected weight can be used for any online execution needed, effectively reducing the multi-objective problem into a single-objective problem. 
+%         Moreover, in the case of MCTS algorithms, by having the user select a preferred policy, it implicitly forces the user to chose a preference over the objectives, as the policy corresponds to a weight vector that it is optimal for. As MCTS algorithms are often used in an online fashion, where planning is interleaved with execution, this implicitly selected weight can be used for any online execution needed, effectively reducing the multi-objective problem into a single-objective problem. 
         
-    }
+%     }

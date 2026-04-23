@@ -102,7 +102,66 @@
         \label{appfig:fl_maps}
     \end{figure}
 
+    
 
+
+
+
+
+
+    \todo{everything below this point is moved from ch4 and needs clean up:}
+
+    Figure \ref{appfig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
+
+
+    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFFFFFHF} \\
+            \texttt{FFFFFFFF} \\
+            \texttt{FHFHFFFF} \\
+            \texttt{FFFFFFHH} \\
+            \texttt{FFFHFFFF} \\
+            \texttt{FHHHFFFF} \\
+            \texttt{FFFFFHFF} \\
+            \texttt{FFFFFFFG} 
+            \caption{8x8 Frozen Lake.}
+            \label{fig:fl8}
+        \end{subfigure}
+        % \hfill
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFHFFFHFFFFF} \\
+            \texttt{FFFFFFFHFFFF} \\
+            \texttt{HFFFFFHFFFFF} \\
+            \texttt{FHFFHFFFFFFF} \\
+            \texttt{HHFFFFFFFFFF} \\
+            \texttt{FHFFFFHFFFFF} \\
+            \texttt{FHFFFHHFHFFF} \\
+            \texttt{FFFFFFFFFHHG} 
+            \caption{8x12 Frozen Lake.}
+            \label{fig:fl12}
+        \end{subfigure}
+        % \hfill
+        % \begin{subfigure}[b]{0.3\textwidth}
+        %     \centering
+        %     \texttt{SFHFFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FHFFFFHFFFFF} \\
+        %     \texttt{FFFHFFFFFFHF} \\
+        %     \texttt{FFFFFFFFFFFF} \\
+        %     \texttt{FFFFHFFFHFFF} \\
+        %     \texttt{FFHFFFFFFFFH} \\
+        %     \texttt{FFFFFFFFFFFG} 
+        %     \caption{8x12 Test Frozen Lake.}
+        %     \label{fig:fl12test}
+        % \end{subfigure}
+        \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{change to images of 4x4 and 8x8 frozen lake from running gym, just take screenshots}}
+        \label{fig:fl_maps}
+    \end{figure}
 
 
 

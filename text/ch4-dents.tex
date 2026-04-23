@@ -1042,19 +1042,31 @@
 
 
 
-    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
+    This section presents the empirical results on gridworld environments and on the game of Go. The following baseline algorithms are used:
+    \begin{itemize}
+        \item UCT (Section \todo{ref});
+        \item MENTS (Section \todo{ref});
+        \item RENTS (Section \todo{ref});
+        \item TENTS (Section \todo{ref});
+        \item H-MCTS (Section \todo{ref}).
+    \end{itemize}
 
-    \todo{also back reference RTDP, and how BTS with single node expansion turned off is essentially that. Difference is that temperature is decayed but not to zero in RTDP and BTS adds the epsilon exploration term}
+    MENTS, RENTS and TENTS are used as baseline algorithms from the maximum entropy literature. H-MCTS is used as a baseline MCTS algorithm designed for the simple regret objective.
 
-    \todo{also make a comment about how just use H-MCTS as a simple regret baseline, but the simplex regret MCTS methods loosly boil down to a mixture of UCT and uniform combinations.}
+    This section is organised as follows:
+    \begin{itemize}
+        \item Section \todo{ref} describes the MDP environments used in the experiments;
+        \item Section \todo{ref} described the evaluation setup used;
+        \item Section \todo{ref} presents the results on gridworld environments of varying sizes and \bd{compares the performance of algorithms for a variety of temperature parameters to investigate how misalignment of the entropy objective affects performance};
+        \item Section \todo{ref} presents the results on the game of Go;
+        \item Appendix \todo{ref} provides additional details on these experiments, including the hyperparameter settings used and how they were chosen.
+    \end{itemize}
+
 
 
     
-    \todo{Wasn't too careful about changing from active voice to passive voice here in this entire section}
 
-    \todo{Get some better results using hyperparam optimise //// want a dense env where the (not entropy) temp decay fn gets optimised to soemthing that decays a lot /// want a sparse env where the temp decay fn gets optimised to something flat (or basically flat)}
 
-    This section provides empirical results on gridworld environments and on the game of Go. It begins by describing the environments, the evaluation setup, and is followed by the empirical results and discussion. The main algorithms discussed in this chapter, BTS and DENTS will be evaluated, using UCT, MENTS, RENTS, TENTS and H-MCTS as baselines \todo{ref litrev or cite?}. 
 
 
 
@@ -1080,24 +1092,26 @@
     
 
 
+\subsubsection{FrozenLake}
+    \textit{Frozen Lake} \cite{gymnasium} is a grid world environment where the agent aims to reach a goal state while avoiding holes that it could fall into. The agent can attempt to move in any cardinal direction at each time step, on each step there is an equal probability the agent moves in the intended direction or slips and moves in a perpendicular direction. For example, if the agent tries to move down, then there is a probability of $\frac{1}{3}$ that the agent moves down, moves left or moves right. If the agent moves or slips into a wall, then the agent remains in the same location. If the agent reaches the goal state, then a reward of one is received. If the agent falls into a hole, then the trial ends and zero reward is received.
+
+    Figure \ref{fig:frozen_lake_pic} illustrates the environment. A range of maps are used in the experiments \todo{from size X} to \todo{size Y}, which are given in Appendix \todo{ref}.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.3\textwidth]{figures/ch4/frozen_lake.png}
+        \caption[An illustration of the Frozen Lake environment.]{An illustration of the Frozen Lake environment, reproduced from the Gymnasium documentation \cite{gymnasium}.}
+        \label{fig:frozen_lake_pic}
+    \end{figure}
+
+    
+
+    
 
 
+\subsubsection{DeterministicGridWorld}
+    \textit{Deterministic Grid World} is a deterministic
 
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\subsubsection{(Deterministic) Frozen Lake}
     The \emph{(Deterministic) Frozen Lake} \todo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \todo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \todo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \todo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
 
     \todo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
@@ -1107,87 +1121,6 @@
     Figure \ref{fig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
 
     An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
-
-    \begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.3\textwidth}
-            \centering
-            \texttt{SFFFFFHF} \\
-            \texttt{FFFFFFFF} \\
-            \texttt{FHFHFFFF} \\
-            \texttt{FFFFFFHH} \\
-            \texttt{FFFHFFFF} \\
-            \texttt{FHHHFFFF} \\
-            \texttt{FFFFFHFF} \\
-            \texttt{FFFFFFFG} 
-            \caption{8x8 Frozen Lake.}
-            \label{fig:fl8}
-        \end{subfigure}
-        % \hfill
-        \begin{subfigure}[b]{0.3\textwidth}
-            \centering
-            \texttt{SFHFFFHFFFFF} \\
-            \texttt{FFFFFFFHFFFF} \\
-            \texttt{HFFFFFHFFFFF} \\
-            \texttt{FHFFHFFFFFFF} \\
-            \texttt{HHFFFFFFFFFF} \\
-            \texttt{FHFFFFHFFFFF} \\
-            \texttt{FHFFFHHFHFFF} \\
-            \texttt{FFFFFFFFFHHG} 
-            \caption{8x12 Frozen Lake.}
-            \label{fig:fl12}
-        \end{subfigure}
-        % \hfill
-        % \begin{subfigure}[b]{0.3\textwidth}
-        %     \centering
-        %     \texttt{SFHFFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FHFFFFHFFFFF} \\
-        %     \texttt{FFFHFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FFFFHFFFHFFF} \\
-        %     \texttt{FFHFFFFFFFFH} \\
-        %     \texttt{FFFFFFFFFFFG} 
-        %     \caption{8x12 Test Frozen Lake.}
-        %     \label{fig:fl12test}
-        % \end{subfigure}
-        \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{change to images of 4x4 and 8x8 frozen lake from running gym, just take screenshots}}
-        \label{fig:fl_maps}
-    \end{figure}
-
-
-    \begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \texttt{FFFFFG} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{SFFFFF} 
-            \caption{6x6 Sailing Problem map. \todo{Replace with blue grid, boat and buoy clip art if time.}}
-        \end{subfigure}
-        % \hfill
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \begin{align*}
-                \begin{pmatrix}
-                0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
-                0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-                0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
-                0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
-                0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
-                0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
-                0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
-                0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
-                \end{pmatrix}
-            \end{align*}
-            \caption{Wind transition probabilities.}
-        \end{subfigure}
-        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on. \todo{Update caption}.}
-        \label{appfig:sailing_deets}
-    \end{figure}
 
 
 
@@ -1215,38 +1148,38 @@
 
     Figure \ref{fig:sailing_deets} gives the map and wind transition probabilities for the Sailing problem, using the same map notation as for Frozen Lake. 
 
-    % \begin{figure}
-    %     \centering
-    %     \begin{subfigure}[b]{0.49\textwidth}
-    %         \centering
-    %         \texttt{FFFFFG} \\
-    %         \texttt{FFFFFF} \\
-    %         \texttt{FFFFFF} \\
-    %         \texttt{FFFFFF} \\
-    %         \texttt{FFFFFF} \\
-    %         \texttt{SFFFFF} 
-    %         \caption{6x6 Sailing Problem map.}
-    %     \end{subfigure}
-    %     % \hfill
-    %     \begin{subfigure}[b]{0.49\textwidth}
-    %         \centering
-    %         \begin{align*}
-    %             \begin{pmatrix}
-    %             0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
-    %             0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
-    %             0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
-    %             0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
-    %             0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
-    %             0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
-    %             0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
-    %             0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
-    %             \end{pmatrix}
-    %         \end{align*}
-    %         \caption{Wind transition probabilities.}
-    %     \end{subfigure}
-    %     \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
-    %     \label{fig:sailing_deets}
-    % \end{figure}
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \texttt{FFFFFG} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{FFFFFF} \\
+            \texttt{SFFFFF} 
+            \caption{6x6 Sailing Problem map.}
+        \end{subfigure}
+        % \hfill
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \begin{align*}
+                \begin{pmatrix}
+                0.4 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 \\
+                0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.4 & 0.3 & 0.3 & 0.0 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.4 & 0.2 & 0.4 & 0.0 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 & 0.0 \\
+                0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
+                0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
+                \end{pmatrix}
+            \end{align*}
+            \caption{Wind transition probabilities.}
+        \end{subfigure}
+        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
+        \label{fig:sailing_deets}
+    \end{figure}
 
 
 
@@ -1343,6 +1276,16 @@
     All experiments in this chapter were run with \mctsmode\ewe turned off and did not use the Alias method as described in Section \ref{sec:4-2-3-stoch_search_policies}, apart from the experiments on Go, which used \mctsmode and the Alias method.
 
 
+    \bd{Although only BTS and DENTS are described with the bias terms (ref equations), all of the algorithms are given the access to the same data. Specifically, each algorithm only differs in the} \bd{word for structure/format?} \bd{of the selection policy and backups}
+
+    \bd{Hyperparameters were optimised for each algorithm separately}
+
+
+
+
+    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
+
+
 
 
 
@@ -1430,6 +1373,11 @@
 
 
 
+    \todo{also make a comment about how just use H-MCTS as a simple regret baseline, but the simplex regret MCTS methods loosly boil down to a mixture of UCT and uniform combinations.}
+
+
+
+
 
 
 
@@ -1447,7 +1395,12 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsubsection{Parameter sensitivity in Frozen Lake} \label{sec:param_sens_fl}
+\subsubsection{Parameter sensitivity in Frozen Lake} 
+\label{sec:param_sens_fl}
+
+
+    \todo{Change to misalignment results?}
+
 
     \todo{this subsubsection currently just a c and p from neurips}
 
