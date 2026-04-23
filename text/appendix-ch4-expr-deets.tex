@@ -20,7 +20,10 @@
 
 
 
-\chapter{\label{app:go-results}\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
+\chapter{\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
+
+
+    \todo{Frozen Lake to FrozenLake etc}
 
 
     This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
@@ -54,6 +57,74 @@
 
     Figure \ref{appfig:fl_maps} shows the maps used in the DeterministicGridWorld and FrozenLake environments. The 4x4 and 8x8 maps are the standard maps from the Gymnasium library \todo{cite}. The remaining maps are randomly generated, where the starting position is always the top left corner, the goal position is always the bottom right corner and the remaining positions are randomly sampled with a $\frac{1}{5}$ probability of being a hole. Rejection sampling is used to ensure that there is always a path from the starting position to the goal.
 
+
+
+
+
+    % "4x4": [
+    %     "SFFF", 
+    %     "FHFH", 
+    %     "FFFH", 
+    %     "HFFG"
+    % ],
+    % "4x8": [
+    %     "SFFFHFFF",
+    %     "FHFFFFFF",
+    %     "FHFFHFFF",
+    %     "FFFFFFHG",
+    % ],
+    % "4x12": [
+    %     "SFFHFFFFFFFH",
+    %     "FFFFFHFFFFFF",
+    %     "FFFFHFFFFFFF",
+    %     "FFFFFFFFFFHG",
+    % ],
+    % "4x16": [
+    %     "SFFFFHFFFFFFFFFF",
+    %     "HFFFFFFFFHFFHHFF",
+    %     "FFHHHFHFFFHHHFFF",
+    %     "FFHHFFFFFFFFHFFG",
+    % ],
+    % "8x8": [
+    %     "SFFFFFFF",
+    %     "FFFFFFFF",
+    %     "FFFHFFFF",
+    %     "FFFFFHFF",
+    %     "FFFHFFFF",
+    %     "FHHFFFHF",
+    %     "FHFFHFHF",
+    %     "FFFHFFFG",
+    % ],
+    % "8x16": [
+    %     "SFFFFFFFFFFFFFHF",
+    %     "FHHFFFHFHHFFFHFF",
+    %     "FHFFHFFFHFFFFFFF",
+    %     "FFFHFFFHFFFFFHHF",
+    %     "HFFHFHFFFFFFHHFF",
+    %     "FFFHFHFFHHFFFFFF",
+    %     "FFFFFFFFFFFFFFHF",
+    %     "FFFFFHFFHHFFHHFG",
+    % ],
+    % "8x24": [
+    %     "SFFFFHFHFFFFFFHHFFFHHFFH",
+    %     "HFFHFFHFFFFFFFHFFFFFHFHF",
+    %     "FFFFFFHFFHHFFFFFFFFFHFFF",
+    %     "FFHHFFFFFFFFFFFFHFFHFFFH",
+    %     "FFFHFFFFFHFFHFFHFHFHFFFF",
+    %     "FFHFFFFFFFFHFHFFFFFFFFFF",
+    %     "HHFFFFFFFFFFFFFHFFFHFFFF",
+    %     "FFFFFFHFFFFFFFFFHFFHHFFG",
+    % ],
+    % "8x32": [
+    %     "SFHFFFFHFFFFFFFFFHFHHFHFHFHHFHFF",
+    %     "FFFFFFHFFFHHFFHFFFFHFHFFFHFFFFFH",
+    %     "HFFFFFFFFFFFFFFFFFHFFHHHFFFHFFFF",
+    %     "FFHHHFHFFHHFHFFFFHFFFFFFFFHFFHFF",
+    %     "FFFFHFFFFHFHHFHFFFFFHHFHFHFFFFFH",
+    %     "FHFHFFHHFFFHFFFHFFFFFFFFFFFFHFFH",
+    %     "FHFFFFHFHFFFFFHFFFFFFFFFFFFHFFFF",
+    %     "HFFFFHFFHHFFFHHFFFFFFFFFFFHFHFFG",
+    % ],
 
     \begin{figure}
         \centering
@@ -231,7 +302,7 @@
 
 
 \subsection{Integration of Common Hyperparameters into Prior Algorithms}
-\label{appsec:4:uct_general}
+\label{appsec:4:bias_term_integration}
 
     Consider an algorithm with value estimates $\bar{V}(s)$ and $\bar{Q}(s,a)$. To use the $\Nq$ and $\normalisedq$ parameters, the biased Q-values $\Qnorm(s,a)$ used in the search policy are given by:
     %
@@ -582,7 +653,9 @@
 
 
 \section{Additional Details for Go Experiments} 
-\label{appsec:go_hps}
+\label{appsec:go}
+
+    \todo{Find correct place for: } These experiments were run with \mctsmode\ewe turned on
 
     Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round robin tournament was used to select the hyperparameters. This section gives the results of the round robin tournaments.
 
@@ -590,7 +663,7 @@
 
     This section is organised as follows:
     \begin{itemize}
-        \item Section \ref{appsec:go_hps_ar_ments} outlines the implementation of the AR-MENTS, AR-RENTS and AR-TENTS algorithms;
+        \item Section \ref{appsec:go_ar_ments} outlines the implementation of the AR-MENTS, AR-RENTS and AR-TENTS algorithms;
         \item Section \ref{appsec:round_robin} gives details on the round robin tournament used to select the hyperparameters for Go experiments;
         \item Section \ref{appsec:go_ar_vs_bellman} gives results for matches between the Bellman and average return versions of each algorithm.
     \end{itemize}
@@ -601,7 +674,7 @@
 
 
 \subsection{AR-MENTS, AR-RENTS and AR-TENTS}
-\label{appsec:go_hps_ar_ments}
+\label{appsec:go_ar_ments}
 
     \bd{TO implement AR-MENTS the AR-DENTS} (Section \ref{appsec:ardents}) \bd{algorithm was used, but with} $\beta(x)=\alpha(x)=\alpha_{\text{fix}}$. Implementing AR-RENTS and AR-TENTS is similar, replacing the used of Shannon entropy $\cl{H}$ in the backups by the corresponding relative entropy and Tsallis entropy functions. For AR-TENTS, the search policy uses the \textit{sparsemax} function used in TENTS instead of the softmax function. 
 

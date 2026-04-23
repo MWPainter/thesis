@@ -1042,14 +1042,7 @@
 
 
 
-    This section presents the empirical results on gridworld environments and on the game of Go. The following baseline algorithms are used:
-    \begin{itemize}
-        \item UCT (Section \todo{ref});
-        \item MENTS (Section \todo{ref});
-        \item RENTS (Section \todo{ref});
-        \item TENTS (Section \todo{ref});
-        \item H-MCTS (Section \todo{ref}).
-    \end{itemize}
+    This section presents the empirical results on gridworld environments and on the game of Go. For the gridworld environments the following baseline algorithms are used: UCT (Section \todo{ref}), MaxUCT (Section \todo{ref}), MENTS (Section \todo{ref}), RENTS (Section \todo{ref}), TENTS (Section \todo{ref}) and H-MCTS (Section \todo{ref}).
 
     MENTS, RENTS and TENTS are used as baseline algorithms from the maximum entropy literature. H-MCTS is used as a baseline MCTS algorithm designed for the simple regret objective.
 
@@ -1059,12 +1052,11 @@
         \item Section \todo{ref} described the evaluation setup used;
         \item Section \todo{ref} presents the results on gridworld environments of varying sizes and \bd{compares the performance of algorithms for a variety of temperature parameters to investigate how misalignment of the entropy objective affects performance};
         \item Section \todo{ref} presents the results on the game of Go;
-        \item Appendix \todo{ref} provides additional details on these experiments, including the hyperparameter settings used and how they were chosen.
+        \item Appendix \ref{app:expr-deets-ch4} provides additional details on these experiments, including the hyperparameter settings used and how they were chosen.
     \end{itemize}
 
 
 
-    
 
 
 
@@ -1093,34 +1085,27 @@
 
 
 \subsubsection{FrozenLake}
-    \textit{Frozen Lake} \cite{gymnasium} is a grid world environment where the agent aims to reach a goal state while avoiding holes that it could fall into. The agent can attempt to move in any cardinal direction at each time step, on each step there is an equal probability the agent moves in the intended direction or slips and moves in a perpendicular direction. For example, if the agent tries to move down, then there is a probability of $\frac{1}{3}$ that the agent moves down, moves left or moves right. If the agent moves or slips into a wall, then the agent remains in the same location. If the agent reaches the goal state, then a reward of one is received. If the agent falls into a hole, then the trial ends and zero reward is received.
+    \textit{FrozenLake} \cite{gymnasium} is a grid world environment where the agent aims to reach a goal state while avoiding holes that it could fall into. The agent can attempt to move in any cardinal direction at each time step, on each step there is an equal probability the agent moves in the intended direction or slips and moves in a perpendicular direction. For example, if the agent tries to move down, then there is a probability of $\frac{1}{3}$ that the agent moves down, moves left or moves right. If the agent moves or slips into a wall, then the agent remains in the same location. 
+    
+    If the agent reaches the goal state, then a reward of one is received. If the agent falls into a hole, then the trial ends and zero reward is received. \bd{Hence} the value of a policy $\pi$ at a state $s$ is the probability that the goal is reached under $\pi$.
 
-    Figure \ref{fig:frozen_lake_pic} illustrates the environment. A range of maps are used in the experiments \todo{from size X} to \todo{size Y}, which are given in Appendix \todo{ref}.
+    Figure \ref{fig:frozen_lake_pic} illustrates the environment. A range of maps are used in the experiments \todo{from size X} to \todo{size Y}, which are specified in Appendix \ref{appsec:4:envs}.
 
     \begin{figure}
         \centering
         \includegraphics[width=0.3\textwidth]{figures/ch4/frozen_lake.png}
-        \caption[An illustration of the Frozen Lake environment.]{An illustration of the Frozen Lake environment, reproduced from the Gymnasium documentation \cite{gymnasium}.}
+        \caption[An illustration of the FrozenLake environment.]{An illustration of the FrozenLake environment, reproduced from the Gymnasium documentation \cite{gymnasium}.}
         \label{fig:frozen_lake_pic}
     \end{figure}
 
     
 
     
+    
 
 
 \subsubsection{DeterministicGridWorld}
-    \textit{Deterministic Grid World} is a deterministic
-
-    The \emph{(Deterministic) Frozen Lake} \todo{remove deterministic} is a grid world environment with one goal state. The agent can move in any cardinal direction at each time step, and walking into a wall leaves the agent in the same location. \todo{Add is slippery description.} Trap states exist where the agent falls into a hole and the trial ends. \todo{remove next sentence and add paragraph below.} If the agent arrives at the goal state after $t$ timesteps, then a sparse reward of $0.99^t$ is received. \todo{Also add dense reward -1, remove the determinsitic bit, and describe the is slippery option too.}
-
-    \todo{Two rewards considered. Dense uninformative reward of -1 everywhere, and when falling in a hole the agent gets stuck and recieves a total return of -H. Second reward is sparse, where agents gets a reward of one for reaching the goal state. When is slippery is not on, a discount factor is used, so that shorter paths gain more reward than longer ones. This can effectively be implemented by returning gamma to the t in the deterministic case when agent reaches goal after t timesteps.}
-
-    \todo{ Extra credit: would like to have experiments which vary the proportion of the sparse reward. So have FL(lambda), where lambda specifies the ratio between the dense and sparse rewards. Then investigate what happens as vary lambda. So this is the grid world experiments run again, }
-
-    Figure \ref{fig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
-
-    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
+    \textit{Deterministic Grid World} is used to refer to the deterministic version of FrozenLake in these experiments. The environment is the same as FrozenLake, but the agent cannot slip and move in a perpendicular direction. To differentiate between paths of different lengths a discount factor of $\gamma$ is used, so that shorter paths gain more reward than longer ones. That is, if the agent reaches a goal after $t$ timesteps, then a reward of $\gamma^t$ is received. A range of maps are used in the experiments \todo{from size X} to \todo{size Y}, which are specified in Appendix \ref{appsec:4:envs}.
 
 
 
@@ -1142,11 +1127,7 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsubsection{Sailing Problem}
-    The \emph{Sailing Problem} is another grid world environment with one goal state, at the opposite corner to the starting location of the agent. This problem has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. 
-    
-    The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. \todo{The agent incurs a (dense) cost of (thetawind - theta)/45 + 1 for traveling at angle theta when wind is in direction thetawind.}
-
-    Figure \ref{fig:sailing_deets} gives the map and wind transition probabilities for the Sailing problem, using the same map notation as for Frozen Lake. 
+    The \emph{Sailing Problem} is often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. It is another grid world environment with one goal location, at the opposite corner to the starting location of the agent. The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/right. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. Figure \ref{fig:sailing_deets} illustrates the problem and gives the wind transition probabilities for the Sailing problem, using the same map notation as for FrozenLake. 
 
     \begin{figure}
         \centering
@@ -1177,7 +1158,7 @@
             \end{align*}
             \caption{Wind transition probabilities.}
         \end{subfigure}
-        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
+        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{\todo{make an image for the map, and example with directions and costs and have 3 figures}. The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)th$ element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
         \label{fig:sailing_deets}
     \end{figure}
 
@@ -1201,39 +1182,20 @@
 % [ ] Nick comments
 % [ ] Final revision
 \subsubsection{Go}
-    For a more challenging domain, a round-robin tournament was run on the game of Go, which has widely motivated the development of MCTS methods \cite{gelly2007combining,alpha_go,alpha_go_zero}. \textit{Area scoring} is used to score the games, with a \textit{komi} (a score handicap for black) of $7.5$. 
-    
-    The open-source library KataGo \cite{katago} was used to provide a value network $\tilde{V}$ and prior policy network $\tilde{\pi}$ for the algorithms. 
-    
-    PUCT algorithm \cite{poly_uct} was used as a baseline algorithm, as described in Alpha Go Zero \cite{alpha_go_zero}, using prioritised UCB \cite{prio_ucb} to utilise the policy neural network. Each algorithm was limited to $5$ seconds of compute time per move, allowed to use $32$ search threads per move, and had access to 80 Intel Xeon E5-2698V4 CPUs clocked at 2.2GHz, and a single Nvidia V100 GPU on a shared compute cluster.
+    For a more challenging domain, a round-robin tournament was run on the game of Go, which has widely motivated the development of MCTS methods \cite{gelly2007combining,alpha_go,alpha_go_zero}. \todo{fix cite} \textit{Area scoring} is used to score the games, with a \textit{komi} (a score handicap for black) of $7.5$. 
 
     The methods described in this chapter can be adapted for two-player games by using a discount factor in the MDP. The value of a policy $\pi$ with a discount factor $\gamma$ is defined as:
     \begin{align}
-        V^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} \gamma^{i-t}r_i \Bigg| s_t=s \right].
+        V^{\pi,\gamma}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} \gamma^{i-t}r_i \Bigg| s_t=s \right].
     \end{align}
     %
-    \todo{should define this in ch2? It's only really relevant here, and kind of in Frozen lake}
-    If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games. \todo{assuming that the reward function always gives rewards from the perspective of the player taking the current action.}
-        
-        
-
-
-
-
-    In these experiments we used a recommendation policy that recommends the action that was sampled the most, i.e. $\psi(s)=\max_a N(s,a)$, as this tends to be more robust to any noise from neural network outputs.
-
-
-
-
-    For our final results we used the same parameters on 19x19 Go with a komi of 7.5, giving each algorithm 5.0 seconds per move.
-
-
-
-
-
-
+    If the two players are using the policies $\pi_0$ and $\pi_1$, and $\pi$ is the policy that interleves $\pi_0$ at even timesteps with $\pi_1$ at odd timesteps, then using a discount factor of $\gamma=-1$ is sufficient to handle two-player games \bd{with a reward of 1 for the current player when the game ends decisively}.
     
-    Finally, we also ran AR-BTS against Kata Go directly limiting each algorithm to 1600 trials. KataGo beat AR-BTS by 31-19, confirming that the aditional exploration is outweighed by the information contained in the neural networks, and in Go the Boltzmann search algorithms gain their advantage via the Alias method and being able to run more trials quickly.
+    
+
+
+
+
 
 
 
@@ -1260,81 +1222,35 @@
 % [ ] Final revision
 \subsection{Evaluation Proceedure} 
 
+\subsubsection{Gridworld Environments}
+
     Consider an algorithm with search tree $\cl{T}$, which provides a partial recommendation policy $\psi_{\text{alg}}$. The recommendation policy is made complete by using a uniformly random policy for states and actions that are outside of the tree $\cl{T}$ as follows:
     % 
     \begin{align}
         \psi(a|s) =
         \begin{cases}
-            1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s), \\
-            0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s), \\
+            \psi_{\text{alg}}(a|s)  & \text{ if } s\in\cl{T}, \\
             \frac{1}{|\cl{A}|}      & \text{ otherwise.}
         \end{cases} \label{eq:full_Recommend}
     \end{align}
     % 
-    Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. \todo{Kind of want a better argument for this line of eval here.} Although this proceedure is evaluating the algorithms in an \textit{offline planning} setting, it still indicates how the algorithms perform in an \textit{online} setting when planning in simulation is interleaved with letting the agent act in the real environment. \todo{either scrap the evaluation question, or do something more to justify this.But should say something like "this evaluates the policy, and the online performance depends on the policies produced online, therefore correlated"}
+    Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. 
 
-    All experiments in this chapter were run with \mctsmode\ewe turned off and did not use the Alias method as described in Section \ref{sec:4-2-3-stoch_search_policies}, apart from the experiments on Go, which used \mctsmode and the Alias method.
-
-
-    \bd{Although only BTS and DENTS are described with the bias terms (ref equations), all of the algorithms are given the access to the same data. Specifically, each algorithm only differs in the} \bd{word for structure/format?} \bd{of the selection policy and backups}
-
-    \bd{Hyperparameters were optimised for each algorithm separately}
+    The BayesOpt package \cite{bayesopt} \todo{fix cite?} was used to tune hyperparameters for the algorithms in the gridworld environments. Appendix \ref{appsec:4:hps} gives details on the hyperparameters used and how they were tuned.
 
 
+\subsubsection{Go}
 
 
-    \todo{Reference appendix for hyperparameters used. State somewhere that all of the generic edits to the selection function (normalisation, search bias and backup bias), and reference the BTS equations for those. Actually, make the appendix called additional details on Ch4 empirical results, and there give the entire algorithm used give the full details with full backups and biasing terms for UCT, MENTS etc}
+% \label{appsec:go} % 
+% \label{appsec:round_robin} % hyperparameter tuning, 9x9 go
+% \label{appsec:go_ar_vs_bellman} % ar outperformed bellman for go
 
+    In the Go experiments, each algorithm was given $5$ seconds of compute time per move and allowed to use $32$ search threads and access to a single Nvidia V100 GPU on a shared compute cluster. Additionally, each algorithm has access to a value network $\tilde{V}$ and prior policy network $\tilde{\pi}$ provided by the open-source library KataGo \cite{katago}. $\tilde{V}$ is used for the value initialisation function $\Vinit$, and $\tilde{\pi}$ is mixed into the search policy as described in Section \ref{sec:4-2-3-stoch_search_policies}.
 
+    For all algorithms the \textit{most visited} recommendation policy is used to recommend actions, (e.g. Equation \todo{ref dents eqn}), as it is more robust to noise from neural network outputs than using the value estimates directly. \bd{Claude: so the argument is that if you use the value estimates directly, then you might get a noisy neural net evaluation on a largely unvisited action just before the recommendation, which is what the most visited policy is robust to.}
 
-
-
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\subsubsection{Gridworld Hyperparameter Selection}
-
-    To select hyperparameters for the algorithms in the gridworld environments, the BayesOpt package \cite{bayesopt} was used. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \ref{appsec:hps} \todo{double check this ref}.
-
-    These experiments were run with \mctsmode\ewe turned off and did not use the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}).
-
-
-            
-
-
-
-
-
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\subsubsection{Go Hyperparameter Selection}
-
-    To tune hyperparemters for algorithms used in the Go experiments, a methodical sequence of round robin tournaments were run on a $9\times 9$ board, where in each tournament one parameter was tuned at a time. Full details of these tournaments and the selected hyperparamters are given in Appendix \ref{appsec:go_hps} \todo{double check this ref}.
-
-    Of note, both Bellman value estimates and average returns were considered for the Go round robin. In the hyperparamter tuning the two versions of each algorithm were tuned seperately and then played against each other. In each case the average returns algorithms decisively beat the Bellman versions. This could have been because of average returns helping to average out noisy neural network outputs, and the ability of the AR algorithms to run more trials (as described in Section \ref{sec:4-2-3-stoch_search_policies}) in the given search time.
-    
-    These experiments were run with \mctsmode\ewe turned on and made use of the Alias method (Section \ref{sec:4-2-3-stoch_search_policies}). Additionally, the value network $\tilde{V}$ was used for the value initialisation function $\Vinit$, and prior policy network $\tilde{\pi}$ was mixed into the search policy as described in Section \ref{sec:4-2-3-stoch_search_policies}.
+    The PUCT algorithm is used as a baseline, as described in Alpha Go Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions. The Alias method (Section \ref{sec:4-2-3-stoch_search_policies}) is used \bd{for any algorithms which are compatible}.
 
             
 
@@ -1360,20 +1276,12 @@
 % [ ] Final revision
 \subsection{Results and Discussion}
 
-    \todo{Wanted to show the breadth first search if Qinit incorrectly set then get breadth first search in costs case. If can estimate, for example know Rmin and can get Qinit to H times Rmin then can do that. Another zero knowledge Qinit function can use is Qinit equals min a Q(s,a) where for (s,a) in tree, if no such (s,a) then zero (its uniform policy then anyway).}
-
-    \todo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
-
-    \todo{Should also eval AR-BTS etc on these envs? Might make the arguments/results nicer and more complete}
-
-    This subsection first demonstrates the parameter sensitivity of maximum entropy methods on the Frozen Lake environment. Then results on Frozen Lake and the Sailing problem are given with optimised parameters, and finally results from the Go round robin.
-
-
-
-
-
-
-    \todo{also make a comment about how just use H-MCTS as a simple regret baseline, but the simplex regret MCTS methods loosly boil down to a mixture of UCT and uniform combinations.}
+    The empirical results are presented in this section and are organised as follows:
+    \begin{itemize}
+        \item Section \ref{sec:4-5-1-gridworld_results} gives results on the gridworld environments;
+        \item Section \ref{sec:4-5-2-parameter_sensitivity} gives additional results on the gridworld environments where the temperature and bias parameters are varied;
+        \item Section \ref{sec:4-5-3-go_results} gives results from the Go round robin;
+    \end{itemize}
 
 
 
@@ -1395,7 +1303,237 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsubsection{Parameter sensitivity in Frozen Lake} 
+\subsubsection{Gridworld Results}
+
+    \todo{this subsubsection currently just a c and p from neurips}
+
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_420_fl_8x8.png}
+            \caption{8x8 DeterministicGridWorld.}
+            \label{fig:4:dgw_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_422_fl_8x16.png}
+            \caption{8x16 DeterministicGridWorld.}
+            \label{fig:4:dgw_results:sub:b}
+        \end{subfigure}
+    
+        \vspace{1em}
+    
+        % Row 2
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_424_fl_8x24.png}
+            \caption{8x24 DeterministicGridWorld.}
+            \label{fig:4:dgw_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_425_fl_8x32.png}
+            \caption{8x32 DeterministicGridWorld.}
+            \label{fig:4:dgw_results:sub:d}
+        \end{subfigure}
+    
+        \caption[Results on DeterministicGridWorld.]{Results on DeterministicGridWorld for a range of map sizes. The map definitions are given in Figure \ref{appfig:fl_maps}.}
+        \label{fig:4:dgw_results}
+    \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_480_slippy_4x4.png}
+            \caption{4x4 FrozenLake.}
+            \label{fig:4:fl_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_481_slippy_4x8.png}
+            \caption{4x8 FrozenLake.}
+            \label{fig:4:fl_results:sub:b}
+        \end{subfigure}
+    
+        \vspace{1em}
+    
+        % Row 2
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_482_slippy_4x12.png}
+            \caption{4x12 FrozenLake.}
+            \label{fig:4:fl_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_483_slippy_4x16.png}
+            \caption{4x16 FrozenLake.}
+            \label{fig:4:fl_results:sub:d}
+        \end{subfigure}
+    
+        \caption[Results on FrozenLake.]{Results on FrozenLake for a range of map sizes. The map definitions are given in Figure \ref{appfig:fl_maps}.}
+        \label{fig:4:fl_results}
+    \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_490_sail_north_8x8.png}
+            \caption{8x8 Sailing (North).}
+            \label{fig:4:sailing_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_500_sail_se_8x8.png}
+            \caption{8x8 Sailing (South-East).}
+            \label{fig:4:sailing_results:sub:b}
+        \end{subfigure}
+    
+        \vspace{1em}
+    
+        % Row 2
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_491_sail_north_8x16.png}
+            \caption{8x16 Sailing (North).}
+            \label{fig:4:sailing_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_501_sail_se_8x16.png}
+            \caption{8x16 Sailing (South-East).}
+            \label{fig:4:sailing_results:sub:d}
+        \end{subfigure}
+    
+        \vspace{1em}
+    
+        % Row 3
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_492_sail_north_16x16.png}
+            \caption{16x16 Sailing (North).}
+            \label{fig:4:sailing_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_502_sail_se_16x16.png}
+            \caption{16x16 Sailing (South-East).}
+            \label{fig:4:sailing_results:sub:d}
+        \end{subfigure}
+    
+        \caption[Results on FrozenLake.]{Results on Sailing for three map sizes and two initial wind directions. (Left) Initial wind direction is North. (Right) Initial wind direction is South-East. Map sizes of 8x8, 8x16 and 16x16 correspond to the first, second and third rows respectively.}
+        \label{fig:4:sailing_results}
+    \end{figure}
+    
+
+
+    \todo{also make a comment about how just use H-MCTS as a simple regret baseline, but the simplex regret MCTS methods loosly boil down to a mixture of UCT and uniform combinations.}
+
+
+    \todo{Talk about how exploitation is useful in two cases in the exploration setting. When have stochastic env, need to exploit to get better value estimates. When env is very large, need exploitation to explore deeper parts of env. Also exploiting helpful when reward is dense and/or informative}
+
+    The 8x12 FrozenLake environment (Figure \ref{fig:fl12}) and a 6x6 Sailing Problem (Figure \ref{fig:sailing_deets}) were used to evaluate the algorithms introduced in this chapter against the baseline algorithms.
+
+    Each algorithm is run 25 times on each environment and evaluated every 250 trials using 250 trajectories. 
+    A horizon of 100 was used for FrozenLake and 50 for the Sailing Problem. Curves of these evaluations are given in Figure \ref{fig:gridworld_results}.
+
+    In FrozenLake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
+
+    In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \todo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
+    
+    Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
+
+    \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
+    
+    \begin{figure*}
+        \centering
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/grid/fl.png}
+            \caption{8x12 FrozenLake.}
+            \label{fig:fl}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/temp/grid/s.png}
+            \caption{6x6 Sailing Problem.}
+            \label{fig:sp}
+        \end{subfigure}
+        \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
+        \label{fig:gridworld_results}
+    \end{figure*}
+
+
+
+
+
+
+
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsubsection{Parameter sensitivity in FrozenLake} 
 \label{sec:param_sens_fl}
 
 
@@ -1404,10 +1542,10 @@
 
     \todo{this subsubsection currently just a c and p from neurips}
 
-    Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 Frozen Lake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
+    Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 FrozenLake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
 
     \todo{clean up hyperparam setting }
-    % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 Frozen Lake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
+    % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 FrozenLake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
 
     In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state for all of the temperatures considered.
 
@@ -1450,7 +1588,7 @@
             \caption{$\alpha=0.005$}
         \end{subfigure}
         
-        \caption{MENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \caption{MENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
         \label{fig:fl_param_sens_ments}
     \end{figure}
     
@@ -1489,7 +1627,7 @@
             \caption{$\alpha=0.005$}
         \end{subfigure}
         
-        \caption{RENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \caption{RENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
         \label{fig:fl_param_sens_rents}
     \end{figure}
     
@@ -1528,7 +1666,7 @@
             \caption{$\alpha=0.005$}
         \end{subfigure}
         
-        \caption{TENTS with a variety of temperatures on an 8x8 Frozen Lake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
+        \caption{TENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
         \label{fig:fl_param_sens_tents}
     \end{figure}
 
@@ -1539,51 +1677,6 @@
 
 
 
-% [ ] First Draft
-% [ ] AI proofread/grammar check
-% [ ] TODOs
-% [ ] Spell check
-% [ ] Citations + Refs
-% [ ] LitRev sync
-% [ ] Abbreviations sync
-% [ ] Thesis questions ref/answers
-% [ ] Proofread
-% [ ] Nick comments
-% [ ] Final revision
-\subsubsection{Gridworld Results}
-
-    \todo{this subsubsection currently just a c and p from neurips}
-
-    The 8x12 Frozen Lake environment (Figure \ref{fig:fl12}) and a 6x6 Sailing Problem (Figure \ref{fig:sailing_deets}) were used to evaluate the algorithms introduced in this chapter against the baseline algorithms.
-
-    Each algorithm is run 25 times on each environment and evaluated every 250 trials using 250 trajectories. 
-    A horizon of 100 was used for Frozen Lake and 50 for the Sailing Problem. Curves of these evaluations are given in Figure \ref{fig:gridworld_results}.
-
-    In Frozen Lake (Figure \ref{fig:fl}), entropy proved to be a useful exploration bonus for the \textit{sparse reward}. Values in UCT and BTS remain at zero until a trial successfully reaches the goal. However, entropy guides agents to avoid trap states, where the entropy is zero. DENTS was able to perform similarly to MENTS, and BTS was able to improve its policy over time more than UCT.
-
-    In the Sailing Problem (Figure \ref{fig:sp}) UCT performs well due to the dense reward. \todo{also mention how exploiting is useful to get better value estimates in stochastic environments.} BTS and DENTS also manage to keep up with UCT. MENTS and TENTS appear to be slightly hindered by entropy in this environment. The relative entropy encourages RENTS to pick the same actions over time, so it tends to pick a direction and stick with it regardless of cost.
-    
-    Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
-
-    \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
-    
-    \begin{figure*}
-        \centering
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/grid/fl.png}
-            \caption{8x12 Frozen Lake.}
-            \label{fig:fl}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/grid/s.png}
-            \caption{6x6 Sailing Problem.}
-            \label{fig:sp}
-        \end{subfigure}
-        \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
-        \label{fig:gridworld_results}
-    \end{figure*}
 
 
 
@@ -1644,6 +1737,13 @@
 
 
 
+
+
+
+    For our final results we used the same parameters on 19x19 Go with a komi of 7.5, giving each algorithm 5.0 seconds per move.
+
+    
+    Finally, we also ran AR-BTS against Kata Go directly limiting each algorithm to 1600 trials. KataGo beat AR-BTS by 31-19, confirming that the aditional exploration is outweighed by the information contained in the neural networks, and in Go the Boltzmann search algorithms gain their advantage via the Alias method and being able to run more trials quickly.
 
 
 
