@@ -235,8 +235,8 @@
             Given a weight vector $\bff{w}\in\Delta^D$, returns the leaf node in the binary tree of simplices $\TSM$ that contains $\bff{w}$.
         \item[$\fcv(\GSM, \bff{w})$:] 
             Given a weight vector $\bff{w}\in\Delta^D$, finds the (approximately) closest vertex in the simplex map $\wSM\in\VSM$ and returns the corresponding value estimate $\fSM(\wSM)$.
-        \item[$\update(\GSM,\wSM,\bff{v})$:] 
-            Updates the value estimate at the vertex $\wSM\in\VSM$ to $\bff{v}$. That is, it performs the update $\fSM(\wSM) \leftarrow \bff{v}$.
+        % \item[$\update(\GSM,\wSM,\bff{v})$:] 
+        %     Updates the value estimate at the vertex $\wSM\in\VSM$ to $\bff{v}$. That is, it performs the update $\fSM(\wSM) \leftarrow \bff{v}$.
         \item[$\push(\GSM,\wSM)$:] 
             Given a vertex $\wSM\in\VSM$, attempts to share its value estimate with its neighbours in the vertex graph via breadth-first search. A neighbour $\wSMprime\in\VSM$ accepts the value from $\wSM$ if it is an improvement under $\wSMprime$'s own weight vector:
             \begin{align}
@@ -361,6 +361,22 @@
             \label{fig:6:split_operation}
         \end{figure}
 
+        The $\splitsimplex$ operation is controlled by three parameters $\splitminradius$,$\splitmindelta$ and $\splitminvis$, which determine the conditions under which a simplex is split. Let $\splitsimplexcounter(\SSM)$ be a counter for the number of times that $\splitsimplex$ has been called on the simplex $\SSM$. 
+        
+        The following steps are performed to determine if the simplex should be split:
+        \begin{itemize}
+            \item 
+                If the simplex $\SSM$ is non-conforming, then the simplex is split as described below;
+            \item 
+                If the radius of the simplex $\SSM$ is less than $\splitminradius$, then the simplex is not split;
+            \item 
+                If $\max_{\bff{w},\bff{w'}\in\SSM}\| \fSM(\bff{w}) - \fSM(\bff{w'}) \| < \splitmindelta$, then the counter $\splitsimplexcounter(\SSM)$ is reset to 0, and the simplex is not split;
+            \item 
+                $\splitsimplexcounter(\SSM)$ is incremented by 1, and if $\splitsimplexcounter(\SSM) < \splitminvis$, then the simplex is not split;
+            \item 
+                Otherwise, the simplex is split as described below.
+        \end{itemize}
+
         Let $\SSM=\{\wSMi{1},\wSMi{2},\wSMi{3},\ldots,\wSMi{D}\}$, where without loss of generality $(\wSMi{1},\wSMi{2})$ is the longest edge. The new vertex $\wSMi{\text{mid}}=\frac{1}{2}(\wSMi{1}+\wSMi{2})$ is added to $\VSM$, the edge $(\wSMi{1},\wSMi{2})$ is removed from $\ESM$ and edges to connect the new vertex are added:
         \begin{align}
             \ESM \leftarrow \left(\ESM - \{(\wSMi{1},\wSMi{2})\}\right) \cup \{(\wSM,\wSMi{\text{mid}}) \mid \wSM\in\SSM\}.
@@ -377,7 +393,7 @@
 
         The BTG is updated accordingly; the details are omitted as they do not affect the algorithm semantics.
 
-    \paragraph{$\update$ and $\push$:} 
+    \paragraph{$\push$:} 
 
         \begin{figure}
             \centering
@@ -467,112 +483,94 @@
 \label{sec:6-3-algorithms}
 
 
-    This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates.
+    This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates. The algorithm uses parameters $\alphasmd$, $\betasmd$, and $\epsilonsmd$ corresponding to the DENTS parameters. Throughout this section $\bff{w}$ is the randomly sampled context weight for a trial.
 
-    Each decision node $s$ and chance node $(s,a)$ keeps an associated simplex map $\GSMD(s,a)
-
-
-
-
-
-
-
-
-
-
-    \textit{Convex Hull BTS} (CH-BTS) uses the BTS search policy (Section \ref{sec:4-2-1-bts}) within the CHMCTS framework, using contextual value estimates in place of the scalar Bellman value estimates:
+    Each decision node $s$ and chance node $(s,a)$ keeps an associated simplex map 
     \begin{align}
-        \rhochbts(a|s;\bff{w}) &\propto \exp\left(
-            \frac{\Qchbtsctx{\bff{w}}(s,a)}
-            {\alphachbts(N(s))}\right), 
-            \label{eq:5:chbts_rho} \\
-        \pichbts(a|s;\bff{w}) &= (1-\lambdachbts)
-            \rhochbts(a|s;\bff{w}) 
-            + \frac{\lambdachbts}{|\cl{A}|}, 
-            \label{eq:5:chbts_policy} \\
-        \lambda(s,\epsilon) &= \min\left(1, 
-            \frac{\epsilon}{\log(e+N(s))}\right),
+        \GSM(s) &= (\VSM(s),\ESM(s),\TSM(s),\Vsmd(s;\cdot), \HVsmd(s;\cdot)) \\
+        \GSM(s,a) &= (\VSM(s,a),\ESM(s,a),\TSM(s,a),\Qsmd(s,a;\cdot), \HQsmd(s,a;\cdot)),
     \end{align}
-    where $\alphachbts(x) > 0$ is a temperature function and $\epschbts \in [0,\infty)$ is an exploration parameter. As in BTS, the temperature function controls the trade-off between exploration and exploitation, and the exploration parameter ensures that all actions are eventually explored.
-
-
-
-    \paragraph{Algorithm Definition}
-
-    \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates} as an exploration bonus. DENTS uses Bellman value estimates $\Vdents$ and $\Qdents$ similarly to BTS, but also uses entropy value estimates, $\HVdents$ and $\HQdents$, which are Monte Carlo estimates of the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in its search policy, and discard it for recommendations.
-
-    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, $\alphadents(x)>0$ and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
-    
-    The Q-values used during search are computed as follows:
-    \begin{align}
-        \Qdentssoft(s,a) &= \Qdents(s,a)+\betadents(N(s))\HQdents(s,a), \\
-        \Qdentsbias(s,a) &= \frac{N(s,a) \Qdentssoft(s,a) +  \Nqdents \Qinit(s,a)}{N(s,a)+\Nqdents}, \\
-        \Qdentsnorm(s,a) &= 
-        \begin{cases}
-            \frac{\Qdentsbias(s,a)-\min_{a\in\cl{A}}\Qdentsbias(s,a)}{\max_{a\in\cl{A}}\Qdentsbias(s,a)-\min_{a\in\cl{A}}\Qdentsbias(s,a)} & \text{if } \normalisedq, \\
-            \Qdentsbias(s,a) & \text{otherwise.}
-        \end{cases}
-    \end{align}
-
-    The DENTS search policy is similar to BTS: 
+    %
+    noting that $\Vsmd$ and $\Qsmd$ are the value and Q-value estimate functions, and $\HVsmd(s)$ and $\HQsmd(s,a)$ are additional entropy value estimate functions, maintained in each simplex map. Contextual value estimates are computed using the simplex maps, as outlined in Equation (\ref{eq:6:sm_contextual_qvalue}):
     %
     \begin{align}
-        \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
-                    \label{eq:dents_search_policy} \\ 
-        \rhodents(a|s) &\propto \exp\left(\frac{\Qdentsnorm(s,a)}{\alphadents(N(s))}\right),
-                    \label{eq:dents_value_policy} \\
+        \wV &= \fcv(\GSM(s), \bff{w}), \\
+        \wQ &= \fcv(\GSM(s,a), \bff{w}), \\
+        \Vsmdctx(s) 
+            &= \bff{w}^\top \Vsmd(s;\wV),
+        \label{eq:6:smdents_contextual_value} \\
+        \Qsmdctx(s,a) 
+            &= \bff{w}^\top \Qsmd(s,a;\wQ),
+        \label{eq:6:smdents_contextual_qvalue} 
+    \end{align}
+    %
+
+
+    \paragraph{Search Policy}
+
+    The search policy is defined similarly to DENTS (Section \todo{ref}), using the contextual value and entropy estimates:
+    \begin{align}
+        \Qsmdsoft(s,a) &= \Qsmdctx(s,a)+\betasmd(N(s))\HQsmd(s,a;\bff{w}), \\
+        \pismd(a|s;\bff{w}) &= (1-\lambdasmd)\rhosmd(a|s;\bff{w}) + \frac{\lambdasmd}{|\cl{A}|}, 
+                    \label{eq:sm_dents_search_policy} \\ 
+        \rhosmd(a|s;\bff{w}) &\propto \exp\left(\frac{\Qsmdsoft(s,a)}{\alphasmd(N(s))}\right),
+                    \label{eq:sm_dents_value_policy} \\
         \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
     \end{align}
 
-    The $\initv$ and $\initq$ functions are also similar to BTS, setting: $N(s)=0$, $N(s,a)=0$, $\Vdents(s)=\Vinit(s)$ and $\Qdents(s,a)=\Qinit(s,a)$. Additionally, the entropy value estimates are initialised to zero: $\HVdents(s)=0$ and $\HQdents(s,a)=0$.
 
-    Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pidents$, the $\backupq$ and $\backupv$ functions update the entropy value estimates for $t=h-1,\ldots,0$:
-    \begin{align}
-        \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
-            \label{eq::4dents_entropy_q_backup} \\
-        \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
-            \label{eq:4:dents_entropy_v_backup} 
-    \end{align}
-    %
-    where $\cl{H}$ is the Shannon entropy function. The Bellman value estimates are updated similarly to BTS, for $t=h-1,\ldots,0$:
-    \begin{align}
-        \Qdents(s_t,a_t) &\leftarrow 
-            R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vdents(s') \right), 
-                    \label{eq:dents_q_backup} \\ 
-        \Vdents(s_t) &\leftarrow \frac{\Nvdents \Vinit(s_t) + N(s_t) \max_{a\in\cl{A}} \Qdents(s_t,a)}{N(s_t)+\Nvdents}.
-                    \label{eq:4:dents_backup_v} 
-    \end{align}
 
-    The recommendation policies for DENTS are also defined identically to BTS:
+
+    \paragraph{Backups}
+
+    Given a trajectory $\tau=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pismd$, the $\backupq$ and $\backupv$ functions update the multi-objective and entropy value estimates for $t=h-1,\ldots,0$:
     \begin{align}
-        \psidents(s) = \argmax_{a\in\cl{A}}\Qdents(s,a), \label{eq:4:psidents} 
+        \wQ &= \fcv(\GSM(s,a), \bff{w}), \label{eq:6:smdents_backup_q_w} \\
+        \wV &= \fcv(\GSM(s), \bff{w}), \label{eq:6:smdents_backup_v_w} \\
+        \HQsmd(s_t,a_t;\wQ) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVsmd(s';\wQ), 
+            \label{eq:6:smdents_entropy_q_backup} \\
+        \HVsmd(s_t;\wV) &\leftarrow \cl{H}(\pismd(\cdot | s_t;\wV)) \nonumber \\
+            &+ \sum_{a\in\cl{A}} \pismd(a|s_t;\wV)\HQsmd(s_t,a;\wQ), 
+            \label{eq:6:smdents_entropy_v_backup}  \\
+        \Qsmd(s_t,a_t;\wQ) &\leftarrow 
+            \bff{R}(s_t,a_t) \nonumber \\
+            &+ \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vsmd(s';\wQ) \right), 
+                    \label{eq:6:smdents_q_backup} \\ 
+        \Vsmd(s_t;\wV) &\leftarrow  \Qsmd\left(s_t,\argmax_{a\in\cl{A}} \Qsmdctxcstm{\wV}(s_t,a);\wV\right).
+                    \label{eq:6:smdents_backup_v} 
     \end{align}
 
+    There are two significant differences of note in the backups of SM-DENTS compared to its single-objective counterpart DENTS and multi-objective counterpart in CH-BTS: 
+    \begin{itemize}
+        
+        \item The value estimates are updated with respect to the closest vertices $\wQ$ and $\wV$ looked up from the simplex maps of $\GSM(s,a)$ and $\GSM(s)$ from Equations \ref{eq:6:smdents_backup_q_w} and \ref{eq:6:smdents_backup_v_w}.
+        \item Since a maximum is not well-defined over vectors, Equation (\ref{eq:6:smdents_backup_v}) computes the action that leads to the maximum contextual Q-value for $\wV$, which is then used to update the value estimate.
+    \end{itemize}
+
+    After the Q-values are updated from Equations (\ref{eq:6:smdents_entropy_q_backup}) and (\ref{eq:6:smdents_q_backup}), a call is made to the $\splitsimplex$ operation to split a simplex in the simplex map if necessary. Specifically, 
+    \begin{align}
+        \splitsimplex(\GSM(s_t,a_t),\fcs(\GSM(s_t,a_t),\wQ)).
+    \end{align} 
+
+    Similarly, after the value estimates are updated from Equations (\ref{eq:6:smdents_entropy_v_backup}) and (\ref{eq:6:smdents_backup_v}), the following call is made:
+    \begin{align}
+        \splitsimplex(\GSM(s_t),\fcs(\GSM(s_t),\wV)).
+    \end{align}
+    
+
+    \paragraph{Recommendation Policy}
+
+    The recommendation policy is defined to follow the maximal contextual Q-values:
+    \begin{align}
+        \psismd(s;\bff{w}) &= \argmax_{a\in\cl{A}} \Qsmdctx(s,a).
+    \end{align}
 
 
-\todo{Ref the conforming triangulation stuff here}
 
 
-New Ch6 plan:
-\begin{itemize}
-    \item Algos, BTS and DENTS using simplex maps as a baseline
-    \item Empirical results
-    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
-    \item Maybe some theory, probably bootstrap of the ch4 + ch5 results
-\end{itemize}
+    \paragraph{BTS with Simplex Maps}
 
-%
-% Old plan
-%
-\todo{list}
-\begin{itemize}
-    \item Come up with better title for section
-    \item Use simplex maps interface to create algorithms from the dents work 
-    \item Give a high level idea of what $\delta$ parameter is (used in theory section)
-\end{itemize}
-
-
-
+    BTS with Simplex Maps (SM-BTS) is defined by setting the entropy coefficient function $\betasmd(x) = 0$.
 
 
 

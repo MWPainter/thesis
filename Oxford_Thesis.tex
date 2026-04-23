@@ -501,7 +501,7 @@
 \newcommand{\Valgctx}[1]{{\hat{V}^{#1}_{\alg}}}
 \newcommand{\Qalgctx}[1]{{\hat{Q}^{#1}_{\alg}}}
 \newcommand{\pialg}{{\pi_{\alg}}}
-\newcommand{\psialg}{{\pi_{\alg}}}
+\newcommand{\psialg}{{\psi_{\alg}}}
 \newcommand{\calg}{{c_{\alg}}}
 \newcommand{\zetaalg}{{\zeta_{\alg}}}
 
@@ -520,7 +520,7 @@
 \newcommand{\chbts}{{\textnormal{CH-BTS}}}
 \newcommand{\alphachbts}{{\alpha_{\chbts}}}
 \newcommand{\epschbts}{{\epsilon_{\chbts}}}
-\newcommand{\lambdachbts}{{\lambda_{\chbts}(s,\epschbts)}}
+\newcommand{\lambdachbts}{{\lambda(s,\epschbts)}}
 \newcommand{\rhochbts}{{\rho_{\chbts}}}
 \newcommand{\pichbts}{{\pi_{\chbts}}}
 \newcommand{\Vchbts}{{\hat{\bfcl{V}}_{\chbts}}}
@@ -575,7 +575,11 @@
 \newcommand{\fcv}{{\textnormal{\texttt{find\_closest\_vertex}}}}
 \newcommand{\update}{{\textnormal{\texttt{update}}}}
 \newcommand{\push}{{\textnormal{\texttt{push}}}}
-\newcommand{\splitsimplex}{{\textnormal{\texttt{split}}}}
+\newcommand{\splitsimplex}{{\textnormal{\texttt{maybe\_split}}}}
+\newcommand{\splitsimplexcounter}{{\textnormal{\texttt{N}}_{\SM}}}
+\newcommand{\splitmindelta}{{\textnormal{\texttt{split\_min\_delta}}_{\SM}}}
+\newcommand{\splitminradius}{{\textnormal{\texttt{split\_min\_radius}}_{\SM}}}
+\newcommand{\splitminvis}{{\textnormal{\texttt{split\_min\_visit}}_{\SM}}}
 \newcommand{\pushradius}{{\textnormal{\texttt{push\_radius}}_{\SM}}}
 \newcommand{\GSM}{{\bfcl{G}_{\SM}}}
 \newcommand{\VSM}{{\bfcl{V}_{\SM}}}
@@ -592,10 +596,28 @@
 
 
 
-\newcommand{\SMDENTS}{{\textnormal{SM-DENTS}}}
+\newcommand{\SMDENTS}{{\textnormal{SM-DNTS}}}
 \newcommand{\pushradiusdents}{{\textnormal{\texttt{push\_radius}}_{\SMDENTS}}}
-\newcommand{\Vsmdctx}[1]{{\hat{Q}^{#1}_{\SMDENTS}}}
-\newcommand{\Qsmdctx}[1]{{\hat{Q}^{#1}_{\SMDENTS}}}
+\newcommand{\Vsmdctx}{{\hat{V}^{\bff{w}}_{\SMDENTS}}}
+\newcommand{\Qsmdctx}{{\hat{Q}^{\bff{w}}_{\SMDENTS}}}
+\newcommand{\Qsmdctxcstm}[1]{{\hat{Q}^{(#1)}_{\SMDENTS}}}
+\newcommand{\Vsmd}{{\hat{\bff{V}}_{\SMDENTS}}}
+\newcommand{\Qsmd}{{\hat{\bff{Q}}_{\SMDENTS}}}
+\newcommand{\wV}{{\bff{w}_V}}
+\newcommand{\wQ}{{\bff{w}_Q}}
+\newcommand{\fSMV}{{f^V_{\SM}}}
+\newcommand{\fSMQ}{{f^Q_{\SM}}}
+\newcommand{\HSM}{{\cl{H}}_{\SM}}
+\newcommand{\HVsmd}{{\bar{\cl{H}}_{V,\SMDENTS}}}
+\newcommand{\HQsmd}{{\bar{\cl{H}}_{Q,\SMDENTS}}}
+\newcommand{\Qsmdsoft}{{\hat{Q}^{\bff{w},\sft}_{\SMDENTS}}}
+\newcommand{\alphasmd}{{\alpha_{\SMDENTS}}}
+\newcommand{\betasmd}{{\beta_{\SMDENTS}}}
+\newcommand{\epssmd}{{\epsilon_{\SMDENTS}}}
+\newcommand{\lambdasmd}{{\lambda(s,\epssmd)}}
+\newcommand{\rhosmd}{{\rho_{\SMDENTS}}}
+\newcommand{\pismd}{{\pi_{\SMDENTS}}}
+\newcommand{\psismd}{{\psi_{\SMDENTS}}}
 
 
 
