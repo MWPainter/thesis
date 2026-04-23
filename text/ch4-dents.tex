@@ -1234,7 +1234,9 @@
         \end{cases} \label{eq:full_Recommend}
     \end{align}
     % 
-    Using the completed policy $\psi$, a monte carlo value estimate of $V^{\psi}$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. 
+    Using the completed policy $\psi$, a monte carlo estimate of value estimate $V^{\psi}(s_0)$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. 
+
+    Unless otherwise stated, each monte carlo estimate consists of XXX trials, and results are averaged over YYY repeated experiments.
 
     The BayesOpt package \cite{bayesopt} \todo{fix cite?} was used to tune hyperparameters for the algorithms in the gridworld environments. Appendix \ref{appsec:4:hps} gives details on the hyperparameters used and how they were tuned.
 
@@ -1305,7 +1307,7 @@
 % [ ] Final revision
 \subsubsection{Gridworld Results}
 
-    \todo{this subsubsection currently just a c and p from neurips}
+    In each of the following figures \todo{ref}, results are given for a range of map sizes in the three gridworld environments. Hyperparameters were tuned on the smallest map of each environment and then used across all map sizes.
 
     \begin{figure}
         \centering
@@ -1346,20 +1348,20 @@
     \end{figure}
 
 
+    \paragraph{DeterministicGridWorld Results.}
+    
 
+    \bd{in the DeterministicGridWorld environment, the heuristic value function (todo eqn) is set to one, and the bias term (todo eqn) is set to one, following the principle of optimism under uncertainty} \todo{cite sutton}.
 
+    Results are given in Figure \ref{fig:4:dgw_results} for a range of map sizes. 
 
+    \bd{DENTS was able to set the entropy to a lower value than MENTS and keep a higher search temperature, which particularly in the 8x32 map (todo ref) finds the optimal path faster.}
 
+    \bd{TENTS performs well across all map sizes, finding the optimal path in all maps quickly. The only exception relatively is on the small 8x8 map, where it more slowly progresses towards the optimal path. TENTS uses a \textit{sparsemax} distribution for its search policy, which distributes its probability mass less uniformly than a softmax distribution. Intuitively, a subset of actions is prioritised over the others, which in combination with the optimistic heuristic function causes breadth first search like behaviour, leading to a more thorough exploration early on in the larger maps, but slower progress on the simpler smaller maps.}
 
+    \bd{As discussed in (TODO ref), the UCT based algorithms converge to a local optimum.}
 
-
-
-
-
-
-
-
-
+    \bd{Entropy exploration can be seen to be useful particularly in the larger maps, where BTS is the only non entropy algorithm that gets close to the optimal path, and the convergence is slower than the entropy based algorithms.}
 
 
 
@@ -1404,7 +1406,9 @@
     \end{figure}
 
 
+    \paragraph{FrozenLake Results.}
 
+    \bd{In the FrozenLake environment, the heuristic value function (todo eqn) is also set to one. In the exploration setting with stochastic environments, exploitation becomes more important, intuitively to  }
 
 
 
@@ -1477,6 +1481,11 @@
         \caption[Results on FrozenLake.]{Results on Sailing for three map sizes and two initial wind directions. (Left) Initial wind direction is North. (Right) Initial wind direction is South-East. Map sizes of 8x8, 8x16 and 16x16 correspond to the first, second and third rows respectively.}
         \label{fig:4:sailing_results}
     \end{figure}
+
+
+
+
+
     
 
 
@@ -1497,24 +1506,6 @@
     Finally, BTS and DENTS were able to perform well in both domains with a sparse and dense reward structure, whereas the existing methods performed better on one than the other, hence making BTS and DENTS good candidates for a general purpose MCTS algorithm.
 
     \todo{Say here that the initial wind directions for Sailing we set to North, and South-East.}
-    
-    \begin{figure*}
-        \centering
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/grid/fl.png}
-            \caption{8x12 FrozenLake.}
-            \label{fig:fl}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/grid/s.png}
-            \caption{6x6 Sailing Problem.}
-            \label{fig:sp}
-        \end{subfigure}
-        \caption{Results for gridworld environments. \todo{update fig?} \todo{add more caption?}}
-        \label{fig:gridworld_results}
-    \end{figure*}
 
 
 
@@ -1537,143 +1528,46 @@
 \label{sec:param_sens_fl}
 
 
-    \todo{Change to misalignment results?}
 
 
-    \todo{this subsubsection currently just a c and p from neurips}
-
-    Further discussion on sensitivity to the temperature parameter in MENTS \cite{ments}, RENTS and TENTS \cite{rentsmytents} is now given. Results on the 8x8 FrozenLake environment (Figure \ref{fig:fl8}) are given using a variety of temperatures to demonstrate how each algorithm performs with different temperatures in that domain. 
-
-    \todo{clean up hyperparam setting }
-    % MENTS, RENTS, TENTS, BTS and DENTS were run with a variety of temperatures on the 8x8 FrozenLake environment given in Figure \ref{fig:fl8}. Again, we set $\beta(m)=\alpha/\log(e+m)$ for the decay function in DENTS, and we used an exploration parameter of $\epsilon=1$ for all of the algorithms. 
-
-    In Figures \ref{fig:fl_param_sens_ments} and \ref{fig:fl_param_sens_tents} MENTS and TENTS take the scenic route to the goal state for medium temperatures, where the reward for reaching the goal is still significant, but they can obtain more entropy reward by wondering around the gridworld for a while first. For higher temperatures they completely ignore the goal state, opting to rather maximise policy entropy. Interestingly, RENTS in Figure \ref{fig:fl_param_sens_rents} fared better than MENTS and TENTS and never really ignored the goal state for all of the temperatures considered.
-
-    In contrast, both BTS and DENTS were relativly agnostic to the temperature parameter in this environment (with $\epsilon=1$) and were always able to find the goal state. Curves for BTS and DENTS are included in all of Figures \ref{fig:fl_param_sens_ments}, \ref{fig:fl_param_sens_tents} and \ref{fig:fl_param_sens_rents} for reference and as a comparison for MENTS, RENTS and TENTS.
-
-    % \FloatBarrier
-    
     \begin{figure}
         \centering
-        
-        \begin{subfigure}[b]{0.32\textwidth}
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_01.png}
-            \caption{$\alpha=1$}
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_700_fl_8x8_param_e0_dt0.png}
+            \caption{$\epsilon_{\alg}=0$.}
+            \label{fig:4:dgw_param_sens:sub:a}
         \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_01.png}
-            \caption{$\alpha=0.5$}
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_710_fl_8x8_param_e1_dt0.png}
+            \caption{$\epsilon_{\alg}=1$.}
+            \label{fig:4:dgw_param_sens:sub:b}
         \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_01.png}
-            \caption{$\alpha=0.1$}
-        \end{subfigure}
-        
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_01.png}
-            \caption{$\alpha=0.05$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_01.png}
-            \caption{$\alpha=0.01$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_01.png}
-            \caption{$\alpha=0.005$}
-        \end{subfigure}
-        
-        \caption{MENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-        \label{fig:fl_param_sens_ments}
-    \end{figure}
-    
-    \begin{figure}
-        \centering
-        
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_02.png}
-            \caption{$\alpha=1$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_02.png}
-            \caption{$\alpha=0.5$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_02.png}
-            \caption{$\alpha=0.1$}
-        \end{subfigure}
-        
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_02.png}
-            \caption{$\alpha=0.05$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_02.png}
-            \caption{$\alpha=0.01$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_02.png}
-            \caption{$\alpha=0.005$}
-        \end{subfigure}
-        
-        \caption{RENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-        \label{fig:fl_param_sens_rents}
-    \end{figure}
-    
-    \begin{figure}
-        \centering
-        
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/053_fl8_1_0_03.png}
-            \caption{$\alpha=1$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/054_fl8_0_5_03.png}
-            \caption{$\alpha=0.5$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/055_fl8_0_1_03.png}
-            \caption{$\alpha=0.1$}
-        \end{subfigure}
-        
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/056_fl8_0_05_03.png}
-            \caption{$\alpha=0.05$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/057_fl8_0_01_03.png}
-            \caption{$\alpha=0.01$}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.32\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/temp/fl_sens/058_fl8_0_005_03.png}
-            \caption{$\alpha=0.005$}
-        \end{subfigure}
-        
-        \caption{TENTS with a variety of temperatures on an 8x8 FrozenLake environment. BTS and DENTS are included for reference. \todo{Update fig?}}
-        \label{fig:fl_param_sens_tents}
+
+        \caption[DeterministicGridWorld results with a range of parameters.]{DeterministicGridWorld results with a range of parameters. The 8x8 map is used (Figure \ref{appfig:fl_maps}), for each parameter setting each algorithm was run for $50{,}000$ trials. Results are averaged over $10$ repeated experiments. For each algorithm $\alg$, (\ref{fig:4:sailing_results:sub:a}) corresponds to setting the exploration parameter $\epsilon_{\alg}$ to zero, and (\ref{fig:4:sailing_results:sub:b}) corresponds to setting it to one. Note that UCT and MaxUCT do not have an $\epsilon$ parameter, so only appears in (\ref{fig:4:dgw_param_sens:sub:a}).}
+        \label{fig:4:dgw_param_sens}
     \end{figure}
 
 
+    \todo{Decaying temp fig}
 
 
+    \bd{This experiment aims to confirm the entropy misalignment problem exists in gridworld environments too. As can be seen in Figure XXX, when the temperature parameter of maximum entropy algorithms (MENTS and TENTS) is large enough the value estimate at the root not falls to zero.}
 
+    \bd{Empirically RENTS didn't suffer from entropy misalignment. This can be understood by viewing the relative entropy as a \textit{Kullback-Leibler} regularisation term, with penalties of the form (TODO: KL term from RENTS). From this perspective,} $\pi_{\text{RENTS}}(\cdot|s_t)$ is penalised according to how different it is from $\pi_{\text{RENTS}}(\cdot|s_{t-1})$, \bd{and intuitively, repeating the same action over and over is an effective strategy in Frozen Lake.}
+
+    \bd{In contrast it is less clear why RENTS performs well at low temperature, and is the only algorithm to perform well at a low temperature with the exploration parameter set to zero. When the temperature is low, the search policy is relatively greedy, and explores less, which causes the worse values for all other algorithms at low temperatures. It may be the case that the RENTS objective may be biasing the initial trials towards repeated actions, paired with the heuristic function set to one, which causes RENTS to follow the same action until it falls in a hole. On the next trial RENTS would then keep taking the same action until it reaches the hole, which will now have a lower value estimate, and a different action is tried}
+
+    \bd{A reasonable question to ask is if replacing the temperature in MENTS and TENTS with a decaying function similar to BTS and DENTS will avoid the entropy misalignment problem. However, recall the maximum entropy objective (todo REF)}:
+
+    \todo{copy max entropy objective}
+
+    \bd{using a decaying temperature in MENTS will in effect give each term in the entropy sum of (todo ref) its own coefficient, and the objective is still misaligned because of large temperatures depeer in the tree.}
+
+    \bd{Despite this, Figure (todo ref) repeats the same experiment as in (todo ref), but using a decaying temperature function for MENTS, RENTS and TENTS. It still suffers from entropy misalignment.}
 
 
 
