@@ -942,14 +942,14 @@ def backup_phase($\tau_{:h}$, ctx)
 
     \todo{Maybe move to related work Ch3, Sec 2.4 either is THTS with all the algorithms, or THTS with a couple examples. PUCT, RENTS, TENTS can go in the related work section. Should also define MaxUCT.}
 
-    AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{pucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
+    AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{prio_ucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
 
     PUCT uses similar variables to UCT (Section \ref{sec:2-4-2-uct}), the sample average value estimates $\Vpuct(s)$ and $\Qpuct(s,a)$, visit counts $N(s)$ and $N(s,a)$, the bias parameter $\bpuct$, and the flag $\normalisedq$. 
 
     The PUCT search policy is similar to the UCT search policy (Equation \ref{eq:2:uct_policy}), with the following changes:
     \begin{itemize}
         \item The logarithmic confidence interval term in Equation (\ref{eq:2:uct_policy}) is replaced by a polynomial term \cite{poly_uct};
-        \item The confidence interval term is weighted by the \textit{predictor values} $\piinit(a|s)$, inspired by predictor UCB \cite{pucb};
+        \item The confidence interval term is weighted by the \textit{predictor values} $\piinit(a|s)$, inspired by predictor UCB \cite{prio_ucb};
         \item The $N(s,a)$ denominator is modified to $N(s,a)+1$, which allows actions to be selected more than once before all actions have been tried, making the policy better suited to large action spaces such as in Go.
     \end{itemize}
     
@@ -1301,8 +1301,46 @@ Whilst this thesis focuses on the linear utility setting, another commonly used 
 
 The Pareto front can be related to the previously defined solution sets if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
+Several metrics have been proposed for evaluating the 
+quality of a solution set in multi-objective settings 
+\cite{morl_survey}. Two commonly used metrics are the 
+\textit{hypervolume indicator}, which measures the volume 
+of objective space dominated by a value set, and the 
+\textit{expected utility metric}, which measures the 
+expected value of the best policy in the set under a 
+randomly drawn weight vector.
+
+\begin{defn}
+    \label{def:2:hypervolume}
+    Let $\bfcl{V}\subset\bb{R}^D$ be a finite set of vectors 
+    and let $\bff{r}\in\bb{R}^D$ be a \textnormal{reference 
+    point} such that $r_d \leq \min_{\bff{v}\in\bfcl{V}} v_d$ 
+    for all $d=1,\ldots,D$. The \textnormal{hypervolume 
+    indicator} of $\bfcl{V}$ with respect to $\bff{r}$ is 
+    the Lebesgue measure of the space dominated by 
+    $\bfcl{V}$ and bounded below by $\bff{r}$:
+    \begin{align}
+        \HV(\bfcl{V};\bff{r}) = \lambdalebesgue\left(
+            \bigcup_{\bff{v}\in\bfcl{V}} 
+            \{\bff{x}\in\bb{R}^D \mid 
+            \bff{r} \preceq_P \bff{x} \preceq_P \bff{v}\}
+        \right),
+    \end{align}
+    where $\lambdalebesgue$ denotes the Lebesgue measure and $\preceq_P$ is Pareto domination (Definition \ref{def:2:pareto_front}). 
+\end{defn}
 
 
+\begin{defn}
+    \label{def:2:eum}
+    Given a solution set of policies $\Psi$, the \textit{(Uniform) Expected Utility Metric} (\eum) is defined as:
+    \begin{align}
+        \eum(\Psi) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
+            \max_{\psi\in\Psi} \bff{w}^\top \bff{V}^{\psi}(s_0;0)
+         \right],
+    \end{align}
+    %
+    where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$.
+\end{defn}
 
 
 

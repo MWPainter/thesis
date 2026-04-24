@@ -1,23 +1,53 @@
 % List of abbreviations
 \begin{mclistof}{List of Abbreviations}{3.2cm}
+    \item[AR-BTS] Boltzmann Tree Search with Average Returns.
+    \item[AR-DENTS] Decaying ENtropy Tree Search with Average Returns.
+    \item[AR-MENTS] Maximum ENtropy Tree Search with Average Returns.
+    \item[AR-RENTS] Relative ENtropy Tree Search with Average Returns.
+    \item[AR-TENTS] Tsallis ENtropy Tree Search with Average Returns.
+    \item[BTG] Bipartite Triangulation Graph.
     \item[BTS] Boltzmann Tree Search.
+    \item[C-CHMCTS] Chebyshev Convex Hull Monte Carlo Tree Search.
     \item[CCS] Convex Coverage Set.
+    \item[CH-BTS] Convex Hull Boltzmann Tree Search.
+    \item[CH-CZT] Convex Hull Contextual Zooming for Trees.
+    \item[CHMCTS] Convex Hull Monte Carlo Tree Search.
+    \item[CH-UCT] Convex Hull UCT.
     \item[CHVI] Convex Hull Value Iteration.
     \item[CHVS] Convex Hull Value Set.
     \item[CMAB] Contextual Multi-Armed Bandit (problem).
     \item[CZ] Contextual Zooming. 
+    \item[CZT] Contextual Zooming for Trees.
     \item[DENTS] Decaying ENtropy Tree Search.
-    \item[EMAB] Exploring Multi-Armed Bandit (problem).
+    \item[DGW] DeterministicGridWorld (environment).
+    \item[DKW] Dvoretzky-Kiefer-Wolfowitz (inequality).
+    \item[DST] Deep Sea Treasure (environment). 
+    \item[EMAB] Exploring Multi-Armed Bandit (problem).    
+    \item[EUM] Expected Utility Metric.
+    \item[GT] Good-Turing (estimate).
+    \item[H-CHMCTS] Hypervolume Convex Hull Monte Carlo Tree Search.
+    \item[H-MCTS] Hybrid MCTS.
+    \item[HOO] Hierarchical Optimistic Optimisation.
+    \item[HV] Hypervolume (indicator).
+    \item[LEB] Longest Edge Bisection.
     \item[MAB] Multi-Armed Bandit (problem). 
+    \item[MaxUCT] Maximum UCT.
     \item[MCCS] Minimal Convex Coverage Set.
     \item[MCTS] Monte Carlo Tree Search.
     \item[\mctsone] A specific and common presentation of Monte Carlo Tree Search, presented in Section \ref{sec:2-4-thts}.
     \item[MDP] Markov Decision Process.
     \item[MENTS] Maximum ENtropy Tree Search.
+    \item[MOMCTS] Multi-Objective Monte Carlo Tree Search.
     \item[MOMDP] Multi-Objective Markov Decision Process.
     \item[MORL] Multi-Objective Reinforcement Learning.
+    \item[P-CHMCTS] Pareto Convex Hull Monte Carlo Tree Search.
     \item[PF] Pareto Front.
     \item[PUCT] Predictor-UCT. 
+    \item[RENTS] Relative ENtropy Tree Search.
+    \item[RL] Reinforcement Learning.
+    \item[SM-BTS] Boltzmann Tree Search with Simplex Maps.
+    \item[SM-DENTS] Decaying ENtropy Tree Search with Simplex Maps.
+    \item[TENTS] Tsallis ENtropy Tree Search.
     \item[THTS] Trial-Based Heuristic Tree Search.
     \item[\thtspp] An extension of THTS used in this thesis.
     \item[UCB] Upper Confidence Bound (algorithm).
@@ -52,7 +82,7 @@
     \item[$x\sim f$] 
         If $f:X\rightarrow\bb{R}$ specifies a probability distribution in some way (e.g. a probability density function or cumulative density function), then $x\sim f$ denotes that the variable $x$ is sampled from the distribution $f$.
     \item[$O(f(x))$]
-        Big-O notation: $g(x) = O(f(x))$ if there exist constants $c > 0$ and $x_0$ such that $|g(x)| \leq c \cdot f(x)$ for all $x \geq x_0$. Used to describe an asymptotic upper bound on the growth rate of a function.
+        Big-O notation: $g(x) = O(f(x))$ if there exist constants $c > 0$ and $x_0$ such that $|g(x)| \leq c \cdot f(x)$ for all $x \geq x_0$. Used to describe an asymptotic upper bound on the growth rate of a function. If $f$ is a set, then $x\sim f$ denotes that the variable $x$ is sampled uniformly randomly from the set $f$.
     \item[$X_i\rap X$]
         The sequence of random variables $X_i$ converges in probability to the random variable $X$. $\Pr\left(\left|X_i - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ i \rightarrow \infty$ for all $\varepsilon>0$.
     \item[$X_i\raas X$]
@@ -203,6 +233,8 @@
         The number of visits at the decision node corresponding to state $s$.
     \item[$N(s,a)$]
         The number of visits at the chance node corresponding to state-action pair $(s,a)$.
+    \item[$N(s'|s,a)$]
+        The \textnormal{conditional visit count} at chance node $(s,a)$, which is the number of times successor state $s'$ was sampled from $(s,a)$ across all \thtspp\ewe trials.
     \item[$\node(s)$] 
         The decision node corresponding to the state $s$.
     \item[$\node(s)\dotchildren$]
@@ -282,6 +314,19 @@
     \item[$\Vments(s)$] 
         A soft value estimate at the decision node $s$ in MENTS.
     \\
+    % %%%%%
+    % % Convergence
+    % %%%%%
+    % \item[{\parbox[t]{\textwidth}{
+    %     \Large\textbf{Convergence of Random Variables (Section \ref{sec:2-5-convergence})}\hfill\hfill
+    %     }}]
+    % % \item[$F_m$] 
+    % %     The empirical cumulative distribution function of $m$ samples drawn from the distribution with cumulative distribution function $F$: $F_m(x)=\frac{1}{m}\sum_{i=1}^m \one[X_i<x]$.
+    % \item[$\missingmass$] 
+    %     The \textnormal{missing mass} of a sample: the total probability assigned to categories that were not observed in the sample.
+    % \item[$\goodturingestimate$]
+    %     The \textnormal{Good-Turing estimate} of the missing mass: $\goodturingestimate = \frac{M_1}{m}$, where $M_1$ is the number of categories observed exactly once in a sample of size $m$.
+    \\
     %%%%%
     % MORL
     %%%%%
@@ -300,12 +345,18 @@
         An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
     \item[$\Delta^D$] 
         The $D-1$ simplex simplex (with $D$ dimensions), or, the set of possible weightings over the $D$ objectives of a MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}$.
+    \item[$\eum(\Psi)$]
+        The \textnormal{expected utility metric} of a set of policies $\Psi$: $\eum(\Psi)=\bb{E}_{\bff{w}\sim U(\Delta^D)}[\max_{\psi\in\Psi}\bff{w}^\top\bff{V}^\psi(s_0)]$.
+    \item[$\HV(\bfcl{V};\rref)$]
+        The \textnormal{hypervolume indicator} of a vector set $\bfcl{V}$ with respect to a reference point $\rref$: the Lebesgue measure of the region dominated by $\bfcl{V}$ and bounded below by $\rref$.
     \item[$\Pi$] 
         The set of all possible policies in a MOMDP.
     \item[$PF(\Pi)$]
         The Pareto front of the set of policies $\Pi$.
     \item[$\bff{Q}^{\pi}$]
         The multi-objective Q-value function of a policy $\pi$. $\bff{Q}^{\pi}(s,a;t)$ denotes the expected cumulative vector reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
+    \item[$\succ_P$]
+        The \textnormal{Pareto domination} relation over vectors: $\bff{v}\succ_P\bff{v'}$ if and only if $v_i\geq v'_i$ for all $i$ and $v_j>v'_j$ for some $j$.
     \item[$U(\Pi;u)$] 
         The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the utility function $u$. Each policy in $U(\Pi;u)$ achieves a maximal utility for some weighting over the objectives.
     \item[$u$] 
@@ -330,4 +381,194 @@
     % \item[V value set]
     % \item[pi chvi]
     % \item[v bot, reference point] 
+    \\
+    %%%%%
+    % Ch 4 - Boltzmann Search
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Monte Carlo Tree Search with Boltzmann Exploration \\(Chapter \ref{ch:4-dents})}\hfill\hfill
+      }}]
+    \item[$\sreg(s,\psi)$]
+        The \textnormal{simple regret} of a recommendation policy $\psi$ at state $s$: $\sreg(s,\psi) = V^*(s) - V^{\psi}(s)$.
+    \\
+    %%%%%
+    % BTS
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Boltzmann Tree Search (Section \ref{sec:4-2-1-bts})}\hfill\hfill
+    }}]
+    \item[$\alphabts$] 
+        The temperature function used in BTS, $\alphabts(x)>0$. The temperature at a decision node $s$ is $\alphabts(N(s))$.
+    \item[$\epsbts$]
+        An exploration parameter used in BTS, $\epsbts\in[0,\infty)$.
+    \item[$\Nqbts, \Nvbts$]
+        \hspace{0.25cm} Pseudo-visit weights used in BTS to bias the Q-value and value estimates towards the heuristic functions $\Qinit$ and $\Vinit$.
+    \item[$\pibts$]
+        The search policy used in BTS.
+    \item[$\Qbts(s,a)$]
+        The Bellman Q-value estimate at chance node $(s,a)$ in BTS.
+    \item[$\Qbtsnorm(s,a)$]
+        The optionally normalised and heuristic-biased Q-value estimate used by the BTS search policy to select actions.
+    \item[$\Vbts(s)$]
+        The Bellman value estimate at decision node $s$ in BTS.
+    \item[$\psibts$]
+        The Q-value based recommendation policy of BTS: $\psibts(s)=\argmax_{a\in\cl{A}}\Qbts(s,a)$.
+    \item[$\mvbts$]
+        The most-visited recommendation policy of BTS: $\mvbts(s)=\argmax_{a\in\cl{A}} N(s,a)$.
+    \\
+    %%%%%
+    % DENTS
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Decaying ENtropy Tree Search (Section \ref{sec:4-2-2-dents})}\hfill\hfill
+    }}]
+    \item[$\alphadents$]
+        The temperature function used in DENTS, $\alphadents(x)>0$.
+    \item[$\betadents$]
+        The entropy weighting function used in DENTS, $\betadents(x)\geq 0$. Typically chosen such that $\betadents(x)\rightarrow 0$.
+    \item[$\epsdents$]
+        An exploration parameter used in DENTS, $\epsdents\in[0,\infty)$.
+    \item[$\HQdents(s,a)$]
+        The Monte Carlo entropy estimate at chance node $(s,a)$ in DENTS.
+    \item[$\HVdents(s)$]
+        The Monte Carlo entropy estimate at decision node $s$ in DENTS.
+    \item[$\mvdents$]
+        The most-visited recommendation policy of DENTS.
+    \item[$\Nqdents, \Nvdents$]
+        \hspace{0.25cm} Pseudo-visit weights used in DENTS, analogous to $\Nqbts$ and $\Nvbts$.
+    \item[$\pidents$]
+        The search policy used in DENTS.
+    \item[$\psidents$]
+        The Q-value based recommendation policy of DENTS.
+    \item[$\Qdents(s,a)$]
+        The Bellman Q-value estimate at chance node $(s,a)$ in DENTS.
+    \item[$\Qdentssoft(s,a)$]
+        The entropy-augmented Q-value used in the DENTS search policy: $\Qdentssoft(s,a)=\Qdents(s,a)+\betadents(N(s))\HQdents(s,a)$.
+    \item[$\Qdentsnorm(s,a)$]
+        The optionally normalised and heuristic-biased soft Q-value used by the DENTS search policy to select actions.
+    \item[$\Vdents(s)$]
+        The Bellman value estimate at decision node $s$ in DENTS.
+    \\
+    %%%%%
+    % Ch 5 - CHMCTS
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Convex Hull Monte Carlo Tree Search \\(Chapter \ref{ch:5-chmcts})}\hfill\hfill
+        }}]
+    \item[$\alphachbts$]
+        The temperature function used in CH-BTS.
+    \item[$\bczt$]
+        The bias parameter used in CZT to control exploration.
+    \item[$\bpareto$]
+        The bias parameter used in P-CHMCTS to control exploration.
+    \item[$\cchuct$]
+        The bias parameter used in CH-UCT to control exploration.
+    \item[$\ctxreg(s,\pi^{1:n})$]
+        The \textnormal{contextual cumulative regret} of the sequence of search policies $\pi^{1:n}$ at state $s$ over $n$ trials, where a weight vector is sampled uniformly from $\Delta^D$ at each trial.
+    \item[$\ctxsreg(s,\psi)$]
+        \hspace{0.45cm} The \textnormal{contextual simple regret} of a recommendation policy $\psi$ at state $s$: the expected scalarised loss relative to the optimal policy, with the weight vector drawn uniformly from $\Delta^D$.
+    \item[$\deltaunsolved$]
+        The confidence parameter used in the solved labelling of CHMCTS.
+    \item[$\DST(W,\pswept)$]
+        The \textit{Deep Sea Treasure} environment with width $W$ and probability of being swept $\pswept$ used in Chapter \ref{ch:5-chmcts}.
+    \item[$\epschbts$]
+        An exploration parameter used in CH-BTS.
+    \item[$K_{\max}$]
+        The maximum size of a convex hull value set in CHMCTS, used in the size pruning optimisation.
+    \item[$\Mmin$]
+        The minimum ball visit count required to trigger the CZT activation rule.
+    \item[$\pi(a|s;\bff{w})$]
+        A \textnormal{contextual policy}, extending the policy notation $\pi(a|s)$ to include a context weight $\bff{w}\in\Delta^D$.
+    \item[$\pswept$]
+        The probability of the agent being swept by a current in the \textit{Deep Sea Treasure} environment used in Chapter \ref{ch:5-chmcts}.
+    \item[$\rref$]
+        The reference point used in the hypervolume indicator (H-CHMCTS).
+    \item[$\ruto$]
+        The utopian point used in the Chebyshev utility (C-CHMCTS).
+    \item[$\unsolvedtol$]
+        The tolerance used to mark chance nodes as solved in CHMCTS, where a node is marked solved when $\unsolved(s,a)\leq\unsolvedtol$.
+    \\
+    %%%%%
+    % CHMCTS Common Framework
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{CHMCTS Common Framework (Section \ref{sec:5-3-1-framework})}\hfill\hfill
+    }}]
+    \item[$\Valg(s)$]
+        The convex hull value set estimate maintained at decision node $s$ by a CHMCTS algorithm $\alg$.
+    \item[$\Qalg(s,a)$]
+        The convex hull Q-value set estimate maintained at chance node $(s,a)$ by a CHMCTS algorithm $\alg$.
+    \item[$\Valgctx{\bff{w}}(s)$]
+        The \textnormal{contextual value estimate} at decision node $s$ under weight $\bff{w}$: $\Valgctx{\bff{w}}(s)=\max_{\bff{v}\in\Valg(s)}\bff{w}^\top\bff{v}$.
+    \item[$\Qalgctx{\bff{w}}(s,a)$]
+        The \textnormal{contextual Q-value estimate} at chance node $(s,a)$ under weight $\bff{w}$: $\Qalgctx{\bff{w}}(s,a)=\max_{\bff{q}\in\Qalg(s,a)}\bff{w}^\top\bff{q}$.
+    \item[$\pialg(a|s;\bff{w})$]
+        The search policy of a CHMCTS algorithm $\alg$.
+    \item[$\psialg(s;\bff{w})$]
+        The recommendation policy of a CHMCTS algorithm $\alg$: $\psialg(s;\bff{w})=\argmax_{a\in\cl{A}}\Qalgctx{\bff{w}}(s,a)$.
+    \\
+    %%%%%
+    % Ch 6 - Simplex Maps
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Simplex Maps for Multi-Objective Monte Carlo Tree Search \\(Chapter \ref{ch:6-simplexmaps})}\hfill\hfill
+        }}]
+    \item[$\ESM$]
+        The set of undirected edges of a simplex map, $\ESM\subseteq\VSM\times\VSM$.
+    \item[$\fSM$]
+        The function mapping the vertices of a simplex map to value estimates.
+    \item[$\fcv(\GSM,\bff{w})$]
+        \hspace{2.55cm} Returns the (approximately) closest vertex in $\VSM$ to the weight vector $\bff{w}\in\Delta^D$.
+    \item[$\fcs(\GSM,\bff{w})$]
+        \hspace{3.45cm} Returns the leaf simplex in $\TSM$ that contains the weight vector $\bff{w}\in\Delta^D$.
+    \item[$\GSM$]
+        A simplex map, $\GSM=(\VSM,\ESM,\TSM,\fSM)$.
+    \item[$\push(\GSM,\wSM)$]
+        Propagates the value estimate at $\wSM$ to neighbouring vertices via breadth-first search.
+    \item[$\pushradius$]
+        The maximum push radius used by the $\push$ operation.
+    \item[$\splitminradius$]
+        \hspace{0.75cm} The minimum radius below which a simplex is not split.
+    \item[$\splitmindelta$]
+        \hspace{0.5cm} The minimum value-estimate difference within a simplex required to trigger a split.
+    \item[$\splitminvis$]
+        \hspace{0.6cm} The minimum number of split calls on a simplex before it is split.
+    \item[$\splitsimplex(\GSM,\SSM)$]
+        \hspace{1.2cm} Performs a longest edge bisection of the leaf simplex $\SSM\in\TSM$ when split conditions are met.
+    \item[$\TSM$]
+        The binary tree of simplices of a simplex map, whose leaf nodes form a triangulation of the unit simplex $\Delta^D$.
+    \item[$\VSM$]
+        The set of vertices of a simplex map, $\VSM\subseteq\Delta^D$.
+    \item[$\wSM$]
+        A vertex of a simplex map, $\wSM\in\VSM$.
+    \\
+    %%%%%
+    % SM-DENTS
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{DENTS with Simplex Maps (Section \ref{sec:6-3-algorithms})}\hfill\hfill
+    }}]
+    \item[$\alphasmd$]
+        The temperature function used in SM-DENTS.
+    \item[$\betasmd$]
+        The entropy weighting function used in SM-DENTS.
+    \item[$\epssmd$]
+        An exploration parameter used in SM-DENTS.
+    \item[$\Vsmd(s;\cdot)$]
+        The multi-objective value estimate function maintained in the simplex map at decision node $s$.
+    \item[$\Qsmd(s,a;\cdot)$]
+        The multi-objective Q-value estimate function maintained in the simplex map at chance node $(s,a)$.
+    \item[$\HVsmd(s;\cdot)$]
+        The entropy value estimate function maintained in the simplex map at decision node $s$.
+    \item[$\HQsmd(s,a;\cdot)$]
+        The entropy value estimate function maintained in the simplex map at chance node $(s,a)$.
+    \item[$\Vsmdctx(s)$]
+        The contextual value estimate of SM-DENTS at decision node $s$: $\Vsmdctx(s)=\bff{w}^\top\Vsmd(s;\wV)$ where $\wV=\fcv(\GSM(s),\bff{w})$.
+    \item[$\Qsmdctx(s,a)$]
+        The contextual Q-value estimate of SM-DENTS at chance node $(s,a)$.
+    \item[$\pismd$]
+        The search policy used in SM-DENTS.
+    \item[$\psismd$]
+        The recommendation policy used in SM-DENTS: $\psismd(s;\bff{w})=\argmax_{a\in\cl{A}}\Qsmdctx(s,a)$.
+
 \end{mclistof} 

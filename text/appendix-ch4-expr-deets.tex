@@ -58,7 +58,7 @@
     Figure \ref{appfig:fl_maps} shows the maps used in the DeterministicGridWorld and FrozenLake environments. The 4x4 and 8x8 maps are the standard maps from the Gymnasium library \todo{cite}. The remaining maps are randomly generated, where the starting position is always the top left corner, the goal position is always the bottom right corner and the remaining positions are randomly sampled with a $\frac{1}{5}$ probability of being a hole. Rejection sampling is used to ensure that there is always a path from the starting position to the goal.
 
 
-
+    \todo{get these maps into figures}
 
 
     % "4x4": [
@@ -185,7 +185,7 @@
     Figure \ref{appfig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
 
 
-    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
+    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:4-4-3-2-param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
 
     \begin{figure}
         \centering
@@ -408,11 +408,14 @@
         \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
     \end{itemize}
 
-    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$.
-
-    \todo{State the maps each environment was tuned on.}
-
-    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \todo{cite}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
+    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. 
+    
+    \todo{I think the Qinit is a bit wrong:}
+    \begin{align}
+        \Qinit()
+    \end{align}
+    
+    For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \todo{cite}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
 
     \begin{table}[]
         \centering
@@ -435,6 +438,8 @@
     \end{table}
 
     Parameters were optimised using the \todo{ref} map for DeterministicGridWorld, the \todo{ref} map for FrozenLake and the \todo{ref} map for Sailing.
+
+    \todo{Missing the bit which says that we used BayesOpt for the optimisation}
 
     To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
 
@@ -659,14 +664,14 @@
 
     \todo{Find correct place for: } These experiments were run with \mctsmode\ewe turned on
 
-    Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round robin tournament was used to select the hyperparameters. This section gives the results of the round robin tournaments.
+    Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round-robin tournament was used to select the hyperparameters. This section gives the results of the round-robin tournaments.
 
     For PUCT, the parameters used were copied from the reported values for Kata Go and Alpha Go Zero \todo{fix cites} %\citeapp{katago,silver2017mastering}. 
 
     This section is organised as follows:
     \begin{itemize}
         \item Section \ref{appsec:go_ar_ments} outlines the implementation of the AR-MENTS, AR-RENTS and AR-TENTS algorithms;
-        \item Section \ref{appsec:round_robin} gives details on the round robin tournament used to select the hyperparameters for Go experiments;
+        \item Section \ref{appsec:round_robin} gives details on the round-robin tournament used to select the hyperparameters for Go experiments;
         \item Section \ref{appsec:go_ar_vs_bellman} gives results for matches between the Bellman and average return versions of each algorithm.
     \end{itemize}
 
@@ -698,7 +703,7 @@
 
     The temperature and entropy coefficient functions used in BTS and DENTS for Go experiments were of the form $\alpha(x)=\alpha_{\text{init}}/\sqrt{x}$ and $\beta(x)=\beta_{\text{init}}/\sqrt{x}$ respectively. For DENTS, only the entropy coefficient was tuned independently and used the parameters tuned for BTS.
     
-    Parameters are tuned one at a time, with a round robin tournament used to select the best value for each parameter, keeping the remaining parameters fixed. The parameter that won the most matches is selected, with ties broken by the agent that won the most games. If the winning agent had the largest or smallest value, then another tournament is run adjusting the values accordingly.
+    Parameters are tuned one at a time, with a round-robin tournament used to select the best value for each parameter, keeping the remaining parameters fixed. The parameter that won the most matches is selected, with ties broken by the agent that won the most games. If the winning agent had the largest or smallest value, then another tournament is run adjusting the values accordingly.
 
     These tuning tournaments were run using the game of 9x9 Go with a komi of 6.5, and giving each algorithm 2.5 seconds per move. 
 
@@ -737,7 +742,7 @@
     
     
     
-    $\epsilon_{\tilde{\lambda}}$ was tuned next, using the selected values of $\alpha_{\text{init}}$ for BTS and AR-BTS. Tables \ref{tab:w020} and \ref{tab:x020} give results for the round robin tournament to select the prior policy weight for BTS and AR-BTS.
+    $\epsilon_{\tilde{\lambda}}$ was tuned next, using the selected values of $\alpha_{\text{init}}$ for BTS and AR-BTS. Tables \ref{tab:w020} and \ref{tab:x020} give results for the round-robin tournament to select the prior policy weight for BTS and AR-BTS.
     
     \begin{table}[]
     \centering
@@ -771,7 +776,7 @@
     
     
     
-    Next the exploration parameter $\epsilon$ was tuned, using the selected values of $\alpha_{\text{init}}$ and $\epsilon_{\tilde{\lambda}}$ for BTS and AR-BTS. Tables \ref{tab:w030} and \ref{tab:x030} give results for the round robin tournament to select the exploration parameter for BTS and AR-BTS. Although the lowest value of 0.001 was selected for AR-BTS, it is close enough to zero such that very few actions are randomly sampled. A round robin with values between $10^{-3}$ and $10^{-5}$ was tried, but all matches resulted in draws.
+    Next the exploration parameter $\epsilon$ was tuned, using the selected values of $\alpha_{\text{init}}$ and $\epsilon_{\tilde{\lambda}}$ for BTS and AR-BTS. Tables \ref{tab:w030} and \ref{tab:x030} give results for the round-robin tournament to select the exploration parameter for BTS and AR-BTS. Although the lowest value of 0.001 was selected for AR-BTS, it is close enough to zero such that very few actions are randomly sampled. A round-robin with values between $10^{-3}$ and $10^{-5}$ was tried, but all matches resulted in draws.
     
     \begin{table}[]
     \centering
@@ -807,7 +812,7 @@
     
     
     
-    To tune the MENTS, RENTS and TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for BTS were used, and the value of $\alpha$ varied. Similarly, to tune the AR-MENTS, AR-RENTS and AR-TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for AR-BTS were used, and the value of $\alpha$ varied. Results of the round robin tournaments to select the temperature parameter $\alpha$ are given in the following tables:
+    To tune the MENTS, RENTS and TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for BTS were used, and the value of $\alpha$ varied. Similarly, to tune the AR-MENTS, AR-RENTS and AR-TENTS algorithms, the values of $\epsilon$, $\epsilon_{\tilde{\lambda}}$ selected for AR-BTS were used, and the value of $\alpha$ varied. Results of the round-robin tournaments to select the temperature parameter $\alpha$ are given in the following tables:
     \begin{itemize}
         \item MENTS - Table \ref{tab:w040};
         \item AR-MENTS - Table \ref{tab:x040};
@@ -912,7 +917,7 @@
     
     
     
-    Finaly, for \mbox{(AR-)DENTS}, all parameters were copied from \mbox{(AR-)BTS}, and the entropy temperature $\beta$ was tuned. Tables \ref{tab:w070} and \ref{tab:x070} give results for the round robin tournament to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS and AR-DENTS respectively.
+    Finaly, for \mbox{(AR-)DENTS}, all parameters were copied from \mbox{(AR-)BTS}, and the entropy temperature $\beta$ was tuned. Tables \ref{tab:w070} and \ref{tab:x070} give results for the round-robin tournament to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS and AR-DENTS respectively.
     
     
     \begin{table}[]

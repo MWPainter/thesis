@@ -187,12 +187,12 @@
         \label{def:5:contextual_simple_regret}
         The \textnormal{contextual simple regret} of a recommendation policy $\psi$ at state $s\in\cl{S}$ is:
         \begin{align}
-            \ctxsreg(s,\psi) = \bb{E}_{\bff{w}\sim\Delta^D}\left[
+            \ctxsreg(s,\psi) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
                 \max_{\pi'} {\bff{w}}^\top \bff{V}^{\pi'}(s) 
                 - {\bff{w}}^\top \bff{V}^{\psi(\cdot;\bff{w})}(s)
             \right],
         \end{align}
-        where $\bff{w}\sim\Delta^D$ denotes a weight vector sampled uniformly from the $D$-dimensional unit simplex.
+        where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the $D$-dimensional unit simplex.
     \end{defn}
 
     Several prior MOMCTS works \todo{cite}, discussed in Section \todo{ref ch3}, use a context-independent search policy. It is shown in Section \ref{sec:5-6-theory} that any context-independent search policy suffers linear contextual cumulative regret, and any context-independent recommendation policy suffers linear contextual simple regret.
@@ -360,6 +360,8 @@
     CZ \todo{cite} extends its regret analysis from a fixed number of rounds $T$ to an unknown number of rounds using the \textit{doubling trick} \cite{doubling_trick}. The doubling trick runs an independent instance of the algorithm for $T$ rounds, then $2T$ rounds, then $4T$ rounds and so on. In practice, however, discarding all accumulated data at each doubling interval is undesirable. Instead, in CZT the number of visits $N(s)$ at the current node is used directly in place of $T$, which avoids the need for the doubling trick at the cost of losing regret guarantees.
 
     \todo{Make sure to comment about how CZT without the additional activation rule leads to a blowup in the number of balls and is very slow.}
+
+    \todo{maybe actually not given the expr running, maybe the argument more is adding more balls than can be updated to contain useful information? Otherwise just storing the return every trial}
     
 
 
@@ -568,28 +570,7 @@
 
     \todo{move hypervolume defn to ch2}
 
-    \todo{cite and ref} use the \textit{hypervolume indicator} (Definition \ref{def:5:hypervolume}) as the scalarisation function $\zetaalg$ in the search policy:
-
-    \begin{defn}
-        \label{def:5:hypervolume}
-        Let $\bfcl{V}\subset\bb{R}^D$ be a finite set of vectors 
-        and let $\rref\in\bb{R}^D$ be a \textnormal{reference 
-        point} such that $\rrefcomp_d \leq \min_{\bff{v}\in\bfcl{V}} v_d$ 
-        for all $d=1,\ldots,D$. The \textnormal{hypervolume 
-        indicator} of $\bfcl{V}$ with respect to $\rref$ is 
-        the Lebesgue measure of the space dominated by 
-        $\bfcl{V}$ and bounded below by $\rref$:
-        \begin{align}
-            \HV(\bfcl{V};\bff{r}) = \lambdalebesgue\left(
-                \bigcup_{\bff{v}\in\bfcl{V}} 
-                \{\bff{x}\in\bb{R}^D \mid 
-                \rref \preceq \bff{x} \preceq \bff{v}\}
-            \right),
-        \end{align}
-        where $\lambdalebesgue$ denotes the Lebesgue measure and $\preceq$ is Pareto domination (Definition \ref{def:2:pareto_front}). 
-    \end{defn}
-
-    That is, $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, where $\rref$ is a parameter of the algorithm.
+    \todo{cite and ref} use the \textit{hypervolume indicator} (Definition \ref{def:2:hypervolume}) as the scalarisation function $\zetaalg$ in the search policy. That is, $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, where $\rref$ is reference point for the hypervolume indicator and is a parameter of the algorithm.
     
 \paragraph{Chebyshev CHMCTS (C-CHMCTS).}
 
@@ -608,7 +589,7 @@
         \zetcchmcts(\bfcl{V};\bff{w},\ruto) = \max_{\bff{v}\in\bfcl{V}} \ucheby(\bff{v};\bff{w},\ruto),
     \end{align}
     %
-    where $\ruto$ is a \textit{utopian point} satisfying $\ruto \succeq \bff{v}$ for all $\bff{v}\in\bfcl{V}$ and is a parameter of the algorithm.
+    where $\ruto$ is a \textit{utopian point} satisfying $\ruto \succeq_P \bff{v}$ for all $\bff{v}\in\bfcl{V}$ and is a parameter of the algorithm.
 
 \paragraph{Pareto CHMCTS (P-CHMCTS).}
 
@@ -796,122 +777,127 @@
 \section{Empirical Results}
 \label{sec:5-5-results}
 
-\todo{Clean up plots, legend placement etc.}
+    This section presents the empirical results for this chapter. It is structured similarly to Section \ref{sec:4-4-results} in Chapter \ref{ch:4-dents}, as follows:
+    \begin{itemize}
+        \item Section \ref{sec:5-5-1-envs} describes the MOMDP environments used in the experiments;
+        \item Section \ref{sec:5-5-2-eval_procedure} describes the evaluation setup used;
+        \item Section \ref{sec:5-5-3-results_and_discussion} presents the results on the MOMDP environments;
+        \item Section \ref{sec:5-5-4-scalability} presents scalability results on the \textit{Deep Sea Tresure} environment;
+        \item Appendix \ref{app:expr-deets-ch5} provides the hyperparameters used and how they were chosen.
+    \end{itemize}
 
-
-
-New Ch5 plan:
-\begin{itemize} 
-    \item Empirical results
-    \item Say that when possible (have a cpp port) use CHVI as a baseline and also CHVI with prioritised sweeping
-\end{itemize}
-
-should have a QHull reference when talking about the implementation
-
-say that we prune using that, unless it is a degenerate case where we fall back to using the linear programming method
-
-this was the fastest option available
-
-mention that used a well spaced set of points for the EUM calculation and cite the source for how it was computed.
-
-%
-% Original plan for this section
-%
-
-\todo{part 0: discuss the evaluation prodceedure, and how the results are evaluated.}
-
-\todo{part 1: run algorithms on the tree envs that show the context dependent stuff better}
-
-\todo{part 1a: run algorithms with and without vectorised visit counts and show this helps with exploration?}
-
-\todo{part 2: run on suite of mo-gym environments}
-
-\todo{part 3: find environments where the convex hull blows up to motivate ch6. Give the CH fully and plot it out.}
-
-\todo{part 3a: also consider showing some of the optimal convex hulls where possible}
-
-%
-% Original brain dumping
-%
-
-\todo{should really reference back to the ch4 evaluation proceedure too}
-
-\todo{list}
-\begin{itemize}
-    \item Results from CHMCTS paper
-    \item Get same plots from C++ code, but compare expected utility, rather than the confusing hypervolume ratio stuff
-\end{itemize}
-
-\bd{A range of algorithms will be considered in this experimental section. Firstly, for baselines, the convex hull backup versions of algorithms from Ch3 (REF) will be used. Additionally, CZT, CH-CZT, CH-UCT, CH-BTS and CH-DENTS will be considered}
+    The implementation of Convex Hull based algorithms used the QHull library \todo{cite} for convex hull computations where possible, falling back to the linear programming method of \todo{cite ccs} for geometrically degenerate cases.
 
 
 
 
 
-This section provides an empirical evalutation of the algorithms developed in this chapter. The baseline algorithms considered will also be CHMCTS algorithms, using the action selection methods outline in Sections \todo{ref litrev and above}. 
 
-\bd{This para is very braindump.} It is worth noting that in multi-objective MCTS algorithms that the accuracy and quality of the convex hull at the root node is the primary concern, even when a multi-objective MCTS algorithm is used in an \textit{online} manor, where tree search is interleaved between actions taken by the agent. Once a policy has been selected at the initial state it implicitly defines a weighting over the objectives as detailed in Section \todo{ref sec 2}. And following the discussion from \todo{ref above}, to follow an optimal policy the actions need to be taken consistently with respect to the same objective weights. As such, a more efficient online algorithm will be to run the multi-objective tree search from the initial state, and run a single-objective MCTS algorithm in a scalarised single-objective MDP for the remaining actions. Where in the scalarised reward is $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
+% [ ] First Draft
+% [ ] AI proofread/grammar check
+% [ ] TODOs
+% [ ] Spell check
+% [ ] Citations + Refs
+% [ ] LitRev sync
+% [ ] Abbreviations sync
+% [ ] Thesis questions ref/answers
+% [ ] Proofread
+% [ ] Nick comments
+% [ ] Final revision
+\subsection{Environments}
+\label{sec:5-5-1-envs}
+
+    Standard gridworld environments from \textit{MO-Gymnasium} \todo{cite} are used to investigate the behaviour of the search algorithms. 
+
+    \begin{description}
+        \item[Resource-Gathering] 
+            An agent explores a gridworld, and aims to collect a piece of gold and a diamond and return to the starting location. There are two enemies on the map, which will attack and kill the agent with a probability of $\frac{1}{10}$ when the agent enters the enemy's cell. If killed the agent is reset to the starting location. There are three rewards, a cost of $-1$ for being killed, a reward of $1$ for returning with the goal, and a reward of $1$ for returning with the diamond.
+        \item[Four-Room] 
+            The agent must navigate from a starting location to a goal location, with obstructing walls in the map. There are three rewards, corresponding to three collectibles contained in the map.
+        \item[Fruit-Tree-7]
+            An MOMDP consisting of a binary tree of depth 7, where each leaf node is a terminal state giving a random $6$-dimensional reward vector. 
+        \item[Breakable-Bottles]
+            A $1$-dimensional gridworld, where the agent can move between the home state and a bottle bank. The agent can pick up bottles, and carry at most two bottles at a time. If the agent is carrying two bottles at once, there is a probability of $\frac{1}{10}$ that one of the bottles is dropped. Once a bottle is dropped, it cannot be picked up again. There are three rewards, a time cost of $-1$ per timestep, a reward of $25$ for delivering a bottle and an additional cost of $-1$ for dropping a bottle. The trial ends when the agent has delivered two bottles.
+    \end{description}
+
+    For each environment, a horizon of $H=100$ was used where applicable.
+
+
+
+    \paragraph{Deep Sea Treasure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.3\textwidth]{figures/ch5/dst.png}
+        \caption[Deep Sea Treasure environment.]{The Deep Sea Treasure environment, $\DST(10,\pswept)$. Illustration is via \todo{cite improved dst}}
+        \label{fig:5:dst_env}
+    \end{figure}
+
+    In \textit{Deep Sea Treasure} (DST) environment, illustrated in Figure \ref{fig:5:dst_env}, the agent starts in the top left corner and can move in any cardinal direction. DST has two rewards: first a time cost of $-1$ per step and second a \textit{treasure} reward for reaching one of the goal states where the magnitude of the reward is specified by the map.
+
+    While MO-Gymnasium provides a \textit{Deep Sea Tresure} envionment, a custom \texttt{C++} implementation of \textit{Deep Sea Treasure} is used for the following reasons:
+    \begin{itemize}
+        \item \texttt{C++} \bd{is used to provide a more efficient implementation allowing scalability experiments to be conducted more efficiently};
+        \item provide access to a list of states and transition probabilities between states, so that CHVI (Section \ref{sec:2-6-1-chvi}) can be used as a baseline;
+        \item adapt the transition model to include stochasticity.
+    \end{itemize} 
+
+    To introduce a stochastic component to DST, there is a $\pswept$ probability of the agent being swept by a current at each timestep. When swept, the agent is moved in an additional random direction after the agent has made their own move.
+
+    To enable scalability experiments, a range of map sizes are generated using the MORLGlue library \todo{cite}, parameterised by the width of the gridworld. Let $\DST(W,\pswept)$ denote a DST environment with width $W$ and probability of being swept $\pswept$. For each map of width $W$, if $(x_{\text{treasure}},y_{\text{treasure}})$ is the coordinate of furthest treasure, then the maximum treasure value and planning horizon are both set to $2\times (x_{\text{treasure}}+y_{\text{treasure}})$, so that both rewards are given a consistent scale.
+
+    In Section \ref{sec:5-5-3-results_and_discussion} the $\DST(10,0)$, $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$ environments are used. In Section \ref{sec:5-5-4-scalability} the environments $\DST(W,0)$, $\DST(W,\frac{1}{40})$ and $\DST(W,\frac{1}{5})$ are used, with $W$ ranging from $10$ to $100$.
+
+
+
+
 
 
 
 
 \subsection{Evaluation Proceedure} 
+\label{sec:5-5-2-eval_procedure}
 
-    To evaluate the quality of the convex hull at the root node, the following metrics from the multi-objective literature \cite{morl_survey} are considered: \textit{Expected Utility Metric}, \textit{Hypervolume Metric} and a \textit{Sparsity Metric}. \todo{Add EUM and HV and Sparsity here or in ch2? }
+    It is worth noting that in multi-objective MCTS, the 
+    quality of the convex hull at the root node is the 
+    primary concern. Even when a multi-objective MCTS 
+    algorithm is used in an online setting, where tree 
+    search is interleaved with actions taken by the agent, 
+    once a policy is selected at the initial state it 
+    implicitly commits to a weighting over the objectives 
+    (Section \ref{sec:5-1-intro}). A more efficient online 
+    approach is therefore to run the multi-objective tree 
+    search from the initial state, and subsequently follow 
+    a single-objective MCTS algorithm in the scalarised MDP 
+    with reward $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
 
-    To evaluate the quality of the convex hull at the root node, where the optimal convex hull is not known a-priori, the \textit{Expected Utility Metric}, \textit{}
+    To evaluate the quality of the convex hull at the root node, the \textit{Expected Utility Metric} (Definition \ref{def:2:eum}) and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}) are used.
 
-    Firstly, given a context $\bff{w}$ and CHMCTS search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\text{alg}}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
-    % 
+    Given a context $\bff{w}$ and search tree $\cl{T}$ that defines a partial recommendation poilicy $\psi_{\alg}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
     \begin{align}
-        \texttt{complete}(\psi_{\text{alg}})(a|s;\bff{w}) =
+        \texttt{complete}(\psi_{\alg})(a|s;\bff{w}) =
         \begin{cases}
-            1                       & \text{ if } s\in\cl{T} \text{ and } a=\psi_{\text{alg}}(s;\bff{w}), \\
-            0                       & \text{ if } s\in\cl{T} \text{ and } a\neq\psi_{\text{alg}}(s;\bff{w}), \\
+            \psi_{\alg}(a|s;\bff{w})                       & \text{ if } s\in\cl{T}, \\
             \frac{1}{|\cl{A}|}      & \text{ otherwise.}
-        \end{cases} \label{eq:full_Recommend}
+        \end{cases} \label{eq:5:full_Recommend}
     \end{align}
     % 
-    \todo{should reword to account for CZT and how it does the same thing}
 
     The Convex Hull (of policies) can then be written as 
     \begin{align}
-        \Psi_{\text{alg}} = \{\texttt{complete}(\psi_{\text{alg}})\ |\ \bff{w}\in\Delta^D \}.
+        \Psi_{\alg} = \{\texttt{complete}(\psi_{\alg})\ |\ \bff{w}\in\Delta^D \}.
     \end{align}
 
-    This Convex Hull of policies is then evaluated using the \textit{Expected Utility Metric} (\eum), which is defined as:
+    A monte-carlo estimate of $\eum(\Psi_{\alg})$ (Definition \ref{def:2:eum}) is computed. Following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
     \begin{align}
-        \eum(\Psi_{\text{alg}}) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
-            \max_{\psi\in\Psi_{\text{alg}}} \bff{w}^\top \bff{V}^{\psi}(s_0)
-         \right],
+        \eum(\Psi_{\alg}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{R}^{\bff{\tau}(\bff{w})},
     \end{align}
     %
-    where $U(\Delta^D)$ is the uniform distribution over vectors in $\Delta^D$. A monte-carlo estimate of $\eum(\Psi_{\text{alg}})$ will be computed, following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
-    \begin{align}
-        \eum(\Psi_{\text{alg}}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{V}^{\tau(\bff{w})},
-    \end{align}
-    %
-    where $\tau(\bff{w}) \sim \texttt{complete}(\psi_{\text{alg}})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\tau(\bff{w})}$ is the cumulative return from the trajectory. That is, if \todo{double check indices are consistent with how been doing it before} the trajectory is $\tau(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\tau(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
+    where $\bff{\tau}(\bff{w}) \sim \texttt{complete}(\psi_{\alg})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{V}^{\bff{\tau}(\bff{w})}$ is the cumulative return from the trajectory. That is, if the trajectory is $\bff{\tau}(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{V}^{\bff{\tau}(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
 
-    For the results given in \todo{ref}, the number of sampled used to approximate the \eum\ewe was XXX. That is $|E(\Delta^D)| = XXX$.
+    Each algorithm is given $60$ second of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation and value estimates for the EUM are computed using $128$ Monte Carlo samples, i.e. $|E(\Delta^D)| = 128$.
 
-    \todo{double check this is consistent with the litrev paper on MORL and also cite it. Also what are the other metrics?}
-
-    Experiments are run with \mctsmode\ewe turned off, as no memory issues were encountered during the evalutation.
-
-    Similarly to the gridworld environments in Chapter \todo{ref}, the BayesOpt package \cite{bayesopt} was used to tune the hyperparameters of all algorithms in this chapter. Full details on the hyperparameter tuning and the selected parameters are given in Appendix \todo{new appendix? join the appendix?}.
-
-
-
-
-
-\subsection{Environments}
-
-    The MO-Gymnasium \todo{cite} suite of environments was used to evaluate the algorithms. 
-
-    \todo{Pick a couple envs to describe in more detail, and refer to cite for full details}
-
-    Additionally, the Deep Sea Treasure is used, and the \todo{extended? (whatever the updated one is)} are used. \todo{Also mention that we can generate maps of varying size to perform a scalability analysis}
+    Similary to Section \ref{sec:4-4-results}, BayesOpt package \cite{bayesopt} is used to tune the hyperparameters of all algorithms. Full details on the hyperparameter tuning of multi-objective algorithms is given in Appendix \ref{app:expr-deets-ch5}.
 
 
 
@@ -919,9 +905,43 @@ This section provides an empirical evalutation of the algorithms developed in th
 
 
 
-\subsection{Results and Discussion}
+\subsection{Multi-Objective Gridworld Results}
+\label{sec:5-5-3-results_and_discussion} 
 
     \todo{Paste in results and talk about them}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Multi-Objective Gridworld Results}
+\label{sec:5-5-4-scalability}
+
+    \todo{Paste in results and talk about them}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -942,8 +962,8 @@ This section provides an empirical evalutation of the algorithms developed in th
     This section \bd{provides some theoretical discussion around CHMCTS and MOMCTS in general.} It is structured as follows:
     \begin{itemize}
         \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
-        \item Section \ref{sec:5-6-2-convergence_of_chmcts} outlines convergence proofs for CHMCTS;
-        \item Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} discusses a fundimental assumption made in MOMCTS algorithms and \bd{shows that MOMCTS algorithms using this assumption can only compute optimal policies for linear utility functions}.
+        \item Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} discusses a fundimental assumption made in MOMCTS algorithms and \bd{shows that MOMCTS algorithms using this assumption can only compute optimal policies for linear utility functions};
+        \item Section \ref{sec:5-6-3-convergence_of_chmcts} outlines \bd{but doesnt actually bother to prove} convergence proofs for CHMCTS.
     \end{itemize}
 
     
@@ -958,21 +978,10 @@ This section provides an empirical evalutation of the algorithms developed in th
 
 
 
-\subsection{Convergence of CHMCTS}
-\label{sec:5-6-2-convergence_of_chmcts}
-
-    1. Preamble - say not going to actually prove things
-    2. Quote CHVI theorem
-    3. Define optimal CHVS (or check that it was defined in Ch2)
-    4. CHMCTS values converge to optimal CHVS (proof = it would contradict CHVI theorem)
-    6. General UCB picks all actions inf often
-    5. Just give an example translation from DENTS results to CHMCTS results
-    7. CHUCT converges
-
-
-
 \subsection{The Fundamental Assumption of MOMCTS}
-\label{sec:5-6-3-fundamental_assumption_of_momcts}
+\label{sec:5-6-2-fundamental_assumption_of_momcts}
+
+    \todo{move things from the theorem to preamble. Like move the greedy policy and call it pi local. Call the theorem "locally optimal policy requires linear utility"}
 
     1. Preamble - define the setup
     2. General utility, and the form of the search/recommendation policy
@@ -1271,6 +1280,37 @@ So say that the value of the policy by taking the maimum from value estimates, w
     single Chebyshev weight vector can simultaneously render both $a$ preferable to $b$
     and $d$ preferable to $c$.
     \end{remark}
+
+
+
+
+
+
+
+
+
+\subsection{Convergence of CHMCTS}
+\label{sec:5-6-3-convergence_of_chmcts}
+
+    1. Preamble - say not going to actually prove things
+    2. Quote CHVI theorem
+    3. Define optimal CHVS (or check that it was defined in Ch2)
+    4. CHMCTS values converge to optimal CHVS (proof = it would contradict CHVI theorem)
+    6. General UCB picks all actions inf often
+    5. Just give an example translation from DENTS results to CHMCTS results
+    7. CHUCT converges
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
