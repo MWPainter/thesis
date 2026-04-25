@@ -919,7 +919,7 @@
 
     The two components of the rewards can be seen to encourage the agent to perform two different behaviours. Intuitively, $R_{\dense}$ encourages the agent to leave the chain as soon as possible, while $R_{\sparse}$ rewards the agent for staying on the chain until the end. Since UCT balances exploration and exploitation, it will frequently select $\aL$ to exploit the immediate reward of $\frac{D-1}{D}$, rather than exploring to find the reward of one.
 
-    Compounding this, once a trial of UCT reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to converge and recommend the optimal policy. This phenomenon can be seen in Figure \ref{fig:d_chain_results}, where UCT never recommends the optimal policy, while MaxUCT (Section \ref{sec:3-3-1-thts}) that uses the same search policy with Bellman backups will recommend the optimal policy once one trial reaches the unit reward at the end of the chain. 
+    Compounding this, once a trial of UCT reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to converge and recommend the optimal policy. This phenomenon can be seen in Figure \ref{fig:d_chain_results}, where UCT never recommends the optimal policy, while MaxUCT (Section \ref{sec:3-3-mcts}) that uses the same search policy with Bellman backups will recommend the optimal policy once one trial reaches the unit reward at the end of the chain. 
     
     \citet{dchain} formally prove that UCT will suffer a regret of $\Omega((\exp \circ \exp \circ \ldots \circ \exp)(1))$, where $\circ$ denotes functional composition, and there are $D$ many composed exponential functions. 
 
@@ -1066,7 +1066,7 @@
 \section{Empirical Results}
 \label{sec:4-4-results}
 
-    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \ref{sec:2-4-2-uct}), MaxUCT (Section \ref{sec:3-3-1-thts}), MENTS (Section \ref{sec:2-4-4-ments}), RENTS (Section \ref{sec:3-3-3-rents-some-tents}), TENTS (Section \ref{sec:3-3-3-rents-some-tents}) and H-MCTS (Section \ref{sec:3-3-2-mcts}).
+    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \ref{sec:2-4-2-uct}), MaxUCT (Section \ref{sec:3-3-mcts}), MENTS (Section \ref{sec:2-4-4-ments}), RENTS (Section \ref{sec:3-3-3-rents-some-tents}), TENTS (Section \ref{sec:3-3-3-rents-some-tents}) and H-MCTS (Section \ref{sec:3-3-mcts}).
 
     MENTS, RENTS and TENTS are used as baseline algorithms from the maximum entropy literature. H-MCTS is used as a baseline MCTS algorithm designed for the simple regret objective.
 
@@ -2763,16 +2763,55 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
+
 \section{Summary}
 \label{sec:4-6-summary}
 
-    \bd{This chapter introduced BTS and DENTS, established their consistency properties, and demonstrated empirically that DENTS can solve MDPs where UCT and MENTS fail. Chapter} \ref{ch:5-chmcts} extends these ideas to the multi-objective setting.
+    This chapter investigated the use of entropy-based 
+    exploration in MCTS for the exploration setting of 
+    reinforcement learning, addressing \entropyq\ewe and 
+    laying the groundwork for \contextq\ewe in Chapter 
+    \ref{ch:6-simplexmaps}.
 
-    \begin{itemize}
-        \item What questions were answered
-        \item Copy the intro and reword
-        \item Investigated and demonstrated that entropy can be misaligned
-        \item Demonstrated that can use it as an auxilary bonus objective
-        \item Entropy is revisited in Chapter 6
-        \item Now the focus shifts to the true multi-objective setting
-    \end{itemize}
+    The central finding is that the maximum entropy 
+    objective can be misaligned with the standard 
+    objective: for any fixed temperature, there exists 
+    an MDP in which MENTS either fails to recommend the 
+    optimal policy or requires an exponential number of 
+    trials to do so (Theorem \ref{thrm:ments_bad_mdp}). 
+    This was demonstrated both theoretically, through 
+    the D-chain and Entropy Trap MDPs, and experimentally 
+    in the gridworld and Go experiments of Section 
+    \ref{sec:4-4-results}.
+
+    The BTS and DENTS algorithms were introduced 
+    (Section \ref{sec:4-2-boltzmannsearch}) as 
+    alternative MCTS algorithms using Boltzmann exploration, 
+    where DENTS uses entropy as an auxiliary 
+    exploration bonus rather than a primary objective. 
+    By maintaining separate Bellman value estimates and 
+    entropy estimates, DENTS is able to use entropy to 
+    guide exploration during search whilst discarding 
+    it for recommendations. Both algorithms were shown 
+    to be consistent under mild conditions 
+    (Theorems \ref{thrm:4:bts}, \ref{thrm:4:dents} 
+    and \ref{thrm:4:ar_dents}), and BTS and DENTS 
+    empirically outperformed UCT and MENTS across the gridworld environments, 
+    demonstrating their ability to balance exploration 
+    and exploitation effectively in both deterministic 
+    and stochastic settings.
+
+    The stochastic search policies of BTS and DENTS 
+    also enable use of the Alias Method 
+    (Section \ref{sec:4-2-3-stoch_search_policies}), 
+    which significantly reduces the per-trial 
+    computational cost and allowed BTS and DENTS to 
+    run substantially more trials per move than PUCT 
+    in the Go experiments, addressing \complexityq.
+
+    The focus now shifts to the multi-objective setting. 
+    Chapter \ref{ch:5-chmcts} extends the MCTS framework 
+    to MOMDPs using convex hull value sets, and the 
+    question of how to incorporate entropy-based 
+    exploration in the multi-objective setting is 
+    revisited in Chapter \ref{ch:6-simplexmaps}.

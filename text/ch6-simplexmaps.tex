@@ -1,7 +1,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -39,7 +38,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -80,7 +78,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -96,18 +93,15 @@
 
 \subsection{Limitations of CHMCTS and CZT}
 
-    \todo{update stochastic DST to whatever we call it in results}
-
     The empirical results of Chapter \ref{ch:5-chmcts} 
-    \todo{ref results section} highlight a failure case for CHMCTS, where it is outperformed by CZT in the stochastic DST environment.
+    \ref{sec:5-5-results} highlight a failure case for CHMCTS, where it is outperformed by CZT in the stochastic DST environment.
 
     While convex hull value sets provide an accurate representation of achievable returns encountered during the search --- which is beneficial in the exploration setting --- they become computationally expensive in stochastic environments. The number of points in the intermediate convex hull value sets can grow rapidly, causing a significant increase in the computational cost of each backup and a corresponding reduction in the number of trials that can be run within a fixed time budget.
 
     In contrast, CZT avoids this issue: by limiting the rate of ball additions via the $\Mmin$ parameter, it can run a comparable number of trials per unit time in stochastic environments. Despite this advantage, CZT still exhibits the exploration 
     limitations similar to those described in Chapter \ref{ch:4-dents}: it tends to exploit 
     aggressively and does not explore sufficiently, in the same way that UCT can get stuck in 
-    local optima in the single-objective setting. As 
-    shown in Figure \todo{ref ch5 fig}, while CZT outperforms CHMCTS algorithms on the stochastic DST environment, it still recommends suboptimal actions compared to CHVI.
+    local optima in the single-objective setting. While CZT outperforms CHMCTS algorithms on the stochastic DST environment, it still recommends suboptimal actions compared to CHVI (Figure \ref{fig:5:dst_results}).
 
     CZT also suffers from the undesirable property that it will always add 
     new balls to the cover, regardless of whether further 
@@ -120,8 +114,8 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[Convex hull value set and corresponding value curve.]{A convex hull value set (left) and its corresponding value curve in weight space (right). Each point in objective space corresponds to a line in weight space. In bold the maximum linear utility $\max_{\bff{v}\in\bfcl{V}}\bff{w}^\top\bff{v}$ as a function of the weight vector $\bff{w}\in\Delta^D$ is shown, i.e. the \textit{value curve}.}
+        \includegraphics[width=0.8\textwidth]{figures/ch6/obj_to_weight.pdf}
+        \caption[A convex hull value set and its corresponding value curve.]{(Left) A convex hull value set $\bfcl{V}$ and (right) its corresponding value curve in weight space. Each point in objective space corresponds to a line in weight space (with corresponding colours). In bold the maximum linear utility $\max_{\bff{v}\in\bfcl{V}}\bff{w}^\top\bff{v}$ as a function of the weight vector $\bff{w}=(w_1,1-w_1)\in\Delta^D$ is shown, i.e. the \textit{value curve}.}
         \label{fig:6:value_curve}
     \end{figure}
 
@@ -139,7 +133,7 @@
     maintaining the full convex hull value set, suggests a 
     more scalable approach. 
     
-    Working in weight space has led to more scalable approaches in the prior literature. For example, \todo{citet lizotte2dim} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions. \todo{cite lizotteNdim}
+    Working in weight space has led to more scalable approaches in the prior literature. For example, \cite{lizotte_spline_2d} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions \cite{lizotte_spline_nd}.
 
     Following the argument made in Section \ref{sec:5-3-7-entropy-convex-hulls}, working in objective space also does not naturally support entropy-based exploration, and moving to weight space provides a natural way to support entropy-based exploration.
 
@@ -158,7 +152,7 @@
     space where the value function varies across the region and leaving regions where the value is uniform intact.
 
     Adaptive subdivisions have been used in a range of 
-    settings. \textit{Hierarchical Optimistic Optimisation} (HOO) \todo{cite HOO} is an algorithm for continuous-armed bandit problems and uses a tree of 
+    settings. \textit{Hierarchical Optimistic Optimisation} (HOO) \cite{hoo} is an algorithm for continuous-armed bandit problems and uses a tree of 
     hierarchically nested sets to adaptively search a 
     continuous domain, refining the cover in regions of 
     high estimated value. Unlike the approach of this chapter, HOO focuses on identifying a single region of high value rather than estimating the value function across the entire domain.
@@ -173,7 +167,7 @@
     draws on similar principles, adapting the resolution of 
     the weight space cover to the demands of the search.
 
-    A substantial body of work has studied adaptive mesh refinement strategies for triangulations. In particular, \textit{longest edge bisection} (LEB) \cite{mesh_refine,simplex_refine} is a popular refinement strategy that splits the longest edge of a simplex into two equal length edges. It has been shown in two and three dimensions that iterative LEB of a unit simplex produces a finite set of similarity classes of simplices \cite{leb_2d_similarity_angle,leb_2d_similarity_general,leb_3d_similarity_general_nd_hypothesis} \todo{fix cites}. For higher dimensions the LEB refinement is conjectured to produce finitely many similarity classes, but a proof remains an open problem \cite{leb_nd_regular_empirical} \todo{fix cite}.
+    A substantial body of work has studied adaptive mesh refinement strategies for triangulations. In particular, \textit{longest edge bisection} (LEB) \cite{mesh_refine,simplex_refine} is a popular refinement strategy that splits the longest edge of a simplex into two equal length edges. It has been shown in two and three dimensions that iterative LEB of a unit simplex produces a finite set of similarity classes of simplices \cite{leb_2d_similarity_angle,leb_2d_similarity_general,leb_3d_similarity_general_nd_hypothesis}. For higher dimensions the LEB refinement is conjectured to produce finitely many similarity classes, but a proof remains an open problem \cite{leb_nd_regular_empirical}.
 
 
 
@@ -189,7 +183,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -207,7 +200,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -221,8 +213,8 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[Illustration of a simplex map.]{Illustration of a simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ with $D=3$. (Left) The graph of vertices $(\VSM,\ESM)$ is shown. (Right) The corresponding binary tree of simplices $\TSM$.}
+        \includegraphics[width=0.8\textwidth]{figures/ch6/simplex_map_example.pdf}
+        \caption[Illustration of a simplex map.]{Illustration of a simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ with $D=3$. (Left) The graph of vertices $(\VSM,\ESM)$ is shown. The vertices corresponding to the unit vectors are highlighted to emphasize that simplex map diagrams are using \textit{barycentric coordinates}. (Right) The corresponding binary tree of simplices $\TSM$.}
         \label{fig:6:simplex_map}
     \end{figure}
 
@@ -262,7 +254,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -286,20 +277,12 @@
     but not defined explicitly to avoid unnecessary complexity. 
     The BTG consists of edges of $\ESM$ on one side and the leaf simplices of $\TSM$ on the other. The BTG is used to determine adjacency between simplices and to support the conformity checks described below.
 
-    Throughout this thesis, $\Delta^D$ refers to the 
-    $D$-dimensional unit simplex with $D$ vertices (Definition 
-    \todo{ref}). In geometry it is more common to 
-    refer to this object as the \textit{$(D-1)$-simplex}, 
-    since it forms a $(D-1)$-dimensional space in 
-    $\bb{R}^D$. For example, when $D=3$ the simplex is a 
-    triangle, which is geometrically a $2$-simplex. As this section discusses some geometric concepts, the correct geometric terminology is used here.
-
     \paragraph{Conforming Triangulations.}
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with the non-conforming simplex highlighted in red.}
+            \includegraphics[width=0.8\textwidth]{figures/ch6/non_conforming_example.pdf}
+            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating pair of simplices shown in red and green.}
             \label{fig:6:conforming_triangulation}
         \end{figure}
 
@@ -345,8 +328,23 @@
         
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-            \caption[Closest vertex lookup examples.]{Closest vertex lookup examples. In all subfigures, the weight vector $\bff{w}$ is shown in red, and the closest vertex in the triangulation is shown in blue. (a) Finding the closest vertex in $D=2$. (b) Example where the closest vertex is in a neighbouring simplex. (c) Example where the triangulation is non-conforming and the closest vertex is not in a neighbouring simplex.}
+            \begin{subfigure}[b]{\textwidth}
+                \centering
+                \includegraphics[width=0.8\textwidth]{figures/ch6/lookup.pdf}
+            \end{subfigure}
+
+            \vspace{1em}
+
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/ch6/lookup_b.pdf}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}[b]{0.49\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{figures/ch6/lookup_c.pdf}
+            \end{subfigure}
+            \caption[Closest vertex lookup examples.]{Closest vertex lookup examples. In all subfigures, the weight vector $\bff{w}$ is shown in red, and the closest vertex in the triangulation is shown in green. (a) Finding the closest vertex in $D=2$ corresponds to traversing the binary tree and returning the closest vertex. (b) Part of a triangulation where the closest vertex is in a neighbouring simplex. (c) Example where a triangulation is non-conforming and the closest vertex is not on an extreme point of a neighbouring simplex\footnote{Note this triangulation could not be produced by LEB refinement, but it is used to illustrate that this is a possible scenario when triangulations are non-conforming.}.}
             \label{fig:6:vertex_lookup_examples}
         \end{figure}
 
@@ -356,8 +354,8 @@
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green edges are added to $\ESM$ and the red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
+            \includegraphics[width=0.6\textwidth]{figures/ch6/split.pdf}
+            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green and blue edges are added to $\ESM$ and the red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
             \label{fig:6:split_operation}
         \end{figure}
 
@@ -397,8 +395,8 @@
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, where the red vertex is pushing its values estimate, the red arrows indicate the direction of value propagation and the blue vertex does not accept or propagate the value.}
+            \includegraphics[width=0.6\textwidth]{figures/ch6/push.pdf}
+            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its values estimate, the green arrows indicate the direction of value propagation and the red vertex does not accept or propagate the value.}
             \label{fig:6:push_operation}
         \end{figure}
         
@@ -508,7 +506,7 @@
 
     \paragraph{Search Policy}
 
-    The search policy is defined similarly to DENTS (Section \todo{ref}), using the contextual value and entropy estimates:
+    The search policy is defined similarly to DENTS (Section \ref{sec:4-2-2-dents}), using the contextual value and entropy estimates:
     \begin{align}
         \Qsmdsoft(s,a) &= \Qsmdctx(s,a)+\betasmd(N(s))\HQsmd(s,a;\bff{w}), \\
         \pismd(a|s;\bff{w}) &= (1-\lambdasmd)\rhosmd(a|s;\bff{w}) + \frac{\lambdasmd}{|\cl{A}|}, 

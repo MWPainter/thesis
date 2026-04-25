@@ -71,7 +71,7 @@
         \item Section \ref{sec:5-5-results} presents empirical 
             results on Deep Sea Treasure environments and a range 
             of multi-objective environments from the 
-            Multi-Objective Gymnasium library \todo{cite?};
+            Multi-Objective Gymnasium library \cite{mo_gym};
         \item Section \ref{sec:5-6-theory} provides a brief 
             theoretical discussion of the MOMCTS algorithms 
             introduced in this chapter.
@@ -96,7 +96,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -119,36 +118,38 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[A motivating example MOMDP for contextual tree search.]{Tree 
-        MOMDP, with two actions at the root. From the first action, rewards of 
-        $(1,0)$, $(0.5,0.5)$ and $(0,0.75)$ are available. From the second, 
-        rewards of $(0.75,0)$, $(0.5,0.5)$ and $(0,1)$ are available. The 
-        convex hull value set is formed of $\{(1,0),(0,1)\}$.}
+        \includegraphics[width=0.6\textwidth]{figures/ch5/motivate_contextual_momdp.pdf}
+        \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}.}
         \label{fig:5:motivating_example}
     \end{figure}
 
-    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set of the MOMDP is $\{(1,0),(0,1)\}$: the reward $(1,0)$ is only reachable via the left action, and $(0,1)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
+    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set of the MOMDP is $\{(4,0),(0,4)\}$: the reward $(4,0)$ is only reachable via the left action, and $(0,4)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
 
-    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(1,0)$ is consistent with the implicit commitment made at the root node.
+    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the implicit commitment made at the root node.
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[A motivating example MOMDP for contextual tree search.]{\todo{update caption with }}
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch5/locally_optimal.pdf}
+            \label{fig:5:motivating_vanmoffaert:sub:a}
+        \end{subfigure}
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch5/locally_optimal_interleved.pdf}
+            \label{fig:5:motivating_vanmoffaert:sub:b}
+        \end{subfigure}
+        \caption[Example of locally optimal actions that are not globally optimal.]{Example of locally optimal actions that are not globally optimal (reproduced from \citet{locally_optimal}). (a) The three globally optimal paths in green, red and blue. (b) The black path interleaves actions from the green, red and blue paths where actions are locally optimal at each step, but is a globally suboptimal path.}
         \label{fig:5:motivating_vanmoffaert}
     \end{figure}
 
-    The problem of \textit{consistent action selection} is also discussed by \todo{citet vanmoffaert14a}. They compute and track Pareto-optimal policies using an adaptation of Q-learning and highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step but fails to follow any single globally optimal path.
-
-    \todo{actually add cite to bibtex}
-    % https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
+    The problem of \textit{consistent action selection} is also discussed by \citet{locally_optimal}. They compute and track Pareto-optimal policies using an adaptation of Q-learning and highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step but fails to follow any single globally optimal path.
 
 
 \subsection{Contextual Tree Search}
 \label{sec:5-1-1-contextual_tree_search}
 
-    \todo{citet vanmoffaert and double check} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
+    \citet{locally_optimal} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
     In the \thtspp\ewe framework, the context weight $\bff{w}$ is sampled during the \samplecontext\ewe function (Section \ref{sec:2-4-1-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
 
@@ -167,19 +168,19 @@
         \textnormal{context dependent}.
     \end{defn}
 
-    To reason about the performance of a contextual tree search algorithm, the notions of cumulative and simple regret are generalised to \textit{contextual cumulative regret} and \textit{contextual simple regret}. These definitions reduce to the standard definitions (Definitions \ref{def:2:cumulative_regret} and \ref{def:2:simple_regret}) when $D=1$.
+    To reason about the performance of a contextual tree search algorithm, the notion simple regret is generalised to \textit{contextual simple regret}.
 
-    \begin{defn}
-        \label{def:5:contextual_cumulative_regret}
-        Let $\{\bff{w}^i\}_{i=1}^n$ be a sequence of weight vectors sampled uniformly from $\Delta^D$. The \textnormal{contextual cumulative regret} of the search policies $\pi^{1:n} = (\pi^1,\ldots,\pi^n)$ after $n$ trials is:
-        \begin{align}
-            \ctxreg(s,\pi^{1:n}) = 
-                \sum_{i=1}^n \left( 
-                    \max_{\pi'} {\bff{w}^i}^\top \bff{V}^{\pi'}(s)
-                    - {\bff{w}^i}^\top \bff{V}^{\pi^i}(s)
-                \right).
-        \end{align}
-    \end{defn}
+    % \begin{defn}
+    %     \label{def:5:contextual_cumulative_regret}
+    %     Let $\{\bff{w}^i\}_{i=1}^n$ be a sequence of weight vectors sampled uniformly from $\Delta^D$. The \textnormal{contextual cumulative regret} of the search policies $\pi^{1:n} = (\pi^1,\ldots,\pi^n)$ after $n$ trials is:
+    %     \begin{align}
+    %         \ctxreg(s,\pi^{1:n}) = 
+    %             \sum_{i=1}^n \left( 
+    %                 \max_{\pi'} {\bff{w}^i}^\top \bff{V}^{\pi'}(s)
+    %                 - {\bff{w}^i}^\top \bff{V}^{\pi^i}(s)
+    %             \right).
+    %     \end{align}
+    % \end{defn}
     
     \begin{defn}
         \label{def:5:contextual_simple_regret}
@@ -190,12 +191,12 @@
                 - {\bff{w}}^\top \bff{V}^{\psi(\cdot;\bff{w})}(s)
             \right],
         \end{align}
-        where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the $D$-dimensional unit simplex.
+        where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the unit $(D-1)$-dimensional simplex.
     \end{defn}
 
-    Several prior MOMCTS works \todo{cite}, discussed in Section \todo{ref ch3}, use a context-independent search policy. It is shown in Section \ref{sec:5-6-theory} that any context-independent search policy suffers linear contextual cumulative regret, and any context-independent recommendation policy suffers linear contextual simple regret.
+    % Several prior MOMCTS works \odot{cite}, discussed in Section \odot{ref ch3}, use a context-independent search policy. It is shown in Section \ref{sec:5-6-theory} that any context-independent search policy suffers linear contextual cumulative regret, and any context-independent recommendation policy suffers linear contextual simple regret.
 
-    \todo{Theorem that context independent search policy suffers linear contextual cumulative regret AND context independent recommendation policy suffers linear contextual simple regret}
+    % \odot{Theorem that context independent search policy suffers linear contextual cumulative regret AND context independent recommendation policy suffers linear contextual simple regret}
 
 
 
@@ -217,7 +218,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -229,20 +229,9 @@
 \section{Contextual Zooming for Trees}
 \label{sec:5-2-czt}
 
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.5\textwidth]{figures/todo.jpg}
-        \caption[Design paradigm for CZT.]{The design paradigm 
-        for CZT. UCB is lifted to UCT by applying it at each node 
-        of the search tree. CZ generalises UCB to contextual bandits. 
-        CZT follows both directions, applying CZ at each node of 
-        the search tree.}
-        \label{fig:5:czt_diagram}
-    \end{figure}
-
     A common design paradigm in MCTS is to adapt a MAB algorithm to run at each decision node of the search tree, treating the node as a (non-stationary) bandit problem. UCT follows this paradigm by running UCB at each node (Section \ref{sec:2-4-2-uct}). 
     
-    The \textit{Contextual Zooming} (CZ) algorithm \cite{cz,cz_long} is a generalisation of the UCB algorithm to contextual bandits (Section \ref{sec:2-1-3-contextual-mab}). Following the same methodology, \textit{Contextual Zooming for Trees} (CZT) runs the CZ algorithm at each decision node of the search tree. The relationship between these algorithms is illustrated in Figure \ref{fig:5:czt_diagram}.
+    The \textit{Contextual Zooming} (CZ) algorithm \cite{cz,cz_long} is a generalisation of the UCB algorithm to contextual bandits (Section \ref{sec:2-1-3-contextual-mab}). Following the same methodology, \textit{Contextual Zooming for Trees} (CZT) runs the CZ algorithm at each decision node of the search tree. 
     
     CZT is presented in this section in the context of MOMCTS, where the context is the weight vector $\bff{w}$ sampled at the start of each trial. Although CZ, and by extension CZT, is not motivated by the exploration setting this thesis focuses on, it is introduced as a natural contextual analogue of UCT, and as a contextual search policy baseline for MOMCTS, where no such baseline currently exists.
 
@@ -355,11 +344,7 @@
             In CZT, all balls contain exactly one action, whereas in CZ with a general continuous space of arms, balls cover many arms. After a ball is selected in CZ, an arm is sampled uniformly randomly from the domain of the selected ball. 
     \end{enumerate}
 
-    CZ \todo{cite} extends its regret analysis from a fixed number of rounds $T$ to an unknown number of rounds using the \textit{doubling trick} \cite{doubling_trick}. The doubling trick runs an independent instance of the algorithm for $T$ rounds, then $2T$ rounds, then $4T$ rounds and so on. In practice, however, discarding all accumulated data at each doubling interval is undesirable. Instead, in CZT the number of visits $N(s)$ at the current node is used directly in place of $T$, which avoids the need for the doubling trick at the cost of losing regret guarantees.
-
-    \todo{Make sure to comment about how CZT without the additional activation rule leads to a blowup in the number of balls and is very slow.}
-
-    \todo{maybe actually not given the expr running, maybe the argument more is adding more balls than can be updated to contain useful information? Otherwise just storing the return every trial}
+    CZ \cite{cz,cz_long} extends its regret analysis from a fixed number of rounds $T$ to an unknown number of rounds using the \textit{doubling trick} \cite{doubling_trick}. The doubling trick runs an independent instance of the algorithm for $T$ rounds, then $2T$ rounds, then $4T$ rounds and so on. In practice, however, discarding all accumulated data at each doubling interval is undesirable. Instead, in CZT the number of visits $N(s)$ at the current node is used directly in place of $T$, which avoids the need for the doubling trick at the cost of losing regret guarantees.
     
 
 
@@ -375,7 +360,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -387,13 +371,12 @@
 \section{Convex Hull Monte Carlo Tree Search}
 \label{sec:5-3-chmcts}
 
-    This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS \todo{ref ch3} to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-litrev}.
+    This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS \ref{sec:3-5-momcts} to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork}.
 
     The common \thtspp\ewe framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-3-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -448,7 +431,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -471,7 +453,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -500,7 +481,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -537,7 +517,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -566,13 +545,11 @@
 
 \paragraph{Hypervolume CHMCTS (H-CHMCTS).}
 
-    \todo{move hypervolume defn to ch2}
-
-    \todo{cite and ref} use the \textit{hypervolume indicator} (Definition \ref{def:2:hypervolume}) as the scalarisation function $\zetaalg$ in the search policy. That is, $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, where $\rref$ is reference point for the hypervolume indicator and is a parameter of the algorithm.
+    \citet{hv_momcts_1} use the \textit{hypervolume indicator} (Definition \ref{def:2:hypervolume}) as the scalarisation function $\zetaalg$ in the search policy. That is, $\zetahchmcts(\bfcl{V};\bff{w}) = \HV(\bfcl{V};\rref)$, where $\rref$ is reference point for the hypervolume indicator and is a parameter of the algorithm.
     
 \paragraph{Chebyshev CHMCTS (C-CHMCTS).}
 
-    \todo{cite and ref} use the \textit{Chebyshev utility}:
+    \citet{chebyshev_momcts} use the \textit{Chebyshev utility}:
 
     \begin{defn}
         \label{def:5:chebyshev_utility}
@@ -591,7 +568,7 @@
 
 \paragraph{Pareto CHMCTS (P-CHMCTS).}
 
-    The notable exception to this form is Pareto MCTS \todo{cite}, which uses a Pareto UCB algorithm \todo{cite} at each decision node, and does not fit directly into the template of Equation (\ref{eq:5:prior_policy}). \textit{Pareto CHMCTS} (P-CHMCTS) is the algorithm that results from running Pareto UCB at each decision node within the CHMCTS framework.
+    The notable exception to this form is Pareto MCTS \cite{pareto_momcts}, which uses a Pareto UCB algorithm \cite{pareto_ucb,pareto_ucb_2} at each decision node, and does not fit directly into the template of Equation (\ref{eq:5:prior_policy}). \textit{Pareto CHMCTS} (P-CHMCTS) is the algorithm that results from running Pareto UCB at each decision node within the CHMCTS framework.
 
     Pareto UCB adds a UCB-style bonus to each vector in the value set:
     \begin{align}
@@ -600,7 +577,7 @@
             \left(\bff{q} + U_{\textnormal{pucb}}(s,a)\bff{1}, a \right)
             \mid a \in \cl{A}, \bff{q} \in \Qpareto(s,a)
         \right\}, \\
-        U_{\textnormal{pucb}}(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}. \\
+        U_{\textnormal{pucb}}(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}.
     \end{align}
     %
     where $\bpareto > 0$ is a bias parameter and where the notation $(\bff{q}, a)$ tags each vector with its corresponding action to allow the action to be recovered after the $\cprune$ operation.
@@ -613,7 +590,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -629,7 +605,7 @@
 
 \paragraph{Solved Labelling.}
 
-    In planning, \textit{labelling} \todo{cite lrtdp} is used to mark nodes as solved and prune them from further consideration, avoiding wasted computation on parts of the tree that are already solved. A node is marked as solved when its value estimate has converged to the true value, which requires knowledge of the true transition distribution. \todo{double check lrtdp paper} In the setting considered here, the true transition distribution $p(\cdot|s,a)$ is unknown, so a probabilistic analogue for labelling is used instead.
+    In planning, \textit{labelling} \cite{lrtdp} is used to mark nodes as solved and prune them from further consideration, avoiding wasted computation on parts of the tree that are already solved. A node is marked as solved when its value estimate has converged to the true value, which requires knowledge of the true transition distribution. In the setting considered here, the true transition distribution $p(\cdot|s,a)$ is unknown, so a probabilistic analogue for labelling is used instead.
 
     Each chance node $(s,a)$ is assigned an \textit{unsolved value} $\unsolved(s,a)\in[0,1]$, where $\unsolved(s,a)=0$ indicates that the node is solved and $\unsolved(s,a)=1$ indicates that it is unsolved. The solved value of a node is an upper bound on the probability that the node's value estimate has not yet converged.
 
@@ -699,7 +675,7 @@
 
 \paragraph{Convex Hull Size Pruning.}
 
-    As the search progresses, the convex hull value sets at each node may grow large, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \todo{cite}. % \cite{nsga2}.
+    As the search progresses, the convex hull value sets at each node may grow large, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \cite{nsga_ii}
 
     The crowding distance of a point $\bff{v}$ in a set $\bfcl{V}$ measures how isolated $\bff{v}$ is from its neighbours in objective space. For each objective dimension $i=1,\ldots,D$, the points in $\bfcl{V}$ are sorted by their $i$th coordinate. The boundary points (those with the smallest and largest values in dimension $i$) are assigned an infinite crowding distance and are always retained. For interior points, the crowding distance contribution from dimension $i$ is:
     \begin{align}
@@ -712,7 +688,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -726,8 +701,17 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth]{figures/todo.jpg}
-        \caption[Entropy and convex hull value sets.]{A convex hull value set where a single point is optimal for two different weight vectors $\bff{w}$ and $\bff{w}'$. Although both weight vectors achieve the same value at the root state (a), they induce different policies at downstream states (b), resulting in different entropy values. \todo{make figs for two convex hulls, one with two weights with same value, and a downstream state with different values for the same two weights}}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_a.pdf}
+            \label{fig:5:entropy_convex_hull_a}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_b.pdf}
+            \label{fig:5:entropy_convex_hull_b}
+        \end{subfigure}
+        \caption[Entropy and convex hull value sets.]{A convex hull value set where a single point is optimal for two different weight vectors $\bff{w}$ and $\bff{w}'$. Although both weight vectors select the same value at the root state (a), they induce different policies with different values at downstream states (b), resulting in different entropy values.}
         \label{fig:5:entropy_convex_hull}
     \end{figure}
 
@@ -763,7 +747,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -784,7 +767,7 @@
         \item Appendix \ref{app:expr-deets-ch5} provides the hyperparameters used and how they were chosen.
     \end{itemize}
 
-    The implementation of Convex Hull based algorithms used the QHull library \todo{cite} for convex hull computations where possible, falling back to the linear programming method of \todo{cite ccs} for geometrically degenerate cases.
+    The implementation of Convex Hull based algorithms used the QHull library \cite{qhull} for convex hull operations where possible, falling back to the linear programming method to compute $\cprune$ (Equation \ref{eq:2:cprune_def}) of \cite{cccs} for geometrically degenerate cases.
 
 
 
@@ -793,7 +776,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -805,7 +787,7 @@
 \subsection{Environments}
 \label{sec:5-5-1-envs}
 
-    Standard gridworld environments from \textit{MO-Gymnasium} \todo{cite} are used to investigate the behaviour of the search algorithms. 
+    Standard gridworld environments from \textit{MO-Gymnasium} \cite{mo_gym} are used to investigate the behaviour of the search algorithms. 
 
     \begin{description}
         \item[Resource-Gathering] 
@@ -827,7 +809,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=0.3\textwidth]{figures/ch5/dst.png}
-        \caption[Deep Sea Treasure environment.]{The Deep Sea Treasure environment, $\DST(10,\pswept)$. Illustration is via \todo{cite improved dst}}
+        \caption[Deep Sea Treasure environment.]{The Deep Sea Treasure environment, $\DST(10,\pswept)$. Illustration is via \cite{improved_dst}.}
         \label{fig:5:dst_env}
     \end{figure}
 
@@ -842,7 +824,7 @@
 
     To introduce a stochastic component to DST, there is a $\pswept$ probability of the agent being swept by a current at each timestep. When swept, the agent is moved in an additional random direction before the agent makes their own move.
 
-    To enable scalability experiments, a range of map sizes are generated using the MORLGlue library \todo{cite}, parameterised by the width of the gridworld. Let $\DST(W,\pswept)$ denote a DST environment with width $W$ and probability of being swept $\pswept$. For each map of width $W$, if $(x_{\text{treasure}},y_{\text{treasure}})$ is the coordinate of furthest treasure, then the maximum treasure value and planning horizon are both set to $2\times (x_{\text{treasure}}+y_{\text{treasure}})$, so that both rewards are given a consistent scale.
+    To enable scalability experiments, a range of map sizes are generated using the MORLGlue library \cite{morl_glue}, parameterised by the width of the gridworld. Let $\DST(W,\pswept)$ denote a DST environment with width $W$ and probability of being swept $\pswept$. For each map of width $W$, if $(x_{\text{treasure}},y_{\text{treasure}})$ is the coordinate of furthest treasure, then the maximum treasure value and planning horizon are both set to $2\times (x_{\text{treasure}}+y_{\text{treasure}})$, so that both rewards are given a consistent scale.
 
     In Section \ref{sec:5-5-3-results_and_discussion} the $\DST(10,0)$, $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$ environments are used. In Section \ref{sec:5-5-4-scalability} the environments $\DST(W,0)$, $\DST(W,\frac{1}{40})$ and $\DST(W,\frac{1}{5})$ are used, with $W$ ranging from $10$ to $100$.
 
@@ -872,7 +854,7 @@
 
     To evaluate the quality of the convex hull at the root node, the \textit{Expected Utility Metric} (Definition \ref{def:2:eum}) and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}) are used.
 
-    Given a context $\bff{w}$ and search tree $\cl{T}$ that defines a partial recommendation policy $\psi_{\alg}$, the policy will be made complete similarly to Section \todo{ref eval proceedure in ch4}:
+    Given a context $\bff{w}$ and search tree $\cl{T}$ that defines a partial recommendation policy $\psi_{\alg}$, the policy will be made complete similarly to Section \ref{sec:4-4-2-eval_procedure}:
     \begin{align}
         \texttt{complete}(\psi_{\alg})(a|s;\bff{w}) =
         \begin{cases}
@@ -887,7 +869,7 @@
         \Psi_{\alg} = \{\texttt{complete}(\psi_{\alg})\ |\ \bff{w}\in\Delta^D \}.
     \end{align}
 
-    A Monte Carlo estimate of $\eum(\Psi_{\alg})$ (Definition \ref{def:2:eum}) is computed. Following \todo{cite the deep MORL paper}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
+    A Monte Carlo estimate of $\eum(\Psi_{\alg})$ (Definition \ref{def:2:eum}) is computed. Following \cite{well_spaced_points}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
     \begin{align}
         \eum(\Psi_{\alg}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{\hat{V}}^{\bff{\tau}(\bff{w})},
     \end{align}
@@ -1076,8 +1058,7 @@
             \label{fig:5:dst_results:sub:f}
         \end{subfigure}
 
-        \caption[Results on Deep Sea Treasure environments.]{\todo{fix 
-        up dst10,0 plot} Results on the Deep Sea Treasure 
+        \caption[Results on Deep Sea Treasure environments.]{Results on the Deep Sea Treasure 
         environments. (Left) Expected Utility Metric (EUM). 
         (Right) Hypervolume (HV). Each row shows the results for 
         $\DST(10,0)$, $\DST(10,\frac{1}{40})$ and 
@@ -1269,7 +1250,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
