@@ -141,7 +141,7 @@
     
     Working in weight space has led to more scalable approaches in the prior literature. For example, \todo{citet lizotte2dim} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions. \todo{cite lizotteNdim}
 
-    Following the argument made in Section \ref{sec:5-7-entropy-convex-hulls}, working in objective space also does not naturally support entropy-based exploration, and moving to weight space provides a natural way to support entropy-based exploration.
+    Following the argument made in Section \ref{sec:5-3-7-entropy-convex-hulls}, working in objective space also does not naturally support entropy-based exploration, and moving to weight space provides a natural way to support entropy-based exploration.
 
     While CZT does operate in weight space, each ball covers a region of the weight space and maintains a single value estimate for that entire region. As such, they cannot naturally store an entropy estimate associated with a single weight vector.
 
@@ -597,44 +597,233 @@
 \section{Empirical Results}
 \label{sec:6-4-results}
 
+    This section presents the empirical results for this 
+    chapter. The experimental setup follows that of Section 
+    \ref{sec:5-5-results} in Chapter \ref{ch:5-chmcts}, 
+    and only the results are presented here:
+    \begin{itemize}
+        \item Section \ref{sec:6-4-1-results_and_discussion} 
+            presents the results on the MOMDP environments 
+            described in Section \ref{sec:5-5-1-envs};
+        \item Section \ref{sec:6-4-2-scalability} presents 
+            scalability results on the Deep Sea Treasure 
+            environment (Section \ref{sec:5-5-1-envs});
+        \item Appendix \ref{app:expr-deets-ch5} provides 
+            the hyperparameters used and how they were chosen.
+    \end{itemize}
 
-    This section presents the empirical results of SM-DENTS and SM-BTS. As baselines algorithms, CZT, CH-BTS and CH-UCT are used from Chapter \ref{ch:5-chmcts}, and CHVI is used where relevant.
-
-    See Section \todo{ref} for the experimental setup and description of the environments.
-
-
-\subsection{Main Results}
-
-    \todo{Results on main environments}.
-
-
-
-\todo{Clean up plots, legend placement etc.}
-
-
-\todo{Refer to ch5 results for evaluation procedure and environments. State that picking CZT, CHBTS (and maybe CHUCT) as baselines for this ch. And then give results for SMBTS and SMDENTS}
-
-New Ch6 plan:
-\begin{itemize}
-    \item Empirical results
-    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
-    \item Maybe some theory, probably bootstrap of the ch4 + ch5 results
-    \item Scalability on DST
-    \item Scalability test with respect to dimension?
-\end{itemize}
-
-%
-% Old plan
-%
-\todo{list}
-\begin{itemize}
-    \item Results from MO-Gymnasium
-    \item Compare algorithms using expected utility
-\end{itemize}
+    Results for CZT, CH-BTS and CH-UCT are repeated from 
+    Section \ref{sec:5-5-results} as baselines for SM-BTS 
+    and SM-DENTS.
 
 
 
 
+\subsection{Multi-Objective Gridworld Results}
+\label{sec:6-4-1-results_and_discussion}
+
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/520_gym_resource_gather_ch6_0_eum.png}
+            \caption{Resource-Gathering (EUM).}
+            \label{fig:6:gridworld_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/520_gym_resource_gather_ch6_2_hypervolume.png}
+            \caption{Resource-Gathering (HV).}
+            \label{fig:6:gridworld_results:sub:b}
+        \end{subfigure}
+
+        \vspace{1em}
+
+        % Row 2
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/550_four_room_ch6_0_eum.png}
+            \caption{Four-Room (EUM).}
+            \label{fig:6:gridworld_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/550_four_room_ch6_2_hypervolume.png}
+            \caption{Four-Room (HV).}
+            \label{fig:6:gridworld_results:sub:d}
+        \end{subfigure}
+
+        \vspace{1em}
+
+        % Row 3
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/500_fruit_tree_ch6_0_eum.png}
+            \caption{Fruit-Tree-7 (EUM).}
+            \label{fig:6:gridworld_results:sub:e}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/500_fruit_tree_ch6_2_hypervolume.png}
+            \caption{Fruit-Tree-7 (HV).}
+            \label{fig:6:gridworld_results:sub:f}
+        \end{subfigure}
+
+        \vspace{1em}
+
+        % Row 4
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/540_breakable_bottles_ch6_0_eum.png}
+            \caption{Breakable-Bottles (EUM).}
+            \label{fig:6:gridworld_results:sub:g}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/540_breakable_bottles_ch6_2_hypervolume.png}
+            \caption{Breakable-Bottles (HV).}
+            \label{fig:6:gridworld_results:sub:h}
+        \end{subfigure}
+
+        \caption[Results on MO-Gymnasium environments for Simplex Maps.]{Results on the MO-Gymnasium environments. 
+        (Left) Expected Utility Metric (EUM). (Right) Hypervolume 
+        (HV). Each row shows the results for a different 
+        environment: Resource-Gathering, Four-Room, Fruit-Tree-7 
+        and Breakable-Bottles respectively.}
+        \label{fig:6:gridworld_results}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/400_dst_ch6_0_eum.png}
+            \caption{$\DST(10,0)$ (EUM).}
+            \label{fig:6:dst_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/400_dst_ch6_2_hypervolume.png}
+            \caption{$\DST(10,0)$ (HV).}
+            \label{fig:6:dst_results:sub:b}
+        \end{subfigure}
+
+        \vspace{1em}
+
+        % Row 2
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/420_dst_calm_stoch_ch6_0_eum.png}
+            \caption{$\DST(10,\frac{1}{40})$ (EUM).}
+            \label{fig:6:dst_results:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/420_dst_calm_stoch_ch6_2_hypervolume.png}
+            \caption{$\DST(10,\frac{1}{40})$ (HV).}
+            \label{fig:6:dst_results:sub:d}
+        \end{subfigure}
+
+        \vspace{1em}
+
+        % Row 3
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/410_dst_stoch_ch6_0_eum.png}
+            \caption{$\DST(10,\frac{1}{5})$ (EUM).}
+            \label{fig:6:dst_results:sub:e}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/410_dst_stoch_ch6_2_hypervolume.png}
+            \caption{$\DST(10,\frac{1}{5})$ (HV).}
+            \label{fig:6:dst_results:sub:f}
+        \end{subfigure}
+
+        \caption[Results on Deep Sea Treasure environments for Simplex Maps.]{Results on the Deep Sea Treasure 
+        environments. (Left) Expected Utility Metric (EUM). 
+        (Right) Hypervolume (HV). Each row shows the results for 
+        $\DST(10,0)$, $\DST(10,\frac{1}{40})$ and 
+        $\DST(10,\frac{1}{5})$ respectively.}
+        \label{fig:6:dst_results}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.31\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/400_dst_ch6_5_num_backups.png}
+            \caption{$\DST(10,0)$.}
+            \label{fig:6:dst_backups:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.31\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/420_dst_calm_stoch_ch6_5_num_backups.png}
+            \caption{$\DST(10,\frac{1}{40})$.}
+            \label{fig:6:dst_backups:sub:b}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.31\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/410_dst_stoch_ch6_5_num_backups.png}
+            \caption{$\DST(10,\frac{1}{5})$.}
+            \label{fig:6:dst_backups:sub:c}
+        \end{subfigure}
+        \caption[Number of backups performed on Deep Sea Treasure 
+        environments including Simplex Maps algorithms.]{Number of backups performed on the Deep 
+        Sea Treasure environments for $\DST(10,0)$, 
+        $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$ 
+        respectively.}
+        \label{fig:6:dst_backups}
+    \end{figure}
+
+    Hypervolumes for SM-BTS and SM-DENTS are computed 
+    similarly to CZT, by constructing an approximate 
+    convex hull from the $\Qsmd$ and $\Vsmd$ value 
+    estimates at each node.
+
+    \paragraph{Gymnasium Environments.}
+
+    Results on the MO-Gymnasium environments are given in 
+    Figure \ref{fig:6:gridworld_results}. SM-BTS and 
+    SM-DENTS perform comparably to the CHMCTS algorithms 
+    across all four environments, though generally 
+    converging slightly more slowly. On Fruit-Tree-7, the 
+    hypervolume curves for simplex map algorithms are 
+    consistently higher than those of the CHMCTS 
+    algorithms. This is because the hypervolume 
+    achievable by CHMCTS algorithms is limited by the 
+    maximum number of points that can be stored in each 
+    convex hull value set, $K_{\max}$, whereas simplex 
+    maps are not subject to this constraint.
+
+    \paragraph{Deep Sea Treasure Environments.}
+
+    Results on the Deep Sea Treasure environments are 
+    given in Figures \ref{fig:6:dst_results} and 
+    \ref{fig:6:dst_backups}. On the deterministic 
+    environment $\DST(10,0)$, simplex map algorithms 
+    perform similarly to the CHMCTS algorithms. However, 
+    on both stochastic environments, 
+    $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$, 
+    the EUM of SM-BTS and SM-DENTS is significantly 
+    higher than all algorithms from Chapter 
+    \ref{ch:5-chmcts}. As shown in Figure 
+    \ref{fig:6:dst_backups}, simplex map algorithms are 
+    able to perform substantially more backups than convex 
+    hull-based algorithms within the same time budget, 
+    which accounts for their improved performance in 
+    stochastic environments.
 
 
 
@@ -642,47 +831,102 @@ New Ch6 plan:
 
 
 
+\subsection{Scalability Results}
+\label{sec:6-4-2-scalability}
 
 
+    \begin{figure}
+        \centering
+        % Row 1
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/700_dst_scaling_ch6_0_eum.png}
+            \caption{$\DST(W,0)$ (EUM).}
+            \label{fig:6:dst_scaling:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/700_dst_scaling_ch6_2_hypervolume.png}
+            \caption{$\DST(W,0)$ (NHV).}
+            \label{fig:6:dst_scaling:sub:b}
+        \end{subfigure}
 
+        \vspace{1em}
 
+        % Row 2
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/720_dst_scaling_stoch_calm_ch6_0_eum.png}
+            \caption{$\DST(W,\frac{1}{40})$ (EUM).}
+            \label{fig:6:dst_scaling:sub:c}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/720_dst_scaling_stoch_calm_ch6_2_hypervolume.png}
+            \caption{$\DST(W,\frac{1}{40})$ (NHV).}
+            \label{fig:6:dst_scaling:sub:d}
+        \end{subfigure}
 
-% % [ ] First Draft
-% % [ ] AI proofread/grammar check
-% % [ ] TODOs
-% % [ ] Spell check
-% % [ ] Citations + Refs
-% % [ ] LitRev sync
-% % [ ] Abbreviations sync
-% % [ ] Thesis questions ref/answers
-% % [ ] Proofread
-% % [ ] Nick comments
-% % [ ] Final revision
-% \section{Theoretical Discussion}
-% \label{sec:6-5-theory}
+        \vspace{1em}
 
+        % Row 3
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/710_dst_scaling_stoch_ch6_0_eum.png}
+            \caption{$\DST(W,\frac{1}{5})$ (EUM).}
+            \label{fig:6:dst_scaling:sub:e}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch6/710_dst_scaling_stoch_ch6_2_hypervolume.png}
+            \caption{$\DST(W,\frac{1}{5})$ (NHV).}
+            \label{fig:6:dst_scaling:sub:f}
+        \end{subfigure}
 
+        \caption[Scalability results on Deep Sea Treasure 
+        environments for Simplex Maps.]{Scalability results on the Deep Sea 
+        Treasure environments. (Left) Expected Utility Metric (EUM). 
+        (Right) Normalised Hypervolume (NHV). Each row shows the results for 
+        $\DST(W,0)$, $\DST(W,\frac{1}{40})$ and 
+        $\DST(W,\frac{1}{5})$ respectively, for a range of widths $W$ from 10 to 100. Each algorithm was allowed up to 16\,GB of memory; the curves for CHVI and CHVI(PS) are truncated where memory was exhausted.}
+        \label{fig:6:dst_scaling}
+    \end{figure}
 
+    \paragraph{Deterministic Environments.}
 
-% New Ch6 plan:
-% \begin{itemize}
-%     \item Maybe give some discussion on theory
-%     \item General argument is that all of the vertices will converge eventually
-%     \item For interpolated weights, the values will be correct within some epsilon of the true value
-%     \item Basically say that can follow the same argument again of all actions selected from the search policies
-%     \item Because exponential amount of data needed for correct solution, number of trials cannot be made better than exponential
-% \end{itemize}
+    On the deterministic environment $\DST(W,0)$, simplex 
+    map algorithms perform comparably to CHMCTS algorithms 
+    but slightly below them across all map sizes.
 
-% %
-% % Old plan
-% %
-% \todo{list}
-% \begin{itemize}
-%     \item Convergence can build ontop of DENTS results
-%     \item Runtime bounds (better than $O(2^D)$ which is what using convex hulls has)
-%     \item Simplex map has a diameter $\delta$ (i.e. the furthest away a new context could be from a point in the map)
-%     \item Bounds can then come from that diameter (which is a parameter of the simplex map/algorithm) and DENTS results
-% \end{itemize}
+    \paragraph{Stochastic Environments.}
+
+    On the heavily stochastic environment 
+    $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal 
+    EUM for map widths up to $W=20$, continues to improve 
+    until around $W=40$, plateaus until $W=80$, and then 
+    degrades to performance comparable to CZT at $W=100$. 
+    This represents a substantial improvement over all 
+    CHMCTS algorithms, which are unable to run a 
+    sufficient number of trials in stochastic environments 
+    at these scales.
+
+    On the mildly stochastic environment 
+    $\DST(W,\frac{1}{40})$, simplex map algorithms do not 
+    show the same advantage. Two factors likely contribute 
+    to this. First, hyperparameter tuning on this 
+    environment yielded a lower entropy coefficient 
+    $\betasmd$, reducing the benefit of entropy-based 
+    exploration. Second, the tuned hyperparameters for 
+    the mildly stochastic maps were significantly more 
+    exploratory than those for the deterministic and 
+    heavily stochastic maps. On larger maps, exploitation 
+    is necessary to explore deeper regions of the tree 
+    effectively, and an overly exploratory configuration 
+    may prevent the algorithm from committing sufficiently 
+    to promising branches.
 
 
 

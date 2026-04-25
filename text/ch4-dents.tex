@@ -1,6 +1,5 @@
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -42,7 +41,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -61,13 +59,11 @@
         \label{fig:4:rl_overview}
     \end{figure}
 
-    \todo{Find somewhere good to mention that exploitation is still valuable in this setting, particularly in tree search, because it allows for further exploration from deeper nodes in the tree.}
-
     This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a secondary objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
     
     In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the objective function rather than used as a constraint to remove ambiguity between multiple optimal policies, as in inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}. Whilst the maximum entropy objective yields a unique optimal policy, it is not guaranteed to align with the standard objective. This chapter demonstrates that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, which in practice can negate the benefit of entropy-based exploration.
 
-    This motivates the investigation of \entropyq in this chapter, and lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    This motivates the investigation of \entropyq\ewe in this chapter, and lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
 
     The remainder of this chapter is organised as follows:
     \begin{itemize}
@@ -86,7 +82,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -127,14 +122,14 @@
         \centering
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{figures/ch4/grid_world_sec_1_results_params.png}
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_100_intro.png}
             \caption{Reward of best path, after 2500 trials, for a range of bias/temperature parameters.}
             \label{fig:4:shortest_path_intro_results_a}
         \end{subfigure}
         \hfill
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
-            \includegraphics[width=\textwidth]{figures/ch4/grid_world_sec_1_results_trials.png}
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_101_intro.png}
             \caption{Reward of best path relative to the number of trials. ($\alpha=1$ and $\bpuct=0.01,0.1,1$).}
             \label{fig:4:shortest_path_intro_results_b}
         \end{subfigure}
@@ -147,7 +142,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -172,7 +166,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -199,7 +192,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -239,8 +231,6 @@
         \end{align}
     \end{defn}
 
-    \todo{make sure simple regret is in the table of notation}
-
     By definition, the optimal policy achieves a simple regret of zero. In this thesis an MCTS algorithm is considered \textit{consistent} if its expected simple regret tends to zero. Informally, a consistent algorithm will eventually output an optimal policy if run indefinitely, and is expected to improve its recommendation with more trials.
 
     \begin{defn}
@@ -250,7 +240,7 @@
 
     Note that the simple regret (Equation (\ref{eq:4:simple_regret})) is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret is used in Definition \ref{def:4:consistency} to define consistency, and is the main value of interest in the theoretical analysis in Section \ref{sec:4-5-theory}.
 
-    \citet{explore_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP (\todo{ref section and/or theorem later in chapter}).
+    \citet{explore_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I dont have time to clean this up and write it into the paper
     
 
 
@@ -264,7 +254,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -276,7 +265,7 @@
 \section{Boltzmann Search}
 \label{sec:4-2-boltzmannsearch}
     
-    This section defines the new algorithms Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS). Following the discussion from Section \ref{sec:4-1-intro}, the design aims of these algorithms are as follows:
+    This section presents Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS). Following the discussion from Section \ref{sec:4-1-intro}, the design aims of these algorithms are as follows:
     \begin{itemize}
         \item to be as simple to define and implement as UCT and MENTS\footnote{i.e. each decision node operates on a multi-armed bandit problem};
         \item to be able to explore effectively when rewards are sparse or uninformative;
@@ -297,7 +286,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -311,9 +299,9 @@
 
     \paragraph{Algorithm Definition}
 
-    \todo{search for Boltzmann Tree Search and BTS, and check that were not claiming to invent it. Add somewhere cites to RTDP and THTS which have also used this. Also be clear that BTS is used for this form of Boltzmann search, with the epsilon parameter controlling the exploration bonus for example.}
+    Boltzmann search has been used previously in heuristic search algorithms such as RTDP \cite{rtdp} and THTS \cite{thts_thesis}. This section presents \textit{Boltzmann Tree Search} (BTS), which uses a Boltzmann search policy with decayed temperature similar to \cite{rtdp}, but includes an additional uniform exploration term similar to MENTS \cite{ments}.
 
-    The \textit{Boltzmann Tree Search} (BTS) algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function $\alphabts(x)>0$ for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
+    The BTS algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function $\alphabts(x)>0$ for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
 
     The BTS search policy uses the flag $\normalisedq$ to optionally normalise Q-values, and incorporates prior knowledge from $\Qinit$ weighted by $\Nqbts$ pseudo-visits:
     %
@@ -376,7 +364,7 @@
     %
     where $\Vh$ is a shorthand for $\Vinit$.
 
-    The corresponding definitions of $\Qarbtsnorm$, $\piarbts$, $\psiarbts$, $\mvbts$ and so on are similar to the definitions for BTS and are omitted for brevity. The complete equations for all algorithms can be found in Appendix \ref{app:ar-algs} \todo{double check this ref}.
+    The corresponding definitions of $\Qarbtsnorm$, $\piarbts$, $\psiarbts$, $\mvbts$ and so on are similar to the definitions for BTS and are omitted for brevity. The complete equations for all algorithms can be found in Appendix \ref{appsec:4:ar-bts-ref}.
 
 
 
@@ -384,8 +372,6 @@
 
     
     \paragraph{Summary of Theoretical Results}
-
-    \todo{Work out how to have the theorem descriptions using restatable environment, and add theorem titles for theory section too}
 
     In Section \ref{sec:4-5-theory} it is shown that the BTS recommendation policy will eventually converge to the optimal policy.
     \begin{restatable}{theorem}{thrmBTS} 
@@ -420,7 +406,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -490,7 +475,7 @@
     
     \paragraph{Average Returns}
 
-    In \textit{Decaying ENtropy Tree Search with Average Returns} (AR-DENTS) the Bellman value estimates are replaced with average returns $\Vardents$ and $\Qardents$. For brevity and to avoid repetition, the equations are omitted but can be found in Appendix \ref{app:ar-algs} \todo{double check this ref}.
+    In \textit{Decaying ENtropy Tree Search with Average Returns} (AR-DENTS) the Bellman value estimates are replaced with average returns $\Vardents$ and $\Qardents$. For brevity and to avoid repetition, the equations are omitted but can be found in Appendix \ref{appsec:4:ar-bts-ref}.
     
 
 
@@ -530,7 +515,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -555,7 +539,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -588,7 +571,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -698,7 +680,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -878,7 +859,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -905,7 +885,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -940,7 +919,7 @@
 
     The two components of the rewards can be seen to encourage the agent to perform two different behaviours. Intuitively, $R_{\dense}$ encourages the agent to leave the chain as soon as possible, while $R_{\sparse}$ rewards the agent for staying on the chain until the end. Since UCT balances exploration and exploitation, it will frequently select $\aL$ to exploit the immediate reward of $\frac{D-1}{D}$, rather than exploring to find the reward of one.
 
-    Compounding this, once a trial of UCT reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to converge and recommend the optimal policy. This phenomenon can be seen in Figure \ref{fig:d_chain_results}, where UCT never recommends the optimal policy, while MaxUCT (\todo{add ref to ch2/3}) that uses the same search policy with Bellman backups will recommend the optimal policy once one trial reaches the unit reward at the end of the chain. 
+    Compounding this, once a trial of UCT reaches the unit reward for the first time, the value estimates of $\Vuct(\schain{i})$ still need many more trials to converge and recommend the optimal policy. This phenomenon can be seen in Figure \ref{fig:d_chain_results}, where UCT never recommends the optimal policy, while MaxUCT (Section \ref{sec:3-3-1-thts}) that uses the same search policy with Bellman backups will recommend the optimal policy once one trial reaches the unit reward at the end of the chain. 
     
     \citet{dchain} formally prove that UCT will suffer a regret of $\Omega((\exp \circ \exp \circ \ldots \circ \exp)(1))$, where $\circ$ denotes functional composition, and there are $D$ many composed exponential functions. 
 
@@ -950,11 +929,32 @@
 
     To illustrate that in maximum entropy methods the temperature parameter requires careful per-MDP tuning, consider the \textit{modified D-chain problem}, where the sparse reward at the end of the chain is replaced with $R(\schain{D},\aR)=\frac{1}{2}$. In this case the optimal policy takes the immediate reward of $R(\schain{1},\aL)=\frac{D-1}{D}$ from the initial state, and as illustrated in Figure \ref{fig:d_chain_results}, the maximum entropy objective is misaligned with the standard objective for a temperature $\alpha > \frac{1}{5}$.
 
+
     \begin{figure}
         \centering
-        \includegraphics[width=0.49\textwidth]{figures/ch4/ten_chain.png}
-        \includegraphics[width=0.49\textwidth]{figures/ch4/mod_ten_chain.png}
-        \caption[Results on the (modified) D-chain problem.]{Results on the D-chain problem (left), and the modified D-chain problem (right), for a variety of parameters and with $D=10$. Each algorithm was run for 5000 trials, and results are averaged over 25 repeated experiments. For BTS the temperature function is set to a constant value, and in DENTS the temperature function and entropy weighting function are set to the same constant value. \todo{update figures to have y-axis 0 to 1}}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_110_dchain.png}
+            \caption{D-chain problem.}
+            \label{fig:d_chain_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_111_mod_dchain.png}
+            \caption{Modified D-chain problem.}
+            \label{fig:d_chain_results:sub:b}
+        \end{subfigure}
+        \caption[Results on the (modified) D-chain problem.]{Results 
+        on the D-chain problem 
+        (\subref{fig:d_chain_results:sub:a}) and the modified 
+        D-chain problem (\subref{fig:d_chain_results:sub:b}), for 
+        a variety of parameters and with $D=10$. Each algorithm 
+        was run for 5000 trials, and results are averaged over 25 
+        repeated experiments. For BTS the temperature function is 
+        set to a constant value, and in DENTS the temperature 
+        function and entropy weighting function are set to the 
+        same constant value.}
         \label{fig:d_chain_results}
     \end{figure}
 
@@ -968,7 +968,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -983,7 +982,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
-        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero. \todo{rephrase labels to D-Chain and Entropy Chain}}
+        \caption[An illustration of the \textit{Entropy Trap problem}.]{An illustration of the \textit{Entropy Trap problem}. In red, the original D-chain problem (Figure \ref{fig:modified_d_chain}) is labelled as the UCT Gauntlet, and the additional states added for the Entropy Trap are in blue. If a reward is not specified for a transition it is zero.}
         \label{fig:entropy_trap}
     \end{figure}
 
@@ -1003,9 +1002,35 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_10.png}
-        \includegraphics[width=0.49\textwidth]{figures/ch4/entropy_trap_15.png}
-        \caption[Results on the Entropy Trap problem.]{Results on the Entropy Trap problem, with $(D,E)=(10,10)$ (left) and $(D,E)=(15,25)$ (right). Each algorithm was run with a variety of temperature and bias parameters, averaged over 25 repeated experiments. For BTS the temperature function is set to a constant, and in DENTS the temperature and entropy weighting functions are set to the same constant. All other exploration parameters $\epsilon$ and the heuristic value function $\Vinit$ are set to zero. In the $(D,E)=(10,10)$ case each algorithm was run for 5000 trials: MENTS produces the optimal policy for a small range of temperatures, and BTS and MaxUCT do so for sufficiently large temperature and bias parameters. In the $(D,E)=(15,25)$ case each algorithm was run for $500{,}000$ trials: at the misalignment threshold MENTS recommendations drop to zero due to the entropy trap, while DENTS recommends the optimal policy using its Bellman value estimates.}
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_112_entropy_trap_10_vs_tempbias_5k_trials.png}
+            \caption{$(D,E)=(10,10)$, 5000 trials.}
+            \label{fig:entropy_trap_results:sub:a}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/ch4/plots/cr_113_entropy_trap_15_vs_tempbias_500k_trials.png}
+            \caption{$(D,E)=(15,25)$, $500{,}000$ trials.}
+            \label{fig:entropy_trap_results:sub:b}
+        \end{subfigure}
+        \caption[Results on the Entropy Trap problem.]{Results on 
+        the Entropy Trap problem. Each algorithm was run with a 
+        variety of temperature and bias parameters, averaged over 
+        25 repeated experiments. For BTS the temperature function 
+        is set to a constant, and in DENTS the temperature and 
+        entropy weighting functions are set to the same constant. 
+        All other exploration parameters $\epsilon$ and the 
+        heuristic value function $\Vinit$ are set to zero. 
+        (\subref{fig:entropy_trap_results:sub:a}) MENTS produces 
+        the optimal policy for a small range of temperatures, and 
+        BTS and MaxUCT do so for sufficiently large temperature 
+        and bias parameters. 
+        (\subref{fig:entropy_trap_results:sub:b}) At the 
+        misalignment threshold MENTS recommendations drop to zero 
+        due to the entropy trap, while DENTS recommends the 
+        optimal policy using its Bellman value estimates.}
         \label{fig:entropy_trap_results}
     \end{figure}
 
@@ -1030,7 +1055,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1042,7 +1066,7 @@
 \section{Empirical Results}
 \label{sec:4-4-results}
 
-    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \todo{ref}), MaxUCT (Section \todo{ref}), MENTS (Section \todo{ref}), RENTS (Section \todo{ref}), TENTS (Section \todo{ref}) and H-MCTS (Section \todo{ref}).
+    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \ref{sec:2-4-2-uct}), MaxUCT (Section \ref{sec:3-3-1-thts}), MENTS (Section \ref{sec:2-4-4-ments}), RENTS (Section \ref{sec:3-3-3-rents-some-tents}), TENTS (Section \ref{sec:3-3-3-rents-some-tents}) and H-MCTS (Section \ref{sec:3-3-2-mcts}).
 
     MENTS, RENTS and TENTS are used as baseline algorithms from the maximum entropy literature. H-MCTS is used as a baseline MCTS algorithm designed for the simple regret objective.
 
@@ -1068,7 +1092,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1123,13 +1146,9 @@
         \centering
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
-            \texttt{FFFFFG} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{FFFFFF} \\
-            \texttt{SFFFFF} 
+            \includegraphics[width=0.8\textwidth]{figures/ch4/sailing_env.pdf}
             \caption{6x6 Sailing Problem map.}
+            \label{fig:4:sailing_deets:sub:a}
         \end{subfigure}
         % \hfill
         \begin{subfigure}[b]{0.49\textwidth}
@@ -1147,8 +1166,9 @@
                 \end{pmatrix}
             \end{align*}
             \caption{Wind transition probabilities.}
+            \label{fig:4:sailing_deets:sub:b}
         \end{subfigure}
-        \caption[The map and wind transition probabilities used for the 6x6 Sailing Problem.]{\todo{make an image for the map, and example with directions and costs and have 3 figures} The map and wind transition probabilities used for the 6x6 Sailing Problem. The same notation is used for the map as in Figure \ref{fig:fl_maps} For the wind transition probabilities, the $(i,j)$th element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
+        \caption[Illustration of the Sailing Problem.]{(\ref{fig:4:sailing_deets:sub:a}) illustration of the Sailing Problem with a 6x6 map, where the wind direction is currently South-East, and example costs of each action. (\ref{fig:4:sailing_deets:sub:b}) The wind transition probabilities. The $(i,j)$th element of the matrix denotes the probability that the wind changes from direction $i$ to direction $j$, where $0$ denotes North/up, $1$ denotes North-East/up-right, and so on.}
         \label{fig:sailing_deets}
     \end{figure}
 
@@ -1186,7 +1206,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1221,7 +1240,7 @@
 
     For all algorithms, the \textit{most visited} recommendation 
     policy is used to recommend actions (e.g. Equation 
-    \todo{ref dents eqn}), as it is more robust than using 
+    \ref{eq:4:mvdents}), as it is more robust than using 
     value estimates directly: a largely unvisited action may 
     receive a noisy neural network evaluation shortly before 
     the recommendation is made, which the most visited policy 
@@ -1244,7 +1263,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1274,7 +1292,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1339,7 +1356,7 @@
     \ref{fig:4:dgw_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are optimistically set to a constant value of one and the bias term $\Nq$ is set to one. 
 
-    As discussed in Section \todo{ref}, UCT-based algorithms 
+    As discussed in Section \ref{sec:4-1-intro}, UCT-based algorithms 
     converge to a local optimum due to greater focus on exploitation, 
     which is visible across all map sizes. The stochastic search policies all tend towards the optimal path across all map sizes.
 
@@ -1508,7 +1525,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1677,7 +1693,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1811,7 +1826,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1835,7 +1849,7 @@
             Finally, Section \ref{sec:4-5-4-entropy-trap} proves Theorem \ref{thrm:ments_bad_mdp}, showing that the maximum entropy objective is either misaligned or requires an exponential number of trials in the Entropy Trap problem.
     \end{enumerate}
 
-    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} \todo{double check this ref} so that they do not interrupt the flow of the main arguments. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS, are left to Appendix \ref{appsec:exp} \todo{double check this ref}.
+    Some of the particularly verbose arguments are left to Appendix \ref{app:theory-ch4} so that they do not interrupt the flow of the main arguments. In particular, Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}, which show exponential simple regret bounds on BTS and DENTS.
 
     The following assumptions are made for this section, which do not affect the asymptotic behaviour of the algorithms but simplify the proofs and presentation:
     \begin{itemize}
@@ -1860,7 +1874,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1935,7 +1948,7 @@
                 + \sum_{a\in\cl{A}} \mpidents{n}(a_t|s_t)\mHQdents{N^n(s_t,a_t)}(s_t,a_t).
     \end{align}
     
-    For reference, all of the algorithms considered in this Section are written out in full with this additional notation in Appendix \ref{appsec:mcts_stoch_process} \todo{double check this ref}. \todo{make sure handle initv and initq properly in the appendix}
+    For reference, all of the algorithms considered in this Section are written out in full with this additional notation in Appendix \ref{appsec:dents_stoch_process}. 
 
 
 
@@ -1972,7 +1985,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -2133,7 +2145,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -2262,7 +2273,7 @@
         
         Inequality (\ref{eq:4:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-\frac{1}{\log(x)}\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule multiple times gives $\lim_{x\rightarrow\infty} \log f(x) = -\infty$, so $\lim_{x\rightarrow\infty} f(x) = 0$.
         
-        % To see why the final limit equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule \todo{cite?} generously gives:
+        % To see why the final limit equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule generously gives:
         % \begin{align}
         %     \lim_{x\rightarrow \infty} \log f(x) 
         %     &= \lim_{x\rightarrow \infty} \frac{\log\left(1-\frac{1}{\log(x)}\right)}{x^{-1}} \label{eq:4:ioas_three} \\
@@ -2278,7 +2289,7 @@
         % By continuity of the exponential function, thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
     \end{proof}
     %
-    % \todo{Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used} 
+    % Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used
 
     \proofsep
 
@@ -2492,24 +2503,24 @@
 
 
 
-    % \todo{Necessity for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
+    % {Necessity for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
     % Firstly, it can be shown that using a non-decaying search temperature with AR-BTS is not guaranteed to recommend the optimal policy.
     
     % \begin{figure}
     %     \centering
-    %     \includegraphics[width=0.7\textwidth]{figures/todo.jpg}
-    %     \caption{\todo{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
+    %     \includegraphics[width=0.7\textwidth]{figures/toodilo.jpg}
+    %     \caption{{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
     %     \label{fig:ar_gen_mdp}
     % \end{figure}
 
-    % \todo{theorem restate}
+    % {theorem restate}
     % % \begin{customprop}{B.1}
-    % %     \todo{Haven't touched this, just c and p from neurips paper}
+    % %     {Haven't touched this, just c and p from neurips paper}
 
     % %     For any $\alpha_{\textnormal{fix}}>0$, there is an MDP $\cl{M}$ such that AR-BTS with $\alpha(m)=\alpha_{\textnormal{fix}}$ is not consistent: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})] \not\to 0$ as $n\to\infty$. 
     % % \end{customprop}
     % \begin{proofoutline}
-    %     \todo{Haven't touched this, just c and p from neurips paper}
+    %     {Haven't touched this, just c and p from neurips paper}
 
     %     Consider the MDP given in Figure \ref{fig:ar_gen_mdp}. We can show inductively that (as $n\rightarrow\infty$) the value of $\bb{E}\bar{V}^{N(k)}(k)\leq 2E^{D-k+1} < 2$, where $E=e^2/(1+e^2)$ for $2\leq k \leq D$. The inductive step is as follows:
     %     \begin{align}
@@ -2523,15 +2534,15 @@
     %     where we know that $\exp\left(\bar{V}^{N(k+1)}(k+1)\right)/\left(1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)\right) < E$, because the function $e^x/(1+e^x)$ is monotonically increasing in $x$, and $\bar{V}^{N(k+1)}(k+1) < 2$. Hence, by choosing an integer $D$ such that $D-1 \geq \log(1/3) / \log(E)$, we have $\bb{E}\bar{V}^{N(2)}(2)=2E^{D-1}\leq 2/3 < 1 = \bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)$. 
 
     %     A full proof should show that AR-BTS does indeed converge to these expected values, possibly through concentration bounds. 
-    %     \todo{(was camera ready todo) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
+    %     {(was camera ready) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
 
     %     Hence, AR-BTS does not converge to a simple regret of zero, because the expected Q-values as $n\rightarrow\infty$ are $\bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)=1$ and $\bb{E}\bar{Q}^{N(1,a_1)}(1,a_1)<2/3$, so AR-BTS would incorrectly recommend action $a_2$ from the root node. 
-    %     \todo{(Was camera ready todo) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
+    %     {(Was camera ready ) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
     % \end{proofoutline}
 
-    % \todo{Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
+    % {Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
 
-    % \todo{Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
+    % {Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
 
 
 
@@ -2552,7 +2563,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -2569,8 +2579,8 @@
 
     \begin{figure}
         \centering
-        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour.pdf}
-        \caption[(Repeated). An illustration of the \textit{Entropy Trap problem}.]{(Repeated). An illustration of the \textit{Entropy Trap problem}, with state labels added for reference in the proof below. \todo{Update figure to include an additional state s to the E and s to the F}}
+        \includegraphics[width=\textwidth]{figures/ch4/entropy_trap_mdp_colour_xtra_label.pdf}
+        \caption[(Repeated). An illustration of the \textit{Entropy Trap problem}.]{(Repeated). An illustration of the \textit{Entropy Trap problem}, with additional state labels added for reference in the proof below.}
         \label{fig:entropy_trap_repeat}
     \end{figure}
 
@@ -2688,26 +2698,26 @@
 
 
 
-    % \todo{Want to change this result (below) to be, for any temperature alpha, there is some MDP that MENTS is not consistent. Then for theory story it can be that there is always a way to set params in DENTS that it will converge, but for MENTS the parameters depends on the MDP. The MDP to do this has one initial choice, with a reward of one, and then the other option is an entropy chain again, where the length is long enough such that MENTS will chose the entropy chain option.}
+    % \odot{Want to change this result (below) to be, for any temperature alpha, there is some MDP that MENTS is not consistent. Then for theory story it can be that there is always a way to set params in DENTS that it will converge, but for MENTS the parameters depends on the MDP. The MDP to do this has one initial choice, with a reward of one, and then the other option is an entropy chain again, where the length is long enough such that MENTS will chose the entropy chain option.}
 
 
 
     % \begin{figure}
     %     \centering
-    %     \includegraphics[width=0.4\textwidth]{figures/todo.jpg}
-    %     \caption{\todo{Make fig and write caption for the MDP for the new proof.}}
+    %     \includegraphics[width=0.4\textwidth]{figures/odot.jpg}
+    %     \caption{\odot{Make fig and write caption for the MDP for the new proof.}}
     %     \label{fig:ments_not_consistent_env}
     % \end{figure}
 
 
         
     % \begin{customprop}{3.1}
-    %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
+    %     \odot{Adapt this argument, which is just c and p from the neurips appendix}
     %     There exists an MDP $\cl{M}$ and temperature $\alpha$ such that $\bb{E}[\sreg(s_0,\mpsiments{n})] \not\to 0$ as $n\to\infty$. That is, MENTS is not consistent.
     % \end{customprop}
     
     % \begin{proof}
-    %     \todo{Adapt this argument, which is just c and p from the neurips appendix}
+    %     \odot{Adapt this argument, which is just c and p from the neurips appendix}
     %     We give a proof by construction. Recall the modified 10-chain problem, with $R_f=1/2$ in Figure \ref{fig:dchain_illustration_tres}, and consider a MENTS process (i.e. running MENTS) with a temperature $\alphaments=1$ for $n$ trials. By considering the optimal soft Bellman equations (\ref{eq:v_soft_bellman}) and (\ref{eq:q_soft_bellman}), one can verify that $Q_{\sft}^*(1,2)=0.9$ and $Q_{\sft}^*(1,1)=\log\left(\exp(1/2)+\sum_{i=0}^8\exp(i/10)\right)\approx 2.74$. 
         
     %     Theorem \ref{thrm:ments_val_converge}, Lemma \ref{lem:stochastic_step} and Lemma \ref{lem:sa_to_s} implies that there is some $C,k>0$ for any $\varepsilon > 0$:
@@ -2745,7 +2755,6 @@
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
-% [ ] TODOs
 % [ ] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -2757,7 +2766,7 @@
 \section{Summary}
 \label{sec:4-6-summary}
 
-    \todo{This chapter introduced BTS and DENTS, established their consistency properties, and demonstrated empirically that DENTS can solve MDPs where UCT and MENTS fail. Chapter} \ref{ch:5-chmcts} extends these ideas to the multi-objective setting.
+    \bd{This chapter introduced BTS and DENTS, established their consistency properties, and demonstrated empirically that DENTS can solve MDPs where UCT and MENTS fail. Chapter} \ref{ch:5-chmcts} extends these ideas to the multi-objective setting.
 
     \begin{itemize}
         \item What questions were answered

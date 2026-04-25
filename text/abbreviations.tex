@@ -14,6 +14,7 @@
     \item[CHMCTS] Convex Hull Monte Carlo Tree Search.
     \item[CH-UCT] Convex Hull UCT.
     \item[CHVI] Convex Hull Value Iteration.
+    \item[CHVI(PS)] Convex Hull Value Iteration with Prioritised Sweeping.
     \item[CHVS] Convex Hull Value Set.
     \item[CMAB] Contextual Multi-Armed Bandit (problem).
     \item[CZ] Contextual Zooming. 
@@ -40,6 +41,7 @@
     \item[MOMCTS] Multi-Objective Monte Carlo Tree Search.
     \item[MOMDP] Multi-Objective Markov Decision Process.
     \item[MORL] Multi-Objective Reinforcement Learning.
+    \item[NHV] Normalised Hypervolume.
     \item[P-CHMCTS] Pareto Convex Hull Monte Carlo Tree Search.
     \item[PF] Pareto Front.
     \item[PUCT] Predictor-UCT. 
@@ -87,35 +89,6 @@
         The sequence of random variables $X_i$ converges in probability to the random variable $X$. $\Pr\left(\left|X_i - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ i \rightarrow \infty$ for all $\varepsilon>0$.
     \item[$X_i\raas X$]
         The sequence of random variables $X_i$ converges almost surely to the random variable $X$. $\Pr\left(\lim_{i\rightarrow\infty} X_i = X\right) = 1$.
-    % \\
-    % %%%%%
-    % % MABs - notation is local to background section + 
-    % %%%%%
-    % \item[\Large\textbf{Multi-Armed Bandits (Section \ref{sec:2-3-mab})}\hfill\hfill]
-    % \item[$x$] \todo{define here and move into correct place in the list}
-    % \item[$y$] \todo{define here and move into correct place in the list}
-    % \item[$f_i$] \todo{define here and move into correct place in the list}
-    % \item[$x^m$] \todo{define here and move into correct place in the list}
-    % \item[$y^m$] \todo{define here and move into correct place in the list}
-    % \item[$\bar{y}_i^m$] \todo{define here and move into correct place in the list}
-    % \item[$N$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_i$] \todo{define here and move into correct place in the list}
-    % \item[$\mu^*$] \todo{define here and move into correct place in the list}
-    % \item[$\creg_{\mab}$] \todo{define here and move into correct place in the list}
-    % \item[$\pi(m)$] \todo{define here and move into correct place in the list. Maybe keep it as this and ask question}
-    % \item[$m$] \todo{define here and move into correct place in the list}
-    % \item[$\pi_{\ucb}(m)$] \todo{define here and move into correct place in the list}
-    % \item[$\pi^m$] \todo{define here and move into correct place in the list}
-    % \item[$\psi^m$] \todo{define here and move into correct place in the list}
-    % \item[$w$] \todo{define here and move into correct place in the list}
-    % \item[$w^m$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_{w,i}$] \todo{define here and move into correct place in the list}
-    % \item[$\mu_{w}^*$] \todo{define here and move into correct place in the list}
-    % \item[$W$] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
-    % \item[$ $] \todo{define here and move into correct place in the list}
     \\
     %%%%%
     % (MO)MDPs
@@ -139,7 +112,6 @@
         The next-state transition distribution of an MDP. $p(s' | s,a)$ is the probability of transitioning to state $s'$ from state $s$ by taking action $a$.
     \item[$\pi$]
         A policy, mapping a state $s\in\cl{S}$ to a probability distribution over actions $\cl{A}$. That is, $\pi(a|s)$ is the probability of taking action $a$ at state $s$. $\pi(s)=a'$ is used a shorthand for $\pi(a|s)=\one[a=a']$.
-        % \todo{probably dont need this, not going to use non-locally}
     \item[$R$] 
         The reward function of an MDP: $R(s,a)$ is the reward received from taking action $a$ at state $s$.
     \item[$\bff{R}$] 
@@ -162,8 +134,6 @@
         A trajectory, or sequence, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$: $\tau = (s_0, a_0, r_0, s_1, ..., s_{H-1}, a_{H-1}, r_{H-1}, s_H)$.
     \item[$\bff{\tau}$]
         A multi-objective trajectory, of states, actions and rewards that are sampled according to a policy $\pi$ and an MDP $\cl{M}$: $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, ..., s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$.
-    % \item[$s,(s,a)\in\tau$] 
-    %     \todo{define this here?} 
     \item[$\tau_{i:j}$]
         A truncated trajectory, starting at timestep $i$, and ending at timestep $j$: $\tau_{i:j} = (s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$. 
     \item[$\bff{\tau}_{i:j}$] 
@@ -181,16 +151,10 @@
         The optimal standard policy, that maximises the objective function $J(\pi)$.
     \item[$Q^*$]
         The optimal Q-value function. $Q^*(s,a;t)$ denotes the maximal expected value that can be achieved by any policy, starting from state $s_t=s$, with action $a_t=a$.
-    % \item[$\hat{Q}^k$]
-    %     The estimate of the optimal value function after $k$ iterations of Value Iteration. 
-    %     \todo{probably dont need this, not going to use non-locally}
     \item[$Q^{\pi}$]
         The Q-value function of a policy $\pi$. $Q^{\pi}(s,a;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
     \item[$V^*$]
         The optimal value function. $V^*(s;t)$ denotes the maximal expected value that can be achieved by any policy, starting from state $s_t=s$.
-    % \item[$\hat{V}^k$]
-    %     The estimate of the optimal value function after $k$ iterations of Value Iteration.
-    %     \todo{probably dont need this, not going to use non-locally}
     \item[$V^{\pi}$]
         The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
     \\
@@ -386,7 +350,7 @@
     % Ch 4 - Boltzmann Search
     %%%%%
     \item[{\parbox[t]{\textwidth}{
-        \Large\textbf{Monte Carlo Tree Search with Boltzmann Exploration \\(Chapter \ref{ch:4-dents})}\hfill\hfill
+        \Large\textbf{Monte Carlo Tree Search with Boltzmann Exploration (Chapter \ref{ch:4-dents})}\hfill\hfill
       }}]
     \item[$\sreg(s,\psi)$]
         The \textnormal{simple regret} of a recommendation policy $\psi$ at state $s$: $\sreg(s,\psi) = V^*(s) - V^{\psi}(s)$.
@@ -475,8 +439,6 @@
         An exploration parameter used in CH-BTS.
     \item[$K_{\max}$]
         The maximum size of a convex hull value set in CHMCTS, used in the size pruning optimisation.
-    \item[$\Mmin$]
-        The minimum ball visit count required to trigger the CZT activation rule.
     \item[$\pi(a|s;\bff{w})$]
         A \textnormal{contextual policy}, extending the policy notation $\pi(a|s)$ to include a context weight $\bff{w}\in\Delta^D$.
     \item[$\pswept$]
@@ -487,6 +449,25 @@
         The utopian point used in the Chebyshev utility (C-CHMCTS).
     \item[$\unsolvedtol$]
         The tolerance used to mark chance nodes as solved in CHMCTS, where a node is marked solved when $\unsolved(s,a)\leq\unsolvedtol$.
+    \\
+    %%%%%
+    % CZT
+    %%%%%
+    \item[{\parbox[t]{\textwidth}{
+        \Large\textbf{Contextual Zooming for Trees (Section \ref{sec:5-2-czt})}\hfill\hfill
+    }}]
+    \item[$A(s,a)$]
+        The set of active balls maintained at chance node $(s,a)$ in CZT.
+    \item[$A(s)$]
+        The set of all active balls at decision node $s$ in CZT: $A(s)=\cup_{a\in\cl{A}}A(s,a)$.
+    \item[$\Mmin$]
+        The minimum ball visit count required to trigger the CZT activation rule.
+    \item[$\piczt$]
+        The search policy used in CZT.
+    \item[$\psiczt$]
+        The recommendation policy used in CZT.
+    \item[$\Qczt(B)$]
+        The multi-objective average return value estimate associated with an active ball $B$ in CZT.
     \\
     %%%%%
     % CHMCTS Common Framework

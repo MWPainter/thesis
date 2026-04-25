@@ -1,6 +1,5 @@
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [X] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -29,7 +28,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -67,7 +65,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -93,7 +90,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -156,7 +152,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -221,7 +216,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -279,7 +273,7 @@
         where $\mu^*(w) = \sup_i \mu(w,i)$.
     \end{defn}
 
-    The \textit{contextual zooming} algorithm \cite{cz} is an algorithm for CMAB problems which is presented where relevant in \todo{ref to where it got updated and placed}.
+    The \textit{contextual zooming} algorithm \cite{cz} is an algorithm for CMAB problems which is presented directly in the context of tree search in the \textit{Contextual Zooming for Trees} algorithm (Section \ref{sec:5-2-czt}).
     
     
 
@@ -300,7 +294,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -404,7 +397,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -507,7 +499,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -606,7 +597,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -636,7 +626,7 @@
         \item \textit{Backup phase} - the value from the heuristic or simulation is used to back up values through the path traversed in the selection phase.
     \end{enumerate}
 
-    Trial-Based Heuristic Tree Search (THTS) \cite{thts} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
+    Trial-Based Heuristic Tree Search (THTS) \cite{thts,thts_thesis} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
 
     \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-2-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises \mctsone\ewe algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-4-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
     
@@ -650,7 +640,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -690,7 +679,6 @@
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -866,7 +854,6 @@ def backup_phase($\tau_{:h}$, ctx)
     
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -928,7 +915,6 @@ def backup_phase($\tau_{:h}$, ctx)
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -939,8 +925,6 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Final revision
 \subsection{Predictor-UCT (PUCT)}
 \label{sec:2-4-3-puct}
-
-    \todo{Maybe move to related work Ch3, Sec 2.4 either is THTS with all the algorithms, or THTS with a couple examples. PUCT, RENTS, TENTS can go in the related work section. Should also define MaxUCT.}
 
     AlphaGo and AlphaGo Zero \cite{alpha_go,alpha_go_zero} popularised a variant of UCT which is given in this section and referred to as \textit{Predictor-UCT} (PUCT). In \cite{alpha_go}, this variant is ambiguously defined as ``PUCT'', citing \textit{predictor UCB} \cite{prio_ucb} as the source, while more closely resembling \textit{polynomial UCB} \cite{poly_uct}.
 
@@ -969,7 +953,6 @@ def backup_phase($\tau_{:h}$, ctx)
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [ ] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -1023,7 +1006,6 @@ def backup_phase($\tau_{:h}$, ctx)
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [ ] Citations + Refs
 % [ ] LitRev sync
@@ -1072,11 +1054,7 @@ def backup_phase($\tau_{:h}$, ctx)
 
 
 
-    The \textit{Good-Turing estimate} \todo{cite} addresses a related but distinct problem: rather than bounding the error in the empirical distribution, it estimates the total probability mass of outcomes that have not yet been observed.
-    %\cite{good_turing} 
-    % Good-Turing paper is Good (1953)
-
-    % The \textit{Good-Turing estimate} \todo{add cite} provides an estimate of the total probability mass assigned to outcomes that have not yet been observed in a finite sample. It is used in settings where the support of a distribution is unknown, and where some outcomes may not appear in a sample of finite size.
+    The \textit{Good-Turing estimate} \cite{good_turing} addresses a related but distinct problem: rather than bounding the error in the empirical distribution, it estimates the total probability mass of outcomes that have not yet been observed.
 
     Let $f$ be a probability mass function over the categories $\cl{C}=\{C_1,\ldots,C_k\}$, where the number of categories $k$ is unknown or potentially infinite. Let $X_1,\ldots,X_m$ be $m$ independent samples drawn from $f$, and let $M(C)$ be the number of times category $C$ was observed:
     \begin{align}
@@ -1094,10 +1072,7 @@ def backup_phase($\tau_{:h}$, ctx)
     \end{align}
     where $M_1 = |\{C\in\cl{C}_{\textnormal{obs}} \mid M(C)=1\}|$ is the number of categories observed exactly once (the number of \textit{singletons}).
 
-    \todo{citet mcallester\_schapire}
-    %\citet{good_turing_bound}
-    %McAllester and Schapire (2000), "On the convergence rate of Good-Turing estimators
-    show that the Good-Turing estimate satisfies the following bound.
+    \citet{good_turing_converge} show that the Good-Turing estimate satisfies the following bound.
     %
     \begin{theorem}
         \label{thrm:2:good_turing_bound}
@@ -1126,7 +1101,6 @@ def backup_phase($\tau_{:h}$, ctx)
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
@@ -1348,7 +1322,6 @@ randomly drawn weight vector.
 
 % [X] First Draft
 % [X] AI proofread/grammar check
-% [X] TODOs
 % [X] Spell check
 % [X] Citations + Refs
 % [X] LitRev sync
