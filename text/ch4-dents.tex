@@ -71,7 +71,7 @@
         \item Section \ref{sec:4-2-boltzmannsearch} defines the \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS) algorithms.
         \item Section \ref{sec:4-2-3-stoch_search_policies} discusses some properties of using a stochastic search policy in MCTS, and examines how the \textit{Alias Method} can be used to address \complexityq.
         \item Section \ref{sec:4-3-toyenvs} introduces two theoretical MDPs, which are used to empirically demonstrate the limitations of the existing MCTS algorithms.
-        \item Section \ref{sec:4-4-results} presents experimental results on grid world environments and the game of Go, and gives an empirical answer to \entropyq.
+        \item Section \ref{sec:4-4-results} presents experimental results on gridworld environments and the game of Go, and gives an empirical answer to \entropyq.
         \item Section \ref{sec:4-5-theory} presents the main theoretical analysis and proofs. Convergence properties of MENTS, BTS and DENTS are proven to provide a theoretical answer to \entropyq.
     \end{itemize}
 
@@ -108,15 +108,15 @@
             \caption{Optimal policy with the maximum entropy objective for varying temperatures.}
             \label{fig:4:shortest_path_intro_b}
         \end{subfigure}
-        \caption[An example grid world shortest path problem.]{An example grid world shortest path problem. (a) Shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) Illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
+        \caption[An example gridworld shortest path problem.]{An example gridworld shortest path problem. (a) Shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) Illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
         \label{fig:4:shortest_path_intro}
     \end{figure}
 
-    This section considers a grid world shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms.
+    This section considers a gridworld shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms.
 
-    In this grid world, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
+    In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
 
-    While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS, and Section \ref{sec:4-4-results} considers more complex grid worlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
+    While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS, and Section \ref{sec:4-4-results} considers more complex gridworlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
 
     \begin{figure}
         \centering
@@ -134,7 +134,7 @@
             \label{fig:4:shortest_path_intro_results_b}
         \end{subfigure}
         \centering
-        \caption[Results on the example grid world problem for a variety of bias and temperature parameters.]{Results on the example grid world problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters, and (b) shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
+        \caption[Results on the example gridworld problem for a variety of bias and temperature parameters.]{Results on the example gridworld problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters, and (b) shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
         \label{fig:4:shortest_path_intro_results}
     \end{figure}
     
@@ -185,7 +185,7 @@
 
     In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. 
 
-    When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is around $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex grid worlds where the misalignment threshold is low enough to significantly affect performance.
+    When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is around $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex gridworlds where the misalignment threshold is low enough to significantly affect performance.
 
 
 
@@ -240,7 +240,7 @@
 
     Note that the simple regret (Equation (\ref{eq:4:simple_regret})) is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret is used in Definition \ref{def:4:consistency} to define consistency, and is the main value of interest in the theoretical analysis in Section \ref{sec:4-5-theory}.
 
-    \citet{explore_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I dont have time to clean this up and write it into the paper
+    \citet{exploring_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I dont have time to clean this up and write it into the paper
     
 
 
@@ -1066,7 +1066,7 @@
 \section{Empirical Results}
 \label{sec:4-4-results}
 
-    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \ref{sec:2-4-2-uct}), MaxUCT (Section \ref{sec:3-3-mcts}), MENTS (Section \ref{sec:2-4-4-ments}), RENTS (Section \ref{sec:3-3-3-rents-some-tents}), TENTS (Section \ref{sec:3-3-3-rents-some-tents}) and H-MCTS (Section \ref{sec:3-3-mcts}).
+    This section presents the empirical results for this chapter. For the gridworld environments the following baseline algorithms are used: UCT (Section \ref{sec:2-4-2-uct}), MaxUCT (Section \ref{sec:3-3-mcts}), MENTS (Section \ref{sec:2-4-4-ments}), RENTS (Section \ref{sec:3-3-mcts}), TENTS (Section \ref{sec:3-3-mcts}) and H-MCTS (Section \ref{sec:3-3-mcts}).
 
     MENTS, RENTS and TENTS are used as baseline algorithms from the maximum entropy literature. H-MCTS is used as a baseline MCTS algorithm designed for the simple regret objective.
 
@@ -1115,7 +1115,7 @@
 
 \subsubsection{FrozenLake}
 \label{sec:4-4-1-1-frozenlake}
-    \textit{FrozenLake} \cite{gymnasium} is a grid world environment where the agent aims to reach a goal state while avoiding holes that it could fall into. The agent can attempt to move in any cardinal direction at each time step. At each step, there is an equal probability that the agent moves in the intended direction or slips and moves in a perpendicular direction. For example, if the agent tries to move down, then there is a probability of $\frac{1}{3}$ that the agent moves down, moves left or moves right. If the agent moves or slips into a wall, then the agent remains in the same location. 
+    \textit{FrozenLake} \cite{gymnasium} is a gridworld environment where the agent aims to reach a goal state while avoiding holes that it could fall into. The agent can attempt to move in any cardinal direction at each time step. At each step, there is an equal probability that the agent moves in the intended direction or slips and moves in a perpendicular direction. For example, if the agent tries to move down, then there is a probability of $\frac{1}{3}$ that the agent moves down, moves left or moves right. If the agent moves or slips into a wall, then the agent remains in the same location. 
     
     If the agent reaches the goal state, then a reward of one is received. If the agent falls into a hole, then the trial ends and zero reward is received. Consequently, the value of a policy $\pi$ at a state $s$ is the probability that the goal is reached under $\pi$.
 
@@ -1140,7 +1140,7 @@
 \subsubsection{Sailing Problem}
 \label{sec:4-4-1-3-sailing}
 
-    The \textit{Sailing Problem} has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue1}. It is another grid world environment with one goal location, at the opposite corner to the starting location of the agent. The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/left. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. Figure \ref{fig:sailing_deets} illustrates the problem and gives the wind transition probabilities for the Sailing problem, using the same map notation as for FrozenLake. 
+    The \textit{Sailing Problem} has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue}. It is another gridworld environment with one goal location, at the opposite corner to the starting location of the agent. The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/left. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. Figure \ref{fig:sailing_deets} illustrates the problem and gives the wind transition probabilities for the Sailing problem, using the same map notation as for FrozenLake. 
 
     \begin{figure}
         \centering
@@ -1938,9 +1938,9 @@
         \mQdents{N^n(s_t,a_t)}(s_t,a_t) &= 
             R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
                 \frac{N^n(s')}{N^n(s_t,a_t)} \mVdents{N^n(s')}(s') \right), 
-            \label{appeq:dp_q_backup} \\ 
+            \label{eq:dp_q_backup} \\ 
         \mVdents{N^n(s_t)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N^n(s_t,a)}(s_t,a), 
-            \label{appeq:dp_v_backup} \\
+            \label{eq:dp_v_backup} \\
         \mHQdents{N^n(s_t,a_t)}(s_t,a_t) &= 
             \sum_{s'\in \suc{s_t}{a_t}} \frac{N^n(s')}{N^n(s_t,a_t)} \mHVdents{N^n(s')}(s'), \\
         \mHVdents{N^n(s_t)}(s_t) &= 

@@ -50,7 +50,9 @@
     \minitoc
 
     This chapter considers multi-objective Monte Carlo Tree Search 
-    (MOMCTS) for the decision support scenario (Figure \ref{fig:2:mo_decision_support}) with linear utilities, where the agent must plan for an unknown weight vector $\bff{w}$ over the objectives. Two approaches are considered in this chapter, the first following the same design paradigm as UCT where an algorithm for CMAB problems (Section \ref{sec:2-1-3-contextual-mab}) is applied at each decision node; the second is to maintain a convex hull value set at each node in the 
+    (MOMCTS) for the decision support scenario (Figure \ref{fig:2:mo_decision_support}) with linear utilities, where the agent must plan for an unknown weight vector $\bff{w}$ over the objectives. Primarily, this chapter aims to address \stochq.
+    
+    Two approaches are considered in this chapter, the first following the same design paradigm as UCT where an algorithm for CMAB problems (Section \ref{sec:2-1-3-contextual-mab}) is applied at each decision node; the second is to maintain a convex hull value set at each node in the 
     search tree, representing the set of achievable expected returns 
     across all possible weightings over the objectives which is updated using convex hull backups (Section \ref{sec:2-6-1-chvi}). 
     
@@ -151,7 +153,7 @@
 
     \citet{locally_optimal} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
-    In the \thtspp\ewe framework, the context weight $\bff{w}$ is sampled during the \samplecontext\ewe function (Section \ref{sec:2-4-1-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
+    In the \thtspp\ewe framework, the context weight $\bff{w}$ is sampled during the \samplecontext\ewe function (Section \ref{sec:2-4-2-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
 
     \begin{defn}
         \label{def:5:context_policy}
@@ -337,7 +339,7 @@
         \item 
             In CZT, the set of active balls is specialised to a set for each action. In CZ, a single set of active balls is used across the entire \textit{similarity space} (defined in Section \ref{sec:2-1-3-contextual-mab}).
         \item \label{item:5:local1}
-            CZ assumes that the algorithm is run for a known number of rounds $T$, and uses this value instead of the current number of visits at the decision node $N(s)$ in the confidence radii (Equation \ref{eq:5:cz_conf_radius}).
+            CZ assumes that the algorithm is run for a known number of rounds $T$, and uses this value instead of the current number of visits at the decision node $N(s)$ in the confidence radii (Equation \ref{eq:5:czt_conf_radius}).
         \item 
             The activation rule of CZ does not have a hard lower bound on the number of ball visits required to add a new child ball. CZT makes this adaptation to account for item \ref{item:5:local1}, which results in smaller confidence radii.
         \item 
@@ -528,7 +530,7 @@
 \subsection{Prior Search Policies}
 \label{sec:5-3-5-prior}
 
-    The MOMCTS algorithms discussed in Chapter \ref{ch:3-litrev} can be recovered within the CHMCTS framework by substituting appropriate search policies. In general, prior work uses search policies of the following form:
+    The MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork} can be recovered within the CHMCTS framework by substituting appropriate search policies. In general, prior work uses search policies of the following form:
     \begin{align}
         \pialg(a|s;\bff{w}) = \argmax_{a\in\cl{A}} \left[
             \zetaalg(\Qalg(s,a);\bff{w}) + \calg 
@@ -699,25 +701,27 @@
 \subsection{Entropy and Convex Hulls}
 \label{sec:5-3-7-entropy-convex-hulls}
 
-    \begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_a.pdf}
-            \label{fig:5:entropy_convex_hull_a}
-        \end{subfigure}
-        \begin{subfigure}[b]{0.49\textwidth}
-            \centering
-            \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_b.pdf}
-            \label{fig:5:entropy_convex_hull_b}
-        \end{subfigure}
-        \caption[Entropy and convex hull value sets.]{A convex hull value set where a single point is optimal for two different weight vectors $\bff{w}$ and $\bff{w}'$. Although both weight vectors select the same value at the root state (a), they induce different policies with different values at downstream states (b), resulting in different entropy values.}
-        \label{fig:5:entropy_convex_hull}
-    \end{figure}
+    % \begin{figure}
+    %     \centering
+    %     \begin{subfigure}[b]{0.49\textwidth}
+    %         \centering
+    %         \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_a.pdf}
+    %         \label{fig:5:entropy_convex_hull_a}
+    %     \end{subfigure}
+    %     \begin{subfigure}[b]{0.49\textwidth}
+    %         \centering
+    %         \includegraphics[width=0.8\textwidth]{figures/ch5/ch_and_entropy_b.pdf}
+    %         \label{fig:5:entropy_convex_hull_b}
+    %     \end{subfigure}
+    %     \caption[Entropy and convex hull value sets.]{An example of two different weights following the same value  convex hull value set where a single point is optimal for two different weight vectors $\bff{w}$ and $\bff{w}'$. Although both weight vectors select the same value at the root state (a), they induce different policies with different values at downstream states (b), resulting in different entropy values.}
+    %     \label{fig:5:entropy_convex_hull}
+    % \end{figure}
 
     Convex hull value sets represent the set of achievable expected returns in \textit{objective space}, storing value vectors attainable by different policies. Entropy, by contrast, is a property of a policy rather than a value vector: it measures the uncertainty of the action distribution induced by a policy at each state.
 
-    A key observation is that a single point on the convex hull does not correspond to a unique policy, as illustrated in Figure \ref{fig:5:entropy_convex_hull}. Since the contextual policies considered in this chapter depend on the weight vector $\bff{w}$, a given value vector $\bff{v}\in\Valg(s)$ may be optimal for many different weight vectors, each inducing a different policy $\pi(\cdot|s;\bff{w})$ with a different entropy. 
+    A key observation is that a single point on the convex hull does not correspond to a unique policy.
+    % , as illustrated in Figure \ref{fig:5:entropy_convex_hull}. 
+    Since the contextual policies considered in this chapter depend on the weight vector $\bff{w}$, a given value vector $\bff{v}\in\Valg(s)$ may be optimal for many different weight vectors, each inducing a different policy $\pi(\cdot|s;\bff{w})$ with a different entropy. 
 
     As a result, there is no principled way to associate a single entropy value with a point on the convex hull. This is the fundamental reason why the entropy-based exploration used in DENTS (Chapter \ref{ch:4-dents}) does not extend naturally to the multi-objective setting with convex hull value sets, and motivates the simplex map approach introduced in Chapter \ref{ch:6-simplexmaps}.
 
@@ -1461,7 +1465,7 @@
     optimal policies if and only if the utility function 
     is linear, confirming that the assumption of linear utility is 
     necessary for a MOMCTS algorithm to guarantee 
-    convergence, at least for stochastic environments.
+    convergence, at least for stochastic environments, addressing \stochq\ewe theoretically.
 
     \textit{Contextual Zooming for Trees} (CZT) was 
     introduced (Section \ref{sec:5-2-czt}) as a natural 
@@ -1487,12 +1491,12 @@
     run within a fixed time budget and limiting 
     performance. CZT avoids this issue but exhibits the 
     exploitation bias of UCT-style algorithms, converging 
-    to locally optimal solutions.
+    to locally optimal solutions. Leaving \stochq\ewe to be unsatisfactorily addressed empirically. However, \moscalabilityq\ewe is addressed in part by the scalability results in Section \ref{sec:5-5-4-scalability}.
 
     Two limitations of the convex hull approach motivate 
     the work of Chapter \ref{ch:6-simplexmaps}. First, 
     convex hull value sets become computationally expensive in stochastic 
-    environments, suggesting that a heirarchical  
+    environments, suggesting that a hierarchical  
     representation would may more scalable. Second, 
     convex hull value sets do not naturally support entropy-based exploration, making it difficult to utilise entropy as an exploration bonus. Both 
     limitations are addressed by the simplex map 

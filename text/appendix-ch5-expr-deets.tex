@@ -23,20 +23,18 @@
 \chapter{\label{app:expr-deets-ch5}Additional Experimental Details for Chapters 5 and 6}
 
 
-    \todo{Frozen Lake to FrozenLake etc}
+    \todo{FrozenLake to FrozenLake etc}
 
 
-    This appendix gives additional details on the hyperparameters used for the experiments in \todo{refs to ch5 and ch6 results chapters} and the optimisation process used to select them. Organised as follows:
+    This appendix gives additional details on the hyperparameters used for the experiments in \ref{sec:5-5-results} and \ref{sec:6-4-results} and the optimisation process used to select them. Organised as follows:
     \begin{itemize}
-        \item Section \ref{appsec:5:hyperparams} gives a list of shared and \bd{specific to a subset of algorithms} hyperparameters used for the experiments;
+        \item Section \ref{appsec:5:hyperparams} gives a list of shared and algorithm specific hyperparameters used for the experiments;
         \item Section \ref{appsec:5:hypersearch} gives details on the hyperparameter optimisation and the final hyperparameters that were selected.
     \end{itemize}
 
 
 \section{Common Hyperparameters Reference}
 \label{appsec:5:hyperparams}
-
-    \todo{Update for ch5 and ch6 experiments}
 
     The following parameters were used by all algorithms considered in section \todo{ref gridworlds results}:
     \begin{itemize}
@@ -45,31 +43,40 @@
         \item $\normalisedq$ - if Q-values should be normalised before being used in the search policy;
         \item $\initv$ - the heuristic value function;
         \item $\initq$ - the heuristic Q-value function;
-        \item $\Nv$ - the number of pseudo-visits assigned to $\initv$ in backups;
-        \item $\Nq$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate;
     \end{itemize}
 
     The following parameters are used by specific algorithms:
     \begin{itemize}
-        \item $\epsilon$ - the (uniform) exploration parameter used by algorithms using a Boltzmann search policy, e.g. MENTS, BTS;
-        \item $\alpha$ - the temperature parameter for algorithms using a maximum entropy objective, e.g. MENTS, RENTS, TENTS;
-        \item $\alpha(x)$ - the temperature schedule for Boltzmann distributions in BTS and DENTS;
-        \item $\beta(x)$ - the entropy weighting function for DENTS;
-        \item $b$ - the bias term used in UCB style policies, e.g. UCT, H-MCTS;
-        \item $\uctbudget$ - \todo{check if its seq halving into uct or uct into seq halving}, the budget for running UCT before swtiching to Sequential Halving in H-MCTS;
+        \item $b_{\text{CZT}}$ - the bias term used in CZT;
+        \item $(\Mmin)_{CZT}$ - the minimum number of visits to a state-action pair before it is considered for selection in CZT;
+        \item $b_{\text{C-CHMCTS}}$ - the bias term used in C-CHMCTS;
+        \item $b_{\text{H-CHMCTS}}$ - the bias term used in H-CHMCTS;
+        \item $b_{\text{P-CHMCTS}}$ - the bias term used in P-CHMCTS;
+        \item $b_{\text{CH-UCT}}$ - the bias term used in CH-UCT;
+        \item $b_{\text{CH-CZT}}$ - the bias term used in CH-CZT;
+        \item $(\Mmin)_{CH-CZT}$ - the minimum number of visits to a state-action pair before it is considered for selection in CH-CZT;
+        \item $\alphachbts_{0}$ - the initial temperature for CHBTS;
+        \item $\alphachbts_{\text{decay}}$ - the decay rate for CHBTS;
+        \item $\epschbts$ - the exploration parameter for CHBTS;
+        \item $\alpha_{\text{SM-BTS},0}$ - the initial temperature for SM-BTS;
+        \item $\alpha_{\text{SM-BTS},\text{decay}}$ - the decay rate for SM-BTS;
+        \item $\epsilon_{\text{SM-BTS}}$ - the exploration parameter for SM-BTS;
+        \item $\alpha_{\text{SM-DENTS},0}$ - the initial temperature for SM-DENTS;
+        \item $\alpha_{\text{SM-DENTS},\text{decay}}$ - the decay rate for SM-DENTS;
+        \item $\beta_{\text{SM-DENTS},c}$ - the constant term for SM-DENTS;
+        \item $\beta_{\text{SM-DENTS},\text{thresh}}$ - the threshold for SM-DENTS;
+        \item $\epsilon_{\text{SM-DENTS}}$ - the exploration parameter for SM-DENTS;
     \end{itemize}
 
-    \bd{To be compatible with hyperparameter optimisation, the functional form of } $\alpha$ and $\beta$ \bd{need to be specified in a parameterised form.} For the experiments in Section \todo{ref gridworlds results}, the following forms were used:
-    \begin{align}
-        \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
-        \beta(x) &= \begin{cases}
-            \beta_c - \frac{\beta_c}{\betathresh}x & \text{if } x \leq \betathresh, \\
-            0 & \text{otherwise.}
-        \end{cases}
-    \end{align}
+    The temperature and entropy weighting functions take the same form as in Section \ref{appsec:4:hyperparams}.
 
-    These functions are chosen so that the entropy weighting becomes negligible, and more specifically so that $\frac{\beta(x)}{\alpha(x)}$ tends to zero as $x$ tends to infinity.
-    
+    Hyperparameters for simplex maps were set to:
+    \begin{itemize}
+        \item $\pushradius=10$,
+        \item $\splitminradius=0.01$,
+        \item $\splitmindelta=0$,
+        \item $\splitminvis=10$.
+    \end{itemize}
 
 
 
@@ -78,246 +85,73 @@
 \section{Hyperparameter Optimisation}
 \label{appsec:5:hypersearch}
 
-    \todo{Update for ch5 and ch6 experiments}
-
-    \todo{Missing the bit which says that we used BayesOpt for the optimisation}
-
-    The parameters shared between all algorithms were set manually to the following values for all environments:
-    \begin{itemize}
-        \item $\mctsmode=\text{False}$ - the selection phase continues until the planning horizon or a terminal state is reached;
-        \item $\graphmode=\text{True}$ - transposition tables are used to store and re-use decision nodes when they are reached again via another path;
-        \item $\normalisedq=\text{True}$ - Q-values are linearly normalised before being used in the search policy;
-        \item $\Nv=0$ - the number of pseudo-visits assigned to $\initv$ in backups;
-        \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
-    \end{itemize}
-
-    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. 
-    
-    \todo{I think the Qinit is a bit wrong:}
-    \begin{align}
-        \Qinit()
-    \end{align}
-    
-    For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \todo{cite}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
+    The selected parameters from hyperparamter optimisation are given in Table \ref{table:hyperparams_mogym}.
 
     \begin{table}[]
         \centering
-        \begin{tabular}{l|c|c|c} 
-            Parameter   
-                & Minimum    
-                & Maximum    
-                & Scaling \\
+        \begin{tabular}{l|c|c|c|c}
+            Parameter
+                & FruitTree
+                & ResourceGathering
+                & BreakableBottles
+                & FourRoom  \\
             \hline
-            $\epsilon$      & $10^{-6}$     & $1$       & Logarithmic \\
-            $\alpha$        & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
-            $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\betathresh$   & $10^{3}$      & $10^{12}$ & Logarithmic \\
-            $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\uctbudget$    & $1$           & $10^5$    & Linear 
+            $b_{\text{CZT}}$ & 1000 & 2.78 & 1.94 & 100 \\
+            $\Mmin (\text{CZT})$ & 123 & 11 & 10 & 65 \\
+            $b_{\text{C-CHMCTS}}$ & 1000 & 263 & 0.617 & 8.9 \\
+            $b_{\text{H-CHMCTS}}$ & 1000 & 22.4 & 1000 & 1000 \\
+            $b_{\text{P-CHMCTS}}$ & 1000 & 1000 & 1 & 1000 \\
+            $b_{\text{CH-UCT}}$ & 1000 & 0.315 & 1 & 0.08 \\
+            $b_{\text{CH-CZT}}$ & 994.5 & 1000 & 511 & 1000 \\
+            $\Mmin(\text{CH-CZT})$ & 123 & 10 & 10 & 32 \\
+            $\alphachbts_{0}$ & 100 & 0.004 & 0.00017 & 0.186 \\
+            $\alphachbts_{\text{decay}}$ & 100 & 12 & 0.0098 & 0.001 \\
+            $\epschbts$ & 1 & 0.038 & 1 & 0.15 \\
+            $\alpha_{\text{SM-BTS},0}$ & 0.89 & 0.0015 & 0.017 & 0.08 \\
+            $\alpha_{\text{SM-BTS},\text{decay}}$ & 0.032 & 8.34 & 14.1 & 0.001 \\
+            $\epsilon_{\text{SM-BTS}}$ & 0.99 & 0.01 & 0.5 & 0.01 \\
+            $\alpha_{\text{SM-DENTS},0}$ & $10^{-5}$ & 0.009 & 0.017 & 0.08 \\
+            $\alpha_{\text{SM-DENTS},\text{decay}}$ & 0.003 & 16.3 & 14.1 & 0.001 \\
+            $\beta_{\text{SM-DENTS},c}$ & 15.7 & 0.0017 & 0.05 & 0.01 \\
+            $\beta_{\text{SM-DENTS},\text{thresh}}$ & 1000 & 3743 & 5000 & 1000 \\
+            $\epsilon_{\text{SM-DENTS}}$ & 1 & 0.01 & 0.5 & 0.074
         \end{tabular}
-        \caption[The hyperparameter search space for gridworld experiments (Section \todo{ref})]{The hyperparameter search space for gridworld experiments (Section \todo{ref}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
+        \caption[Hyperparameters for algorithms on MO-Gymnasium environments.]{Hyperparameters for algorithms on MO-Gymnasium environments.}
+        \label{table:hyperparams_mogym}
     \end{table}
 
-    Parameters were optimised using the \todo{ref} map for DeterministicGridWorld, the \todo{ref} map for FrozenLake and the \todo{ref} map for Sailing.
-
-    To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
-
-    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively.
-
-    %
-    % DeterministicGridWorld
-    %
 
     \begin{table}[]
         \centering
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c}
-                Algorithm & $b$ & $\uctbudget$ \\
-                \hline
-                UCT     & $7.00$ & \\
-                MaxUCT  & $6.86$ & \\
-                H-MCTS  & $1.50$ & $9.95\times10^4$ \\
-            \end{tabular}
-            \caption{UCT-based search algorithms.}
-        \end{subtable}
-    
-        \vspace{1em}
-    
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c|c|c|c|c}
-                Algorithm
-                    & $\epsilon$
-                    & $\alpha$
-                    & $\alpha_0$
-                    & $\alphadecay$
-                    & $\beta_c$
-                    & $\betathresh$ \\
-                \hline
-                MENTS & $1.00$ & $6.81\times10^{-4}$ & & & & \\
-                RENTS & $1.00$ & $1.34\times10^{-4}$ & & & & \\
-                TENTS & $1.00$ & $9.20\times10^{-5}$ & & & & \\
-                BTS   & $1.00$ & & $1.00\times10^{-5}$ & $3.16$ & & \\
-                DENTS & $0.744$ & & $4.04\times10^{-3}$ & $0.977$ 
-                    & $3.36\times10^{-4}$ & $10^{12}$ \\
-            \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
-        \end{subtable}
-    
-        \caption[Hyperparameters for DeterministicGridWorld experiments.]{Hyperparameters used for  DeterministicGridWorld experiments. Empty cells indicate the parameter is not used by that algorithm.}
-        \label{table:gridworld_params}
+        \begin{tabular}{l|c|c|c}
+            Parameter
+                & $\DST(W,0)$
+                & $\DST(W,1/40)$
+                & $\DST(W,1/5)$   \\
+            \hline
+            $b_{\text{CZT}}$ & 8.3 & 1.4 & 2.038 \\
+            $\Mmin (\text{CZT})$ & 42 & 55 & 150 \\
+            $b_{\text{C-CHMCTS}}$ & 1229 & 10 & 1.09 \\
+            $b_{\text{H-CHMCTS}}$ & 254 & 20.4 & 15.98 \\
+            $b_{\text{P-CHMCTS}}$ & 388 & 20.1 & 0.36 \\
+            $b_{\text{CH-UCT}}$ & 3.46 & 4.2 & 4.2 \\
+            $b_{\text{CH-CZT}}$ & 99 & 12.55 & 5.8 \\
+            $\Mmin(\text{CH-CZT})$ & 95 & 49 & 40 \\
+            $\alphachbts_{0}$ & 0.0008 & $10^{-5}$ & $10^-5$ \\
+            $\alphachbts_{\text{decay}}$ & 12.6 & 100 & 4.51 \\
+            $\epschbts$ & 0.999 & 1.0 & 0.99 \\
+            $\alpha_{\text{SM-BTS},0}$ & 0.001 & 0.0027 & $10^{-5}$ \\
+            $\alpha_{\text{SM-BTS},\text{decay}}$ & 0.001 & 0.0036 & 0.001 \\
+            $\epsilon_{\text{SM-BTS}}$ & 0.69 & 0.748 & 0.85 \\
+            $\alpha_{\text{SM-DENTS},0}$ & 0.0011 & 0.0111 & 0.00038 \\
+            $\alpha_{\text{SM-DENTS},\text{decay}}$ & 0.0015 & 99.9 & 0.094 \\
+            $\beta_{\text{SM-DENTS},c}$ & 0.233 & 0.013 & 0.018 \\
+            $\beta_{\text{SM-DENTS},\text{thresh}}$ & 3197 & 2598 & 1598 \\
+            $\epsilon_{\text{SM-DENTS}}$ & 0.75 & 0.474 & 0.37 
+        \end{tabular}
+        \caption[Hyperparameters for algorithms on DST environments.]{Hyperparameters for algorithms on DST environments.}
+        \label{table:hyperparams_dst}
     \end{table}
-
-
-
-    %
-    % FrozenLake
-    %
-    \begin{table}[]
-        \centering
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c}
-                Algorithm & $b$ & $\uctbudget$ \\
-                \hline
-                UCT     & $7.07$ & \\
-                MaxUCT  & $2.58$ & \\
-                H-MCTS  & $6.81$ & $28$ \\
-            \end{tabular}
-            \caption{UCT-based search algorithms.}
-        \end{subtable}
-    
-        \vspace{1em}
-    
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c|c|c|c|c}
-                Algorithm
-                    & $\epsilon$
-                    & $\alpha$
-                    & $\alpha_0$
-                    & $\alphadecay$
-                    & $\beta_c$
-                    & $\betathresh$ \\
-                \hline
-                MENTS & $0.248$ & $1.02\times10^{-2}$ & & & & \\
-                RENTS & $0.432$ & $2.89\times10^{-3}$ & & & & \\
-                TENTS & $0.288$ & $1.01\times10^{-2}$ & & & & \\
-                BTS   & $0.460$ & & $0.134$ & $4.82\times 10^{-2}$ & & \\
-                DENTS & $0.444$ & & $0.264$ & $0.200$ & $9.17\times10^{-4}$ & $1.38\times10^4$ \\
-            \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
-        \end{subtable}
-    
-        \caption[Hyperparameters for FrozenLake experiments.]{Hyperparameters used for  FrozenLake experiments. Empty cells indicate the parameter is not used by that algorithm.}
-        \label{table:frozenlake_params}
-    \end{table}
-
-
-
-    %
-    % Sailing (North)
-    %
-    \begin{table}[]
-        \centering
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c}
-                Algorithm & $b$ & $\uctbudget$ \\
-                \hline
-                UCT     & $9.48\times10^{-2}$ & \\
-                MaxUCT  & $9.05\times10^{-2}$ & \\
-                H-MCTS  & $8.10\times10^{-2}$ & $32$ \\
-            \end{tabular}
-            \caption{UCT-based search algorithms.}
-        \end{subtable}
-    
-        \vspace{1em}
-    
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c|c|c|c|c}
-                Algorithm
-                    & $\epsilon$
-                    & $\alpha$
-                    & $\alpha_0$
-                    & $\alphadecay$
-                    & $\beta_c$
-                    & $\betathresh$ \\
-                \hline
-                MENTS & $1.00$ & $5.40\times10^{-4}$ & & & & \\
-                RENTS & $0.319$ & $1.57\times10^{-4}$ & & & & \\
-                TENTS & $1.00$ & $7.61\times10^{-4}$ & & & & \\
-                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.16\times10^{-3}$ & & \\
-                DENTS & $0.971$ & & $1.02\times10^{-5}$ & $0.813$ 
-                    & $1.14\times10^{-3}$ & $2.18\times10^{4}$ \\
-            \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
-        \end{subtable}
-    
-        \caption[Hyperparameters for Sailing(North) experiments.]{Hyperparameters used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
-        \label{table:sailing_north_params}
-    \end{table}
-
-
-
-    %
-    % Sailing (South-East)
-    %
-    \begin{table}[]
-        \centering
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c}
-                Algorithm & $b$ & $\uctbudget$ \\
-                \hline
-                UCT     & $0.181$ & \\
-                MaxUCT  & $0.226$ & \\
-                H-MCTS  & $0.145$ & $100$ \\
-            \end{tabular}
-            \caption{UCT-based search algorithms.}
-        \end{subtable}
-    
-        \vspace{1em}
-    
-        \begin{subtable}{\textwidth}
-            \centering
-            \begin{tabular}{l|c|c|c|c|c|c}
-                Algorithm
-                    & $\epsilon$
-                    & $\alpha$
-                    & $\alpha_0$
-                    & $\alphadecay$
-                    & $\beta_c$
-                    & $\betathresh$ \\
-                \hline
-                MENTS & $1.00$ & $6.05\times10^{-4}$ & & & & \\
-                RENTS & $1.00$ & $1.00\times10^{-5}$ & & & & \\
-                TENTS & $1.00$ & $3.24\times10^{-3}$ & & & & \\
-                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.17\times10^{-3}$ & & \\
-                DENTS & $1.00$ & & $1.01\times10^{-5}$ & $9.91\times10^{2}$ 
-                    & $1.01\times10^{-5}$ & $3.91\times10^{4}$ \\
-            \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
-        \end{subtable}
-
-        \caption[Hyperparameters for Sailing(South-East) experiments.]{Hyperparameters used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
-        \label{table:sailing_south_east_params}
-    \end{table}
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -50,9 +50,9 @@
 
 \minitoc
 
-    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, and 
-    per-vertex entropy estimates allow entropy-based 
-    exploration to be lifted to the multi-objective setting.
+    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, addressing \moscalabilityq\ewe and\stochq\ewe empirically. 
+    Per-vertex entropy estimates allow entropy-based 
+    exploration to be lifted to the multi-objective setting, addressing \contextq.
 
     The remainder of this chapter is organised as follows:
     \begin{itemize}
@@ -331,6 +331,7 @@
             \begin{subfigure}[b]{\textwidth}
                 \centering
                 \includegraphics[width=0.8\textwidth]{figures/ch6/lookup.pdf}
+                \caption{}
             \end{subfigure}
 
             \vspace{1em}
@@ -338,11 +339,13 @@
             \begin{subfigure}[b]{0.49\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{figures/ch6/lookup_b.pdf}
+                \caption{}
             \end{subfigure}
             \hfill
             \begin{subfigure}[b]{0.49\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{figures/ch6/lookup_c.pdf}
+                \caption{}
             \end{subfigure}
             \caption[Closest vertex lookup examples.]{Closest vertex lookup examples. In all subfigures, the weight vector $\bff{w}$ is shown in red, and the closest vertex in the triangulation is shown in green. (a) Finding the closest vertex in $D=2$ corresponds to traversing the binary tree and returning the closest vertex. (b) Part of a triangulation where the closest vertex is in a neighbouring simplex. (c) Example where a triangulation is non-conforming and the closest vertex is not on an extreme point of a neighbouring simplex\footnote{Note this triangulation could not be produced by LEB refinement, but it is used to illustrate that this is a possible scenario when triangulations are non-conforming.}.}
             \label{fig:6:vertex_lookup_examples}
@@ -355,7 +358,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=0.6\textwidth]{figures/ch6/split.pdf}
-            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green and blue edges are added to $\ESM$ and the red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
+            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green and blue edges are added to $\ESM$ and the long red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
             \label{fig:6:split_operation}
         \end{figure}
 
@@ -395,7 +398,7 @@
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.6\textwidth]{figures/ch6/push.pdf}
+            \includegraphics[width=0.5\textwidth]{figures/ch6/push.pdf}
             \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its values estimate, the green arrows indicate the direction of value propagation and the red vertex does not accept or propagate the value.}
             \label{fig:6:push_operation}
         \end{figure}
@@ -959,12 +962,12 @@
     MOMCTS algorithms: SM-BTS and SM-DENTS.
 
     Simplex maps address the two limitations of CHMCTS 
-    identified in Chapter \ref{ch:5-chmcts}. By using a hierarchical representation the computational costs are generally lower, particularly in environments where the number of points in a convex hull value set is large, making 
+    identified in Chapter \ref{ch:5-chmcts}. By using a hierarchical representation the computational costs are generally lower (\complexityq), particularly in environments where the number of points in a convex hull value set is large, making 
     simplex maps significantly more scalable in stochastic 
-    environments. Additionally, by utilising a collection of point estimates in weight space, simplex maps provide a principled 
+    environments (\stochq). Additionally, by utilising a collection of point estimates in weight space, simplex maps provide a principled 
     way to associate entropy values with specific weight 
     vectors, enabling entropy-based exploration to be 
-    lifted to the multi-objective setting via SM-DENTS.
+    lifted to the multi-objective setting via SM-DENTS (\contextq).
 
     The simplex map data structure was defined 
     (Section \ref{sec:6-2-simplexmaps}) through its 
@@ -988,4 +991,4 @@
     performed within the time budget. The scalability 
     results demonstrated that SM-DENTS maintains strong 
     performance across a much wider range of map sizes 
-    than CHMCTS in heavily stochastic environments.
+    than CHMCTS in heavily stochastic environments (\moscalabilityq).

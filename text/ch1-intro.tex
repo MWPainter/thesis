@@ -1,38 +1,31 @@
-% \begin{savequote}[8cm]
-% \textlatin{Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...}
-
-% There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
-%   \qauthor{--- Cicero's \textit{de Finibus Bonorum et Malorum}}
-% \end{savequote}
 
 \chapter{\label{ch:1-intro}Introduction} 
 
     \minitoc
 
-    \todo{chapter structure (i.e. in the introduction section I give some background in the field(s), cover the main 
-    contributions of this thesis, etc, etc).}
+    Sequential decision making problems arise in any setting where an agent must choose a sequence of actions to achieve some goal. In games such as chess and Go, the agent's actions are moves on a board, and the goal is to win the game. In robotics, the agent's actions are motor commands, and the goal is typically to reach a target configuration whilst avoiding obstacles. In drug treatment, the agent's actions are doses to administer, and the goal is to maximise the effectiveness of the treatment whilst minimising side effects.
+
+    These problems are commonly modelled as Markov Decision Processes (MDPs), where an agent receives a reward signal at each timestep, and the goal is to maximise the cumulative reward over time. Reinforcement learning and planning algorithms have produced state-of-the-art results in such problems, and Monte Carlo Tree Search (MCTS) is one of the most successful planning frameworks, famously underpinning the AlphaGo and AlphaZero programs that defeated the world's best Go players. 
+
+    Many real-world problems involve more than one objective. The drug treatment problem mentioned above is multi-objective, with a trade-off between effectiveness and side effects. In robotics, an agent may need to complete a task quickly whilst minimising the risk of damage to itself or its surroundings. Multi-objective Markov Decision Processes (MOMDPs) extend the MDP framework with a vector-valued reward function, and Multi-Objective Reinforcement Learning (MORL) extends reinforcement learning algorithms to operate in MOMDPs. The user's preferences over the objectives are commonly captured by a utility function, which is applied to the vector-valued return to recover a scalar value. When the utility function is not known at the time of planning, the agent must instead return a set of policies that cover the relevant trade-offs.
+
+    This thesis is concerned with MCTS algorithms for sequential decision making problems, in both the single- and multi-objective settings. The single-objective work in this thesis is motivated in part by the multi-objective work, and develops MCTS algorithms that are subsequently extended to the multi-objective setting. The remainder of this chapter discusses the research questions considered in this thesis, the contributions that are made, the structure of the thesis, and the publications that have appeared from this work.
+
+
 
 \section{Overview}
 \label{sec:1-1-overview}
 
-    \todo{list}
-    \begin{itemize}
-        \item Give some context around MCTS (and talk about exploration and exploitation), and why we might use it
-        \begin{itemize}
-            \item Larger scale than tabular methods
-            \item Can do probability and theory stuff (and some explainability, by looking at stats in the tree the agent used)
-            \item Can use tree search with neural networks to get some of the above (and use for neural network training as in alpha zero)
-        \end{itemize}
-        \item Argument from DENTS paper for exploration > exploitation (in context of planning in a simulator)
-        \item Give high level overview of Multi-Objective RL, and why it can be useful
-        \item Give an idea of how my work fits into MCTS and MORL as a whole
-        \item Discuss research questions/issues with current literature (i.e. introduce some of the ideas from contributions section below)
-    \end{itemize}
+    MCTS algorithms are sample-based planning algorithms that interact with a simulator of the environment, rather than the environment itself. The simulator is generally inexpensive to query, and a large number of trials can be run in the simulator before the agent must commit to an action in the real environment. Provided that the simulator is sufficiently accurate, MCTS algorithms can therefore afford to be more aggressive in their exploration, as poor actions in the simulator are not penalised. The setting where the agent is evaluated only on the recommendations it makes after a fixed planning budget is known as the \textit{exploration setting} of reinforcement learning, and is the setting considered throughout this thesis.
+
+    Despite the emphasis on exploration in this setting, the most widely used MCTS algorithm is the Upper Confidence Bound applied to Trees (UCT) algorithm, which uses a search policy designed for a different problem: minimising the cumulative regret of a multi-armed bandit. UCT is therefore biased towards exploitation in a setting where exploration would be more valuable. Maximum ENtropy Tree Search (MENTS) is a more recent MCTS algorithm that uses an entropy regularised objective to encourage exploration. However, the maximum entropy objective is not guaranteed to align with the standard objective, and the temperature parameter that governs this trade-off is difficult to tune --- a poor choice can result in MENTS recommending suboptimal actions. The first half of this thesis investigates how MCTS algorithms can prioritise exploration in the exploration setting, whilst still recommending optimal actions.
+
+    The second half of this thesis is concerned with MCTS in the multi-objective setting. The use of MOMCTS in stochastic environments, which has not been tackled in prior work, is investigated. Prior MOMCTS algorithms have two limitations: they are restricted to deterministic environments, and they do not ensure that actions within a single trial are consistent with each other --- without such a mechanism, the search policy ends up optimising for no particular objective. It is argued that trials in MOMCTS should instead be \textit{contextual}, with a single weight vector fixed at the start of each trial and used to guide all subsequent action selections. This thesis introduces two MOMCTS frameworks for stochastic environments, where the utility function is assumed to be linear and the weight vector is unknown at the time of planning.
+
+
 
 \section{Contributions}
 \label{sec:1-2-contributions}
-
-    \todo{Extra pre-amble before questions?}
 
     The following questions, related to Monte Carlo Tree Search and multi-objective reinforcement learning, are considered throughout this thesis:
     \begin{enumerate}[start=1, label={\textbf{Q\arabic* -}}]
@@ -55,39 +48,36 @@
         \end{enumerate}
     \end{enumerate}
 
-    \todo{paragraphs pointing at the different chapters and how they answer the research questions}.
-
-    \todo{some words about how below is the contributions we're making in this thesis and expand these bullets a bit more}
+    These questions are addressed by the following contributions:
     \begin{itemize}
-        \item Max Entropy can be misaligned with reward maximisation (\entropyq)
-        \item Boltzmann Search Policies - BTS and DENTS (\entropyq)
-        \item Use the alias method to make faster algorithms (\complexityq)
-        \item Ch5 will answer \stochq
-        \item Simple regret (\exploreq)
-        \item Use of contexts in THTS to make consistent decisions in each trial (\contextq)
-        \item Contextual regret introduced in CHMCTS (\moscalabilityq)
-        \item Contextual Zooming and CHMCTS (designed for \contextq)
-        \item Simplex maps (\contextq, \moscalabilityq)
+        \item Chapter \ref{ch:4-dents} investigates the use of entropy-based exploration in MCTS, addressing \entropyq. The maximum entropy objective is shown to be misaligned with the standard objective: for any fixed temperature there is an MDP in which MENTS either fails to recommend the optimal policy, or requires an exponential number of trials to do so (Theorem \ref{thrm:ments_bad_mdp}). Two MCTS algorithms, \textit{Boltzmann Tree Search} (BTS) and \textit{Decaying ENtropy Tree Search} (DENTS), are introduced to address this misalignment, and are shown to be consistent under mild conditions. The stochastic search policies of BTS and DENTS also enable the use of the Alias Method to address \complexityq.
+
+        \item Chapter \ref{ch:5-chmcts} addresses \stochq\ewe by introducing \textit{Convex Hull MCTS} (CHMCTS), which generalises prior MOMCTS work to stochastic environments by maintaining a convex hull value set at each node, and updating them via convex hull backups. \textit{Contextual Zooming for Trees} (CZT) is also introduced as a contextual analogue of UCT, in which the contextual zooming algorithm is applied at each decision node. The notions of simple and cumulative regret are generalised to \textit{contextual simple regret} and \textit{contextual cumulative regret} for the multi-objective setting.
+
+        \item Chapter \ref{ch:6-simplexmaps} addresses \contextq\ewe and \moscalabilityq\ewe by introducing the \textit{simplex map}, an adaptive data structure that maintains value and entropy estimates as a function of the weight vector over the unit simplex. Simplex maps address two limitations of the convex hull approach: the computational cost of convex hull backups in stochastic environments, and the inability to naturally support entropy-based exploration. The simplex map is used to define SM-BTS and SM-DENTS, which extend BTS and DENTS to the multi-objective setting.
     \end{itemize}
-
-    \hide{\todo{Would like to do the comparing different types of eval, even if not listing it as a research question 
-    (compare giving it X seconds per decision and evaluating that policy (SLOW), and comparing policy extracted from 
-    the tree)}}
-
-    \hide{\todo{can make an argument that the best bound achieved by theory is given by letting temperature go to max. Which is consistent with the exploring bandits results}}
 
 
 
 \section{Structure of Thesis}
 \label{sec:1-3-thesis-structure}
 
-    \todo{a paragraph with a couple lines to a paragraph about each chapter. This is the high level overview/intro to 
-    the thesis paragraph. I.e. this section is ``this is the story of my thesis in a page or two''}
+    The remainder of this thesis is organised as follows. Chapter \ref{ch:2-background} introduces the background material used throughout the thesis. This includes the multi-armed bandit problem, Markov Decision Processes, reinforcement learning, the Monte Carlo Tree Search framework, and the multi-objective reinforcement learning setting. The \thtspp\ewe schema, used to define MCTS algorithms modularly throughout this thesis, is introduced in Section \ref{sec:2-4-2-thts}.
+
+    Chapter \ref{ch:3-relatedwork} discusses related work in bandits, maximum entropy reinforcement learning, MCTS, and multi-objective sequential decision making. The discussion is brief and focused on the references most relevant to the contributions of this thesis.
+
+    Chapter \ref{ch:4-dents} considers MCTS algorithms for single-objective environments, with the optional use of entropy as a secondary objective for exploration. The maximum entropy objective is shown to be misaligned with the standard objective, and BTS and DENTS are introduced as alternative MCTS algorithms. The stochastic search policies of BTS and DENTS also enable the use of the Alias Method, which significantly reduces the per-trial computational cost.
+
+    Chapter \ref{ch:5-chmcts} extends the MCTS framework to the multi-objective decision support scenario with linear utilities, where the weight vector is unknown at the time of planning. CZT and CHMCTS are introduced as two approaches to contextual planning in MOMDPs. CHMCTS recovers prior MOMCTS algorithms as special cases of a common framework, and generalises them to stochastic environments.
+
+    Chapter \ref{ch:6-simplexmaps} introduces simplex maps, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector. Simplex maps are used to define SM-BTS and SM-DENTS, which extend BTS and DENTS to the multi-objective setting, and are shown to scale better than CHMCTS in stochastic environments.
+
+    Chapter \ref{ch:7-conclusion} summarises the contributions of this thesis and discusses possible directions for future work.
+
+
 
 \section{Publications}
 \label{sec:1-4-publications}
-
-    \todo{update final publication when submit}
 
     The work covered in this thesis also appears in the following publications:
     \begin{itemize}
@@ -95,3 +85,14 @@
         \item Painter, M; Baioumy, M; Hawes, N; and Lacerda, B.  ``Monte Carlo Tree Search With Boltzmann Exploration." In \textit{Advances in Neural Information Processing Systems, 36, 2023}, NeurIPS, 2023.
         % \item Painter, M; Hawes, N; and Lacerda, B. ``Simplex Maps for Multi-Objective Monte Carlo Tree Search." In \textit{TODO}, \textbf{Under Review at conf\_name}.
     \end{itemize}
+
+
+
+
+
+
+
+
+
+
+

@@ -23,14 +23,11 @@
 \chapter{\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
 
 
-    \todo{Frozen Lake to FrozenLake etc}
-
-
     This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
     \begin{itemize}
-        \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in \todo{ref FL and Sailing results};
-        \item Section \ref{appsec:4:hps} gives details on the hyperparameters used for the experiments in \todo{ref FL and Sailing results} and the optimisation process used to select them;
-        \item Section \ref{appsec:4:go_hps} gives additional details on the Go experiments, including hyperparameter selection;
+        \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in Section \ref{sec:4-4-results};
+        \item Section \ref{appsec:4:hps} gives details on the hyperparameters used for the experiments in Section \ref{sec:4-4-results} and the optimisation process used to select them;
+        \item Section \ref{appsec:4:go} gives additional details on the Go experiments, including hyperparameter selection;
     \end{itemize}
 
 
@@ -55,184 +52,96 @@
 \section{Additional DeterministicGridWorld, FrozenLake details}
 \label{appsec:4:envs}
 
-    Figure \ref{appfig:fl_maps} shows the maps used in the DeterministicGridWorld and FrozenLake environments. The 4x4 and 8x8 maps are the standard maps from the Gymnasium library \todo{cite}. The remaining maps are randomly generated, where the starting position is always the top left corner, the goal position is always the bottom right corner and the remaining positions are randomly sampled with a $\frac{1}{5}$ probability of being a hole. Rejection sampling is used to ensure that there is always a path from the starting position to the goal.
-
-
-    \todo{get these maps into figures}
-
-
-    % "4x4": [
-    %     "SFFF", 
-    %     "FHFH", 
-    %     "FFFH", 
-    %     "HFFG"
-    % ],
-    % "4x8": [
-    %     "SFFFHFFF",
-    %     "FHFFFFFF",
-    %     "FHFFHFFF",
-    %     "FFFFFFHG",
-    % ],
-    % "4x12": [
-    %     "SFFHFFFFFFFH",
-    %     "FFFFFHFFFFFF",
-    %     "FFFFHFFFFFFF",
-    %     "FFFFFFFFFFHG",
-    % ],
-    % "4x16": [
-    %     "SFFFFHFFFFFFFFFF",
-    %     "HFFFFFFFFHFFHHFF",
-    %     "FFHHHFHFFFHHHFFF",
-    %     "FFHHFFFFFFFFHFFG",
-    % ],
-    % "8x8": [
-    %     "SFFFFFFF",
-    %     "FFFFFFFF",
-    %     "FFFHFFFF",
-    %     "FFFFFHFF",
-    %     "FFFHFFFF",
-    %     "FHHFFFHF",
-    %     "FHFFHFHF",
-    %     "FFFHFFFG",
-    % ],
-    % "8x16": [
-    %     "SFFFFFFFFFFFFFHF",
-    %     "FHHFFFHFHHFFFHFF",
-    %     "FHFFHFFFHFFFFFFF",
-    %     "FFFHFFFHFFFFFHHF",
-    %     "HFFHFHFFFFFFHHFF",
-    %     "FFFHFHFFHHFFFFFF",
-    %     "FFFFFFFFFFFFFFHF",
-    %     "FFFFFHFFHHFFHHFG",
-    % ],
-    % "8x24": [
-    %     "SFFFFHFHFFFFFFHHFFFHHFFH",
-    %     "HFFHFFHFFFFFFFHFFFFFHFHF",
-    %     "FFFFFFHFFHHFFFFFFFFFHFFF",
-    %     "FFHHFFFFFFFFFFFFHFFHFFFH",
-    %     "FFFHFFFFFHFFHFFHFHFHFFFF",
-    %     "FFHFFFFFFFFHFHFFFFFFFFFF",
-    %     "HHFFFFFFFFFFFFFHFFFHFFFF",
-    %     "FFFFFFHFFFFFFFFFHFFHHFFG",
-    % ],
-    % "8x32": [
-    %     "SFHFFFFHFFFFFFFFFHFHHFHFHFHHFHFF",
-    %     "FFFFFFHFFFHHFFHFFFFHFHFFFHFFFFFH",
-    %     "HFFFFFFFFFFFFFFFFFHFFHHHFFFHFFFF",
-    %     "FFHHHFHFFHHFHFFFFHFFFFFFFFHFFHFF",
-    %     "FFFFHFFFFHFHHFHFFFFFHHFHFHFFFFFH",
-    %     "FHFHFFHHFFFHFFFHFFFFFFFFFFFFHFFH",
-    %     "FHFFFFHFHFFFFFHFFFFFFFFFFFFHFFFF",
-    %     "HFFFFHFFHHFFFHHFFFFFFFFFFFHFHFFG",
-    % ],
+    Figure \ref{appfig:fl_maps} shows the maps used in the DeterministicGridWorld and FrozenLake environments. The 4x4 and 8x8 maps are the standard maps from the Gymnasium library \cite{gymnasium}. The remaining maps are randomly generated, where the starting position is always the top left corner, the goal position is always the bottom right corner and the remaining positions are randomly sampled with a $\frac{1}{5}$ probability of being a hole. Rejection sampling is used to ensure that there is always a path from the starting position to the goal.
+    
 
     \begin{figure}
         \centering
+        \begin{subfigure}[b]{0.2\textwidth}
+            \centering
+            \texttt{SFFF} \\
+            \texttt{FHFH} \\
+            \texttt{FFFH} \\
+            \texttt{HFFG}
+            \caption{4x4.}
+        \end{subfigure}
         \begin{subfigure}[b]{0.3\textwidth}
             \centering
-            \texttt{SFFFFFHF} \\
+            \texttt{SFFFHFFF} \\
+            \texttt{FHFFFFFF} \\
+            \texttt{FHFFHFFF} \\
+            \texttt{FFFFFFHG}
+            \caption{4x8.}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFFHFFFFFFFH} \\
+            \texttt{FFFFFHFFFFFF} \\
+            \texttt{FFFFHFFFFFFF} \\
+            \texttt{FFFFFFFFFFHG}
+            \caption{4x12.}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.4\textwidth}
+            \centering
+            \texttt{SFFFFHFFFFFFFFFF} \\
+            \texttt{HFFFFFFFFHFFHHFF} \\
+            \texttt{FFHHHFHFFFHHHFFF} \\
+            \texttt{FFHHFFFFFFFFHFFG}
+            \caption{4x16.}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.3\textwidth}
+            \centering
+            \texttt{SFFFFFFF} \\
             \texttt{FFFFFFFF} \\
-            \texttt{FHFHFFFF} \\
-            \texttt{FFFFFFHH} \\
             \texttt{FFFHFFFF} \\
-            \texttt{FHHHFFFF} \\
             \texttt{FFFFFHFF} \\
-            \texttt{FFFFFFFG} 
-            \caption{8x8 FrozenLake.}
-            \label{fig:fl8}
+            \texttt{FFFHFFFF} \\
+            \texttt{FHHFFFHF} \\
+            \texttt{FHFFHFHF} \\
+            \texttt{FFFHFFFG}
+            \caption{8x8.}
         \end{subfigure}
-        % \hfill
         \begin{subfigure}[b]{0.3\textwidth}
             \centering
-            \texttt{SFHFFFHFFFFF} \\
-            \texttt{FFFFFFFHFFFF} \\
-            \texttt{HFFFFFHFFFFF} \\
-            \texttt{FHFFHFFFFFFF} \\
-            \texttt{HHFFFFFFFFFF} \\
-            \texttt{FHFFFFHFFFFF} \\
-            \texttt{FHFFFHHFHFFF} \\
-            \texttt{FFFFFFFFFHHG} 
-            \caption{8x12 FrozenLake.}
-            \label{fig:fl12}
+            \texttt{SFFFFFFFFFFFFFHF} \\
+            \texttt{FHHFFFHFHHFFFHFF} \\
+            \texttt{FHFFHFFFHFFFFFFF} \\
+            \texttt{FFFHFFFHFFFFFHHF} \\
+            \texttt{HFFHFHFFFFFFHHFF} \\
+            \texttt{FFFHFHFFHHFFFFFF} \\
+            \texttt{FFFFFFFFFFFFFFHF} \\
+            \texttt{FFFFFHFFHHFFHHFG}
+            \caption{8x16.}
         \end{subfigure}
-        % \hfill
-        % \begin{subfigure}[b]{0.3\textwidth}
-        %     \centering
-        %     \texttt{SFHFFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FHFFFFHFFFFF} \\
-        %     \texttt{FFFHFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FFFFHFFFHFFF} \\
-        %     \texttt{FFHFFFFFFFFH} \\
-        %     \texttt{FFFFFFFFFFFG} 
-        %     \caption{8x12 Test FrozenLake.}
-        %     \label{fig:fl12test}
-        % \end{subfigure}
-        \caption[Maps used for the DeterministicGridWorld and FrozenLake environment.]{Maps used for the DeterministicGridWorld and FrozenLake environments. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{Add 8x8, 8x12 or 8x16, 12x12 or 16x16 maps} \todo{update these maps to the final maps used  and update caption.}}
+        \begin{subfigure}[b]{0.5\textwidth}
+            \centering
+            \texttt{SFFFFHFHFFFFFFHHFFFHHFFH} \\
+            \texttt{HFFHFFHFFFFFFFHFFFFFHFHF} \\
+            \texttt{FFFFFFHFFHHFFFFFFFFFHFFF} \\
+            \texttt{FFHHFFFFFFFFFFFFHFFHFFFH} \\
+            \texttt{FFFHFFFFFHFFHFFHFHFHFFFF} \\
+            \texttt{FFHFFFFFFFFHFHFFFFFFFFFF} \\
+            \texttt{HHFFFFFFFFFFFFFHFFFHFFFF} \\
+            \texttt{FFFFFFHFFFFFFFFFHFFHHFFG}
+            \caption{8x24.}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.5\textwidth}
+            \centering
+            \texttt{SFHFFFFHFFFFFFFFFHFHHFHFHFHHFHFF} \\
+            \texttt{SFHFFFFHFFFFFFFFFHFHHFHFHFHHFHFF} \\
+            \texttt{FFFFFFHFFFHHFFHFFFFHFHFFFHFFFFFH} \\
+            \texttt{HFFFFFFFFFFFFFFFFFHFFHHHFFFHFFFF} \\
+            \texttt{FFHHHFHFFHHFHFFFFHFFFFFFFFHFFHFF} \\
+            \texttt{FFFFHFFFFHFHHFHFFFFFHHFHFHFFFFFH} \\
+            \texttt{FHFHFFHHFFFHFFFHFFFFFFFFFFFFHFFH} \\
+            \texttt{FHFFFFHFHFFFFFHFFFFFFFFFFFFHFFFF} \\
+            \texttt{HFFFFHFFHHFFFHHFFFFFFFFFFFHFHFFG}
+            \caption{8x32.}
+        \end{subfigure}
+        \caption[Maps used for the DeterministicGridWorld and FrozenLake environment.]{Maps used for the DeterministicGridWorld and FrozenLake environments. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location.}
         \label{appfig:fl_maps}
     \end{figure}
 
-    
-
-
-
-
-
-
-    \todo{everything below this point is moved from ch4 and needs clean up:}
-
-    Figure \ref{appfig:fl_maps} gives the specific maps used for Frozen Lake in these experiments. In the maps, \texttt{S} denotes the starting location of the agent, \texttt{F} denotes spaces the agent can move to, \texttt{H} denote holes that end the agents trial and \texttt{G} is the goal location. 
-
-
-    An 8x8 map (Figure \ref{fig:fl8}) is used in Section \ref{sec:4-4-3-2-param_sens_fl} to demonstrate how the different Boltzmann search and entropy based algorithms perform with a variety of temperature parameters. The 8x12 map (Figure \ref{fig:fl12}) is used for an environment that is sufficiently large map to test and compare algorithms. Each of these maps was randomly generated, with each location having a probability of $1/5$ of being a hole, and the maps were checked to have a viable path from the starting location to the goal location. \todo{with the exception of maps XXX, YYY, which were not randomly generated for these experiments, and chosen to correspond to the default maps for that size in Gymnasium (TODO: cite)}
-
-    \begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.3\textwidth}
-            \centering
-            \texttt{SFFFFFHF} \\
-            \texttt{FFFFFFFF} \\
-            \texttt{FHFHFFFF} \\
-            \texttt{FFFFFFHH} \\
-            \texttt{FFFHFFFF} \\
-            \texttt{FHHHFFFF} \\
-            \texttt{FFFFFHFF} \\
-            \texttt{FFFFFFFG} 
-            \caption{8x8 Frozen Lake.}
-            \label{fig:fl8}
-        \end{subfigure}
-        % \hfill
-        \begin{subfigure}[b]{0.3\textwidth}
-            \centering
-            \texttt{SFHFFFHFFFFF} \\
-            \texttt{FFFFFFFHFFFF} \\
-            \texttt{HFFFFFHFFFFF} \\
-            \texttt{FHFFHFFFFFFF} \\
-            \texttt{HHFFFFFFFFFF} \\
-            \texttt{FHFFFFHFFFFF} \\
-            \texttt{FHFFFHHFHFFF} \\
-            \texttt{FFFFFFFFFHHG} 
-            \caption{8x12 Frozen Lake.}
-            \label{fig:fl12}
-        \end{subfigure}
-        % \hfill
-        % \begin{subfigure}[b]{0.3\textwidth}
-        %     \centering
-        %     \texttt{SFHFFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FHFFFFHFFFFF} \\
-        %     \texttt{FFFHFFFFFFHF} \\
-        %     \texttt{FFFFFFFFFFFF} \\
-        %     \texttt{FFFFHFFFHFFF} \\
-        %     \texttt{FFHFFFFFFFFH} \\
-        %     \texttt{FFFFFFFFFFFG} 
-        %     \caption{8x12 Test Frozen Lake.}
-        %     \label{fig:fl12test}
-        % \end{subfigure}
-        \caption[Maps used for the Frozen Lake environment.]{Maps used for the Frozen Lake environment. \texttt{S} is the starting location for the agent, \texttt{F} represents floor that the agent can move too, \texttt{H} are holes that end the agents trial and \texttt{G} is the goal location. \todo{Add 4x4, 5x5 or 4x6, 6x6 or 4x8 maps for stoch envs} \todo{change to images of 4x4 and 8x8 frozen lake from running gym, just take screenshots}}
-        \label{fig:fl_maps}
-    \end{figure}
 
 
 
@@ -259,8 +168,8 @@
 
     This section is organised as follows:
     \begin{itemize}
-        \item Section \ref{appsec:4:hyperparams} gives a list of shared and \bd{specific to a subset of algorithms} hyperparameters used for the experiments;
-        \item Section \ref{appsec:4:uct_general} describes how the common hyperparameters are integrated into prior algorithms, using UCT as an example;
+        \item Section \ref{appsec:4:hyperparams} gives a list of shared and algorithm-specific hyperparameters used for the experiments;
+        \item Section \ref{appsec:4:bias_term_integration} describes how the common hyperparameters are integrated into prior algorithms, using UCT as an example;
         \item Section \ref{appsec:4:hypersearch} gives details on the hyperparameter optimisation and the final hyperparameters that were selected.
     \end{itemize}
 
@@ -268,7 +177,7 @@
 \subsection{Common Hyperparameters Reference}
 \label{appsec:4:hyperparams}
 
-    The following parameters were used by all algorithms considered in section \todo{ref gridworlds results}:
+    The following parameters were used by all algorithms considered in section \cite{sec:4-4-results}:
     \begin{itemize}
         \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
         \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
@@ -286,10 +195,10 @@
         \item $\alpha(x)$ - the temperature schedule for Boltzmann distributions in BTS and DENTS;
         \item $\beta(x)$ - the entropy weighting function for DENTS;
         \item $b$ - the bias term used in UCB style policies, e.g. UCT, H-MCTS;
-        \item $\uctbudget$ - \todo{check if its seq halving into uct or uct into seq halving}, the budget for running UCT before swtiching to Sequential Halving in H-MCTS;
+        \item $\uctbudget$ - the search budget for UCT between each round of Sequential Halving in H-MCTS;
     \end{itemize}
 
-    \bd{To be compatible with hyperparameter optimisation, the functional form of } $\alpha$ and $\beta$ \bd{need to be specified in a parameterised form.} For the experiments in Section \todo{ref gridworlds results}, the following forms were used:
+    To be compatible with hyperparameter optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar paramters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
     \begin{align}
         \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
         \beta(x) &= \begin{cases}
@@ -315,20 +224,18 @@
         \end{cases}
     \end{align}
 
-    All visit counts and value estimates are initialised to zero: $N(s)=0$, $N(s,a)=0$, $\bar{V}(s)=0$ and $\bar{Q}(s,a)=0$. While MCTS algorithms are often presented as initialising new leaf nodes directly with a visit and the heuristic value \todo{ref UCT init}, this biasing term can instead be encorporated into the backups instead, allowing the algorithm to be run with an without the $\mctsmode$ parameter.
+    All visit counts and value estimates are initialised to zero: $N(s)=0$, $N(s,a)=0$, $\bar{V}(s)=0$ and $\bar{Q}(s,a)=0$. While MCTS algorithms are often presented as initialising new leaf nodes directly with a visit and the heuristic value (Section \ref{sec:2-4-2-uct}), this biasing term can instead be encorporated into the backups instead, allowing the algorithm to be run with an without the $\mctsmode$ parameter.
     
     Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)$, the \textit{full backups} for the average returns $\bar{V}$ and $\bar{Q}$ including the biasing term for $t=h-1,\ldots,0$ are given by:
     \begin{align}
         \bar{Q}(s_t,a_t) &\leftarrow 
             R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s'|s_t,a_t)}{N(s_t,a_t)} \bar{V}(s') \right), 
-                    \label{eq:dents_q_backup} \\ 
+                    \\ 
         \bar{V}(s_t) &\leftarrow \frac{\Nv \Vinit(s_t)}{N(s_t)+\Nv} 
             + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \bar{Q}(s_t,a).
     \end{align}
 
-    \bd{In the main thesis the visit counts } $N(s'|s,a)$ \bd{are breifly mentioned in Section XXX, but not used for the general presentation to follow prior works presentation.} When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \todo{ref} and argued by \todo{cite kata go}. 
-
-    \bd{This is of particular importance for algorithms that used average returns that are typically computed using incremental backups. Note that the benefits of using} $\graphmode$ \bd{come when the unique state assumption does not hold. The correctness of using full backups when the unique state assumption does not hold is beyond the scope of this thesis} \todo{cite katago}.
+    In the main thesis the visit counts $N(s'|s,a)$ are breifly mentioned in Section \ref{sec:2-4-2-thts}, but not used for the general presentation to follow prior works presentation. When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \ref{sec:2-4-2-thts} and argued by \cite{katago}. 
 
 
 \subsubsection{UCT Implementation with Full Backups}
@@ -380,7 +287,7 @@
         \begin{align}
             \Quct(s_t,a_t) &\leftarrow 
                 R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s'|s_t,a_t)}{N(s_t,a_t)} \Vuct(s') \right), 
-                        \label{eq:dents_q_backup} \\ 
+                        \\ 
             \Vuct(s_t) &\leftarrow \frac{\Nv \Vinit(s_t)}{N(s_t)+\Nv} 
                 + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \Quct(s_t,a).
         \end{align}
@@ -410,12 +317,7 @@
 
     Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. 
     
-    \todo{I think the Qinit is a bit wrong:}
-    \begin{align}
-        \Qinit()
-    \end{align}
-    
-    For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \todo{cite}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if \bd{parameters were sampled using a linear or logarithmic scalarised}.
+    For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
     \begin{table}[]
         \centering
@@ -434,12 +336,10 @@
             $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\uctbudget$    & $1$           & $10^5$    & Linear 
         \end{tabular}
-        \caption[The hyperparameter search space for gridworld experiments (Section \todo{ref})]{The hyperparameter search space for gridworld experiments (Section \todo{ref}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
+        \caption[The hyperparameter search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results})]{The hyperparameter search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
     \end{table}
 
-    Parameters were optimised using the \todo{ref} map for DeterministicGridWorld, the \todo{ref} map for FrozenLake and the \todo{ref} map for Sailing.
-
-    \todo{Missing the bit which says that we used BayesOpt for the optimisation}
+    Parameters were optimised using the 8x8 map for DeterministicGridWorld, the 4x4 map for FrozenLake (Figure \ref{appfig:fl_maps}) and the 8x8 map for Sailing with both wind directions.
 
     To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
 
@@ -662,11 +562,11 @@
 \section{Additional Details for Go Experiments} 
 \label{appsec:go}
 
-    \todo{Find correct place for: } These experiments were run with \mctsmode\ewe turned on
+    These experiments were run with \mctsmode\ewe turned on.
 
     Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round-robin tournament was used to select the hyperparameters. This section gives the results of the round-robin tournaments.
 
-    For PUCT, the parameters used were copied from the reported values for Kata Go and Alpha Go Zero \todo{fix cites} %\citeapp{katago,silver2017mastering}. 
+    For PUCT, the parameters used were copied from the reported values for Kata Go and Alpha Go Zero \cite{katago,alpha_go_zero}. 
 
     This section is organised as follows:
     \begin{itemize}
@@ -683,7 +583,7 @@
 \subsection{AR-MENTS, AR-RENTS and AR-TENTS}
 \label{appsec:go_ar_ments}
 
-    \bd{TO implement AR-MENTS the AR-DENTS} (Section \ref{appsec:ardents}) \bd{algorithm was used, but with} $\beta(x)=\alpha(x)=\alpha_{\text{fix}}$. Implementing AR-RENTS and AR-TENTS is similar, replacing the used of Shannon entropy $\cl{H}$ in the backups by the corresponding relative entropy and Tsallis entropy functions. For AR-TENTS, the search policy uses the \textit{sparsemax} function used in TENTS instead of the softmax function. 
+    To implement AR-MENTS the AR-DENTS (Section \ref{app:4:algo-ref}) algorithm was used, but with $\beta(x)=\alpha(x)=\alpha_{\text{fix}}$. Implementing AR-RENTS and AR-TENTS is similar, replacing the used of Shannon entropy $\cl{H}$ in the backups by the corresponding relative entropy and Tsallis entropy functions. For AR-TENTS, the search policy uses the \textit{sparsemax} function used in TENTS instead of the softmax function. 
 
 
 
@@ -961,7 +861,7 @@
 
     After tuning all of the algorithms, each algorithm using Bellman updates played a match against its average returns counterpart, with results given in Table \ref{tab:y10}. Across all matches, the average returns algorithms won each match by a significant margin. 
     
-    \bd{My hypothesis for this is that average returns are less sensitive to any noisy outputs from the neural networks, as taking a maximum over random variables is more sensitive to extreme values than averages. Additionally, the neural networks are trained using PUCT and so are trained to work with average returns. It could be the case that if the neural networks were fine-tuned or trained using the Bellman versions of the algorithms that the performance would be closer or better from the Bellman versions.}
+    % {My hypothesis for this is that average returns are less sensitive to any noisy outputs from the neural networks, as taking a maximum over random variables is more sensitive to extreme values than averages. Additionally, the neural networks are trained using PUCT and so are trained to work with average returns. It could be the case that if the neural networks were fine-tuned or trained using the Bellman versions of the algorithms that the performance would be closer or better from the Bellman versions.}
     
     \begin{table}[]
     \centering

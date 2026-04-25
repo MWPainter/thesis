@@ -9,40 +9,39 @@
 
     \minitoc
 
-    \todo{Something about we'll conclude by looking back at contributions and possible future work.}
+    This thesis has investigated MCTS algorithms for sequential decision making problems, in both the single- and multi-objective settings. The main contributions of this thesis are summarised in Section \ref{sec:7-1-contributions} by revisiting the research questions of Chapter \ref{ch:1-intro}, and Section \ref{sec:7-2-futurework} discusses possible directions for future work.
+
+
 
 \section{Summary of Contributions}
 \label{sec:7-1-contributions}
 
-    \todo{go through each of the research questions and contributions, and write about how the work answers the research questions}
+    The research questions considered in this thesis (Section \ref{sec:1-2-contributions}) are revisited in turn, and the corresponding contributions are summarised. 
+
+    \paragraph{Q1 - Exploration.}
+    Chapter \ref{ch:4-dents} considered how MCTS algorithms can prioritise exploration in the exploration setting of reinforcement learning, where the agent is assessed only on the recommendations it makes. UCT was shown to be biased towards exploitation in this setting, and the maximum entropy objective used by MENTS was shown to be misaligned with the standard objective: for any fixed temperature there is an MDP in which MENTS either fails to recommend the optimal action, or requires an exponential number of trials to do so (\entropyq). The BTS and DENTS algorithms were introduced to address this misalignment, and were empirically shown to outperform UCT, MENTS and PUCT on a range of gridworld environments and on the game of Go. The same principles were lifted to the multi-objective setting in Chapter \ref{ch:6-simplexmaps} by combining DENTS with simplex maps to give SM-DENTS (\contextq).
+
+    \paragraph{Q2 - Stochastic Multi-Objective Domains.}
+    Chapter \ref{ch:5-chmcts} considered the question of how to extend MOMCTS algorithms to stochastic environments. The consistent action selection problem was identified as a fundamental challenge in MOMCTS: actions taken within a single trial should be consistent with each other, otherwise the search policy optimises for no particular objective. Theorem \ref{thm:per-step-linear} showed that locally optimal action selection yields globally optimal policies if and only if the utility function is linear, confirming that the assumption of linear utility is necessary for a MOMCTS algorithm to guarantee convergence in stochastic environments. CZT and CHMCTS were introduced as two approaches to MOMCTS in stochastic environments, and were empirically shown to outperform existing MOMCTS methods on a range of multi-objective environments. CHMCTS recovers prior MOMCTS algorithms as special cases of a common framework, generalising them to stochastic environments via convex hull backups.
+
+    \paragraph{Q3 - Scalability.}
+    Scalability was a recurring concern throughout this thesis. In the single-objective setting, the stochastic search policies of BTS and DENTS enable the use of the Alias Method (\complexityq), which significantly reduces the per-trial computational cost of MCTS. Empirically, this allowed BTS and DENTS to run substantially more trials per move than PUCT in the Go experiments. In the multi-objective setting, the simplex map was introduced in Chapter \ref{ch:6-simplexmaps} as an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector (\moscalabilityq). Simplex maps avoid the computational cost of convex hull backups in stochastic environments, and were empirically shown to scale significantly better than CHMCTS on the stochastic Deep Sea Treasure environment.
+
 
 
 \section{Future Work}
 \label{sec:7-2-futurework}
 
-    \todo{outline some avenues of potential future work}
+    Several directions for future work remain. 
 
-    \begin{itemize}
-        \item Decaying TENTS, the idea can be applied directly to Tsallis entropy
-        \item Applying DENTS logic to deep learning
-        \item Applying BTS/DENTS in alpha zero style loops
-        \item value curves instead of convex hulls for where convex hull is better than simplex map
-        \item adding entropy as an additional objective in simplex maps work
-        \item multi-objective alpha zero (simplex map/convex hull), cite some of the work about catastrophic forgetting where learned policy $pi(a|s;w)$ degrades to the same policy for many weights $w$, maybe ensuring that the policy is updated for many weights $w$ in the loss could help with this
-    \end{itemize}
+    \paragraph{Decaying Tsallis entropy.}
+    The DENTS algorithm of Chapter \ref{ch:4-dents} uses Shannon entropy as an auxiliary exploration bonus, with a temperature schedule that decays the entropy term over time. The same idea could be applied to other entropy regularisers, such as the Tsallis entropy used by TENTS \cite{rentsmytents}. As TENTS outperformed MENTS on the gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}), the resulting algorithm could inherit the sparsemax search policy of TENTS, whilst still recommending the optimal action under the standard objective. The convergence analysis of DENTS in Chapter \ref{ch:4-dents} should generalise to this setting with relatively minor modifications.
 
-    \todo{Also mention the people that have used/cited DENTS work}
+    \paragraph{Deep BTS and DENTS.}
+    The BTS and DENTS algorithms of Chapter \ref{ch:4-dents} are tabular, and store a separate Bellman value and entropy estimate at each tree node. A natural extension is to combine BTS and DENTS with neural function approximators, in the style of AlphaZero \cite{alpha_zero}. This would allow BTS and DENTS to be applied to large-scale environments such as Atari and Go without a hand-crafted heuristic, and the entropy term in DENTS may help to address the exploration challenges that arise in self-improvement loops.
 
+    \paragraph{Heuristic biases in MOMCTS algorithms.}
+    The heuristic bias terms from Chapter \ref{ch:4-dents} were not included in either of Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. Optimism under uncertainty is a well-established idea in reinforcement learning, and could be incorporated into the convex hull and simplex map algorithms to improve performance, particularly in larger environments.
 
-
-    Several directions for future work remain. The 
-    heuristic bias terms from Chapter \ref{ch:4-dents} 
-    were not included in the simplex map algorithms, 
-    so that results in this chapter are directly 
-    comparable to those of Chapter \ref{ch:5-chmcts}; 
-    incorporating these terms is a natural extension 
-    that may improve performance. Message passing 
-    could also be approximated by subsampling the 
-    neighbours at each vertex, which would reduce the 
-    computational cost of the push operation in higher 
-    dimensions.
+    \paragraph{Multi-objective AlphaZero.}
+    A natural combination of the contributions of this thesis is a multi-objective AlphaZero, in which a neural network is used to provide a prior policy and value function for a MOMCTS algorithm based on simplex maps or convex hulls, and the network is trained on the recommendations of the search. A challenge in this setting is that the policy network $\pi(a|s;\bff{w})$ is conditioned on the weight vector $\bff{w}$, and may degrade to the same policy for many weights $\bff{w}$ during training --- a form of catastrophic forgetting. Ensuring that the policy is updated for many weight vectors $\bff{w}$ in the loss could help to address this.

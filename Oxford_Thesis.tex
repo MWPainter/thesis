@@ -206,14 +206,34 @@
 \newcommand{\ewe}{\ }
 
 % General - comments (I use hide if dont want to comment out, but dont want it showing on doc yet)
-% \newcommand{\todo}[1]{TODO: #1}
-\newcommand{\todo}[1]{\hl{TODO: #1}}
-\newcommand{\bd}[1]{\hl{BD: #1}}
-\newcommand{\quest}[1]{\hl{Question: #1}}
+
+
+
+
+
+
+% \newcommand{\todo}[1]{\hl{TODO: #1}}
+% \newcommand{\bd}[1]{\hl{BD: #1}}
+% \newcommand{\quest}[1]{\hl{Question: #1}}
+
+
+
+
+\newcommand{\todo}[1]{}
+\newcommand{\bd}[1]{}
+\newcommand{\quest}[1]{}
+
+
+
+
+
+
+
+
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-\newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
+% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
 % \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
-\newcommand{\htodo}[1]{\hide{\todo{#1}}}
+% \newcommand{\htodo}[1]{\hide{\todo{#1}}}
 
 % Maffs operators that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
@@ -246,7 +266,7 @@
 % When planning in a simulator with limited time, how can Monte Carlo Tree Search algorithms prioritise exploration to make effective decisions?
 \newcommand{\entropyq}{\hyperlink{q11}{\textbf{Q1.1 - Entropy}}}
 % Entropy is used as an exploration objective in reinforcement learning --- under what conditions is it compatible with optimal decision-making?
-\newcommand{\contextq}{\hyperlink{q11}{\textbf{Q1.2 - Multi-Objective Exploration}}}
+\newcommand{\contextq}{\hyperlink{q12}{\textbf{Q1.2 - Multi-Objective Exploration}}}
 % Can the exploration insights from (maximum-entropy) single-objective Monte Carlo Tree Search algorithms be applied to multi-objective domains?
 \newcommand{\stochq}{\hyperlink{q2}{\textbf{Q2 - Stochastic Multi-Objective Domains}}}
 % Multi-objective Monte Carlo Tree Search has been studied in deterministic domains --- can these methods be generalised to stochastic settings?

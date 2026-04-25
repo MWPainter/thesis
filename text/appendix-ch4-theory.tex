@@ -19,16 +19,14 @@
 
 \chapter{\label{app:theory-ch4}Additional Theoretical Results For Chapter 4}
 
-This appendix provides the full definition of the DENTS stochastic process in Section \ref{appsec:dents_stoch_process} and the proofs for exponential convergence results for BTS and DENTS are given in Section \todo{ref}.
+This appendix provides the full definition of the DENTS stochastic process in Section \ref{appsec:dents_stoch_process} and the proofs for exponential convergence results for BTS and DENTS are given in Section \ref{sec:4-5-theory}
 
 
 
 \section{The DENTS Stochastic Process}
 \label{appsec:dents_stoch_process}
 
-    The DENTS stochastic process formalises the DENTS algorithm as a stochastic process, which is defined as follows. This section uses the notation and assumptions established in \todo{ref to ch4}. 
-
-    \todo{make sure handle initv and initq properly in the appendix}
+    The DENTS stochastic process formalises the DENTS algorithm as a stochastic process, which is defined as follows. This section uses the notation and assumptions established in \ref{sec:4-5-theory}. 
     
     All value estimates are initialised to zero for all $s\in\cl{S}$ and $a\in\cl{A}$:
     \begin{align}
@@ -40,7 +38,7 @@ This appendix provides the full definition of the DENTS stochastic process in Se
     \begin{align}
         \mQdentssft{N^n(s,a)}(s,a) &= \mQdents{N^n(s,a)}(s,a) + \betadents(N^n(s))\mHQdents{N^n(s,a)}(s,a), \label{appeq:dents_q_sft} \\
         \mrhodents{m}(a|s) &= \frac{
-                \exp\left(\frac{\mQdentssft{N^n(s,a)}(s,a)}{\alphadents(N(s,m))}\right)
+                \exp\left(\frac{\mQdentssft{N^n(s,a)}(s,a)}{\alphadents(N^m(s))}\right)
             }{
                 \sum\limits_{a'\in\cl{A}} \exp\left(\frac{\mQdentssft{N^n(s,a')}(s,a')}{\alphadents(N^n(s))}\right)
             }.  \label{appeq:full_rho} \\
@@ -52,17 +50,17 @@ This appendix provides the full definition of the DENTS stochastic process in Se
     Letting $\tau^n=(s^n_0,a^n_0,r^n_0,\ldots,s^n_{H-1},a^n_{H-1},r^n_{H-1},s^n_{H})$, the DENTS value and entropy estimates are computed as follows for $t=H-1,\ldots,0$:
     %
     \begin{align}
-        \mQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
+        \mQdents{N^m(s_t,a_t)}(s_t,a_t) &= 
             R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( 
-                \frac{N(s',m)}{N(s_t,a_t,m)} \mVdents{N(s',m)}(s') \right), 
+                \frac{N^m(s')}{N^m(s_t,a_t)} \mVdents{N^m(s')}(s') \right), 
             \label{appeq:dp_q_backup} \\ 
-        \mVdents{N(s_t,m)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N(s_t,a,m)}(s_t,a), 
+        \mVdents{N^m(s_t)}(s_t) &=\max_{a\in\cl{A}} \mQdents{N^m(s_t,a)}(s_t,a), 
             \label{appeq:dp_v_backup} \\
-        \mHQdents{N(s_t,a_t,m)}(s_t,a_t) &= 
-            \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s',m)}{N(s_t,a_t,m)} \mHVdents{N(s',m)}(s'), \\
-        \mHVdents{N(s_t)}(s_t) &= 
+        \mHQdents{N^m(s_t,a_t)}(s_t,a_t) &= 
+            \sum_{s'\in \suc{s_t}{a_t}} \frac{N^m(s')}{N^m(s_t,a_t)} \mHVdents{N^m(s')}(s'), \\
+        \mHVdents{N^m(s_t)}(s_t) &= 
             \cl{H}(\mpidents{m}(\cdot | s_t)) 
-                + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N(s_t,a_t,m)}(s_t,a_t).
+                + \sum_{a\in\cl{A}} \mpidents{m}(a_t|s_t)\mHQdents{N^m(s_t,a_t)}(s_t,a_t).
     \end{align}
 
     Recall that the visit counts are \textit{defined} as a sum of indicator random variables using the sampled trajectories:
@@ -87,9 +85,9 @@ This appendix provides the full definition of the DENTS stochastic process in Se
     
     
 
-    \subsection{The AR-DENTS Process}
+    % \subsection{The AR-DENTS Process}
             
-        \todo{Copy DENTS after its written. Swap out notation and backups.}
+    %     \odot{Copy DENTS after its written. Swap out notation and backups.}
 
 
 
@@ -111,32 +109,32 @@ This appendix provides the full definition of the DENTS stochastic process in Se
 
 
 
-    \todo{Move to preliminaries. Something like: these intermediate values are useful in the proofs for exponential convergence results.}    
+    % \odot{Move to preliminaries. Something like: these intermediate values are useful in the proofs for exponential convergence results.}    
 
 
-        \todo{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
-        %
-        \begin{align}
-            \mVrhodents{N(s)}(s) = &
-                \alphadents(N(s,m)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,m))}
-                    \big(\mQdents{N(s,a')}(s,a') \nonumber \\
-                &+ \betadents(N(s,m))\mHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
-        \end{align} 
-        %
-        and notice that the value of $\exp(\mVrhodents{N(s,m)}(s)/\alphadents(N(s,m)))$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\mrhodents{m}$ as 
-        %
-        \begin{align}
-            \mrhodents{m}(a|s) = 
-                \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
-                    \mQdents{N(s,a,m)}(s,a) 
-                    + \betadents(N(s,m))\mHQdents{N(s,a,m)}(s,a) 
-                    - \mVrhodents{N(s,m)}(s) \right)\right), \label{appeq:rho_concise}
-        \end{align}
-        % 
-        and subsequently, the full DENTS policy can be written as:
-        \begin{align}
-            \mpidents{m}(a|s) = (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}\left(\mQdents{N(s,a,m)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) + \frac{\lambda(s,m)}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
-        \end{align}
+        % \odot{From the neurips, also wrote the following (everything left in this subsubsection is copied and cleaned up, but probably needs a proof read)} Let $\mVrhodents{N(s)}(s)$ be defined as the value:
+        % %
+        % \begin{align}
+        %     \mVrhodents{N(s)}(s) = &
+        %         \alphadents(N(s,m)) \log \Bigg[ \sum_{a'\in\cl{A}} \exp\bigg(\frac{1}{\alphadents(N(s,m))}
+        %             \big(\mQdents{N(s,a')}(s,a') \nonumber \\
+        %         &+ \betadents(N(s,m))\mHQdents{N(s,a')}(s,a') \big)\bigg)\Bigg], \label{appeq:v_rho}
+        % \end{align} 
+        % %
+        % and notice that the value of $\exp(\mVrhodents{N(s,m)}(s)/\alphadents(N(s,m)))$ is equal to the denominator in Equation (\ref{appeq:full_rho}), and so by rearranging we can write $\mrhodents{m}$ as 
+        % %
+        % \begin{align}
+        %     \mrhodents{m}(a|s) = 
+        %         \exp\left(\frac{1}{\alphadents(N(s,m))}\left(
+        %             \mQdents{N(s,a,m)}(s,a) 
+        %             + \betadents(N(s,m))\mHQdents{N(s,a,m)}(s,a) 
+        %             - \mVrhodents{N(s,m)}(s) \right)\right), \label{appeq:rho_concise}
+        % \end{align}
+        % % 
+        % and subsequently, the full DENTS policy can be written as:
+        % \begin{align}
+        %     \mpidents{m}(a|s) = (1-\lambda(s,m))\exp\left(\frac{1}{\alphadents(N(s,m))}\left(\mQdents{N(s,a,m)}(s,a) + \betadents(N(s,m))\mHQdents{N(s,a)}(s,a) - \mVrhodents{N(s)}(s) \right)\right) + \frac{\lambda(s,m)}{|\cl{A}|}. \label{appeq:dents_search_policy_exact} 
+        % \end{align}
 
 
 
@@ -195,18 +193,13 @@ This appendix provides the full definition of the DENTS stochastic process in Se
 \section{Exponential Convergence Results}
 \label{appsec:exp}
 
-    This section provides the proofs of exponential convergence results for the DENTS, AR-DENTS, BTS and AR-BTS stochastic processes. It is structured similarly to Section \ref{sec:4-5-theory} as follows:
-    \begin{enumerate}
-        \item \todo{todo}
-    \end{enumerate}
+
+    Note to examiners/anyone reading this: I'm sorry I didn't find time before submission to clean up the proofs below this point. It's definitely not worth your time looking at it sorry.
 
 
 
 
-
-
-
-    \todo{This section give proofs for exponential convergence results for DENTS and MENTS}, it is structured as follows:
+    % \odot{This section give proofs for exponential convergence results for DENTS and MENTS}, it is structured as follows:
     \begin{enumerate}
         \item First, Appendix \ref{appsec:exp-prelim} provides a set of Lemmas that are used later in the proofs for exponential convergence bounds;
         \item Second, Appendix \ref{appsec:max_entropy_results} gives Lemmas that provide sufficient conditions for the maximum entropy objective and standard objective to be aligned;
@@ -215,9 +208,9 @@ This appendix provides the full definition of the DENTS stochastic process in Se
         \item Finally, in Appendix \ref{appsec:dents_proofs}, Theorem \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are 
     \end{enumerate}
 
-    \todo{Make sure that }
+    % \odot{Make sure that }
 
-    \todo{Make sure assumptions and conditions stated. Anything that depends on the min prob needs to have the lower/upper bounds on the decay functions for example.}
+    % \odot{Make sure assumptions and conditions stated. Anything that depends on the min prob needs to have the lower/upper bounds on the decay functions for example.}
 
 
     \subsection{Preliminaries}
@@ -225,24 +218,25 @@ This appendix provides the full definition of the DENTS stochastic process in Se
 
         This subsection contains preliminary lemmas that are used for the building blocks to prove.
         
-        \todo{<beg> dump}
+        % \odot{<beg> dump}
 
 
 
 
-            \todo{This section contains things related to exponential bounds, which might move to appendix}
+            % \odot{This section contains things related to exponential bounds, which might move to appendix}
             This subsection contains lemmas that will be useful in multiple times and are used to avoid repeating the same argument multiple times. 
 
             
-            \todo{change m to n, and use mth when need to reason about prev trials (whole subsection)}
+            % \odot{change m to n, and use mth when need to reason about prev trials (whole subsection)}
 
 
 
 
 
-            Firstly it will be that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound \todo{ref?} \todo{it is stated here so that it can be referenced, because this fact is used regularly }
+            Firstly it will be that the union of exponentially unlikely events is also exponentially unlikely, and that the intersection of exponentially likely events is exponentially likely. Although this is a special case of the union bound % \odot{ref?} %
+            % \odot{it is stated here so that it can be referenced, because this fact is used regularly }
             %
-            \todo{Some comment about how this is just a special case of the union bound (and ref that?) and also }
+            % \odot{Some comment about how this is just a special case of the union bound (and ref that?) and also }
             %
             \begin{lemma} \label{lem:union_bound}
                 Let $A_1,...,A_{\ell}$ be some events that satisfy for $1\leq i \leq \ell$ the inequality $\Pr(\lnot A_i) \leq C_i\exp(-k_i)$ then:
@@ -262,19 +256,19 @@ This appendix provides the full definition of the DENTS stochastic process in Se
 
 
             
-            The following two lemma's show that the MENTS and DENTS processes always have a minimum probability of picking any action. \todo{not in good headspace writing up these two lemmas. Do a clean up, double checking maths and that have eliminated using 'we' and so on}
+            The following two lemma's show that the MENTS and DENTS processes always have a minimum probability of picking any action. %\odot{not in good headspace writing up these two lemmas. Do a clean up, double checking maths and that have eliminated using 'we' and so on}
             %
             \begin{lemma} \label{lem:min_prob_ments}
                 For any MENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpiments{m}(a_t|s_t)\geq\pi^{\min}$.
             \end{lemma}
             %
             \begin{proofoutline}
-                \todo{Fix N having to be N(s,m) not N(s) etc}
+                % \odot{Fix N having to be N(s,m) not N(s) etc}
                 Define the $Q^{\min}$ function as follows:
                 \begin{align}
                     Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
                 \end{align}
-                \todo{clean up with respect to init function}
+                % \odot{clean up with respect to init function}
                 
                 And define the $V^{\max}$ function as:
                 \begin{align}
@@ -304,9 +298,9 @@ This appendix provides the full definition of the DENTS stochastic process in Se
 
 
 
-            \todo{this whole lemma just needs cleaning up really}
+            % \odot{this whole lemma just needs cleaning up really}
 
-            \todo{this lemma requires} $\betadents(x) < U$ for all $x$, or $\betadents$ is bounded. AND it requires $\alphadents(x) < U'$ so $\alphadents$ to be bounded. \todo{THERE IS CURRENTLY ERROR IN THIS. EXP BOUND REQUIRES A MINIMUM TEMP. Might need to reason around logsumexp's around here. But, as alpha tends to infinity, the probability distribution will tend to a uniform distribution, and min prob is fine, if alpha tends to zero, then softmax tends to max, and then min prob can be zero, so dont have a min prob. Might need to use a different value of alpha for the computation of V, so might need to have both a lower and upper bound on alpha.}
+            % \odot{this lemma requires} $\betadents(x) < U$ for all $x$, or $\betadents$ is bounded. AND it requires $\alphadents(x) < U'$ so $\alphadents$ to be bounded. \todo{THERE IS CURRENTLY ERROR IN THIS. EXP BOUND REQUIRES A MINIMUM TEMP. Might need to reason around logsumexp's around here. But, as alpha tends to infinity, the probability distribution will tend to a uniform distribution, and min prob is fine, if alpha tends to zero, then softmax tends to max, and then min prob can be zero, so dont have a min prob. Might need to use a different value of alpha for the computation of V, so might need to have both a lower and upper bound on alpha.}
             %
             \begin{lemma} \label{lem:min_prob_dents}
                 For any DENTS process there exists some $\pi^{\min}>0$, for any state $s_t\in\cl{S}$, for all $a_t\in\cl{A}$ and any number of trials $m\in\bb{N}$, such that $\mpidents{m}(a_t|s_t)\geq\pi^{\min}$.
@@ -317,7 +311,7 @@ This appendix provides the full definition of the DENTS stochastic process in Se
                 \begin{align}
                     Q^{\min}(s_t,a_t) = \min_{s_{t+1},a_{t+1},...,s_H,a_H} \sum_{i=t}^H \min(0, Q^{\text{init}}_{\sft}(s_i), R(s_i,a_i)).
                 \end{align}
-                \todo{clean up with respect to init function}
+                % \todo{clean up with respect to init function}
 
                 However, the definition of $V^{\max}$ from Equation (\ref{appeq:vmax}) needs to altered to:
                 \begin{align}
@@ -325,10 +319,10 @@ This appendix provides the full definition of the DENTS stochastic process in Se
                     Q^{\max}(s_t,a_t) &= R(s_t,a_t) + \max_{s'\in\suc{s_t}{a_t}} V^{\max}(s') \\
                     V_\rho^{\max}(s_t) &= \alpha \log \sum_{a\in\cl{A}} \exp \left(\left(Q^{\max}(s_t,a) + \beta_{\max}H\log|\cl{A}| \right)/\alpha\right), 
                 \end{align}
-                \todo{clean up the use of alpha in this one. Should be alpha max (and also define alpha max), and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
-                \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
+                % \todo{clean up the use of alpha in this one. Should be alpha max (and also define alpha max), and need to work out if should be using a sup or inf or whatever. Maybe just put a sup outside it.}
+                % \todo{H was the horizon, make that consistent with what we've defined before (above and in below paragraph)}
                 %
-                where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ \todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
+                where $\beta_{\max}=\sup_{x\in\bb{R}}\beta(x)$. Similarly to the MENTS process case, it can be shown by induction that $Q^{\min}(s_t,a_t)\leq \mQdents{N(s_t,a_t,m)}(s_t,a_t)$ and $V_\rho^{\max}(s_t)\geq V_{\rho}^{N(s_t,m)}(s_t)$, where the latter implicitly uses that $0 \leq \cl{H}_Q^{N(s_t,a_t)}(s_t,a_t) \leq (H-t)\log|\cl{A}| \leq H\log|\cl{A}|$ %\todo{using well-known properties of entropy (left was what was originally written. Consider rewording this entire paragraph tho)}. 
                 
                 Define $\pi^{\min}$ similarly to Equation (\ref{eq:pi_min}), with the updated definition of $V_\rho^{\max}$: 
                 \begin{align}
@@ -610,11 +604,11 @@ This appendix provides the full definition of the DENTS stochastic process in Se
             \begin{figure}
                 \centering
                 \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-                \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:4:bound_transition_distribution}.}
-                \label{fig:dkw_diag}
+                \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N(s_{t+1},n)}{N(s_t,a_t,n)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{appcor:4:bound_transition_distribution}.}
+                \label{appfig:dkw_diag}
             \end{figure}
             %
-            \begin{corollary} \label{cor:4:bound_transition_distribution}
+            \begin{corollary} \label{appcor:4:bound_transition_distribution}
                 Consider any Boltzmann MCTS process. For all $(s_t,a_t)\in\cl{S}\times\cl{A}$ and for all $\varepsilon >0$ we have:
                 \begin{align}
                     \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}}\left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| > \varepsilon \right) \leq 2 \exp\left(-\frac{1}{2}\varepsilon^2 N(s_t,a_t) \right).
@@ -623,7 +617,7 @@ This appendix provides the full definition of the DENTS stochastic process in Se
             \begin{proofoutline}
                 By considering some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$ and applying Theorem \ref{thrm:dkw_inequality}, replacing $\varepsilon$ by $\varepsilon/2$, the result follows.
 
-                To see why the factor of $1/2$ is needed, consider Figure \ref{fig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
+                To see why the factor of $1/2$ is needed, consider Figure \ref{appfig:dkw_diag}. Because the distribution is discrete, the cumulative distribution function is a (piecewise constant) step function. As Theorem \ref{thrm:dkw_inequality} bounds the maximum difference between the empirical and true cumulative distribution functions, the factor of $1/2$ is needed to account for the error before and after each $s_{t+1}$ in the worst case.
             \end{proofoutline}
 
 
@@ -633,7 +627,7 @@ This appendix provides the full definition of the DENTS stochastic process in Se
             
 
 
-        Now that Corollary \ref{cor:4:bound_transition_distribution} can be used to bound  the empirical transition distribution to the true transition distribution,  a general purpose concentration inequality for Q-values can be proved for use in later proofs.
+        Now that Corollary \ref{appcor:4:bound_transition_distribution} can be used to bound  the empirical transition distribution to the true transition distribution,  a general purpose concentration inequality for Q-values can be proved for use in later proofs.
 
         \begin{lemma} \label{lem:stochastic_step}
             Consider any Boltzmann MCTS process, and some state action pair $(s_t,a_t)\in\cl{S}\times\cl{A}$. Let $\dot{V}^{N(s,n)}(s):\cl{S}\rightarrow \bb{R}$, $\dot{V}^*(s):\cl{S}\rightarrow \bb{R}$ be some estimated and optimal value functions respectively and suppose that for all $s_{t+1}\in\suc{s_t}{a_t}$ that there is some $C_{s_{t+1}}, k_{s_{t+1}}>0$ such that for all $\varepsilon_0 >0$:
@@ -660,7 +654,7 @@ This appendix provides the full definition of the DENTS stochastic process in Se
                 \Pr\left(\forall s_{t+1}. \left|\dot{V}^{N(s_{t+1})}(s_{t+1})-\dot{V}^*(s_{t+1}) \right| \leq \varepsilon_1 \right) > 1-C_1\exp(-k_1\varepsilon_1^2 N(s_t,a_t,n)). \label{local:one}
             \end{align}
 
-            And recall that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$, using Corollary \ref{cor:4:bound_transition_distribution} that:
+            And recall that for any $p(s_{t+1}|s_t,a_t) > \varepsilon_2>0$, using Corollary \ref{appcor:4:bound_transition_distribution} that:
             \begin{align}
                 \Pr\left(\max_{s_{t+1}\in\suc{s_t}{a_t}} 
                     \left| \frac{N(s_{t+1},n)}{N(s_t,a_t,n)} - p(s_{t+1}|s_t,a_t) \right| 
