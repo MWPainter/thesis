@@ -948,11 +948,44 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
+
 \section{Summary}
 \label{sec:6-6-summary}
 
-    \todo{Summary of contributions}
+    This chapter introduced \textit{simplex maps}, an 
+    adaptive data structure for maintaining value and 
+    entropy estimates as a function of the weight vector 
+    $\bff{w}\in\Delta^D$, and used them to define two 
+    MOMCTS algorithms: SM-BTS and SM-DENTS.
 
-    \bd{For future work, some further approximations, such as subsampling the neighbours in the message passing could be considered.}
+    Simplex maps address the two limitations of CHMCTS 
+    identified in Chapter \ref{ch:5-chmcts}. By using a hierarchical representation the computational costs are generally lower, particularly in environments where the number of points in a convex hull value set is large, making 
+    simplex maps significantly more scalable in stochastic 
+    environments. Additionally, by utilising a collection of point estimates in weight space, simplex maps provide a principled 
+    way to associate entropy values with specific weight 
+    vectors, enabling entropy-based exploration to be 
+    lifted to the multi-objective setting via SM-DENTS.
 
-    \bd{For future work, include bias terms similar to the ones in ch4. Say that we didn't include them in Ch6, and they were not added in ch5 so that ch5 and ch6 results are comparible.}
+    The simplex map data structure was defined 
+    (Section \ref{sec:6-2-simplexmaps}) through its 
+    interface of query, update, message passing and 
+    split operations, and its implementation via a 
+    vertex graph, a binary tree of simplices, and an 
+    eventually conforming triangulation maintained using 
+    longest edge bisection. The SM-BTS and SM-DENTS 
+    algorithms were defined (Section 
+    \ref{sec:6-3-algorithms}) as multi-objective 
+    extensions of BTS and DENTS respectively, using 
+    contextual value estimates derived from the simplex 
+    map in place of scalar Bellman value estimates.
+
+    Empirically, simplex map algorithms performed 
+    comparably to CHMCTS on deterministic environments 
+    and small MO-Gymnasium environments, while 
+    significantly outperforming all CHMCTS algorithms 
+    on the stochastic $\DST(W,\frac{1}{5})$ environment, both in terms of 
+    EUM and the number of backups that could be 
+    performed within the time budget. The scalability 
+    results demonstrated that SM-DENTS maintains strong 
+    performance across a much wider range of map sizes 
+    than CHMCTS in heavily stochastic environments.

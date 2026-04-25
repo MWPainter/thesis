@@ -1261,103 +1261,75 @@
 \section{Theoretical Discussion}
 \label{sec:5-6-theory}
 
-    This section \bd{provides some theoretical discussion around CHMCTS and MOMCTS in general.} It is structured as follows:
+    This section provides theoretical results for CHMCTS and MOMCTS more broadly. It is structured as follows:
     \begin{itemize}
-        \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
-        \item Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} discusses a fundimental assumption made in MOMCTS algorithms and \bd{shows that MOMCTS algorithms using this assumption can only compute optimal policies for linear utility functions};
-        \item Section \ref{sec:5-6-3-convergence_of_chmcts} outlines \bd{but doesnt actually bother to prove} convergence proofs for CHMCTS.
+        % \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
+        \item Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} discusses a fundamental assumption made in MOMCTS algorithms and shows that locally optimal action selection yields globally optimal policies if and only if the utility function is linear;
+        \item Section \ref{sec:5-6-3-convergence_of_chmcts} outlines convergence proofs for CHMCTS.
     \end{itemize}
-
     
-
-
-\subsection{Context Independent Policies}
-\label{sec:5-6-1-context_independent_policies}
-
-    1. PREAMBLE
-    2. Figure
-    3. THeorem copy
 
 
 
 \subsection{The Fundamental Assumption of MOMCTS}
 \label{sec:5-6-2-fundamental_assumption_of_momcts}
 
-    \todo{move things from the theorem to preamble. Like move the greedy policy and call it pi local. Call the theorem "locally optimal policy requires linear utility"}
+    This chapter has discussed that following locally optimal actions does not always lead to globally optimal policies in the multi-objective setting. This section formalises this result and shows that locally optimal actions lead to globally optimal policies if and only if the utility function is linear.
 
-    1. Preamble - define the setup
-    2. General utility, and the form of the search/recommendation policy
-    3. Wordy description of the offending MOMDP with chebyshev utility
-    4. Theorem
-
-    % The essential feature of your example is that b=cb = c
-    % b=c dominates aa
-    % a in the second coordinate and dd
-    % d in the first coordinate — this is what makes bb
-    % b (and cc
-    % c) "block" *both* aa
-    % a and dd
-    % d simultaneously under any weighting.
+    Because MCTS methods are built on top of making local decisions at each node, this implies that MOMCTS, for \textit{arbitrary} MOMDPs, cannot guarantee convergence to optimal policies unless the utility function is linear. The MOMDP used to show this result is \textit{stochastic}, shown in Figure \ref{fig:5:momdp_proof}. Prior work in MOMCTS (Section \ref{sec:3-5-momcts}) has typically focused on finding Pareto fronts for \textit{deterministic} MOMDPs. It is conjectured here that stochasticity of the MOMDP is a 
+    necessary condition for this result to hold.
 
 
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch5/proof.pdf}
+        \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.}
+        \label{fig:5:momdp_proof}
+    \end{figure}
 
-    \begin{theorem}[Per-step action selection requires linear utility]
+    Consider an arbitrary MOMDP $\bfcl{M}$, utility function $u$ and set of policies $\Pi$. The optimal value sets are defined as:
+    \begin{align}
+        \bfcl{V}^*_u(s) &= \{\bff{V}^{\pi}(s) \mid \pi \in U(\Pi;u)\}, \\
+        \bfcl{Q}^*_u(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(\Pi;u)\}.
+    \end{align}
+
+    Then the locally optimal policy is defined as:
+    \begin{align}
+        \pi_{\text{local}}(s; \bff{w}) \in \argmax_{a \in \cl{A}}\;
+            \max_{\bff{q} \in \bfcl{Q}^*_u(s, a)} u(\bff{q}; \bff{w}).
+    \end{align}
+
+    \begin{theorem}
         \label{thm:per-step-linear}
-        Let $\bfcl{M}$ be an MOMDP, $\Pi$ the set of all policies and the optimal value sets be:
-        %
-        \begin{align*}
-            \bfcl{V}^*(s) &= \{\bff{V}^{\pi}(s) \mid \pi \in U(\Pi;u)\}, \\
-            \bfcl{Q}^*(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(\Pi;u)\},
-        \end{align*}
-        %
-        where $U(\Pi;u)$ is the undominated set of policies (Definition \ref{def:2:undominated_set}) and $u$ is a utility function. Let $\pi^{\bff{w}}_u \in \argmax_{\pi \in \Pi} u(\bff{V}^{\pi}(s_0); \bff{w})$ denote a utility-optimal policy. Consider the greedy selection rule
-        %
-        \begin{equation*}
-            \pi_{\mathrm{greedy}}(s; \bff{w}) \in \argmax_{a \in \cl{A}}\;
-                \max_{\bff{q} \in \bfcl{Q}^*(s, a)} u(\bff{q}; \bff{w}).
-        \end{equation*}
-        %
-        Then $\pi_{\mathrm{greedy}}(\cdot; \bff{w})$ is utility-optimal (i.e. $u(\bff{V}^{\pi_{\mathrm{greedy}}}(s_0); \bff{w}) = u(\bff{V}^{\pi^{\bff{w}}_u}(s_0); \bff{w})$) for every MOMDP $\bfcl{M}$ and every $\bff{w} \in \Delta^D$ if and only if $u(\cdot; \bff{w})$ is linear in its first argument for every
+        The policy $\pi_{\text{local}}(\cdot; \bff{w})$ is utility-optimal (i.e. $u(\bff{V}^{\pi_{\text{local}}}(s_0); \bff{w}) = u(\bff{V}^{\pi^{\bff{w}}_u}(s_0); \bff{w})$) for every MOMDP $\bfcl{M}$ and every $\bff{w} \in \Delta^D$ if and only if $u(\cdot; \bff{w})$ is linear in its first argument for every
         $\bff{w} \in \Delta^D$.
     \end{theorem}
     \begin{proofoutline}
-        \bd{If direction.}
-        Suppose $u(\cdot; \bff{w})$ is linear in its first argument for every 
-        $\bff{w} \in \Delta^D$, i.e. $u(\bff{v}; \bff{w}) = \bff{w} \cdot \bff{v}$ 
-        (up to a $\bff{w}$-dependent constant, which does not affect the $\argmax$). 
-        Then $U(\Pi; u)$ coincides with the convex coverage set, and the greedy 
-        selection rule reduces to standard single-objective action selection under 
-        the scalarised reward $\bff{w} \cdot \bff{r}(s, a)$. Utility-optimality of 
-        $\pi_{\mathrm{greedy}}$ then follows from the correctness of convex hull 
-        value iteration (Theorem~\todo{ref CHVI}), which reduces to standard value 
-        iteration for each fixed $\bff{w}$.
-    
-        \bd{Only if direction.}
-        We prove the contrapositive by exhibiting a single MOMDP and utility 
-        function for which $\pi_{\mathrm{greedy}}$ is not utility-optimal. Let $u$ 
-        be the Chebyshev utility with reference point $\bff{z}^* = (6, 6)$,
-        %
-        \begin{equation*}
-            u(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z^*_i \right|,
-        \end{equation*}
-        %
-        which is non-linear in its first argument. Consider the MOMDP in 
-        Figure~\todo{ref fig}, which has a single action $a_0$ at $s_0$ 
-        transitioning with equal probability to successor states $s_1$ or $s_2$, 
-        at each of which the agent selects between $a_0$ and $a_1$ to receive a 
-        terminal vector reward. The four deterministic paths yield
+        \textbf{If direction.}
+
+        Follows from the convergence of Convex Hull Value Iteration \cite{chvi}.
+
+        \textbf{Only if direction.}
+
+        The contrapositive is established by exhibiting a single MOMDP, utility function and weight vector where the locally optimal policy $\pi_{\text{local}}(\cdot; \bff{w})$ is not utility-optimal. 
+        
+        Let $\bfcl{M}$ be the MOMDP in Figure \ref{fig:5:momdp_proof} and $u$ be the Chebyshev utility with reference point $\bff{z} = (6, 6)$, defined as:
+        \begin{align}
+            u(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|.
+        \end{align}
+
+        The four paths through the MOMDP yield rewards of:
         %
         \begin{align*}
-            s_0 \to s_1 \to a_0 &: (5, 0), &
-            s_0 \to s_1 \to a_1 &: (2, 2), \\
-            s_0 \to s_2 \to a_0 &: (2, 2), &
-            s_0 \to s_2 \to a_1 &: (0, 5).
+            s_0 \to \sss{1} \to \aaa{0} &: (5, 0), &
+            s_0 \to \sss{1} \to \aaa{1} &: (2, 2), \\
+            s_0 \to \sss{2} \to \aaa{0} &: (2, 2), &
+            s_0 \to \sss{2} \to \aaa{1} &: (0, 5).
         \end{align*}
-        %
-        Fix the preference $\bff{w} = (\tfrac{1}{2}, \tfrac{1}{2})$. By inspection, 
-        the four stationary policies yield expected values at $s_0$ of $(3.5, 1)$, 
+
+        Fix the weight vector $\bff{w} = (\tfrac{1}{2}, \tfrac{1}{2})$. By inspection, there are four stationary policies yielding expected values at $s_0$ of $(3.5, 1)$, 
         $(2.5, 2.5)$, $(2, 2)$, and $(1, 3.5)$, with the policy achieving 
-        $(2.5, 2.5)$ being utility-optimal:
+        $(2.5, 2.5)$ being utility-optimal for $\bff{w}$:
         %
         \begin{equation*}
             u((3.5, 1); \bff{w}) = -2.5, \quad
@@ -1366,222 +1338,35 @@
         \end{equation*}
         %
         (The value $(2, 2)$ is Pareto-dominated and is omitted.) The utility-optimal 
-        policy selects $a_0$ at $s_1$ (receiving $(5, 0)$) and $a_1$ at $s_2$ 
+        policy selects $\aaa{0}$ at $\sss{1}$ (receiving $(5, 0)$) and $\aaa{1}$ at $\sss{2}$ 
         (receiving $(0, 5)$), giving expected value $(2.5, 2.5)$ and utility $-1.75$.
     
-        Now consider $\pi_{\mathrm{greedy}}$. The Pareto fronts at the successor 
+        Now consider $\pi_{\text{local}}$. The Pareto fronts at the successor 
         states are singletons,
         %
         \begin{align*}
-            \bfcl{Q}^*(s_1, a_0) &= \{(5, 0)\}, &
-            \bfcl{Q}^*(s_1, a_1) &= \{(2, 2)\}, \\
-            \bfcl{Q}^*(s_2, a_0) &= \{(2, 2)\}, &
-            \bfcl{Q}^*(s_2, a_1) &= \{(0, 5)\},
+            \bfcl{Q}^*_u(\sss{1}, \aaa{0}) &= \{(5, 0)\}, &
+            \bfcl{Q}^*_u(\sss{1}, \aaa{1}) &= \{(2, 2)\}, \\
+            \bfcl{Q}^*_u(\sss{2}, \aaa{0}) &= \{(2, 2)\}, &
+            \bfcl{Q}^*_u(\sss{2}, \aaa{1}) &= \{(0, 5)\},
         \end{align*}
         %
         and the Chebyshev utilities are $u((5, 0); \bff{w}) = u((0, 5); \bff{w}) = -3$ 
-        and $u((2, 2); \bff{w}) = -2$. Hence $\pi_{\mathrm{greedy}}$ selects $a_1$ at 
-        $s_1$ and $a_0$ at $s_2$, both yielding $(2, 2)$. The expected value at $s_0$ is
+        and $u((2, 2); \bff{w}) = -2$. Hence $\pi_{\text{local}}$ selects $\aaa{1}$ at 
+        $\sss{1}$ and $\aaa{0}$ at $\sss{2}$, both yielding $(2, 2)$. The expected value at $s_0$ is
         %
         \begin{equation*}
-            \bff{V}^{\pi_{\mathrm{greedy}}}(s_0) 
+            \bff{V}^{\pi_{\text{local}}}(s_0) 
             = \tfrac{1}{2}(2, 2) + \tfrac{1}{2}(2, 2) = (2, 2),
         \end{equation*}
         %
         with utility $u((2, 2); \bff{w}) = -2 < -1.75$. Therefore 
-        $\pi_{\mathrm{greedy}}$ is not utility-optimal.
-    
-        The obstruction is structural: under Chebyshev utility the optimal policy 
-        requires selecting the \emph{locally} worst continuation ($(5, 0)$ at $s_1$ 
-        and $(0, 5)$ at $s_2$), whose expectation across the stochastic transition 
-        yields a \emph{globally} preferable balanced outcome. No per-state $\argmax$ 
-        on $u$ can discover this coordination, because $u$ does not commute with the 
-        expectation over successor states. Linearity of $u$ is precisely the 
-        condition under which this commutation holds, and hence precisely the 
-        condition under which per-state action selection is utility-optimal.
+        $\pi_{\text{local}}$ is not utility-optimal.
     \end{proofoutline}
 
+    The issue with the MOMDP defined in Figure \ref{fig:5:momdp_proof} is that the optimal policy requires optimising towards the conflicting objectives of $(5, 0)$ and $(0, 5)$ at the same time, depending on the outcome of the stochastic transition to $\sss{1}$ or $\sss{2}$. It can additionally be shown that for any utopian point $\bff{z}$ and weight $\bff{w}$ the reward of $(2,2)$ will be locally optimal for one of the states $\sss{1}$ or $\sss{2}$ and the locally optimal policy $\pi_{\text{local}}$ will not be utility optimal.
 
 
-
-
-
-
-    Theory results:
-    \begin{itemize}
-        \item Non-contextual policies garunteed to have a linear contextual simple regret
-        \item Convex Hull algorithms garunteed to converge (lemma that UCT style policy picks actions inf often and reuse ch4 result for BTS), and mainly reproduce the result from CHVI
-        \item Highlight that one step of the convex hull proof holds iff linear utility, use it to say that MOMCTS with value sets doesn't really work for non-linear utility functions
-        \item Reconcile with prior work by saying that the histories are taken into account, and the pareto fronts stored are globally
-        \item But generally highlight that this is a limitation of using MOMCTS, that optimisation at the level of actions is correct if and only if the utility function is linear. Give an example MOMDP where to get the optimal value doesnt allow for chebychev scalarization over value sets
-        \item Discuss the difference between Contextual Zooming and CZT, cite a doubling trick and say that it can be used to generalise CZ to an algorithm for CMAB problems without a fixed number of rounds. Hypothesise that CZT contextual cumulative regret matches that of CZ, but the proofs of CZ are very complex themselves, and UCT theory is also long and hard, so not going to attempt to prove it.
-    \end{itemize}
-
-    
-    From Van Moffaert paper: %https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
-
-    As a result, the Bellman equation no longer holds and the learning algorithm is not proven to converge to the optimal policy (Perny and Weng, 2010; Roijers et al., 2013). Nevertheless, even without this theoretical guarantee, a Chebyshev scalarized MORL algorithm can obtain high-quality solutions (Van Moffaert et al., 2013b). 
-
-
-   
-
-
-
-
-New Ch5 plan:
-\begin{itemize} 
-    \item Theory, contextual regret, non-contextual policies garunteed to have a linear contextual regret
-    \item Theory, reproduce the CHMCTS results, and say that garunteed to eventually produce optimal (lemmas are actions selected inf often)
-    \item No theory for CZT directly, makes a heuristic adaptation from the base work, and the proofs are very complex in themselves (would add like 50 pages of maths) 
-\end{itemize}
-
-
-
-for theory would just like to have convergence, use ch4 proofs and UCT picks actions inf often as lemma and use CHVI proofs 
-
-Allude to that boltzmann probably gives exp contextual simple regret, and PUCT gives similar contextual cumulative regret, and the lower bound from exploring bandits means simple regret of UCT methods has a lower bound
-
-\todo{Update theory appendix to be more general theory appendix. First section is additional results from literature, like hoeffdings. Include proof of UCT policy selecting any action infinitely often for an arbitrary Q value here. second section is exponential consistency proofs, split into three subsections, dents process, preliminary lemmas and the proofs.}
-
-
-
-
-
-also more critical to look into litrev for what results about MORL there are, shimons paper probably helpful
-
-want to cite if someone has done that linear scalarisation iff making local decisions result
-
-
-%
-% Original brain dumping on this
-%
-
-\todo{part 1: all the (relevant) search policies will select actions infinitely often.}
-
-\todo{part 1a: BTS and DENTS follows from ch4. For UCT can argue that if select one argument a finite number of times. Then use the confidence interval term to arrive at contradiction}
-
-\todo{part 2: convex hull backups perform the scalarised backups for all possible weights over the objective.}
-
-\todo{write up proofs wrote up on ipad. Used this gpt convo in cleaning up details: https://chatgpt.com/c/67fa9295-0cb8-8007-88fd-5bec1ac5393b}
-
-\todo{part 2a: refer back to convergence of backups in ch4, clean up and DKW stuff need to}
-
-\todo{part 3: if values converge to optimal, then contextual simple regret tends to zero}
-
-\todo{part 4: mention that CZT proofs would be much more complex, and given the other algorithms do better. Mention a lower bound which comes from the CZ regret bound. And that this algorithm could be preferable in not in exploring context.}
-
-\todo{part 4a: similar with CH-UCT to CZT}
-
-\todo{part 5: any proofs for CH-UCT and/or CZT? Which wouldn't be a disaster trying to proove?
-
-
-
-}
-
-
-
-
-Below is what we initially wrote in this section.
-
-\todo{See if with chatgpt help can crack out a rough proof outline? Because assuming no noise in the reward function, the leaf nodes clearly converge with same rate. Just really need the induction step. Feel like it should be very do-able, by bootstrapping on the CZT proofs.}
-
-\todo{Can easily show that CH converges, by using every action sampled infinitly often still, and bootstrap off the convex hull convergence proof.}
-
-\todo{One thing need to prove is that our form of backups converges, because we're using the sample averages our backups are slightly different. Should}
-
-\todo{Remainder of properties bootstrap off the proofs in Ch4. Every action is sampled inf often, hence the convex hull backups converge. Don't bother showing convergence rates. Just show that they are consistent.}
-
-\todo{Also want to show that given any convex hull value estimates, that following the policy extracted from convex hulls does give the same multi-objective value.}
-
-basically this would say
-\begin{align}
-    \pi(s;w) &= \argmax_{a\in\cl{A}} \circ{\bff{Q}}(s,a;w) \\
-    w^\top\bff{V}^\pi(s;w) &= w^\top \bb{E}_{a\sim\pi}[ \bff{Q}^\pi(s,a;w)] \\
-        &= \circ{\bff{Q}}(s,a;w) \\
-    w^\top\bff{Q}^\pi(s,a;w) &= ...    
-\end{align}
-
-So say that the value of the policy by taking the maimum from value estimates, will achieve the value estimates. We've been handwavy around empirical distriubtion vs actual transition distribution. But basically the argument is inductive, and holds trivially for leaf nodes.
-
-
-
-
-
-
-% Chebyshev scalarisation proof
-% Assumes standard amsmath / amssymb / amsthm setup.
- 
-\begin{prop}
-    Let $u(w, x, z) = \min_{i} w_i \lvert x_i - z_i \rvert$ denote the Chebyshev
-    scalarisation, and consider the vectors
-    \[
-      a = (10, 0), \quad b = c = (1, 1), \quad d = (0, 10),
-    \]
-    together with a reference point $z \in \mathbb{R}^2$ satisfying $z_i < \min\{a_i, b_i, c_i, d_i\}$
-    componentwise. Let $w = (w_1, w_2)$ be any weight vector with $w_1, w_2 > 0$ and
-    $w_1 + w_2 = 1$. Then
-    \[
-      u(w, b, z) > u(w, a, z) \quad \text{or} \quad u(w, c, z) > u(w, d, z).
-    \]
-\end{prop}
-     
-    \begin{proof}
-    The componentwise inequality $z_i < \min\{a_i, b_i, c_i, d_i\}$ permits the absolute
-    values to be dropped, so that
-    \[
-      u(w, x, z) = \min_{i} w_i (x_i - z_i)
-    \]
-    for each of $x \in \{a, b, c, d\}$. The shifted coordinates
-    \[
-      \alpha_i = a_i - z_i, \qquad
-      \beta_i  = b_i - z_i = c_i - z_i, \qquad
-      \delta_i = d_i - z_i
-    \]
-    are therefore all strictly positive. From $z_1 < 0$ and $z_2 < 0$ (which follow from
-    $z < d$ and $z < a$ respectively), the following strict inequalities are obtained:
-    \begin{equation}\label{eq:key-ineqs}
-      \alpha_2 = -z_2 < 1 - z_2 = \beta_2,
-      \qquad
-      \delta_1 = -z_1 < 1 - z_1 = \beta_1.
-    \end{equation}
-    Since $b = c$, the equality $u(w, b, z) = u(w, c, z)$ holds throughout.
-     
-    Suppose, for contradiction, that both disjuncts fail, i.e.
-    \begin{align}
-      \min(w_1 \alpha_1,\, w_2 \alpha_2) &\geq \min(w_1 \beta_1,\, w_2 \beta_2), \label{eq:A} \\
-      \min(w_1 \delta_1,\, w_2 \delta_2) &\geq \min(w_1 \beta_1,\, w_2 \beta_2). \label{eq:D}
-    \end{align}
-     
-    From \eqref{eq:A}, the left-hand side is bounded above by $w_2 \alpha_2$, so
-    \[
-      w_2 \alpha_2 \;\geq\; \min(w_1 \beta_1,\, w_2 \beta_2).
-    \]
-    By \eqref{eq:key-ineqs} we have $w_2 \alpha_2 < w_2 \beta_2$, whence the minimum on
-    the right cannot equal $w_2 \beta_2$. It follows that
-    \begin{equation}\label{eq:from-A}
-      \min(w_1 \beta_1,\, w_2 \beta_2) = w_1 \beta_1, \qquad \text{so} \qquad w_1 \beta_1 \leq w_2 \beta_2.
-    \end{equation}
-     
-    By the analogous argument applied to \eqref{eq:D}, using $w_1 \delta_1 < w_1 \beta_1$,
-    \begin{equation}\label{eq:from-D}
-      \min(w_1 \beta_1,\, w_2 \beta_2) = w_2 \beta_2, \qquad \text{so} \qquad w_2 \beta_2 \leq w_1 \beta_1.
-    \end{equation}
-     
-    Combining \eqref{eq:from-A} and \eqref{eq:from-D} yields $w_1 \beta_1 = w_2 \beta_2$.
-    Substituting back into \eqref{eq:A} gives $w_2 \alpha_2 \geq w_1 \beta_1 = w_2 \beta_2$,
-    i.e.\ $\alpha_2 \geq \beta_2$, contradicting \eqref{eq:key-ineqs}.
-     
-    The assumption that both disjuncts fail is therefore untenable, and at least one of
-    $u(w, b, z) > u(w, a, z)$ or $u(w, c, z) > u(w, d, z)$ must hold.
-    \end{proof}
-     
-    \begin{remark}
-    The argument relies only on the strict inequalities $a_2 < b_2$ and $d_1 < c_1$
-    (together with $b = c$). Consequently the proposition generalises: whenever a common
-    point $b = c$ strictly dominates $a$ in one coordinate and $d$ in the other, no
-    single Chebyshev weight vector can simultaneously render both $a$ preferable to $b$
-    and $d$ preferable to $c$.
-    \end{remark}
 
 
 
@@ -1594,13 +1379,31 @@ So say that the value of the policy by taking the maimum from value estimates, w
 \subsection{Convergence of CHMCTS}
 \label{sec:5-6-3-convergence_of_chmcts}
 
-    1. Preamble - say not going to actually prove things
-    2. Quote CHVI theorem
-    3. Define optimal CHVS (or check that it was defined in Ch2)
-    4. CHMCTS values converge to optimal CHVS (proof = it would contradict CHVI theorem)
-    6. General UCB picks all actions inf often
-    5. Just give an example translation from DENTS results to CHMCTS results
-    7. CHUCT converges
+
+    This section outlines how the convergence of CHMCTS can be proven. First, if all states are visited infinitely often, then by the convergence of Convex Hull Value Iteration \cite{chvi} the convex hull value sets converge to the convex coverage sets. 
+
+    \begin{theorem}
+        For any MOMDP $\bfcl{M}$, if $N(s)\rap\infty$ and $N(s,a)\rap\infty$ for all $s\in\cl{S}$ and $a\in\cl{A}$, then the convex hull value sets $\Valg(s)\rap\bfcl{V}^*_u(s)$ and $\Qalg(s,a)\rap\bfcl{Q}^*_u(s,a)$ for all $s\in\cl{S}$ and $a\in\cl{A}$, where $\bfcl{V}^*_u(s)$ and $\bfcl{Q}^*_u(s,a)$ are the optimal value sets for the linear utility function $u$.
+    \end{theorem}
+    \begin{proofoutline}
+        Follows from the convergence of Convex Hull Value Iteration \cite{chvi}.
+    \end{proofoutline}
+
+    By Lemma \ref{lem:inf_often_action_select} it then follows that for CH-BTS that the convex hull value sets converge to the optimal value sets. Lemma \ref{lem:inf_often_action_select_uct} is the corresponding lemma for UCT-based policies:
+
+    \begin{lemma} 
+        \label{lem:inf_often_action_select_uct}
+        Let $\rho^m$ be an arbitrary policy and consider the following search policy used on the $m$th round of a bandit problem:
+        \begin{align} 
+            \pi^m(\bff{w}) = \argmax_{a\in\cl{A}} \dot{Q}(a) + b \sqrt{\frac{\log(m)}{M^m(a)}},
+        \end{align}
+        where $b > 0$ is a bias parameter, $M^m(a)$ is the number of times $a$ was selected in the first $m$ rounds, and $\dot{Q}$ is an arbitrary function with $\dot{Q}(a) \leq Q_{\max}$ for all $a\in\cl{A}$. Then $M^m(a)\rightarrow\infty$ as $m\rightarrow\infty$ for all $a\in\cl{A}$.
+    \end{lemma}
+    \begin{proofoutline}
+        By contradiction: if $M^m(a)$ remained bounded while every other action's count grew, the $b\sqrt{\log(m)/M^m(a)}$ term would diverge and force $a$ to be selected, contradicting boundedness.
+    \end{proofoutline}
+
+    Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} it then follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} that the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear} it follows that for any CHMCTS algorithm $\alg$ that $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$.
 
 
 
@@ -1639,27 +1442,62 @@ So say that the value of the policy by taking the maimum from value estimates, w
 \section{Summary}
 \label{sec:5-7-summary}
 
-    \begin{itemize}
-        \item This chapter introduced Contextual Zooming for Trees (CZT), a contextual multi-armed bandit algorithm that is used for decision making in multi-objective settings.
-        \item The chapter also introduced Convex Hull Monte Carlo Tree Search (CHMCTS), which generalises the prior work in multi-objective MCTS to handle stochastic environments by using backups over Convex Hull Value Sets.
-        \item The chapter also discussed the theoretical properties of the CZT and CHMCTS algorithms.
-    \end{itemize}
+    This chapter extended the MCTS framework to the 
+    multi-objective decision support scenario with linear 
+    utilities, introducing two approaches for contextual 
+    planning in MOMDPs.
 
-    New Ch5 plan:
-    \begin{itemize} 
-        \item Conclusion, wrap up, motivate move to simplex maps (convex hull slow) and weight space (entropy)
-    \end{itemize}
+    The consistent action selection problem was identified 
+    as a fundamental challenge in MOMCTS (Section 
+    \ref{sec:5-1-intro}): actions taken within a trial 
+    should be consistent with each other (or all actions consistent with a single weight vector), 
+    otherwise the search policy optimises for no 
+    particular objective. Contextual tree search was 
+    proposed as a solution, where a weight vector 
+    $\bff{w}$ is sampled at the start of each trial and 
+    used to guide all subsequent action selections. It 
+    was also shown (Theorem \ref{thm:per-step-linear}) 
+    that locally optimal action selection yields globally 
+    optimal policies if and only if the utility function 
+    is linear, confirming that the assumption of linear utility is 
+    necessary for a MOMCTS algorithm to guarantee 
+    convergence, at least for stochastic environments.
 
-    future work includes using the biasing terms from Ch4 in these algorithms too, currently result essentially set the psuedo visits to 0. 
+    \textit{Contextual Zooming for Trees} (CZT) was 
+    introduced (Section \ref{sec:5-2-czt}) as a natural 
+    contextual analogue of UCT, applying the Contextual 
+    Zooming algorithm at each decision node. 
+    \textit{Convex Hull MCTS} (CHMCTS) was introduced 
+    (Section \ref{sec:5-3-chmcts}) as a generalisation 
+    of prior MOMCTS work to stochastic environments, 
+    maintaining convex hull value sets at each node and 
+    updating them via convex hull backups. The prior 
+    MOMCTS algorithms of Chapter \ref{ch:3-relatedwork} 
+    were recovered as special cases of the CHMCTS 
+    framework by substituting appropriate 
+    context-independent search policies.
 
-    future work includes using more efficient weight space data structure (value curves) instead of convex hulls
+    Empirically, CHMCTS algorithms generally outperformed 
+    CZT on deterministic and near-deterministic 
+    environments, where the convex hull value sets 
+    provide an accurate representation of achievable 
+    returns. However, in stochastic environments the 
+    computational cost of the convex hull backups grows 
+    rapidly, reducing the number of trials that can be 
+    run within a fixed time budget and limiting 
+    performance. CZT avoids this issue but exhibits the 
+    exploitation bias of UCT-style algorithms, converging 
+    to locally optimal solutions.
 
-
-
-
-
-    From Van Moffaert paper: %https://jmlr.org/papers/volume15/vanmoffaert14a/vanmoffaert14a.pdf
-    Lizotte et al. (2010) reduce the asymptotic space and time complexity of the bootstrapping rule by simultaneously learning several value functions corresponding to different weights and by calculating their piecewise linear spline representation. Recently, they validated their work on clinical trial data for three objectives, although the practical possibilities for higher dimensional spaces are not straightforward (Lizotte et al., 2012).
+    Two limitations of the convex hull approach motivate 
+    the work of Chapter \ref{ch:6-simplexmaps}. First, 
+    convex hull value sets become computationally expensive in stochastic 
+    environments, suggesting that a heirarchical  
+    representation would may more scalable. Second, 
+    convex hull value sets do not naturally support entropy-based exploration, making it difficult to utilise entropy as an exploration bonus. Both 
+    limitations are addressed by the simplex map 
+    approach introduced in Chapter 
+    \ref{ch:6-simplexmaps}.
 
 
 
