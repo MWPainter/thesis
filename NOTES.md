@@ -180,6 +180,10 @@ Figure 5.4 - CHMCTS gym results
     - **ANSWER**: bug. was trying to use optimistic heuristic like in ch4. so roughly hypervolumes are shifted.
     - **TODO**: re-run all Ch5+6 experiments (involving CZT)
 
+Figure 5.5 - CZT dst results
+- **QUESTION**: why does EUM dip in CZT?
+    - **ANSWER**: same as fig 5.4 bug, optimistic heuristics
+
 Figure 5.4 - CHMCTS gym results
 Figure 5.5 - CHMCTS dst results
 Figure 5.7 - CHMCTS scalability results

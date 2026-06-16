@@ -7,16 +7,16 @@
    viewBox="0 0 45.726733 40.501626"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (1:1.4.3+202512261034+0d15f75042)"
+   inkscape:version="1.4.4 (1:1.4.4+202605061432+dcaf3e7d9e)"
    sodipodi:docname="push.svg"
-   inkscape:export-filename="push.pdf"
+   inkscape:export-filename="push.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:ns18="http://www.iki.fi/pav/software/textext/">
+   xmlns:ns39="http://www.iki.fi/pav/software/textext/">
   <sodipodi:namedview
      id="namedview1"
      pagecolor="#505050"
@@ -29,7 +29,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="7.3040768"
-     inkscape:cx="220.15103"
+     inkscape:cx="220.28794"
      inkscape:cy="74.547409"
      inkscape:window-width="3840"
      inkscape:window-height="2096"
@@ -199,16 +199,16 @@
      transform="translate(-34.641343,-42.073933)">
     <g
        transform="matrix(0.39178217,0,0,0.39178217,162.368,67.994549)"
-       ns18:version="1.10.2"
-       ns18:texconverter="pdflatex"
-       ns18:pdfconverter="inkscape"
-       ns18:text="$\\begin{pmatrix} 4 \\\\ 1 \\end{pmatrix}$\n\n$\\begin{pmatrix} 3 \\\\ 3 \\end{pmatrix}$\n\n$\\begin{pmatrix} 1 \\\\ 4 \\end{pmatrix}$\n\n4\n\n3\n\n1\n\n0\n\n$w_1$"
-       ns18:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns18:scale="1.6"
-       ns18:alignment="middle center"
-       ns18:stroke-to-path="0"
-       ns18:inkscapeversion="1.4.3"
-       ns18:jacobian_sqrt="0.564445"
+       ns39:version="1.10.2"
+       ns39:texconverter="pdflatex"
+       ns39:pdfconverter="inkscape"
+       ns39:text="$\\begin{pmatrix} 4 \\\\ 1 \\end{pmatrix}$\n\n$\\begin{pmatrix} 3 \\\\ 3 \\end{pmatrix}$\n\n$\\begin{pmatrix} 1 \\\\ 4 \\end{pmatrix}$\n\n4\n\n3\n\n1\n\n0\n\n$w_1$"
+       ns39:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns39:scale="1.6"
+       ns39:alignment="middle center"
+       ns39:stroke-to-path="0"
+       ns39:inkscapeversion="1.4.3"
+       ns39:jacobian_sqrt="0.564445"
        id="g22">
       <defs
          id="id-a18d6859-fbe0-4e92-8b36-bef6939d5791">
