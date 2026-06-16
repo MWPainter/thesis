@@ -177,7 +177,7 @@ Section 5.6
 
 Figure 5.4 - CHMCTS gym results
 - **QUESTION**: why does hypervolume go down in Fig 5.4(b) / is so large in Fig 5.4(d)
-    - **ANSWER**: bug. wasn't updating averages correctly, the line multiplying by $n-1/n$ got deleted at some point
+    - **ANSWER**: bug. was trying to use optimistic heuristic like in ch4. so roughly hypervolumes are shifted.
     - **TODO**: re-run all Ch5+6 experiments (involving CZT)
 
 Figure 5.4 - CHMCTS gym results
