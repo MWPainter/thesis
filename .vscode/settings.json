@@ -47,6 +47,13 @@
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.synctex.afterBuild.enabled": true,
 
+  // The 'mathematic.vscode-latex' extension runs chktex on every edit, and
+  // TeX Live 2024's global chktexrc has one rule (line 247) written with PCRE
+  // lookaheads but not tagged 'PCRE:'. Our chktex is a POSIX-regex build, so it
+  // fails to compile that rule and pops up a warning. LaTeX Workshop already
+  // covers building/preview, so its linter is just noise here.
+  "latex.linter.enabled": false,
+
   // ----- Spell checker: English (UK) -----
   "cSpell.language": "en-GB",
   "cSpell.enabled": true,
