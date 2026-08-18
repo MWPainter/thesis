@@ -14,6 +14,22 @@ sudo apt-get install -y texlive texlive-latex-extra texlive-science texlive-font
 - `texlive-fonts-extra`: provides `bbm.sty` (indicator function `\one`). Skip if you remove `\usepackage{bbm}`.
 - Optional, for latexmk recipe: `sudo apt-get install -y latexmk`
 
+### macOS
+
+Install MacTeX, which is the full TeX Live distribution and already includes everything above (`bbm.sty`, `latexmk`, `biber`):
+
+```bash
+brew install --cask mactex
+```
+
+Binaries land in `/Library/TeX/texbin` (symlinked to the real `/usr/local/texlive/<year>/bin/...`), which the installer adds to `PATH`. Verify with:
+
+```bash
+which pdflatex bibtex latexmk && kpsewhich bbm.sty
+```
+
+`brew install --cask mactex-no-gui` is the same TeX without the GUI apps (TeXShop, BibDesk) if you only build from the editor/terminal.
+
 ---
 
 ## 2. One-off fix in this repo: babel in `ociamthesis.cls`
@@ -184,7 +200,7 @@ latexmk -pdf -synctex=1 -interaction=nonstopmode -file-line-error Oxford_Thesis.
   grep -oE "(Reference|Citation) \`[^']+'" Oxford_Thesis.log | sort -u
   ```
   then check each with `grep -r "label{thelabel}" text/`.
-- **Popup: `chktex: WARNING -- Compilation of regular expression \[(?!...` failed`** — not your document. TeX Live 2024's global `chktexrc` (`/usr/local/texlive/2024/texmf-dist/chktex/chktexrc`, line 247) has one rule written with PCRE lookaheads but missing the `PCRE:` prefix that the neighbouring rules use; this `chktex` build is `Compiled with POSIX extended regex support`, so that single rule fails to compile and everything else still runs. The popup comes from the **`mathematic.vscode-latex`** extension, which lints on every edit (`latex.linter.enabled` defaults to `true`); LaTeX Workshop's own chktex linter is off by default. Fixes, in order of preference:
+- **Popup: `chktex: WARNING -- Compilation of regular expression \[(?!...` failed`** — not your document. The global `chktexrc` (`/usr/local/texlive/<year>/texmf-dist/chktex/chktexrc`, around line 245) has one rule written with PCRE lookaheads but missing the `PCRE:` prefix that the neighbouring rules use; `chktex` is `Compiled with POSIX extended regex support`, so that single rule fails to compile and everything else still runs. Still unfixed upstream as of TeX Live 2025. The popup comes from the **`mathematic.vscode-latex`** extension, which lints on every edit (`latex.linter.enabled` defaults to `true`); LaTeX Workshop's own chktex linter is off by default. Fixes, in order of preference:
   1. `"latex.linter.enabled": false` in `.vscode/settings.json` — already applied here.
   2. Uninstall the redundant extension: `code --uninstall-extension mathematic.vscode-latex` (LaTeX Workshop covers build + preview on its own; Cursor never had this extension, which is why the popup is VS Code-only).
   3. Keep linting but fix the rule — add the `PCRE:` prefix to line 247 of the global `chktexrc` (needs `sudo`, and a `tlmgr update` will revert it), or run chktex with `-g0` to skip the global rc entirely.
@@ -194,7 +210,7 @@ latexmk -pdf -synctex=1 -interaction=nonstopmode -file-line-error Oxford_Thesis.
 
 ## Checklist (replicate on desktop)
 
-- [x] Run the `apt-get` commands (step 1). *(This machine: TeX Live 2024 in `/usr/local/texlive/2024`, installed directly rather than via apt — `pdflatex`, `bibtex` and `latexmk` all on `PATH`.)*
+- [x] Run the `apt-get` commands (step 1). *(Linux machine: TeX Live 2024 in `/usr/local/texlive/2024`, installed directly rather than via apt — `pdflatex`, `bibtex` and `latexmk` all on `PATH`. macOS machine: MacTeX / TeX Live 2025 in `/usr/local/texlive/2025`, on `PATH` via `/Library/TeX/texbin`.)*
 - [x] In `ociamthesis.cls`, change babel to `[greek,english]` (step 2).
 - [x] Install the three extensions (step 3).
 - [x] Add `.vscode/settings.json` (step 4).

@@ -177,7 +177,7 @@
 \subsection{Common Hyperparameters Reference}
 \label{appsec:4:hyperparams}
 
-    The following parameters were used by all algorithms considered in section \cite{sec:4-4-results}:
+    The following parameters were used by all algorithms considered in section \ref{sec:4-4-results}:
     \begin{itemize}
         \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
         \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
@@ -202,7 +202,7 @@
     \begin{align}
         \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
         \beta(x) &= \begin{cases}
-            \beta_c - \frac{\beta_c}{\betathresh}x & \text{if } x \leq \betathresh, \\
+            \beta_c \left(1 - \frac{x}{\betathresh}\right) & \text{if } x \leq \betathresh, \\
             0 & \text{otherwise.}
         \end{cases}
     \end{align}
@@ -315,9 +315,11 @@
         \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
     \end{itemize}
 
-    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. 
+    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. 
     
-    For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
+    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of} \thtspp\ewe \mccorrect{used in this thesis.}
+    
+    Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
     \begin{table}[]
         \centering
@@ -343,7 +345,11 @@
 
     To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
 
-    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively.
+    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively. 
+
+    \begin{mccorrection}
+    The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $1.00\times 10^{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
+    \end{mccorrection}
 
     %
     % DeterministicGridWorld
@@ -384,6 +390,7 @@
                     & $3.36\times10^{-4}$ & $10^{12}$ \\
             \end{tabular}
             \caption{Boltzmann-based search algorithms.}
+            \label{table:gridworld_params:b}
         \end{subtable}
     
         \caption[Hyperparameters for DeterministicGridWorld experiments.]{Hyperparameters used for  DeterministicGridWorld experiments. Empty cells indicate the parameter is not used by that algorithm.}
@@ -558,9 +565,9 @@
 
 
 
-
+\clearpage
 \section{Additional Details for Go Experiments} 
-\label{appsec:go}
+\label{appsec:4:go}
 
     These experiments were run with \mctsmode\ewe turned on.
 

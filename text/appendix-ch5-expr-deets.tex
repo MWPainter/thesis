@@ -23,9 +23,6 @@
 \chapter{\label{app:expr-deets-ch5}Additional Experimental Details for Chapters 5 and 6}
 
 
-    \todo{FrozenLake to FrozenLake etc}
-
-
     This appendix gives additional details on the hyperparameters used for the experiments in \ref{sec:5-5-results} and \ref{sec:6-4-results} and the optimisation process used to select them. Organised as follows:
     \begin{itemize}
         \item Section \ref{appsec:5:hyperparams} gives a list of shared and algorithm specific hyperparameters used for the experiments;
@@ -36,7 +33,7 @@
 \section{Common Hyperparameters Reference}
 \label{appsec:5:hyperparams}
 
-    The following parameters were used by all algorithms considered in section \todo{ref gridworlds results}:
+    The following parameters were used by all algorithms considered in Section \todo{ref gridworlds results}:
     \begin{itemize}
         \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
         \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
@@ -70,6 +67,17 @@
 
     The temperature and entropy weighting functions take the same form as in Section \ref{appsec:4:hyperparams}.
 
+
+
+
+
+\section{Hyperparameter Optimisation}
+\label{appsec:5:hypersearch}
+
+    \todo{Reference the appendix B for discussion on bayesopt, and the form of alpha and beta etc}
+
+    \todo{Comment similar to appendix B on the parameters that were hardcoded and shared across all algorithms, and absorb the simplex maps parameters (below)}
+
     Hyperparameters for simplex maps were set to:
     \begin{itemize}
         \item $\pushradius=10$,
@@ -77,13 +85,6 @@
         \item $\splitmindelta=0$,
         \item $\splitminvis=10$.
     \end{itemize}
-
-
-
-
-
-\section{Hyperparameter Optimisation}
-\label{appsec:5:hypersearch}
 
     The selected parameters from hyperparamter optimisation are given in Table \ref{table:hyperparams_mogym}.
 
