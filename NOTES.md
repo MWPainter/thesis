@@ -193,7 +193,7 @@ Generally any figure with CHVI in it
     - **ANSWER**: yes its in the core CH implementation
 
 Theorem 5.5.1. - MOMCTS iff linear utility
-- **TYPO**: multiple, add a * to $\pi_{local}$, and properly define the optimal policy $\pi^{\bff{w}}_u$, probably add a * in that too
+- **TYPO**: multiple, add a * to $\pi_{local}$, and properly define the optimal policy $\pi^{\mathbf{w}}_u$, probably add a * in that too
 - **TYPO** conditional MOMDP should be at the start
 
 
