@@ -462,18 +462,26 @@
         The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$.
     \end{defn}
 
-    The \textit{optimal policy} is the policy that maximises the objective function $J$, and can be shown to be deterministic \cite{kolobov}:
+    \begin{mccorrection}
+    An \textit{optimal policy} is any policy that maximises the objective function $J$:
     \begin{defn}
         \label{def:2:opt_policy}
-        The \textnormal{optimal (standard) policy} $\pi^*$ is the policy maximising the standard objective function:
+        An \textnormal{optimal (standard) policy} $\pi^*$ is any policy maximising the standard objective function:
         \begin{align}
-            \pi^* = \argmax_\pi J(\pi) \label{eq:2:opt_policy_def}
+            \pi^* = \argmax_\pi J(\pi). \label{eq:2:opt_policy_def}
         \end{align}
-        or equivalently, the optimal standard policy can be expressed in terms of the optimal Q-value function:
+        Additionally, there always exists a deterministic optimal (standard) policy, which can be expressed in terms of the optimal Q-value function \cite{kolobov}:
         \begin{align}
-            \pi^*(s) = \argmax_a Q^*(s,a). \label{eq:2:opt_policy_from_opt_q_value}
+            \pi^*(s;t) = \argmax_a Q^*(s,a;t). \label{eq:2:opt_policy_from_opt_q_value}
         \end{align}
     \end{defn}
+
+    To simplify the notation used for theory in this thesis, it is assumed that there is a \textit{unique optimal policy} for each MDP considered:
+    \begin{assumption}
+        \label{ass:2:unique_optimal_policy} 
+        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not a necessary assumption, and is only made to simplify the theoretical analysis in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\cdots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. This assumption is made purely to avoid unneccessary complexity in the proofs in this thesis. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
+    \end{assumption}
+    \end{mccorrection}
 
     It can be shown that the optimal (Q-)value functions satisfy the \textit{Bellman equations} \cite{dp,kolobov}:
     \begin{align}
@@ -652,7 +660,14 @@
 \label{sec:2-4-1-notation}
     To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
-    Specifically, this allows the notation for value functions to avoid explicitly writing the timestep parameter, so that $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
+    \begin{assumption}
+        \begin{mccorrection}
+        \label{ass:2:unique_state_assumption}
+        The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a single unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This assumption is not a necessary one, is purely to simplify notation in this thesis, and any results discussed in this thesis generalise to settings where this assumption does not hold. Additionally, the environments used in most of the empirical experiments in this thesis do not satisfy this assumption.
+        \end{mccorrection}
+
+        Specifically, this assumption allows the notation for value functions \mccorrect{and policies} to avoid explicitly writing the timestep parameter. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
+    \end{assumption}
 
     \begin{figure}
         \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
@@ -734,7 +749,7 @@
         \label{fig:2:transposition_table_example}
     \end{figure}
 
-    If the unique state assumption (Section \ref{sec:2-4-1-notation}) is set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
+    If the unique state assumption (Assumption \ref{ass:2:unique_state_assumption}) is temporarily set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
 
     Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} illustrates the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
 
@@ -1231,7 +1246,7 @@ A convex coverage set may contain redundant policies and is not necessarily mini
 
 \begin{figure}
     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(CH(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $MCCS(\Pi')$, so form the set of values $\valset(MCCS(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a} \cprune\ewe \mccorrect{operation on $\valset(\Pi')$} (Equation (\ref{eq:2:cprune_def})); (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
+    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(CH(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $MCCS(\Pi')$, so form the set of values $\valset(MCCS(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
     \label{fig:2:convex_hull_geometry} 
 \end{figure}
 

@@ -60,10 +60,14 @@
     \end{figure}
 
     This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a secondary objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
-    
-    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the objective function rather than used as a constraint to remove ambiguity between multiple optimal policies, as in inverse reinforcement learning \cite{max_ent_irl,max_ent_irl_thesis}. Whilst the maximum entropy objective yields a unique optimal policy, it is not guaranteed to align with the standard objective. This chapter demonstrates that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, which in practice can negate the benefit of entropy-based exploration.
 
-    This motivates the investigation of \entropyq\ewe in this chapter, and lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    \begin{mccorrection}
+    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the predeceeding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
+
+    While the maximum entropy objective (Definition \ref{def:2:soft_rl_obj_fn}) yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective (Definition \ref{def:2:rl_obj_fn}) for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it further demonstrates that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    \end{mccorrection}
+    
+
 
     The remainder of this chapter is organised as follows:
     \begin{itemize}
@@ -993,7 +997,7 @@
     The entropy trap problem can therefore be made arbitrarily difficult for UCT by increasing $D$, while the misalignment threshold can be made arbitrarily small by increasing $E$. Theorem \ref{thrm:ments_bad_mdp} uses the case when $D=E$ to show that MENTS must either suffer from misalignment or require an exponential number of trials with respect to the size of the state space.
     %
     \begin{restatable}{theorem}{thrmMENTSbadmdp} \label{thrm:ments_bad_mdp}
-        For any value of $\alphaments$, either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy.
+        There exists an MDP, for any value of $\alphaments$ that either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy.
 
         More precisely, after $n$ trials of MENTS: $\Pr(\psiments\neq \pi^*) > \frac{1}{2}$ if $n\leq 2^{D-1}$; and either $\mathbb{E}\left[\sreg(s_0,\psiments)\right]\not\rightarrow 0$ or there exist constants $c,k>0$ such that $\mathbb{E}\left[\sreg(s_0,\psiments)\right] \geq c\left(1 - \frac{n}{k^{|\cl{S}|}}\right)$.
     \end{restatable}
@@ -1853,7 +1857,8 @@
 
     The following assumptions are made for this section, which do not affect the asymptotic behaviour of the algorithms but simplify the proofs and presentation:
     \begin{itemize}
-        \item the unique state assumption (Section \ref{sec:2-4-1-notation}) remains, $\mctsmode$ is set to false and $\graphmode$ is set to false;
+        \item \mccorrect{the unique optimal policy the unique state assumptions (Assumptions \mbox{\ref{ass:2:unique_optimal_policy}} and \mbox{\ref{ass:2:unique_state_assumption}}) remain};
+        \item $\mctsmode$ is set to false and $\graphmode$ is set to false;
         \item heuristic values are set to zero, $\Vinit(s)=0$ and $\Qinit(s,a)=0$ for all $s\in\cl{S}$ and $a\in\cl{A}$;
         \item the length of all trajectories and the planning horizon $H_{\thtspp}$ are equal to the horizon $H$ of the MDP;
         % \item $\cl{S}$ consists of the states reachable from the starting state $s_0$;
@@ -2072,7 +2077,7 @@
     \begin{figure}
         \centering
         \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-        \caption[Bounding the empirical transition probabilities to the true transition probabilities.]{Bounding the empirical transition probabilities to the true transition probabilities. The true cdf is shown as a solid black line, the empirical cdf is shown as a dashed green line, and a worst case error of $\varepsilon/2$, using Theorem \ref{thrm:2:dkw_inequality}, is shown in red. The probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ is also indicated to demonstrate how the constructed distribution gives Corollary \ref{cor:4:bound_transition_distribution}.}
+        \caption[Intuition behind bounding the empirical transition probabilities to the true transition probabilities.]{Intuition behind bounding the empirical transition probabilities to the true transition probabilities. \mccorrect{The proof of Corollary \mbox{\ref{cor:4:bound_transition_distribution}} constructs cdfs that can be used with Theorem \mbox{\ref{thrm:2:dkw_inequality}} (the DKW inequality). $g$ is a mapping from states to integers used by the construction. This figure depicts the cdf corresponding to the true transition probabilities (solid black line) and the cdf corresponding to the empirical transition probabilities (dashed green line) at the point $g(s_{t+1})$. It shows that if the two cdfs are within $\varepsilon$ of each other, then the probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ must be within $2\varepsilon$ of each other.}}
         \label{fig:dkw_diag}
     \end{figure}
     %
@@ -2085,11 +2090,43 @@
         %
         as $N^n(s_t,a_t)\rightarrow\infty$. Consequently $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)} \rap p(s_{t+1}|s_t,a_t)$ as $N^n(s_t,a_t)\rightarrow\infty$.
     \end{corollary}
-    \begin{proofoutline}
-        Consider the cumulative distribution function of the successor state distribution $p(s_{t+1}|s_t,a_t)$, using some arbitrary ordering over the successor states in $\suc{s_t}{a_t}$. The result follows by applying Theorem \ref{thrm:2:dkw_inequality} with $m=N^n(s_t,a_t)$.
-
-        To see why the bound involves $2\varepsilon$ rather than $\varepsilon$, consider Figure \ref{fig:dkw_diag}. Applying the DKW inequality bounds the error in the cumulative distribution function by $\varepsilon$ at every point. Since the probability mass of any single successor state corresponds to the difference between two CDF values, the errors at either side may accumulate, giving a worst-case error of $2\varepsilon$ in the empirical probability of any individual successor state.
-    \end{proofoutline}
+    %
+    \begin{mccorrection}
+        Figure \ref{fig:dkw_diag} provides the intuition behind how the DKW inequality leads to this corollary bounding the true and empirical transition probabilities, and where the $2\varepsilon$ term comes from.
+        %
+        \begin{proof}
+            Let $m=N^n(s_t,a_t)$ and let $g$ be an arbitrary bijection from $\cl{S}$ to \mbox{$\bb{N}_{\cl{S}}=\{1,2,3,\cdots,|\cl{S}|\}$}. Consider the following true and empirical probability mass functions for $i\in\bb{N}_{\cl{S}}$:
+            %
+            \begin{align}
+                f(i) &= p(g^{-1}(i)\ |\ s_t,a_t), \\
+                f_m(i) &= \frac{N^n(g^{-1}(i))}{m},
+            \end{align}
+            %
+            with corresponding cumulative distribution functions $F$ and $F_m$ respectively. For any $0<\delta<1$ it is true that $f(i)=F(i+\delta)-F(i-\delta)$ and $f_m(i)=F_m(i+\delta)-F_m(i-\delta)$ by construction, so by the triangle inequality:
+            %
+            \begin{align}
+                \left| f(i)-f_m(i) \right| \leq \left| F(i+\delta) - F_m(i+\delta) \right| + \left| F(i-\delta) - F_m(i-\delta) \right|,
+            \end{align}
+            %
+            Hence the following implication holds (depicted at one point in Figure \ref{fig:dkw_diag}):
+            %
+            \begin{align}
+                \sup_{i\in\bb{N}_{\cl{S}}} |F(i)-F_m(i)| \leq \varepsilon
+                    \implies \sup_{i\in\bb{N}_{\cl{S}}} |f(i)-f_m(i)| \leq 2\varepsilon.
+            \end{align}
+            %
+            Taking the contrapositive and using the DKW inequality (Theorem \ref{thrm:2:dkw_inequality}) then gives the result:
+            \begin{align}
+                & \Pr\left(
+                    \max_{s_{t+1}\in\text{Succ}(s_t,a_t)}
+                        \left| \frac{N^n(s_{t+1})}{N^n(s_t,a_t)} - p(s_{t+1}|s_t,a_t) \right| 
+                            > 2 \varepsilon \right) \\
+                    = & \Pr\left( \sup_{i\in\bb{N}_{\cl{S}}} |f(i)-f_m(i)| > 2\varepsilon \right) \\
+                    \leq & \Pr\left( \sup_{i\in\bb{N}_{\cl{S}}} |F(i)-F_m(i)| > \varepsilon \right) \\
+                    \leq & 2\exp\left(2\varepsilon^2m\right)
+            \end{align}
+        \end{proof}
+    \end{mccorrection}
 
 
 

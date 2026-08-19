@@ -317,7 +317,7 @@
 
     Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. 
     
-    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of} \thtspp\ewe \mccorrect{used in this thesis.}
+    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of \mbox{\thtspp} used in this thesis.}
     
     Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
