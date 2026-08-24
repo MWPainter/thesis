@@ -166,6 +166,8 @@ For context this is related to Figure (TODO), which are the plots of EUM and Hyp
 - CZT in the DST(10,0) environment (Figure TODO TODO) accidentally used an old (incorrect) version of the recommendation policy (Equation 5.14), where the maximum was taken over all of the balls rather than just the relevant balls. I have corrected and updated the data for this now
 
 
+TODO: check that how get convex hull from CZT and SM is explained
+
 Non-monotonic trends that need explaining:
 - 500 fruit tree - HV (all)
 - 520 resource gathering - HV (CZT)
@@ -188,6 +190,11 @@ Updated (page 148).
 > P163: correct x-axis on figure size to env size/width, not search time.  Also ensure Fig 6.10 is discussed in the text, and the non-monotic trends and fully explained.  (also applies to Fig 5.7 on page 138)
 
 - Updated x-axis to "Environment Size" rather than "Search Time" in Figs 5.7 and 6.10
+
+- Non monotonic because fixed time and problem complexity increases from left to right
+- Performance drops off in stochastic envs particularly when it becomes increasingly likely to leave the explored space of the tree
+- Less of an issue in CZT because it is far greedier, so has a very well explored, but very suboptimal value
+
 - TODO: explain non-monotonic trends in the text
 - TODO: update plots in doc
 
