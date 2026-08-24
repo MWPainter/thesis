@@ -1,50 +1,84 @@
 # Corrections Cover Letter
 
-Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each correction. I've tried to give references to easily look up the corresponding change, such as page numbers or figure numbers.
+Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each correction, particularly as some corrections needed to be applied consistently across the thesis. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
 
-## In Progress TODOs
 
-- Can you proof read the corrections that I've made throughout this thesis, and for any issues make suggestions that I can approve/deny please. Corrections are either contained in \mccorrect commands or \begin{mccorrection} ... \end{mccorrection} environments. Additionally, can you proof read the CORRECTIONS_COVER_LETTER.md. In both cases I care about correctness and grammar. Please restrict your comments and feedback to the cover letter and the corrections themselves, I can't edit arbitrary parts of the thesis anymore.
-- Check no \todo and \bd are left (search + delete macro)
-- Read through the corrections as given + check this doc consistent
-    - Quotes are as given in the word doc
-    - Check that page references are correct at the end (because might have moved due to further changes made later)
-        - ctrl-f "page" in this doc
-
-## Actual Cover Letter
 
 > Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
 
 - Appears twice in the abstract, updated in the first instance as suggested and left second instance to avoid redundancy in the same paragraph.
 - Additionally updated in three places in Chapter 1 (pages 3, 4 and 6), and in two places in Chapter 7 (pages 167 and 169)
-- TODO: CH2 NEEDS MORE CARE
-- TODO: CH4, add references to \label{def:2:rl_obj_fn} for standard objective and \label{def:2:soft_rl_obj_fn} for max entropy objective
+- In Chapters 2 and 4, added some additional references back to the formal definitions:
+    - page 35 - where MENTS is introduced
+    - page 60 - where misalignment is defined
+    - page 63 - where BTS is introduced as using the standard objective
+    - page 90 - where the maximum entropy objective is recalled in the parameter sensitivity discussion (page 90)
+
+
 
 > P2: Explain clearly the multi-objective setting, including what is known when, and how this interacts with on-line planning with MCTS methods. Consider using the unknown weights scenario instead of decision support as motivation.
 
-TODO
+I agree that using the unknown weights scenario provides a better motivation for the thesis, so I have made the following changes:
+- Added a new Section 1.4 to give the scope of the thesis, being more specific about the multi-objective setting (what is known in each phase of the unknown weights scenario) and how it interacts with on-line planning methods (planning from a known initial state, and reducing to single-objective planning once the weight vector is revealed).
+- Updated prose for using the unknown weights scenario instead:
+    - In the abstract (third paragraph)
+    - Section 1 introduction (page)
+    - Sec 1.1 (forward reference to the new Section 1.4)
+    - Sec 1.3 (Chapter 5 paragraph)
+    - Sec 2.6 (rewrote the introductory paragraph to define the unknown weights scenario and what is known in each of its phases, contrasting with the decision support scenario, and updated the figure caption)
+        - Need to update the figure
+    - Ch5 intro
+    - Sec 5.4.2 (see P132 below)
+    - Sec 5.6 (chapter summary)
+- Double checked for remaining uses by searching for "decision support"; the only remaining mention is in Section 2.6, where it is deliberately contrasted with the unknown weights scenario
+
+
+
 
 > P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilites are non-linear or better expressed as preference functions
 
-- TODO: refer to the theory in Ch5
-- TODO: discuss ESR criterion + refer to Shimons paper
-- TODO: discuss that in practise might work better still, but beyond scope of thesis
+Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it was lacking. I have made the following changes to address this:
+- Added an explicit Section 5.5.1 to discuss why the linear utility assumption is made and discuss adapting it to non-linear utilities
+- Updated Ch5 introduction for the changes made to Section 5.5 (page 114)
+- Added a comment and forward reference to Section 5.5 in the new scope section from correction above (final paragraph of Section 1.4)
 
 
 
 > P12: Explain which of these bounds is better and why. Give some intuition about simple regret bounds, what constitutes a good bound, etc.
 
+Added an couple sentences at the end of the section to explain (page 12).
 
-> P13: “States are sampled according to a transition distribution that depends only on the current state and current action being taken (the Markov assumption).”
+
+
+> P13: “States are sampled according to a transition distribution that depends **only** on the current state and current action being taken (the Markov assumption).”
+
+Updated (page 13).
+
 
 
 > P15: In a finite-horizon MDP, the policy needs to condition on the timestep (as do the value functions defined later).
 
-- TODO:we updated policy somewhere to use timestep too, carefully correct this in Ch 2
+Agreed, and corrected. Policies now condition on the timestep throughout Chapter 2, up to the point at which the timestep parameter is explicitly dropped:
+
+- Definition 2.2.5 now defines a policy conditioning on the timestep, and the corresponding notation is updated. The preceding paragraph is also updated to explicitly explain the conditioning.
+- Updated notation to correctly condition on the timestep throughout the chapter:
+    - Definition 2.2.6 (trajectory)
+    - Equation 2.32 (Shannon entropy)
+    - Definition 2.3.5 / Equation 2.33 (definition of a soft value)
+    - Definition 2.3.8 / Equation 2.39 (definition of the optimal soft policy)
+    - Definition 2.6.2 (multi-objective trajectory)
+    - Equation 2.84 (Extracting a policy from CHVI given a weight $\mathbf{w}$)
+- Made the unique state assumption more explicit in an assumption clause (Assumption 2.4.1), to highlight the explanation that this assumption is made to drop the timestep parameter for the remainder of the thesis (with the exception off Section 2.6)
+
 
 
 > P17: It’s confusing to include RL here. You’re just doing sample-based on-line planning.
 
+TODO: ACTUALLY WRITE THESE UPDATES
+The difference between planning and RL that I was working with is that planning the transition distribution is known whereas in RL it is unknown. To clarify I've made the following changes:
+- Updated title of Sections 2.3 and 2.3.1: "Reinforcement Learning" -> "Planning and Reinforcement Learning"
+- Minor changes to Section 2.3 to be consistent with updating the heading
+- Added Section 2.3.2 to clarify where MCTS sits within planning and RL, and to additionally clarify that  
 
 
 
@@ -61,9 +95,10 @@ Sorry I often use the case where each state has a unique optimal action to simpl
 
 
 
-
-
 > P39: discuss implications of assuming linear scalarisation
+
+TODO
+
 
 
 > P41: the MCCS or a MCCS?
@@ -108,19 +143,33 @@ When a policy is learned in maximum entropy inverse reinforcement learning the o
 
 > Again, be clear about the motivation here, and consider switching to unknown weights scenario.
 
-See P132 comment below.
+TODO: 
+
+
+
 
 > "P132: “It is worth noting that in multi-objective MCTS, the quality of the convex hull at the root node is the primary concern.” Why? This is a big unsupported claim"
-
-See P132 comment below.
-
+> 
+> and
+> 
 > P132: “A more efficient online approach is therefore to run the multi-objective tree search from the initial state, and subsequently follow a single-objective MCTS algorithm in the scalarised MDP with reward R(s,a; w) = w⊤R(s,a), where w is inferred from the choice made at the root node.” The choice may not disambiguate w, which is another reason why unknown weights would give a cleaner motivation. Also, explain why building an MCTS tree is a good way to use the offline planning budget, compared to just learning better prior policies and value functions that apply in any state. Finally, if this only makes sense assuming a deterministic initial state, that needs to be stated clearly up front.
 
-- TODO: changes in intro
-- TODO: changes in intro of Ch5
+- The new Section 1.4 addresses this comment up front: it states that planning is run from a known initial state, explains why the planning budget is spent building a search tree from that state (computation is concentrated on the states reachable from it), and switches to the unknown weights scenario, in which the weight vector is explicitly revealed after planning rather than inferred from the choice made at the root node.
+- Rewrote the opening of Section 5.4.2 (page 132) accordingly: the root node's convex hull determines the achievable utility once the weight vector is revealed, after which the problem reduces to single-objective planning with scalarised rewards, and deeper parts of the multi-objective tree serve to improve the root value estimates.
 
 
 > P134: Why is improvement not monotonic? (later plots as well)
+
+For context this is related to Figure (TODO), which are the plots of EUM and Hypervolume for the DST and Multi-Objective Gymnasium environments
+
+
+- CZT in the DST(10,0) environment (Figure TODO TODO) accidentally used an old (incorrect) version of the recommendation policy (Equation 5.14), where the maximum was taken over all of the balls rather than just the relevant balls. I have corrected and updated the data for this now
+
+
+Non-monotonic trends that need explaining:
+- 500 fruit tree - HV (all)
+- 520 resource gathering - HV (CZT)
+- 540 breakable bottles - HV (CZT)
 
 - TODO: update plots in doc
 - TODO: bug in how computed hypervolume for CZT algorithms
@@ -132,7 +181,7 @@ See P132 comment below.
 
 > P148: concave -> convex
 
-Updated.
+Updated (page 148).
 
 
 
@@ -155,12 +204,14 @@ I would like to apologise for the state that Appendix D was in at the time of su
 > Fix broken cross-refs - a search for ‘??’ found 10 of them.
 
 I believe that these were all in Appendix D, and I would like to apologise again that Appendix D was submitted in an unclean state. I double checked that no missing cross-refs and citations exist in the corrected thesis.
-- TODO: ctrl-f search for ?? to check fixed them all
 
 
 
 > BayesOpt is one of many possible parameter / hyper-parameter packages - say a bit more about why this was chosen (convenience of C++ implementation etc) and whether the parameter tuning generally made much of a difference. Also consider whether these are parameters or hyper-parameters (arguably these are just parameters).
 
 - Added a comment about why BayesOpt was used in Appendix B (page 183)
-- Added a paragraph discussing that the tuning does make a significant difference, and remarking that some parameters which have little effect on performance get set to somewhat arbitrary values due to the optimisation (pages 184+185)
-- TODO: Hyperparameter -> (Search) Parameter
+- Added a paragraph explaining that the tuning does make a significant difference, and remarking that some parameters which have little effect on performance get set to somewhat arbitrary values due to the optimisation (pages 184+185)
+- Agreed that hyperparameter is not the correct term, I have updated any instances of "hyperparameters" to either just "parameters" or the more specific "algorithm parameters". Because this appeared in many places, I wont list the location of all changes (although they are all marked as corrections in the pdf)
+    - I used "algorithm parameters" where the extra specificity is helpful, and just "parameter" where the more specific term would read awkwardly, or where the context already makes it clear
+    - Double checked all instances are updated by searching for "hyperparameter" and "hyper-parameter" and confirming no mentions remain
+    - All corrected instances can be found by searching for "parameter"
