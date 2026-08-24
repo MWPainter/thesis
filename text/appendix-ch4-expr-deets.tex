@@ -26,8 +26,8 @@
     This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
     \begin{itemize}
         \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in Section \ref{sec:4-4-results};
-        \item Section \ref{appsec:4:hps} gives details on the hyperparameters used for the experiments in Section \ref{sec:4-4-results} and the optimisation process used to select them;
-        \item Section \ref{appsec:4:go} gives additional details on the Go experiments, including hyperparameter selection;
+        \item Section \ref{appsec:4:hps} gives details on the \mccorrect{algorithm parameters} used for the experiments in Section \ref{sec:4-4-results} and the optimisation process used to select them;
+        \item Section \ref{appsec:4:go} gives additional details on the Go experiments, including \mccorrect{algorithm parameter} selection;
     \end{itemize}
 
 
@@ -162,19 +162,22 @@
 
 
 
-
-\section{Hyperparameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments} 
+\begin{mccorrection}
+\section{Parameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments}
+\end{mccorrection} 
 \label{appsec:4:hps}
 
     This section is organised as follows:
     \begin{itemize}
-        \item Section \ref{appsec:4:hyperparams} gives a list of shared and algorithm-specific hyperparameters used for the experiments;
-        \item Section \ref{appsec:4:bias_term_integration} describes how the common hyperparameters are integrated into prior algorithms, using UCT as an example;
-        \item Section \ref{appsec:4:hypersearch} gives details on the hyperparameter optimisation and the final hyperparameters that were selected.
+        \item Section \ref{appsec:4:hyperparams} gives a list of shared and algorithm-specific \mccorrect{parameters} used for the experiments;
+        \item Section \ref{appsec:4:bias_term_integration} describes how the common \mccorrect{parameters} are integrated into prior algorithms, using UCT as an example;
+        \item Section \ref{appsec:4:hypersearch} gives details on the \mccorrect{parameter} optimisation and the final \mccorrect{algorithm parameters} that were selected.
     \end{itemize}
 
 
-\subsection{Common Hyperparameters Reference}
+\begin{mccorrection}
+\subsection{Common Algorithm Parameters Reference}
+\end{mccorrection}
 \label{appsec:4:hyperparams}
 
     The following parameters were used by all algorithms considered in section \ref{sec:4-4-results}:
@@ -198,7 +201,7 @@
         \item $\uctbudget$ - the search budget for UCT between each round of Sequential Halving in H-MCTS;
     \end{itemize}
 
-    To be compatible with hyperparameter optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar paramters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
+    To be compatible with \mccorrect{parameter} optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar paramters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
     \begin{align}
         \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
         \beta(x) &= \begin{cases}
@@ -210,7 +213,9 @@
     These functions are chosen so that the entropy weighting becomes negligible, and more specifically so that $\frac{\beta(x)}{\alpha(x)}$ tends to zero as $x$ tends to infinity.
 
 
-\subsection{Integration of Common Hyperparameters into Prior Algorithms}
+\begin{mccorrection}
+\subsection{Integration of Common Parameters into Prior Algorithms}
+\end{mccorrection}
 \label{appsec:4:bias_term_integration}
 
     Consider an algorithm with value estimates $\bar{V}(s)$ and $\bar{Q}(s,a)$. To use the $\Nq$ and $\normalisedq$ parameters, the biased Q-values $\Qnorm(s,a)$ used in the search policy are given by:
@@ -302,8 +307,9 @@
 
 
 
-
-\subsection{Hyperparameter Optimisation}
+\begin{mccorrection}
+\subsection{Parameter Optimisation}
+\end{mccorrection}
 \label{appsec:4:hypersearch}
 
     The parameters shared between all algorithms were set manually to the following values for all environments:
@@ -317,7 +323,7 @@
 
     Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. 
     
-    The remaining hyperparameters were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of \mbox{\thtspp} used in this thesis.}
+    The remaining \mccorrect{algorithm parameters} were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of \mbox{\thtspp} used in this thesis.}
     
     Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
@@ -332,23 +338,23 @@
             $\epsilon$      & $10^{-6}$     & $1$       & Logarithmic \\
             $\alpha$        & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\alpha_0$      & $10^{-5}$     & $10^2$    & Logarithmic \\
-            $\alphadecay$   & $10^{-6}$     & $10^2$    & Logarithmic \\
+            $\alphadecay$   & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\beta_c$       & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\betathresh$   & $10^{3}$      & $10^{12}$ & Logarithmic \\
             $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\uctbudget$    & $1$           & $10^5$    & Linear 
         \end{tabular}
-        \caption[The hyperparameter search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results})]{The hyperparameter search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
+        \caption[The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results})]{The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
     \end{table}
 
     Parameters were optimised using the 8x8 map for DeterministicGridWorld, the 4x4 map for FrozenLake (Figure \ref{appfig:fl_maps}) and the 8x8 map for Sailing with both wind directions.
 
     To evaluate the performance of a given set of parameter values, the algorithm was run for $50{,}000$ trials, and $1024$ trials used to evaluate the recommendation policy. At least $10$ runs were performed for each set of parameters, and runs were repeated until the standard deviation across the runs was less than $0.025$ for DeterministicGridWorld and FrozenLake, and less than $1.0$ for Sailing.
 
-    The selected hyperparameters for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively. 
+    The selected \mccorrect{algorithm parameters} for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively. 
 
     \begin{mccorrection}
-    The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $1.00\times 10^{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
+    The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters are varied and have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $1.00\times 10^{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
     \end{mccorrection}
 
     %
@@ -393,7 +399,7 @@
             \label{table:gridworld_params:b}
         \end{subtable}
     
-        \caption[Hyperparameters for DeterministicGridWorld experiments.]{Hyperparameters used for  DeterministicGridWorld experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \caption[\mccorrect{Algorithm parameters} for DeterministicGridWorld experiments.]{\mccorrect{Algorithm parameters} used for  DeterministicGridWorld experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:gridworld_params}
     \end{table}
 
@@ -438,7 +444,7 @@
             \caption{Boltzmann-based search algorithms.}
         \end{subtable}
     
-        \caption[Hyperparameters for FrozenLake experiments.]{Hyperparameters used for  FrozenLake experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \caption[\mccorrect{Algorithm parameters} for FrozenLake experiments.]{\mccorrect{Algorithm parameters} used for  FrozenLake experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:frozenlake_params}
     \end{table}
 
@@ -484,7 +490,7 @@
             \caption{Boltzmann-based search algorithms.}
         \end{subtable}
     
-        \caption[Hyperparameters for Sailing(North) experiments.]{Hyperparameters used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \caption[\mccorrect{Algorithm parameters} for Sailing(North) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:sailing_north_params}
     \end{table}
 
@@ -530,7 +536,7 @@
             \caption{Boltzmann-based search algorithms.}
         \end{subtable}
 
-        \caption[Hyperparameters for Sailing(South-East) experiments.]{Hyperparameters used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
+        \caption[\mccorrect{Algorithm parameters} for Sailing(South-East) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:sailing_south_east_params}
     \end{table}
 
@@ -571,14 +577,14 @@
 
     These experiments were run with \mctsmode\ewe turned on.
 
-    Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round-robin tournament was used to select the hyperparameters. This section gives the results of the round-robin tournaments.
+    Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round-robin tournament was used to select the \mccorrect{algorithm parameters}. This section gives the results of the round-robin tournaments.
 
     For PUCT, the parameters used were copied from the reported values for Kata Go and Alpha Go Zero \cite{katago,alpha_go_zero}. 
 
     This section is organised as follows:
     \begin{itemize}
         \item Section \ref{appsec:go_ar_ments} outlines the implementation of the AR-MENTS, AR-RENTS and AR-TENTS algorithms;
-        \item Section \ref{appsec:round_robin} gives details on the round-robin tournament used to select the hyperparameters for Go experiments;
+        \item Section \ref{appsec:round_robin} gives details on the round-robin tournament used to select the \mccorrect{algorithm parameters} for Go experiments;
         \item Section \ref{appsec:go_ar_vs_bellman} gives results for matches between the Bellman and average return versions of each algorithm.
     \end{itemize}
 
@@ -596,7 +602,9 @@
 
 
 
-\subsection{Go Round Robin Hyperparameter Selection}
+\begin{mccorrection}
+\subsection{Go Round Robin Algorithm Parameter Selection}
+\end{mccorrection}
 \label{appsec:round_robin}
 
     The following parameters were tuned for the BTS, DENTS, MENTS, RENTS and TENTS algorithms:
@@ -627,7 +635,7 @@
                                     0.1          & 14-1 & 10-5 & 11-4 & - & 15-0   		\\
                                     0.03         & 13-2 & 5-10 & 8-7 & 13-2 &   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS.]{Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS. The value of 1.0 won all four of its matches so was selected. \label{tab:w001}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS.]{Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS. The value of 1.0 won all four of its matches so was selected. \label{tab:w001}}
     \end{table}
     
     \begin{table}[]
@@ -641,7 +649,7 @@
                                     0.1              & 15-0  & 11-4  & 9-6  & -     & 9-6  \\
                                     0.03              & 14-1  & 8-7  & 4-11  & 8-7  &   -   \\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS.]{Round robin hyperparameter selection for $\alpha_{\text{init}}$ for BTS. The value of 0.1 won all four of its matches so was selected. \label{tab:x001}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS.]{Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS. The value of 0.1 won all four of its matches so was selected. \label{tab:x001}}
     \end{table}
     
     
@@ -662,7 +670,7 @@
                                     2          & 15-0 & 12-3 & 12-3 & - & 10-5   		\\
                                     1         & 15-0 & 14-1 & 12-3 & 9-6 &   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for BTS.]{Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for BTS. The value of 2.0 won the most matches so was selected. \label{tab:w020}}
+        \caption[Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for BTS. The value of 2.0 won the most matches so was selected. \label{tab:w020}}
     \end{table}
     
     \begin{table}[]
@@ -676,7 +684,7 @@
                                     0.75          & 11-4 & 10-5 & 12-3 & - & 14-1   		\\
                                     0.5         & 11-4 & 13-2 & 9-6 & 7-8 &   -   	\\   
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS.]{Round robin hyperparameter selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS. The value of 1.0 won the most matches so was selected. \label{tab:x020}}
+        \caption[Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for AR-BTS. The value of 1.0 won the most matches so was selected. \label{tab:x020}}
     \end{table}
     
     
@@ -696,7 +704,7 @@
                                     0.003          & 13-2 & 9-6 & 11-4 & - & 11-4   		\\
                                     0.001         & 12-3 & 11-4 & 8-7 & 9-6 &   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\epsilon$ for BTS.]{Round robin hyperparameter selection for $\epsilon$ for BTS. The value of 0.003 won the most matches so was selected. \label{tab:w030}}
+        \caption[Round robin \mccorrect{parameter} selection for $\epsilon$ for BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon$ for BTS. The value of 0.003 won the most matches so was selected. \label{tab:w030}}
     \end{table}
     
     \begin{table}[]
@@ -710,7 +718,7 @@
                                     0.003          & 15-0 & 14-0 & 14-1 & - & 13-2   		\\
                                     0.001         & 14-1 & 14-1 & 14-1 & 15-0 &   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\epsilon$ for AR-BTS.]{Round robin hyperparameter selection for $\epsilon$ for AR-BTS. The value of 0.001 won the most matches so was selected. \label{tab:x030}}
+        \caption[Round robin \mccorrect{parameter} selection for $\epsilon$ for AR-BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon$ for AR-BTS. The value of 0.001 won the most matches so was selected. \label{tab:x030}}
     \end{table}
     
     
@@ -743,7 +751,7 @@
                                     0.1          &  4-11 		&   4-11		&   0-15		& -     	&  4-11 		\\
                                     0.03         &   	2-13	&  2-13 		&  0-15 		&   0-15		&   -   	\\      
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for MENTS.]{Round robin hyperparameter selection for $\alpha$ for MENTS. The value of 1.0 won the most matches so was selected. \label{tab:w040}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for MENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for MENTS. The value of 1.0 won the most matches so was selected. \label{tab:w040}}
     \end{table}
     
     \begin{table}[]
@@ -757,7 +765,7 @@
                                     0.1          &   15-0		&  9-6 		&  9-6 		& -     	&  15-0 		\\
                                     0.03         &   15-0		&  8-7 		&  9-6 		& 14-1  		&   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for AR-MENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-MENTS. The value of 0.3 won the most matches so was selected. \label{tab:x040}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for AR-MENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for AR-MENTS. The value of 0.3 won the most matches so was selected. \label{tab:x040}}
     \end{table}
     
     \begin{table}[]
@@ -771,7 +779,7 @@
                                     0.1          &   3-12		&  2-13 		& 1-14  		& -     	&  3-12 		\\
                                     0.03         &   3-12		&  0-15 		&  0-15 		&  0-15 		&   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for RENTS.]{Round robin hyperparameter selection for $\alpha$ for RENTS. The value of 1.0 won the most matches so was selected. \label{tab:w050}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for RENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for RENTS. The value of 1.0 won the most matches so was selected. \label{tab:w050}}
     \end{table}
     
     \begin{table}[]
@@ -785,7 +793,7 @@
                                     0.1          &  15-0 		&   10-5		&   13-2		& -     	&  15-0 		\\
                                     0.03         &  13-2 		&  13-2 		&  12-3 		&   	14-1	&   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for AR-RENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-RENTS. The value of 0.3 won the most matches so was selected. \label{tab:x050}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for AR-RENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for AR-RENTS. The value of 0.3 won the most matches so was selected. \label{tab:x050}}
     \end{table}
     
     \begin{table}[]
@@ -799,7 +807,7 @@
                                     10          &  0-15 		&  2-13 		& 2-13  		& -     	& 6-9  		\\
                                     3         &  1-14 		& 1-14  		& 2-13  		&  5-10 		&   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for TENTS.]{Round robin hyperparameter selection for $\alpha$ for TENTS. The value of 30.0 won the most matches so was selected. \label{tab:w060}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for TENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for TENTS. The value of 30.0 won the most matches so was selected. \label{tab:w060}}
     \end{table}
     
     \begin{table}[]
@@ -813,7 +821,7 @@
                                     1          &   	15-0	&  15-0 		&  14-1 		& -     	& 15-0  		\\
                                     0.3         &   15-0		&   	15-0	&   14-1		& 15-0  		&   -   	\\    
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\alpha$ for AR-TENTS.]{Round robin hyperparameter selection for $\alpha$ for AR-TENTS. The value of 3.0 won the most matches so was selected. \label{tab:x060}}
+        \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for AR-TENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for AR-TENTS. The value of 3.0 won the most matches so was selected. \label{tab:x060}}
     \end{table}
     
     
@@ -838,7 +846,7 @@
                                     0.003            & 7-8 & 13-2 & 13-2 & - & 10-5  		\\
                                     0.001           & 13-2 & 13-2 & 11-4 & 11-4 &  - 		\\
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\beta_{\text{init}}$ for DENTS.]{Round robin hyperparameter selection for $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
+        \caption[Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for DENTS.]{Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
     \end{table}
     
     \begin{table}[]
@@ -852,7 +860,7 @@
                                     0.1            & 12-3 & 12-3 & 12-3 & - & 11-4  		\\
                                     0.03            & 12-3 & 13-2 & 13-2 & 14-1 &  - 		\\
         \end{tabular}
-        \caption[Round robin hyperparameter selection for $\beta_{\text{init}}$ for AR-DENTS.]{Round robin hyperparameter selection for $\beta_{\text{init}}$ for AR-DENTS. The value of 0.3 won the most matches so was selected. \label{tab:x070}}
+        \caption[Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for AR-DENTS.]{Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for AR-DENTS. The value of 0.3 won the most matches so was selected. \label{tab:x070}}
     \end{table}
     
     

@@ -209,7 +209,9 @@
 
     It is shown that exploring with UCB leads to a polynomial upper bound on the simple regret for both recommendation strategies. That is, when $\psi^m_{\eba}$ and $\psi^m_{\mpa}$ are computed using visit counts and sample averages from following $\sigma_{\ucb}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(m^{-k_{\ucb,\eba}})$ and $\sreg_{\emab}(\psi^m_{\mpa}) = O(m^{-k_{\ucb,\mpa}})$ for some appropriate constants $k_{\ucb,\eba},k_{\ucb,\mpa}>0$.
 
-    When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$.
+    When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$. 
+    
+    \mccorrect{The simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only recommending optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.}
 
 
 
@@ -307,7 +309,7 @@
 
     \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision making problems \cite{kolobov}. This section provides definitions and notation related to MDPs used throughout this thesis.
     
-    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action.
+    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends \mccorrect{only} on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action.
 
     In this thesis, unless otherwise stated, MDPs are assumed to have finite state and action spaces, and \textit{trajectories} (sequences of states, actions and rewards) are of finite length.
 
@@ -349,28 +351,30 @@
         A state $s\in\cl{S}$ is a \textnormal{terminal} state (equivalently, a \textnormal{trap} state), if the transition distribution always returns the same state (i.e. $p(s|s,a)=1$ for all actions $a$), and if no more reward is obtained from that state ($R(s,a)=0$ for all $a$). The set of terminal states is denoted $\terminal\subseteq\cl{S}$.
     \end{defn}
 
-    A \textit{policy} maps each state to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. Often it is desirable to define deterministic policies, which always produce the same action when given the same state, and can be represented as \textit{one-hot} distributions. 
+    A \textit{policy} maps each state \mccorrect{and timestep} to a probability distribution over the action space, and defines a strategy that an agent will follow in an MDP. \mccorrect{Because the MDPs considered in this thesis have a finite horizon, the optimal behaviour at a state generally depends on how many timesteps remain, and so policies are defined to condition on the timestep.} Often it is desirable to define deterministic policies, which always produce the same action when given the same state \mccorrect{and timestep}, and can be represented as \textit{one-hot} distributions.
 
     \begin{defn}
         \label{def:2:policy}
-        A \textnormal{(stochastic) policy} $\pi:\cl{S}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states to a probability distribution over actions. $\pi(a|s)$ is the probability of sampling action $a$ at state $s$. The policy $\pi$ must satisfy: $\sum_{a\in\cl{A}} \pi(a|s) = 1$ and $\pi(a|s)\geq 0$ for all $s\in\cl{S}$ and $a\in\cl{A}$. 
-        
-        Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic if it can be written as $\pi(a|s)=\one[a=a']$ for some $a'\in\cl{A}$.
+        \begin{mccorrection}
+        A \textnormal{(stochastic) policy} $\pi:\cl{S}\times\{0,\ldots,H-1\}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states and timesteps to a probability distribution over actions. $\pi(a|s;t)$ is the probability of sampling action $a$ at state $s$ at timestep $t$. The policy $\pi$ must satisfy: $\sum_{a\in\cl{A}} \pi(a|s;t) = 1$ and $\pi(a|s;t)\geq 0$ for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,\ldots,H-1\}$.
+
+        Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic if, for every state $s$ and timestep $t$, it can be written as $\pi(a|s;t)=\one[a=a']$ for some $a'\in\cl{A}$.
 
         Moreover, the following notations are used for policies:
         %
         \begin{itemize}
-            \item $a\sim\pi(\cdot|s)$ denotes sampling an action $a$ from the distribution $\pi(\cdot|s)$;
-            \item $\pi(s)=a'$ is a shorthand to define the deterministic policy $\pi(a|s)=\one[a=a']$;
-            \item $\pi(s)$ denotes the action $a'$ of the deterministic policy $\pi(a|s)=\one[a=a']$.
+            \item $a\sim\pi(\cdot|s;t)$ denotes sampling an action $a$ from the distribution $\pi(\cdot|s;t)$;
+            \item $\pi(s;t)=a'$ is shorthand to define the deterministic policy $\pi(a|s;t)=\one[a=a']$;
+            \item $\pi(s;t)$ denotes the action $a'$ of the deterministic policy $\pi(a|s;t)=\one[a=a']$.
         \end{itemize}
+        \end{mccorrection}
     \end{defn}
     
     Given an MDP $\cl{M}$ and a policy $\pi$, a \textit{trajectory} is a sampled sequence of states, actions and rewards, where the policy is used to sample actions and the MDP is used to sample the next state. A trajectory simulates one possible sequence that could occur if an agent follows policy $\pi$ in $\cl{M}$.
     
     \begin{defn}
         \label{def:2:trajectory}
-        A \textnormal{trajectory} $\tau$ is a sequence of states, actions and rewards that is induced by a policy $\pi$ and MDP $\cl{M}$. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, \ldots, \allowbreak s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+        A \textnormal{trajectory} $\tau$ is a sequence of states, actions and rewards that is induced by a policy $\pi$ and MDP $\cl{M}$. Let the trajectory be $\tau = (s_0, a_0, r_0, s_1, a_1, r_1, \ldots, \allowbreak s_{H-1}, a_{H-1}, r_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $r_t=R(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$.
         
         The following notation is also used for trajectories:
         %
@@ -405,7 +409,9 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
+\begin{mccorrection}
 \section{Reinforcement Learning}
+\end{mccorrection}
 \label{sec:2-3-rl}
 
     \begin{figure}
@@ -459,7 +465,7 @@
             J(\pi) = V^{\pi}(s_0;0). \label{eq:2:rl_obj_fn_def}
         \end{align}
 
-        The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$.
+        The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$\mccorrect{; that is, the \textit{standard objective} is to maximise the expected return obtained from the initial state $s_0$}.
     \end{defn}
 
     \begin{mccorrection}
@@ -521,19 +527,23 @@
     In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
     
     Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
+    \begin{mccorrection}
     \begin{align}
-        \cl{H}(\pi(\cdot|s)) = -\bb{E}_{a\sim\pi(\cdot|s)}[\log \pi(a|s)] = -\sum_{a\in\cl{A}} \pi(a|s) \log \pi(a|s). \label{eq:2:shannon_entropy_def}
+        \cl{H}(\pi(\cdot|s;t)) = -\bb{E}_{a\sim\pi(\cdot|s;t)}[\log \pi(a|s;t)] = -\sum_{a\in\cl{A}} \pi(a|s;t) \log \pi(a|s;t). \label{eq:2:shannon_entropy_def}
     \end{align}
+    \end{mccorrection}
 
-    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective}. Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts.
+    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective} \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}} below)}. Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts.
 
     \begin{defn}
         \label{def:2:sft_value}
         \label{def:2:sft_q_value}
-        The \textnormal{soft value} of a policy $\pi$ from state $s$ at time $t$ is:
+        The \textnormal{soft value} of a policy $\pi$ from state $s$ \mccorrect{at time $t$} is:
+        \begin{mccorrection}
         \begin{align}
-            V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i + \alpha\cl{H}(\pi(\cdot|s_i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
-        \end{align} 
+            V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i + \alpha\cl{H}(\pi(\cdot|s_i;i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
+        \end{align}
+        \end{mccorrection}
 
         The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
@@ -571,9 +581,11 @@
             \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:2:opt_sft_policy_def}
         \end{align}
         Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft policy is known to take the form \cite{deep_energy_policies}:
+        \begin{mccorrection}
         \begin{align}
             \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:2:opt_sft_policy_from_opt_value_fns}
         \end{align}
+        \end{mccorrection}
     \end{defn}
 
     The \textit{soft Bellman equations} are the maximum entropy analogues of the Bellman equations. These equations differ from equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
@@ -658,16 +670,18 @@
 % [ ] Final revision
 \subsection{Notation}
 \label{sec:2-4-1-notation}
-    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
+    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes a \textit{unique state assumption}, that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. %This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
+    \begin{mccorrection}
     \begin{assumption}
-        \begin{mccorrection}
         \label{ass:2:unique_state_assumption}
-        The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a single unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. This assumption is not a necessary one, is purely to simplify notation in this thesis, and any results discussed in this thesis generalise to settings where this assumption does not hold. Additionally, the environments used in most of the empirical experiments in this thesis do not satisfy this assumption.
-        \end{mccorrection}
+        The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a single unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. 
+        
+        This assumption is not a necessary one, is purely to simplify notation in this thesis, and any results discussed in this thesis generalise to settings where this assumption does not hold. For example, the environments used in most of the empirical experiments in this thesis do not satisfy this assumption.
 
-        Specifically, this assumption allows the notation for value functions \mccorrect{and policies} to avoid explicitly writing the timestep parameter. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
+        Specifically, this assumption allows the notation for value functions and policies to avoid explicitly writing the timestep parameter, because under this assumption the timestep \mbox{$t$} at which a state \mbox{$s$} is visited is uniquely determined by \mbox{$s$} itself. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$, and \mbox{$\pi(a|s)$} can be written instead of \mbox{$\pi(a|s;t)$}. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
     \end{assumption}
+    \end{mccorrection}
 
     \begin{figure}
         \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
@@ -979,7 +993,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-4-ments}
 
-    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
     \begin{align}
         \piments(a|s) &= 
             (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
@@ -1127,12 +1141,12 @@ def backup_phase($\tau_{:h}$, ctx)
 \section{Multi-Objective Reinforcement Learning}
 \label{sec:2-6-morl}
 
-This thesis follows a utility-based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. This work will specifically consider \textit{linear utility} functions and the \textit{decision support scenario} which is depicted in Figure \ref{fig:2:mo_decision_support}. In the decision support scenario, an algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions, from which a user then picks their most preferred option to be used. This scenario is useful when a user's preferences over the multiple objectives are unknown or difficult to specify in advance. 
+This thesis follows a utility-based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. \mccorrect{This work will specifically consider \textit{linear utility} functions and the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed in the subsequent selection phase, and the solution from the set that maximises the corresponding utility is selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system. It is closely related to the \textit{decision support scenario}, in which the weights are never explicitly revealed and a user instead picks their preferred solution from the solution set directly.}
 
 \begin{figure}
-    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf} 
-    \caption{The decision-support scenario for multi-objective reinforcement learning \cite{morl_survey}.}
-    \label{fig:2:mo_decision_support}
+    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf}
+    \caption{The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}.}
+    \label{fig:2:mo_unknown_weights}
 \end{figure}
 
 This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
@@ -1152,7 +1166,7 @@ To specify problems with multiple objectives, the reward function of an MDP is c
 Multi-objective trajectories are defined analogously to single-objective trajectories (Definition \ref{def:2:trajectory}):
 \begin{defn}
     \label{def:2:mo_trajectory}
-    A \textnormal{multi-objective trajectory} $\bff{\tau}$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where $a_t \sim \pi(\cdot|s_t)$, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+    A \textnormal{multi-objective trajectory} $\bff{\tau}$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
     
     The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
 \end{defn}
@@ -1377,10 +1391,12 @@ randomly drawn weight vector.
     This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$.
     
     Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
+    \begin{mccorrection}
     \begin{align}
         Q^{\bff{w}}_{\chvi}(s,a;t) = \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qchvi(s,a;t) \}, \label{eq:2:chvi_scalar_q_fn} \\
         \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q^{\bff{w}}_{\chvi}(s,a;t). \label{eq:2:chvi_policy}
     \end{align}
+    \end{mccorrection}
     
     Note that if a policy is extracted for every weight vector $\bff{w}\in\Delta^D$, the resulting set of policies forms a convex coverage set.
     

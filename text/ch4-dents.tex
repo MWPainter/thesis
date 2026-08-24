@@ -180,7 +180,7 @@
 % [ ] Final revision
 \subsection{MENTS}
 
-    One can argue that when using the maximum entropy objective, it is possible to recover the standard objective by setting the temperature parameter to zero, or an infinitesimally small value. However, in practice, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
+    One can argue that when using the maximum entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, it is possible to recover the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} by setting the temperature parameter to zero, or an infinitesimally small value. However, in practice, setting $\alpha$ to a tiny value will nullify the exploration advantages of using entropy. Considering the other extreme, when a very large temperature is used, entropy becomes the dominant objective in the maximum entropy objective, and the optimal soft policy will be (almost) uniform. 
 
     The optimal soft policy for a large temperature may be different from the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. 
     \begin{defn} 
@@ -210,7 +210,7 @@
 
     \begin{figure}
         \begin{tcolorbox}
-            Parameters: An MDP $\cl{M}$.
+            Input: An MDP $\cl{M}$.
             \begin{itemize}
                 \item For each round $m=1,2,\ldots$:
                 \begin{enumerate}
@@ -277,7 +277,7 @@
         \item to be consistent using parameters that do not depend on the MDP.
     \end{itemize}
 
-    In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
+    In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
 
 
 
@@ -1079,7 +1079,7 @@
         \item Section \ref{sec:4-4-1-envs} describes the MDP environments used in the experiments;
         \item Section \ref{sec:4-4-2-eval_procedure} describes the evaluation setup used;
         \item Section \ref{sec:4-4-3-results_and_discussion} presents the results on gridworld environments and the game of Go;
-        \item Appendix \ref{app:expr-deets-ch4} provides additional details on these experiments, including the hyperparameter settings used and how they were chosen.
+        \item Appendix \ref{app:expr-deets-ch4} provides additional details on these experiments, including the \mccorrect{parameters used by each algorithm, and how they were selected}.
     \end{itemize}
 
 
@@ -1235,7 +1235,7 @@
     
     Using the completed policy $\psi$, a Monte Carlo estimate of $V^{\psi}(s_0)$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. Unless otherwise stated, each Monte Carlo estimate consists of 1024 trials, and results are averaged over 25 repeated experiments.
 
-    The BayesOpt package \cite{bayesopt} was used to tune hyperparameters for the algorithms in the gridworld environments. Appendix \ref{appsec:4:hps} gives details on the hyperparameters used and how they were tuned.
+    The BayesOpt package \cite{bayesopt} was used to tune \mccorrect{the parameters used by each algorithm for the gridworld environments}. Appendix \ref{appsec:4:hps} gives details on the \mccorrect{algorithm parameters} used and how they were tuned.
 
 
 
@@ -1250,7 +1250,7 @@
     the recommendation is made, which the most visited policy 
     avoids by using the visit statistics instead.
 
-    Hyperparameters were tuned using round-robin tournaments on 9x9 Go boards, details are given in Appendix \ref{appsec:round_robin}.
+    \mccorrect{Algorithm parameters} were tuned using round-robin tournaments on 9x9 Go boards, details are given in Appendix \ref{appsec:round_robin}.
 
     The PUCT algorithm is used as a baseline, as described in Alpha Go Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions. The Alias method (Section \ref{sec:4-2-3-stoch_search_policies}) is used for all algorithms using stochastic search policies.
 
@@ -1309,7 +1309,7 @@
 
     In each of the following figures, results are given for 
     a range of map sizes in the three gridworld environments. 
-    Hyperparameters were tuned on the smallest map of each 
+    \mccorrect{Algorithm parameters} were tuned on the smallest map of each 
     environment and then used across all map sizes, to 
     investigate how well each algorithm generalises to 
     larger state spaces.
@@ -1650,8 +1650,8 @@
     temperature in MENTS and TENTS with a decaying 
     schedule, analogous to that used in BTS and DENTS, 
     would resolve the misalignment problem. However, 
-    recall the maximum entropy objective 
-    (Section~\ref{sec:2-3-1-merl}): 
+    recall the maximum entropy objective
+    (\mccorrect{Definition~\mbox{\ref{def:2:soft_rl_obj_fn}}}):
     \begin{align}
         J_{\sft}(\pi) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i + \alpha\cl{H}(\pi(\cdot|s_i)) \right]. \label{eq:4:merl_obj_fn}
     \end{align}
