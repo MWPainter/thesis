@@ -9,14 +9,14 @@
 
     \minitoc
 
-    This thesis has investigated MCTS algorithms for sequential decision making problems, in both the single- and multi-objective settings. The main contributions of this thesis are summarised in Section \ref{sec:7-1-contributions} by revisiting the research questions of Chapter \ref{ch:1-intro}, and Section \ref{sec:7-2-futurework} discusses possible directions for future work.
+    This thesis has investigated MCTS algorithms for sequential decision-making problems, in both the single- and multi-objective settings. The main contributions of this thesis are summarised in Section \ref{sec:7-1-contributions} by revisiting the research questions of Chapter \ref{ch:1-intro}, and Section \ref{sec:7-2-futurework} discusses possible directions for future work.
 
 
 
 \section{Summary of Contributions}
 \label{sec:7-1-contributions}
 
-    The research questions considered in this thesis (Section \ref{sec:1-2-contributions}) are revisited in turn, and the corresponding contributions are summarised. 
+    The research questions considered in this thesis (Section \ref{sec:1-3-contributions}) are revisited in turn, and the corresponding contributions are summarised. 
 
     \paragraph{Q1 - Exploration.}
     Chapter \ref{ch:4-dents} considered how MCTS algorithms can prioritise exploration in the exploration setting of reinforcement learning, where the agent is assessed only on the recommendations it makes. UCT was shown to be biased towards exploitation in this setting, and the maximum entropy objective used by MENTS was shown to be misaligned with the \mccorrect{standard objective of maximising expected return}: for any fixed temperature there is an MDP in which MENTS either fails to recommend the optimal action, or requires an exponential number of trials to do so (\entropyq). The BTS and DENTS algorithms were introduced to address this misalignment, and were empirically shown to outperform UCT, MENTS and PUCT on a range of gridworld environments and on the game of Go. The same principles were lifted to the multi-objective setting in Chapter \ref{ch:6-simplexmaps} by combining DENTS with simplex maps to give SM-DENTS (\contextq).

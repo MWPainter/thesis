@@ -34,7 +34,7 @@
 
 Research Questions:
 1. *Exploration*: How to prioritise exploration in MCTS algorithms to make more effective decisions?
-    1.1. *Entropy*: What conditions is it compatible with optimal decision making?
+    1.1. *Entropy*: What conditions is it compatible with optimal decision-making?
     1.2. *MO Exploration*: Can (maximum entropy) exploration insights be applied to multi-objective MCTS?
 2. *Stochastic MOMCTS*: Can MOMCTS be generalised to stochastic domains?
 3. *Scalability*: How can scalability be improved of MCTS methods?

@@ -1,12 +1,12 @@
 # Corrections Cover Letter
 
-Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each correction, particularly as some corrections needed to be applied consistently across the thesis. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
+Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each comment. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
 
 
 
 > Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
 
-- Appears twice in the abstract, updated in the first instance as suggested and left second instance to avoid redundancy in the same paragraph.
+- Appears twice in the abstract, updated in the first instance as suggested and updated second instance to just use "expected return"
 - Additionally updated in three places in Chapter 1 (pages 3, 4 and 6), and in two places in Chapter 7 (pages 167 and 169)
 - In Chapters 2 and 4, added some additional references back to the formal definitions:
     - page 35 - where MENTS is introduced
@@ -19,18 +19,14 @@ Corrections are highlighted in blue throughout the thesis. This document is to o
 > P2: Explain clearly the multi-objective setting, including what is known when, and how this interacts with on-line planning with MCTS methods. Consider using the unknown weights scenario instead of decision support as motivation.
 
 I agree that using the unknown weights scenario provides a better motivation for the thesis, so I have made the following changes:
-- Added a new Section 1.4 to give the scope of the thesis, being more specific about the multi-objective setting (what is known in each phase of the unknown weights scenario) and how it interacts with on-line planning methods (planning from a known initial state, and reducing to single-objective planning once the weight vector is revealed).
+- Added a new Section 1.2 to outline the scope of the thesis, being more specific about the multi-objective setting (what is known in each phase of the unknown weights scenario) and how it interacts with on-line planning methods (planning from a known initial state, and reducing to single-objective planning once the weight vector is revealed).
 - Updated prose for using the unknown weights scenario instead:
-    - In the abstract (third paragraph)
-    - Section 1 introduction (page)
-    - Sec 1.1 (forward reference to the new Section 1.4)
-    - Sec 1.3 (Chapter 5 paragraph)
+    - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
     - Sec 2.6 (rewrote the introductory paragraph to define the unknown weights scenario and what is known in each of its phases, contrasting with the decision support scenario, and updated the figure caption)
         - Need to update the figure
     - Ch5 intro
     - Sec 5.4.2 (see P132 below)
     - Sec 5.6 (chapter summary)
-- Double checked for remaining uses by searching for "decision support"; the only remaining mention is in Section 2.6, where it is deliberately contrasted with the unknown weights scenario
 
 
 
