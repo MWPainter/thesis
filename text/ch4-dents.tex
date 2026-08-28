@@ -59,12 +59,12 @@
         \label{fig:4:rl_overview}
     \end{figure}
 
-    This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a secondary objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
+    This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a second objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
 
     \begin{mccorrection}
     In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the predeceeding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
 
-    While the maximum entropy objective (Definition \ref{def:2:soft_rl_obj_fn}) yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective (Definition \ref{def:2:rl_obj_fn}) for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it further demonstrates that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
+    While the maximum entropy objective (Definition \ref{def:2:soft_rl_obj_fn}) yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective (Definition \ref{def:2:rl_obj_fn}) for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it is further demonstrated that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
     \end{mccorrection}
     
 

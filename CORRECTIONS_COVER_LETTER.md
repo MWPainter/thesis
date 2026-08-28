@@ -2,6 +2,8 @@
 
 Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each comment. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
 
+While proof reading the thesis for the corrections pass, I felt that the abstract and Chapter 1 could use significant revision beyond just the comments below, so I have also updated them. Hopefully they read a lot better now.
+
 
 
 > Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
@@ -12,32 +14,47 @@ Corrections are highlighted in blue throughout the thesis. This document is to o
     - page 35 - where MENTS is introduced
     - page 60 - where misalignment is defined
     - page 63 - where BTS is introduced as using the standard objective
-    - page 90 - where the maximum entropy objective is recalled in the parameter sensitivity discussion (page 90)
+    - page 90 - where the maximum entropy objective is recalled in the parameter sensitivity discussion
 
 
 
 > P2: Explain clearly the multi-objective setting, including what is known when, and how this interacts with on-line planning with MCTS methods. Consider using the unknown weights scenario instead of decision support as motivation.
 
-I agree that using the unknown weights scenario provides a better motivation for the thesis, so I have made the following changes:
-- Added a new Section 1.2 to outline the scope of the thesis, being more specific about the multi-objective setting (what is known in each phase of the unknown weights scenario) and how it interacts with on-line planning methods (planning from a known initial state, and reducing to single-objective planning once the weight vector is revealed).
-- Updated prose for using the unknown weights scenario instead:
+I agree that using the unknown weights scenario provides a better motivation for the thesis, so I have added following changes:
+- Added a new Section 1.2 to outline the scope of the thesis, being more specific about the multi-objective setting, including:
+    - planning begins from a known initial state,
+    - describing the unknown weights scenario, including what is known and when,
+    - clarifying that utilities are assumed to be linear, with forward references where it is discussed,
+    - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
+    - explaining why planning methods might still be of interest instead of purely learning better prior policy/value functions
+- Updated prose thoughout thesis for using the unknown weights scenario instead:
     - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
-    - Sec 2.6 (rewrote the introductory paragraph to define the unknown weights scenario and what is known in each of its phases, contrasting with the decision support scenario, and updated the figure caption)
-        - Need to update the figure
-    - Ch5 intro
+    - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
+
+
+
+
+Chapter 5 + 6 proof reads
+
+    - Chapter 5 introduction - TODO
     - Sec 5.4.2 (see P132 below)
     - Sec 5.6 (chapter summary)
 
 
 
 
+
 > P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilites are non-linear or better expressed as preference functions
 
-Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it was lacking. I have made the following changes to address this:
+Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it and references pointing towards it were lacking. I have made the following changes to address this:
 - Added an explicit Section 5.5.1 to discuss why the linear utility assumption is made and discuss adapting it to non-linear utilities
-- Updated Ch5 introduction for the changes made to Section 5.5 (page 114)
-- Added a comment and forward reference to Section 5.5 in the new scope section from correction above (final paragraph of Section 1.4)
+- Updated the description of Section 5.5 in the Chapter 5 introduction (page 114) to reflect the changes made to Section 5.5
+- Also added forward references to Section 5.5.1 where it seemed appropriate:
+    - In the scoping section added for the correction above (Section 1.2)
+    - Where linear utility is defined in Section 2.6 (page 45)
 
+
+TODO: proof read section 5.5
 
 
 > P12: Explain which of these bounds is better and why. Give some intuition about simple regret bounds, what constitutes a good bound, etc.

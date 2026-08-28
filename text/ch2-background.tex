@@ -411,8 +411,8 @@
 % [ ] Final revision
 \begin{mccorrection}
 \section{Reinforcement Learning}
-\end{mccorrection}
 \label{sec:2-3-rl}
+\end{mccorrection}
 
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
@@ -1138,23 +1138,27 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\section{Multi-Objective Reinforcement Learning}
+\begin{mccorrection}
+\section{Multi-Objective Planning and Reinforcement Learning}
 \label{sec:2-6-morl}
+\end{mccorrection}
 
-This thesis follows a utility-based approach to multi-objective reinforcement learning similar to the review of \citet{morl_survey}. \mccorrect{This work will specifically consider \textit{linear utility} functions and the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}_{\text{exec}}$} specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed between the planning and execution phases, and the solution from the set that maximises the corresponding utility is selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system. It is closely related to the \textit{decision support scenario}, in which the weights are never explicitly revealed and a user instead picks their preferred solution from the solution set directly.}
+This section defines the multi-objective counterparts to various definitions given in Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
 
 \begin{figure}
     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf}
-    \caption{The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}.}
+    \caption{The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}. \todo{UPDATE FIGURE}}
     \label{fig:2:mo_unknown_weights}
 \end{figure}
 
-This section defines the multi-objective counterparts to various definitions given in Section \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
+This thesis follows a utility-based approach to multi-objective reinforcement learning similar to that of \citet{morl_survey} \mccorrect{and specifically considers the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}$} specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed before the execution phase, after which the policy that maximises the utility for that weight vector is typically selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system.} 
+%It is closely related to the \textit{decision support scenario}, in which the weights are never explicitly revealed and a user instead picks their preferred solution from the solution set directly.\footnote{When the user selects a policy, a range of possible preference weights can be inferred, but remain unknown for extracting policies from convex hull value sets}}
+% Foot note is more a note for future self if ever look back at this
 
 To specify problems with multiple objectives, the reward function of an MDP is changed to give a vector of rewards, rather than a scalar reward:
 \begin{defn}
     \label{def:2:mo_mdp}
-    A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{R}(s,a)$ is a vector reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the dimension of the rewards and the MOMDP, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
+    A \textnormal{Multi-Objective Markov Decision Process} (MOMDP) is a tuple $\bfcl{M}=(\cl{S},s_0,\cl{A},\bff{R},p,H)$, where $\cl{S}$ is a set of states, $s_0\in\cl{S}$ is an initial state, $\cl{A}$ is a set of actions, $\bff{R}(s,a)$ is a vector reward function $\cl{S}\times \cl{A}\rightarrow \bb{R}^D$, where $D$ is the number of objectives, $p(s' | s,a)$ is a next state transition distribution $\cl{S} \times \cl{A} \times \cl{S} \rightarrow [0,1]$ and $H\in\bb{N}$ is a finite-horizon time bound.
 \end{defn}
 
 \begin{figure}
@@ -1166,9 +1170,9 @@ To specify problems with multiple objectives, the reward function of an MDP is c
 Multi-objective trajectories are defined analogously to single-objective trajectories (Definition \ref{def:2:trajectory}):
 \begin{defn}
     \label{def:2:mo_trajectory}
-    A \textnormal{multi-objective trajectory} $\bff{\tau}$, is a sequence of state, action and vector rewards, that is induced by a policy $\pi$ and MOMDP $\bfcl{M}$ pair. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+    A \textnormal{multi-objective trajectory} $\bff{\tau}$ is a sequence of states, actions and vector rewards that is induced by a policy $\pi$ and an MOMDP $\bfcl{M}$. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
     
-    The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories. Such as, $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
+    The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories, such as $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
 \end{defn}
 
 Similarly, multi-objective variants of the (Q-)value of a policy are defined:    
@@ -1186,11 +1190,11 @@ Similarly, multi-objective variants of the (Q-)value of a policy are defined:
     \end{align} 
 \end{defn}
 
-In the corresponding point of the single-objective reinforcement learning section (Section \ref{sec:2-3-rl}), the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there may be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
+At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value functions and the objective of single-objective reinforcement learning were defined. However, in a multi-objective setting there is no longer a \textit{total ordering} over values, and so there may be multiple vectors that could be ``optimal''. For example, consider two vectors $\bff{u},\bff{v}\in\bb{R}^2$ which are such that $u_1 > v_1$ and $u_2 < v_2$. To resolve this issue, a \textit{utility function} or \textit{scalarisation function} is used to map multi-objective values to scalar values.
 
 \begin{defn}
     \label{def:2:simplex_and_weight}
-    The \textnormal{$D$-dimensional Unit Simplex} (or the \textnormal{$(D-1)$-simplex}) consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one\footnote{Note that although the $D$-dimensional simplex is actually the $(D-1)$-simplex. The notation $\Delta^D$ is adopted in this thesis to emphasise that weight vectors have $D$ components.}. More formally, the $D$-dimensional simplex is 
+    The \textnormal{$D$-dimensional Unit Simplex} (or the \textnormal{$(D-1)$-simplex}) consists of the set of $D$-dimensional vectors, whose entries are non-negative and sum to one\footnote{Note that the $D$-dimensional simplex is actually the $(D-1)$-simplex; the notation $\Delta^D$ is adopted in this thesis to emphasise that weight vectors have $D$ components.}. More formally, the $D$-dimensional simplex is 
     \begin{align}
         \Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}. \label{eq:2:simplex_def}
     \end{align}
@@ -1204,7 +1208,7 @@ In the corresponding point of the single-objective reinforcement learning sectio
     A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
 \end{defn}
 
-Of particular interest in this thesis is the \textit{linear utility function} where the scalar value takes the form of a dot-product:
+\mccorrect{A common choice of utility} is the \textit{linear utility function}, where the scalar value takes the form of a dot product:
 \begin{defn}
     \label{def:2:linear_utility_fn}
     \label{def:2:linear_scalarisation_fn}
@@ -1214,9 +1218,11 @@ Of particular interest in this thesis is the \textit{linear utility function} wh
     \end{align}
 \end{defn}
 
-Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $w\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
+\mccorrect{The algorithms in Chapters \mbox{\ref{ch:5-chmcts}} and \mbox{\ref{ch:6-simplexmaps}} assume a linear utility function, an assumption that is discussed and justified in Section \mbox{\ref{sec:5-6-1-linear_utility}}.}
 
-Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructing a solution set, a subset of $\Pi$, it makes sense that it should not contain any dominated policies. This leads to the first notion of a solution set, called an \textit{undominated set}, consisting of all undominated policies:
+Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $\bff{w}\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
+
+Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructing a solution set, a subset of $\Pi$, it makes sense to exclude dominated policies. This leads to the first notion of a solution set, called an \textit{undominated set}, consisting of all undominated policies:
 \begin{defn}
     \label{def:2:undominated_set}
     \label{def:2:convex_hull}
@@ -1225,46 +1231,40 @@ Let $\Pi$ be the set of all possible policies for a given MOMDP. When constructi
         U(\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}) \right\}. \label{eq:2:undominated_set_def}
     \end{align}
 
-    In particular, the \textnormal{convex hull} of policies $CH(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $CH(\Pi)=U(\Pi;u_{\lin})$.
+    In particular, the \textnormal{convex hull} of policies $\textnormal{CH}(\Pi)$ is the undominated set with respect to the linear utility function $u_{\lin}$. That is $\textnormal{CH}(\Pi)=U(\Pi;u_{\lin})$.
 \end{defn}    
 
 Undominated sets often have an infinite cardinality, and as such are infeasible to compute. However, in undominated sets there are often many redundant policies that obtain the same scalarised values. Instead of computing an undominated set, it is more feasible to compute a \textit{coverage set} that contains at least one policy that maximises the scalarised value given any weight vector $\bff{w}$:
 \begin{defn}
     \label{def:2:coverage_set}
     \label{def:2:convex_coverage_set}
-    A set $CS(\Pi;u)\subseteq U(\Pi)$, is a \textnormal{coverage set} with respect to a utility function $u$, if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in CS(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $CS(\Pi;u)$ to be a coverage set, the following statement must be true:
+    A set $\textnormal{CS}(\Pi;u)\subseteq U(\Pi;u)$ is a \textnormal{coverage set} with respect to a utility function $u$ if for every weight vector $\bff{w}\in\Delta^D$, there is a policy $\pi\in \textnormal{CS}(\Pi;u)$ that maximises the value of $u(\cdot;\bff{w})$. That is, for $\textnormal{CS}(\Pi;u)$ to be a coverage set, the following statement must be true:
     \begin{align}
-        \forall \bff{w}\in\Delta^D.\ \exists \pi\in CS(\Pi;u).\ \forall \pi'\in\Pi: \nonumber \\ 
+        \forall \bff{w}\in\Delta^D.\ \exists \pi\in \textnormal{CS}(\Pi;u).\ \forall \pi'\in\Pi: \nonumber \\ 
         \quad u(\bff{V}^{\pi}(s_0;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{eq:2:coverage_set}
     \end{align}
 
-    In particular, any set $CCS(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
+    In particular, any set $\textnormal{CCS}(\Pi)$ is a \textnormal{convex coverage set} if it is a coverage set with respect to the linear utility function $u_{\lin}$. 
 \end{defn}
 
 A convex coverage set may contain redundant policies and is not necessarily minimal. A minimal convex coverage set is a convex coverage set that contains no redundant policies. That is, for every policy in the minimal convex coverage set, there is some weight for which it uniquely maximises the utility within the set.
 
 \begin{defn}
     \label{def:2:min_convex_coverage_set}
-    A set $MCCS(\Pi)\subseteq \Pi$ is a \textnormal{minimal convex coverage set} if it is a convex coverage set and if the following holds
+    A set $\textnormal{MCCS}(\Pi)\subseteq \Pi$ is a \textnormal{minimal convex coverage set} if it is a convex coverage set and if the following holds:
     \begin{align}
-     \forall \pi\in MCCS(\Pi).\ \exists \bff{w}\in\Delta^D.\ \forall \pi'\in MCCS(\Pi)-\{\pi\}: \nonumber \\
+     \forall \pi\in \textnormal{MCCS}(\Pi).\ \exists \bff{w}\in\Delta^D.\ \forall \pi'\in \textnormal{MCCS}(\Pi)-\{\pi\}: \nonumber \\
      \quad u_{\lin}(\bff{V}^{\pi}(s_0;0);\bff{w}) > u_{\lin}(\bff{V}^{\pi'}(s_0;0);\bff{w}). \label{eq:2:min_convex_coverage_set}
     \end{align}
 \end{defn} 
 
-% \begin{figure}
-%     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-%     \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) circles correspond to values that are on the convex hull, so form the set $\valset(CH(\Pi'))$, the blue circles form the minimal convex coverage set, $\valset(MCCS(\Pi'))$, and triangles are not part of the convex hull. All of the unfilled shapes would be pruned by \cprune\ewe (Equation (\ref{eq:2:cprune_def})); (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
-%     \label{fig:2:convex_hull_geometry} 
-% \end{figure}
-
 \begin{figure}
     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(CH(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $MCCS(\Pi')$, so form the set of values $\valset(MCCS(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, it shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$ which are weights that the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
+    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(\textnormal{CH}(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $\textnormal{MCCS}(\Pi')$, so form the set of values $\valset(\textnormal{MCCS}(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, and shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$, which are weights for which the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
     \label{fig:2:convex_hull_geometry} 
 \end{figure}
 
-When computing solution sets, it is often useful to first compute the multi-objective values that could be obtained, and then later use the data structures used by the algorithm to read out the selected policy or solution set (for example, Convex Hull Value Iteration covered in Section \ref{sec:2-6-1-chvi}). This thesis will refer to the values obtained by a set of policies as a \textit{value set}:
+When computing solution sets, it is often useful to first compute the multi-objective values that could be obtained, and then use the algorithm's data structures to read out the selected policy or solution set (for example, Convex Hull Value Iteration covered in Section \ref{sec:2-6-1-chvi}). This thesis will refer to the values obtained by a set of policies as a \textit{value set}:
 \begin{defn}
     \label{def:2:mo_value_set}
     The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
@@ -1275,9 +1275,9 @@ Given a value set, the \cprune\ewe operation removes any vectors that are domina
     \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:2:cprune_def}
 \end{align}
 
-As illustrated in Figure \ref{fig:2:convex_hull_geometry}, the \cprune\ewe operation computes the \textit{extreme points} of a \textit{(partial) geometric convex hull}. As such, for some set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(MCCS(\Pi'))$, and \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}.
+As illustrated in Figure \ref{fig:2:convex_hull_geometry}, the \cprune\ewe operation computes the \textit{extreme points} of a \textit{(partial) geometric convex hull}. As such, for any set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(\textnormal{MCCS}(\Pi'))$, and \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}.
 
-% The geometry of convex coverage sets is now considered, to see how something like $\valset(CCS_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:2:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(CH(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:2:convex_hull_geometry}). Moreover, any points in $\valset(CH(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of the geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:2:convex_hull_geometry}).
+% The geometry of convex coverage sets is now considered, to see how something like $\valset(\textnormal{CCS}_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:2:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(\textnormal{CH}(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:2:convex_hull_geometry}). Moreover, any points in $\valset(\textnormal{CH}(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of the geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:2:convex_hull_geometry}).
 
 To distinguish between the convex hull of policies, and the geometric convex hulls of values, this thesis will refer to any value set that forms a geometric convex hull as a \textit{convex hull value set} (CHVS).
 
@@ -1295,12 +1295,12 @@ To distinguish between the convex hull of policies, and the geometric convex hul
     \label{fig:2:pareto_front} 
 \end{figure}
 
-Whilst this thesis focuses on the linear utility setting, another commonly used solution set is the \textit{Pareto front}, which is defined using a \textit{strict partial ordering} over vectors, known as \textit{Pareto domination}, as opposed to using utility. An example is shown in Figure \ref{fig:2:pareto_front}.
+Whilst this thesis focuses on the linear utility setting, another commonly used solution set is the \textit{Pareto front}, which is defined using a \textit{strict partial ordering} over vectors, known as \textit{Pareto domination}. An example is shown in Figure \ref{fig:2:pareto_front}.
 \begin{defn}
     \label{def:2:pareto_front}
-    The \textnormal{Pareto front} $PF(\Pi)\subseteq\Pi$ is defined as:
+    The \textnormal{Pareto front} $\textnormal{PF}(\Pi)\subseteq\Pi$ is defined as:
     \begin{align}
-        PF(\Pi) = \{\pi\in\Pi | \not\exists \pi'\in\Pi. \bff{V}^{\pi'}(s_0;0) \succ_P \bff{V}^{\pi}(s_0;0) \},
+        \textnormal{PF}(\Pi) = \{\pi\in\Pi | \not\exists \pi'\in\Pi. \bff{V}^{\pi'}(s_0;0) \succ_P \bff{V}^{\pi}(s_0;0) \},
     \end{align}
     where the \textnormal{Pareto domination} relation is defined as:
     \begin{align}
@@ -1308,7 +1308,7 @@ Whilst this thesis focuses on the linear utility setting, another commonly used 
     \end{align}
 \end{defn}
 
-The Pareto front can be related to the previously defined solution sets if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
+The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function \cite{moo_chebyshev}, and the second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
 Several metrics have been proposed for evaluating the 
 quality of a solution set in multi-objective settings 
@@ -1368,7 +1368,7 @@ randomly drawn weight vector.
 \subsection{Convex Hull Value Iteration}
 \label{sec:2-6-1-chvi}
 
-    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector. In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
+    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector.\footnote{\mccorrect{Note that because CHVI computes convex hulls (Definition \mbox{\ref{def:2:convex_hull}}), it is also assuming a linear utility.}} In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
     Firstly, to define a multi-objective version of Value Iteration, arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic}. Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
     \begin{align}

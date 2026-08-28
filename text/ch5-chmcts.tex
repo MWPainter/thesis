@@ -854,7 +854,7 @@
     $\bff{w}^\top\bff{v}$ over the root value estimates.
     After $\bff{w}$ is revealed the problem also reduces to
     a single-objective one, so if the agent continues to
-    plan on-line during execution, it can follow a
+    plan online during execution, it can follow a
     single-objective MCTS algorithm in the scalarised MDP
     with reward $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
     The deeper parts of the multi-objective search tree
@@ -1278,6 +1278,10 @@
 \section{Theoretical Discussion}
 \label{sec:5-6-theory}
 
+\todo{refer back to figure for the previous discussion and try to be more specfic about where it was discussed. Make sure that the references go both ways.}
+
+\todo{MAke the MOMDP appear earlier and use it for the intuitive argument. Make another figure showing contours of the chebychev utility and the three relevant Pareto fronts}
+
 \begin{mccorrection}
     This section provides theoretical results and discussion for CHMCTS and MOMCTS. It is structured as follows:
     \begin{itemize}
@@ -1336,8 +1340,8 @@
 
 
 \subsection{Linear Utility: When Local Optimality Implies Global Optimality}
-\end{mccorrection}
 \label{sec:5-6-2-fundamental_assumption_of_momcts}
+\end{mccorrection}
 
     \mccorrect{This section formalises the claim that following locally optimal actions gives a globally optimal policy if and only if the utility is linear. The ``only if'' direction is the stronger statement: even when the value sets of the undominated policies are known exactly, the policy that selects actions by maximising the utility over those value sets is not guaranteed to be optimal for that utility.}
 

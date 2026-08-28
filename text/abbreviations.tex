@@ -297,13 +297,13 @@
     \item[{\parbox[t]{\textwidth}{
         \Large\textbf{Multi-Objective Reinforcement Learning \\(Section \ref{sec:2-6-morl})}\hfill\hfill
       }}]
-    \item[$CCS(\Pi)$] 
+    \item[$\textnormal{CCS}(\Pi)$] 
         A convex coverage set of policies, which contains at least one policy that maximises the linear utility $u_{\lin}(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
-    \item[$MCCS(\Pi)$]
-        The minimal convex coverage set of policies, which has no redundant policies and for each policy in $MCCS(\Pi)$ there is some weight that it uniquely (with respect to $MCCS(\Pi)$) obtains the optimal linear utility.
-    \item[$CH(\Pi)$] 
-        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the linear utility function $u_{\lin}$. $CH(\Pi)=U(\Pi;u_{\lin})$.
-    \item[$CS(\Pi;u)$] 
+    \item[$\textnormal{MCCS}(\Pi)$]
+        The minimal convex coverage set of policies, which has no redundant policies and for each policy in $\textnormal{MCCS}(\Pi)$ there is some weight that it uniquely (with respect to $\textnormal{MCCS}(\Pi)$) obtains the optimal linear utility.
+    \item[$\textnormal{CH}(\Pi)$] 
+        The undominated set of policies in $\Pi$ (the set of all possible policies), with respect to the linear utility function $u_{\lin}$. $\textnormal{CH}(\Pi)=U(\Pi;u_{\lin})$.
+    \item[$\textnormal{CS}(\Pi;u)$] 
         A coverage set of policies, which contains at least one policy that maximises the utility $u(\cdot;\bff{w})$ for each weight vector $\bff{w}$.
     \item[$\cprune$] 
         An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
@@ -315,7 +315,7 @@
         The \textnormal{hypervolume indicator} of a vector set $\bfcl{V}$ with respect to a reference point $\rref$: the Lebesgue measure of the region dominated by $\bfcl{V}$ and bounded below by $\rref$.
     \item[$\Pi$] 
         The set of all possible policies in a MOMDP.
-    \item[$PF(\Pi)$]
+    \item[$\textnormal{PF}(\Pi)$]
         The Pareto front of the set of policies $\Pi$.
     \item[$\bff{Q}^{\pi}$]
         The multi-objective Q-value function of a policy $\pi$. $\bff{Q}^{\pi}(s,a;t)$ denotes the expected cumulative vector reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.

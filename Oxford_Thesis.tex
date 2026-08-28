@@ -41,7 +41,16 @@
 % This highlights (in blue) corrections marked with (for words) \mccorrect{blah} or (for whole
 % paragraphs) \begin{mccorrection} . . . \end{mccorrection}.  This can be useful for sending a PDF of
 % your corrected thesis to your examiners for review.  Turn it off, and the blue disappears.
+
+% MIKE COMMENT: because the \begin{mccorrection} ... \end{mccorrection} still makes some formatting changes, even with the below commented out. For final "camera-ready" going to find-and-replace:
+% \begin{mccorrection} -> %\begin{mccorrection}
+% \end{mccorrection} -> %\end{mccorrection}
+%
+% Because we always put those on new lines, it will be as if those environments didn't exist
+
 \correctionstrue
+
+
 
 
 %%%%% BIBLIOGRAPHY SETUP
@@ -389,6 +398,7 @@
 \newcommand{\Vtag}{{\hat{\bfcl{V}}_{\tagg}}}
 \newcommand{\Qchvi}{{\hat{\bfcl{Q}}_{\chvi}}}
 \newcommand{\Qtag}{{\hat{\bfcl{Q}}_{\tagg}}}
+\newcommand{\wexec}{{\bff{W}_{\text{exec}}}}
 
 % Sec 2.6 - Sampling macros
 \newcommand{\thresh}{{\texttt{thrsh}}}
