@@ -30,13 +30,16 @@ I agree that using the unknown weights scenario provides a better motivation for
 - Updated prose thoughout thesis for using the unknown weights scenario instead:
     - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
+    - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
+    - Section 5.1 (page 121) - rewrote introduction paragraph, relating back to the new scope section for motivation
 
 
 
 
 Chapter 5 + 6 proof reads
 
-    - Chapter 5 introduction - TODO
+    - Chapter 5 introduction - updated to unknown weights + references
+    - Section 5.1 - Updated prose, relating back to the scoping section
     - Sec 5.4.2 (see P132 below)
     - Sec 5.6 (chapter summary)
 
