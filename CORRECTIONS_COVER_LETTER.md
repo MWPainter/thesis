@@ -42,7 +42,7 @@ Chapter 5 + 6 proof reads
     - Section 5.1 - Updated prose, relating back to the scoping section
     - Sec 5.4.2 (see P132 below)
     - Sec 5.6 (chapter summary)
-
+    - CHECK CH6
 
 
 
@@ -57,6 +57,7 @@ Theorem 5.5.1 was intended to answer this question theoretically, but the discus
     - Where linear utility is defined in Section 2.6 (page 45)
 
 
+also section 5.1
 TODO: proof read section 5.5
 
 
@@ -157,9 +158,11 @@ When a policy is learned in maximum entropy inverse reinforcement learning the o
 > Why do we need this approach based on ball? Why not learn separate values for each objective and dot-product them with the weights?
 
 
+
+
 > Again, be clear about the motivation here, and consider switching to unknown weights scenario.
 
-TODO: 
+TODO: updated Section 5.1 for this
 
 
 
@@ -169,6 +172,8 @@ TODO:
 > and
 > 
 > P132: “A more efficient online approach is therefore to run the multi-objective tree search from the initial state, and subsequently follow a single-objective MCTS algorithm in the scalarised MDP with reward R(s,a; w) = w⊤R(s,a), where w is inferred from the choice made at the root node.” The choice may not disambiguate w, which is another reason why unknown weights would give a cleaner motivation. Also, explain why building an MCTS tree is a good way to use the offline planning budget, compared to just learning better prior policies and value functions that apply in any state. Finally, if this only makes sense assuming a deterministic initial state, that needs to be stated clearly up front.
+
+TODO: clean up writing + talk about Section 5.4.2 specifically
 
 - The new Section 1.4 addresses this comment up front: it states that planning is run from a known initial state, explains why the planning budget is spent building a search tree from that state (computation is concentrated on the states reachable from it), and switches to the unknown weights scenario, in which the weight vector is explicitly revealed after planning rather than inferred from the choice made at the root node.
 - Rewrote the opening of Section 5.4.2 (page 132) accordingly: the root node's convex hull determines the achievable utility once the weight vector is revealed, after which the problem reduces to single-objective planning with scalarised rewards, and deeper parts of the multi-objective tree serve to improve the root value estimates.

@@ -60,8 +60,9 @@
     \begin{itemize}
         \item Section \ref{sec:5-1-intro} motivates the 
             multi-objective decision-making framework used in this 
-            chapter, and generalises the notion of simple regret to 
-            \textit{contextual simple regret} for the multi-objective setting;
+            chapter \todo{update this sentence. Now it just discusses consistent action selection and contextual tree search to solve the problem};
+            % , and generalises the notion of simple regret to 
+            % \textit{contextual simple regret} for the multi-objective setting;
         \item Section \ref{sec:5-2-czt} introduces 
             \textit{Contextual Zooming for Trees} (CZT), a 
             MOMCTS algorithm following the same design paradigm 
@@ -111,37 +112,12 @@
     \begin{mccorrection}
     As set out in Section \ref{sec:1-2-scope}, the MOMCTS algorithms in this thesis are used in the \textit{planning phase} of the \textit{unknown weights scenario} (Section \ref{sec:2-6-morl}): the weight vector is unknown while planning, so the aim is to produce a solution set of policies for the initial state of the MOMDP, covering all possible preferences. 
 
-    This section serves as motivation for the approach of \textit{contextual tree search} taken in this thesis. Section \ref{sec:5-1-1-consistent_tree_search} first highlights that throughout a trajectory, actions need to be selected consistently with the solution intended to follow from the initial state. Section \ref{sec:5-1-2-contextual_tree_search} then gives the \textit{contextual tree search} framework used throughout this chapter.
-
-    The first section is about the execution phase. The second section is about the planning phase.
-
-    This section 
-
-
-
-
-    This section uses two examples
-
-    This section serves as motivation for the approach to MOMCTS taken in this thesis. 
-
-    The following example is used to demonstrate that when the aim is to compute a solution set from the initial state of the MOMDP, then it is not necessary to compute all solutions 
-    
-    As the following example shows, one way to achieve this is to select actions consistently with respect to a single weight vector; otherwise the search policy optimises for no particular objective. This section motivates \textit{contextual tree search}, in which each trial samples a single weight vector and selects actions consistently with respect to it, and generalises the notions of cumulative and simple regret to the multi-objective setting.
+    First, Section \ref{sec:5-1-1-consistent_tree_search} highlights that actions need to be selected consistently to follow a policy from the initial state during the \textit{execution phase}. Then Section \ref{sec:5-1-2-contextual_tree_search} extends the argument for the \textit{planning phase} to arrive at the \textit{contextual tree search} approach taken in this thesis: each trial samples a weight vector randomly at the beginning of a trial and uses it to select actions consistently throughout the trial.
     \end{mccorrection}
+
 
 \subsection{Consistent Action Selection}
 \label{sec:5-1-1-consistent_tree_search}
-
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.6\textwidth]{figures/ch5/motivate_contextual_momdp.pdf}
-        \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}.}
-        \label{fig:5:motivating_example}
-    \end{figure}
-
-    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set of the MOMDP is $\{(4,0),(0,4)\}$: the reward $(4,0)$ is only reachable via the left action, and $(0,4)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
-
-    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the implicit commitment made at the root node.
 
     \begin{figure}
         \centering
@@ -155,25 +131,76 @@
             \includegraphics[width=\textwidth]{figures/ch5/locally_optimal_interleved.pdf}
             \label{fig:5:motivating_vanmoffaert:sub:b}
         \end{subfigure}
-        \caption[Example of locally optimal actions that are not globally optimal.]{Example of locally optimal actions that are not globally optimal (reproduced from \citet{locally_optimal}). (a) The three globally optimal paths in green, red and blue. (b) The black path interleaves actions from the green, red and blue paths where actions are locally optimal at each step, but is a globally suboptimal path.}
+        \caption[Example of locally optimal actions that are not globally optimal.]{Example of locally optimal actions that are not globally optimal (adapted from \citet{locally_optimal}). (a) The three globally optimal paths in green, red and blue. (b) The black path interleaves actions from the green, red and blue paths where actions are locally optimal at each step, but is a globally suboptimal path.}
         \label{fig:5:motivating_vanmoffaert}
     \end{figure}
 
-    The problem of \textit{consistent action selection} is also discussed by \citet{locally_optimal}. They compute and track Pareto-optimal policies using an adaptation of Q-learning and highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step but fails to follow any single globally optimal path.
-
     \begin{mccorrection}
-    The fact that locally optimal actions may not also be globally optimal presents an issue for MOMCTS algorithms, which are built around making local decisions at each decision node. Theorem \ref{thm:per-step-linear} formalises the claim relating locally and globally optimal decisions, showing that they coincide if and only if the utility is linear.
+    Given a set of set of multi-objective Q-values (for example a convex hull value set, Definition \ref{def:2:convex_hull_value_set}) how can a policy be extracted from it? In the single-objective case the solution is simple, given the optimal Q-values for an MDP an optimal policy can be extracted by taking an argmax. However, as discussed by \citet{locally_optimal}, the question is not easily resolved in the multi-objective case. They compute and track Pareto-optimal policies using an adaptation of Q-learning, and critically, highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step, but fails to follow any of the three globally optimal paths.
+
+    This is an issue for MOMCTS algorithms, because MCTS algorithms make local decisions at each decision node, and fundamentally assume that a globally optimal solution (i.e. an undominated policy from the initial state) can be found from making local decisions. 
+
+    Section \ref{sec:5-6-theory} discusses the problem from a more formal perspective, and Theorem \ref{thm:per-step-linear} reconciles the use of MCTS for multi-objective reinforcement learning by showing that selecting locally optimal actions leads to globally optimal policies if any only if the utility is linear. Which is why this thesis assumes that utilities are linear.
     \end{mccorrection}
+
+    % \begin{figure}
+    %     \centering
+    %     \includegraphics[width=0.6\textwidth]{figures/ch5/motivate_contextual_momdp.pdf}
+    %     \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}.}
+    %     \label{fig:5:motivating_example}
+    % \end{figure}
+
+    % Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set of the MOMDP is $\{(4,0),(0,4)\}$: the reward $(4,0)$ is only reachable via the left action, and $(0,4)$ only via the right action. The optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
+
+    % Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the implicit commitment made at the root node.
+
+    % \begin{figure}
+    %     \centering
+    %     \begin{subfigure}{0.45\textwidth}
+    %         \centering
+    %         \includegraphics[width=\textwidth]{figures/ch5/locally_optimal.pdf}
+    %         \label{fig:5:motivating_vanmoffaert:sub:a}
+    %     \end{subfigure}
+    %     \begin{subfigure}{0.45\textwidth}
+    %         \centering
+    %         \includegraphics[width=\textwidth]{figures/ch5/locally_optimal_interleved.pdf}
+    %         \label{fig:5:motivating_vanmoffaert:sub:b}
+    %     \end{subfigure}
+    %     \caption[Example of locally optimal actions that are not globally optimal.]{Example of locally optimal actions that are not globally optimal (reproduced from \citet{locally_optimal}). (a) The three globally optimal paths in green, red and blue. (b) The black path interleaves actions from the green, red and blue paths where actions are locally optimal at each step, but is a globally suboptimal path.}
+    %     \label{fig:5:motivating_vanmoffaert}
+    % \end{figure}
+
+    % The problem of \textit{consistent action selection} is also discussed by \citet{locally_optimal}. They compute and track Pareto-optimal policies using an adaptation of Q-learning and highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step but fails to follow any single globally optimal path.
 
 
 \subsection{Contextual Tree Search}
 \label{sec:5-1-2-contextual_tree_search}
 
-    \citet{locally_optimal} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/ch5/motivate_contextual_momdp.pdf}
+        \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}. \todo{update fig to update it to be consistent with writing updates and avoid tree terminology if its just an MOMDP}}
+        \label{fig:5:motivating_example}
+    \end{figure}
+
+    \begin{mccorrection}
+    While Section \ref{sec:5-1-1-consistent_tree_search} discussed the consistent action selection problem in the context of the execution phase, the problem is still relevant during the planning phase.
+
+    Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set at the initial state of the MOMDP is $\{(4,0),(0,4)\}$: a reward $(4,0)$ is only reachable via the left action, and $(0,4)$ only via the right action. Under a linear utility, the optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
+
+    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the implicit commitment made at the root node.
+
+    Prior MOMCTS work (Section \ref{sec:3-5-momcts}) typically aims to compute a full Pareto Front at all nodes, for example at the blue states in Figure \ref{fig:5:motivating_example}. However, overprioritises exploration in parts of the MOMDP that are suboptimal from the initial state \todo{find a way to highlight this in figure and update this text}, leading to search policies that select actions inconsistently within each trial, and optimising for no particular objective on each trial.
+    \end{mccorrection}
+
+    % \citet{locally_optimal} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. 
+    The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
     \begin{sloppypar}
     In the \mbox{\thtspp} framework, the context weight $\bff{w}$ is sampled during the \mbox{\samplecontext} function (Section \ref{sec:2-4-2-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
     \end{sloppypar}
+
+    \todo{Some text before introducing contextual policies}
 
     \begin{defn}
         \label{def:5:context_policy}
@@ -189,38 +216,6 @@
         $a\in\cl{A}$. Otherwise, $\pi$ is 
         \textnormal{context dependent}.
     \end{defn}
-
-    \todo{move to theory section}
-
-    To reason about the performance of a contextual tree search algorithm, the notion simple regret is generalised to \textit{contextual simple regret}.
-
-    % \begin{defn}
-    %     \label{def:5:contextual_cumulative_regret}
-    %     Let $\{\bff{w}^i\}_{i=1}^n$ be a sequence of weight vectors sampled uniformly from $\Delta^D$. The \textnormal{contextual cumulative regret} of the search policies $\pi^{1:n} = (\pi^1,\ldots,\pi^n)$ after $n$ trials is:
-    %     \begin{align}
-    %         \ctxreg(s,\pi^{1:n}) = 
-    %             \sum_{i=1}^n \left( 
-    %                 \max_{\pi'} {\bff{w}^i}^\top \bff{V}^{\pi'}(s)
-    %                 - {\bff{w}^i}^\top \bff{V}^{\pi^i}(s)
-    %             \right).
-    %     \end{align}
-    % \end{defn}
-    
-    \begin{defn}
-        \label{def:5:contextual_simple_regret}
-        The \textnormal{contextual simple regret} of a recommendation policy $\psi$ at state $s\in\cl{S}$ is:
-        \begin{align}
-            \ctxsreg(s,\psi) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
-                \max_{\pi'} {\bff{w}}^\top \bff{V}^{\pi'}(s) 
-                - {\bff{w}}^\top \bff{V}^{\psi(\cdot;\bff{w})}(s)
-            \right],
-        \end{align}
-        where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the unit $(D-1)$-dimensional simplex.
-    \end{defn}
-
-    % Several prior MOMCTS works \odot{cite}, discussed in Section \odot{ref ch3}, use a context-independent search policy. It is shown in Section \ref{sec:5-6-theory} that any context-independent search policy suffers linear contextual cumulative regret, and any context-independent recommendation policy suffers linear contextual simple regret.
-
-    % \odot{Theorem that context independent search policy suffers linear contextual cumulative regret AND context independent recommendation policy suffers linear contextual simple regret}
 
 
 
@@ -1314,6 +1309,17 @@
     \end{itemize}
     
 
+    \todo{Move definitions here with intro prose}
+    \todo{Make MOMDP appear in the linear utility assumption}
+    \todo{Use MOMDP to give example with contours}
+    \todo{State (informally) that no weight or utopian point is able to give the optimal policy in this. Say it isn't formally shown here, but the figure is to give intuition}
+    \todo{Say this MOMDP is used to highlight that there are MOMDPs where no local optimal policy gives the global optimum policy}
+    \todo{Add a second MOMDP to highlight that need to add the reward given so far to the local decisions}
+    \todo{Handle todos, including updating figures}
+    \todo{Proof read with claude}
+
+
+
 
 
 \subsection{The Linear Utility Assumption}
@@ -1471,18 +1477,31 @@
 \subsection{Convergence of CHMCTS}
 \label{sec:5-6-3-convergence_of_chmcts}
 
-
-    This section outlines how the convergence of CHMCTS can be proven. First, if all states are visited infinitely often, then by the convergence of Convex Hull Value Iteration \cite{chvi} the convex hull value sets converge to the convex coverage sets. 
-
+    This section outlines how the convergence of CHMCTS can be proven. First, to reason about the performance of a contextual tree search algorithm, the notion simple regret is generalised to \textit{contextual simple regret}, which is the expected regret with respect to utility over a uniformly random weight vector.
+    
+    \begin{defn}
+        \label{def:5:contextual_simple_regret}
+        The \textnormal{(linear) contextual simple regret} of a recommendation policy $\psi$ at state $s\in\cl{S}$ is:
+        \begin{align}
+            \ctxsreg(s,\psi) = \bb{E}_{\bff{w}\sim U(\Delta^D)}\left[
+                \max_{\pi'} {\bff{w}}^\top \bff{V}^{\pi'}(s) 
+                - {\bff{w}}^\top \bff{V}^{\psi(\cdot;\bff{w})}(s)
+            \right],
+        \end{align}
+        where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the unit $(D-1)$-dimensional simplex.
+    \end{defn}
+    
+    If all states are visited infinitely often, then by the convergence of Convex Hull Value Iteration \cite{chvi} the convex hull value sets converge to the convex coverage sets. 
+    %
     \begin{theorem}
         \label{thrm:5:chmcts}
         For any MOMDP $\bfcl{M}$, if $N(s)\rap\infty$ and $N(s,a)\rap\infty$ for all $s\in\cl{S}$ and $a\in\cl{A}$, then the convex hull value sets, computed by Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}, satisfy $\Valg(s)\rap\bfcl{V}^*_{u_{\text{lin}}}(s)$ and $\Qalg(s,a)\rap\bfcl{Q}^*_{u_{\text{lin}}}(s,a)$ for all $s\in\cl{S}$ and $a\in\cl{A}$, where $\bfcl{V}^*_{u_{\text{lin}}}(s)$ and $\bfcl{Q}^*_{u_{\text{lin}}}(s,a)$ are the optimal value sets for the linear utility function $u_{\text{lin}}$.
     \end{theorem}
     \begin{proofoutline}
-        Follows from \mccorrect{Corrolary \mbox{\ref{cor:4:bound_transition_distribution}} and} the convergence of Convex Hull Value Iteration \cite{chvi}.
+        Follows from Corrolary \mbox{\ref{cor:4:bound_transition_distribution}} and the convergence of Convex Hull Value Iteration \cite{chvi}.
     \end{proofoutline}
 
-    Using Lemma \ref{lem:inf_often_action_select} it then follows that for CH-BTS that the convex hull value sets converge to the optimal value sets. For the remaining CHMCTS algorithms using UCT-based policies, Lemma \ref{lem:inf_often_action_select_uct} provides the corresponding lemma to show that all reachable states are visited infinitely often:
+    While Lemma \ref{lem:inf_often_action_select} provides the conditions for $N(s)\rap\infty$ and $N(s,a)\rap\infty$ for CH-BTS, the remaining CHMCTS algorithms need a corresponding lemma to show that all reachable states are visited infinitely often for UCT-based policies:
     %
     \begin{lemma} 
         \label{lem:inf_often_action_select_uct}
@@ -1495,6 +1514,8 @@
     \begin{proofoutline}
         By contradiction: if $M^m(a)$ remained bounded while every other action's count grew, the $b\sqrt{\log(m)/M^m(a)}$ term would diverge and force $a$ to be selected, contradicting boundedness of $M^m(a)$.
     \end{proofoutline}
+
+    \todo{Write out the theorem statements and adapte the below into proof outline(s). Give the search policy for CH-BTS converges to optimal under the same conditions as BTS. Basically give the 4 corresponding results for CH-BTS. Put this and everything below in mccorrection}
 
     Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} and Theorem \ref{thrm:5:chmcts} it follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear} it follows that for any CHMCTS algorithm $\alg$ that $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$.
 
