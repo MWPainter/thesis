@@ -327,6 +327,8 @@
         A utility function, mapping multi-objective values to scalar values, that depends on a weighting over objectives. The multi-objective value $\bff{V}^{\pi}(s;t)$ is mapped to $u(\bff{V}^{\pi}(s;t);\bff{w})$, where $\bff{w}$ is a weighting over the objectives.
     \item[$u_{\lin}$]
         The linear utility function: $u_{\lin}(\bff{v};\bff{w}) = \bff{w}^\top \bff{v}$.
+    \item[$\ucheby$]
+        The (non-linear) Chebyshev utility function: $\ucheby(\bff{v};\bff{w},\bff{r}) = - \max_{i=1,\ldots,D} w_i |v_i - r_i|$, where $\bff{v},\bff{r} \in \bb{R}^D$ and $\bff{w}\in\Delta^D$.
     \item[$\bff{V}^{\pi}$]
         The multi-objective value of a policy $\pi$. $\bff{V}^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
     \item[$\valset(\Pi')$] 
@@ -468,6 +470,10 @@
         The recommendation policy used in CZT.
     \item[$\Qczt(B)$]
         The multi-objective average return value estimate associated with an active ball $B$ in CZT.
+    \item[$\relevant(s,a;\bff{w})$]
+        The subset of active balls $A(s,a)$, consisting of the smallest radius balls that contain $(\bff{w},a)$.
+    \item[$\relevant(s;\bff{w})$] 
+        A subset of the active balls $A(s)$ at decision node $s$, containing the relevant balls for CZT to use for vector value estimates: $\relevant(s;\bff{w}) = \cup_{a\in\cl{A}} \relevant(s,a;\bff{w})$.
     \\
     %%%%%
     % CHMCTS Common Framework

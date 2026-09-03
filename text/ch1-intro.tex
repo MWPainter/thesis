@@ -41,7 +41,7 @@
 
     \paragraph{The Unknown Weights Scenario.} The multi-objective reinforcement learning literature establishes several scenarios, distinguished by what is known about preferences and when. This thesis considers the \textit{unknown weights scenario} \cite{survey_mo_seq_dec_make,morl_survey}. Preferences over the objectives are specified by a weight vector $\bff{w}$, and a utility function maps a weight vector and a vector-valued return to a scalar utility. The weight vector is unknown during the planning phase, so the agent must plan for all possible preferences. It is revealed during the execution phase, after which the agent aims to maximise the utility for that weight vector. This setting arises whenever preferences are unavailable during planning, or vary between uses of a system.
 
-    \paragraph{The Linear Utility Assumption.} The utility function is assumed to be linear in the weight vector throughout this thesis. Section \ref{sec:5-6-1-linear_utility} discusses why this assumption is made and how the work could be adapted to non-linear utilities. Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} shows that MOMCTS algorithms that choose actions using the expected reward-to-go at each node yield a utility-optimal policy if and only if the utility is linear.
+    \paragraph{The Linear Utility Assumption.} The utility function is assumed to be linear in the weight vector throughout this thesis. Section \ref{sec:5-6-2-linear_utility} discusses why this assumption is made and how the work could be adapted to non-linear utilities. Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that MOMCTS algorithms that choose actions using the expected reward-to-go at each node yield a utility-optimal policy if and only if the utility is linear.
 
     \paragraph{Optimisation Criterion.} Two criteria are distinguished in the literature: the \textit{scalarised expected returns} (SER) criterion applies the utility to the expected return, whereas the \textit{expected scalarised returns} (ESR) criterion takes the expected utility of the return. SER is appropriate when a policy will be executed many times, so some poor individual executions can be tolerated. ESR is more appropriate when a policy is executed only once; for example, a patient may have only one opportunity to follow a treatment plan \cite{morl_survey,survey_mo_seq_dec_make}. This thesis uses the more widely studied SER criterion, and under the linear utility assumed here the two coincide. 
 
@@ -65,7 +65,7 @@
             \item \hypertarget{q12}{\textbf{Multi-Objective Exploration:}} Can the exploration insights from (maximum-entropy) single-objective Monte Carlo Tree Search algorithms be applied to multi-objective domains?
         \end{enumerate}
 
-        \item \hypertarget{q2}{\textbf{Stochastic Multi-Objective Domains:}} Multi-objective Monte Carlo Tree Search has been studied in deterministic domains --- can these methods be generalised to stochastic settings?
+        \item \hypertarget{q2}{\textbf{Stochastic Multi-Objective Domains:}} Multi-objective Monte Carlo Tree Search has been studied in deterministic domains --- can these methods be extended to stochastic settings?
 
         \item \hypertarget{q3}{\textbf{Scalability:}} How can the scalability of Monte Carlo Tree Search methods be improved, in both single- and multi-objective settings?
 

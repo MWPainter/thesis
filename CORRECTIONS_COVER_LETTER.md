@@ -27,38 +27,25 @@ I agree that using the unknown weights scenario provides a better motivation for
     - clarifying that utilities are assumed to be linear, with forward references where it is discussed,
     - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
     - explaining why planning methods might still be of interest instead of purely learning better prior policy/value functions
-- Updated prose thoughout thesis for using the unknown weights scenario instead:
+- Updated prose throughout thesis for using the unknown weights scenario instead:
     - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
     - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
-    - Section 5.1 (page 121) - rewrote introduction paragraph, relating back to the new scope section for motivation
+    - Section 5.1 - restructured to improve clarity and relates back to unknown weights scenario
+    - Section 5.4.2 - updated first paragraph to motivate the use of the two metrics using the unknown weights scenario
 
 
 
-
-Chapter 5 + 6 proof reads
-
-    - Chapter 5 introduction - updated to unknown weights + references
-    - Section 5.1 - Updated prose, relating back to the scoping section
-    - Sec 5.4.2 (see P132 below)
-    - Sec 5.6 (chapter summary)
-    - CHECK CH6
-
-
-
-
-> P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilites are non-linear or better expressed as preference functions
+> P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilities are non-linear or better expressed as preference functions
 
 Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it and references pointing towards it were lacking. I have made the following changes to address this:
-- Added an explicit Section 5.5.1 to discuss why the linear utility assumption is made and discuss adapting it to non-linear utilities
-- Updated the description of Section 5.5 in the Chapter 5 introduction (page 114) to reflect the changes made to Section 5.5
-- Also added forward references to Section 5.5.1 where it seemed appropriate:
-    - In the scoping section added for the correction above (Section 1.2)
-    - Where linear utility is defined in Section 2.6 (page 45)
+- restructured Section 5.5, to include a new subsection 5.5.2 to more appropriately give intuition and an example of why only linear utilities are considered
+- also added subsection 5.5.2.1 to explain how the work could be adapted to a non-linear (Chebyshev) utility
+- added forward references to Section 5.5 to highlight that the choice is addressed later, specifically:
+    - Section 1.2 (page TODO) - the scoping section added for the correction above
+    - Section 2.6 (page 45) - where the linear utility function is defined
+    - TODO: is bringing up Section 5.1 relevant here?
 
-
-also section 5.1
-TODO: proof read section 5.5
 
 
 > P12: Explain which of these bounds is better and why. Give some intuition about simple regret bounds, what constitutes a good bound, etc.
@@ -92,6 +79,10 @@ Agreed, and corrected. Policies now condition on the timestep throughout Chapter
 > P17: It’s confusing to include RL here. You’re just doing sample-based on-line planning.
 
 TODO: ACTUALLY WRITE THESE UPDATES
+
+REMEMBER TO UPDATE THE CORRESPONDING TITLES IN ABBREVIATIONS
+
+
 The difference between planning and RL that I was working with is that planning the transition distribution is known whereas in RL it is unknown. To clarify I've made the following changes:
 - Updated title of Sections 2.3 and 2.3.1: "Reinforcement Learning" -> "Planning and Reinforcement Learning"
 - Minor changes to Section 2.3 to be consistent with updating the heading
@@ -188,6 +179,9 @@ For context this is related to Figure (TODO), which are the plots of EUM and Hyp
 
 
 TODO: check that how get convex hull from CZT and SM is explained
+
+TODO: use https://claude.ai/chat/57c0c29a-73fc-4b6f-984c-e6faa09b61c8 
+- crowding distance means HV is non-monotonic in 
 
 Non-monotonic trends that need explaining:
 - 500 fruit tree - HV (all)

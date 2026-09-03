@@ -1218,7 +1218,7 @@ At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value fu
     \end{align}
 \end{defn}
 
-\mccorrect{The algorithms in Chapters \mbox{\ref{ch:5-chmcts}} and \mbox{\ref{ch:6-simplexmaps}} assume a linear utility function, an assumption that is discussed and justified in Section \mbox{\ref{sec:5-6-1-linear_utility}}.}
+\mccorrect{The algorithms in Chapters \mbox{\ref{ch:5-chmcts}} and \mbox{\ref{ch:6-simplexmaps}} assume a linear utility function, an assumption that is discussed and justified in Section \mbox{\ref{sec:5-6-2-linear_utility}}.}
 
 Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $\bff{w}\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
 
@@ -1308,7 +1308,19 @@ Whilst this thesis focuses on the linear utility setting, another commonly used 
     \end{align}
 \end{defn}
 
-The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function \cite{moo_chebyshev}, and the second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
+The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function, \mccorrect{which recovers the Pareto front is the utopian point $\ruto$ is appropriately set \mbox{\cite{moo_chebyshev}}:}
+%
+\begin{mccorrection}
+\begin{defn}
+    \label{def:2:chebyshev_utility}
+    Let $\bff{v},\ruto\in\bb{R}^D$ and $\bff{w}\in\Delta^D$. The \textnormal{Chebyshev utility} of $\bff{v}$ with respect to the weight vector $\bff{w}$ and utopian point $\ruto$ is:
+    \begin{align}
+        \ucheby(\bff{v};\bff{w},\ruto) = - \max_{i=1,\ldots,D} w_i |v_i - \rutocomp_i|. \label{eq:2:cheby}
+    \end{align}
+\end{defn}
+\end{mccorrection}
+
+The second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
 Several metrics have been proposed for evaluating the 
 quality of a solution set in multi-objective settings 

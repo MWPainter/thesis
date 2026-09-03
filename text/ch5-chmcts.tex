@@ -58,11 +58,10 @@
     
     This chapter is organised as follows:
     \begin{itemize}
-        \item Section \ref{sec:5-1-intro} motivates the 
-            multi-objective decision-making framework used in this 
-            chapter \todo{update this sentence. Now it just discusses consistent action selection and contextual tree search to solve the problem};
-            % , and generalises the notion of simple regret to 
-            % \textit{contextual simple regret} for the multi-objective setting;
+        \item \mccorrect{Section \mbox{\ref{sec:5-1-intro}} introduces the
+            \textit{consistent action selection} problem, and motivates
+            \textit{contextual tree search} as the approach taken in this
+            chapter to resolve it};
         \item Section \ref{sec:5-2-czt} introduces 
             \textit{Contextual Zooming for Trees} (CZT), a 
             MOMCTS algorithm following the same design paradigm 
@@ -112,7 +111,7 @@
     \begin{mccorrection}
     As set out in Section \ref{sec:1-2-scope}, the MOMCTS algorithms in this thesis are used in the \textit{planning phase} of the \textit{unknown weights scenario} (Section \ref{sec:2-6-morl}): the weight vector is unknown while planning, so the aim is to produce a solution set of policies for the initial state of the MOMDP, covering all possible preferences. 
 
-    First, Section \ref{sec:5-1-1-consistent_tree_search} highlights that actions need to be selected consistently to follow a policy from the initial state during the \textit{execution phase}. Then Section \ref{sec:5-1-2-contextual_tree_search} extends the argument for the \textit{planning phase} to arrive at the \textit{contextual tree search} approach taken in this thesis: each trial samples a weight vector randomly at the beginning of a trial and uses it to select actions consistently throughout the trial.
+    First, Section \ref{sec:5-1-1-consistent_tree_search} highlights that actions need to be selected consistently to follow a policy from the initial state during the \textit{execution phase}. Then Section \ref{sec:5-1-2-contextual_tree_search} extends the argument to the \textit{planning phase} to arrive at the \textit{contextual tree search} approach taken in this thesis: a weight vector is sampled at random at the start of each trial, and used to select actions consistently throughout it.
     \end{mccorrection}
 
 
@@ -136,11 +135,11 @@
     \end{figure}
 
     \begin{mccorrection}
-    Given a set of set of multi-objective Q-values (for example a convex hull value set, Definition \ref{def:2:convex_hull_value_set}) how can a policy be extracted from it? In the single-objective case the solution is simple, given the optimal Q-values for an MDP an optimal policy can be extracted by taking an argmax. However, as discussed by \citet{locally_optimal}, the question is not easily resolved in the multi-objective case. They compute and track Pareto-optimal policies using an adaptation of Q-learning, and critically, highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. To demonstrate this, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step, but fails to follow any of the three globally optimal paths.
+    During the \textit{execution phase} the agent follows a single policy. Given a set of multi-objective Q-values (for example a convex hull value set, Definition \ref{def:2:convex_hull_value_set}), how can such a policy be extracted? In the single-objective case the solution is simple: given the optimal Q-values for an MDP, an optimal policy can be extracted by taking an argmax. However, as discussed by \citet{locally_optimal}, the question is not easily resolved in the multi-objective case. They compute and track Pareto-optimal policies using an adaptation of Q-learning and, critically, highlight that even if an action is \textit{locally optimal}, it may not be \textit{globally optimal}. An action is \textit{locally optimal} if it maximises the utility achievable from the current state, whereas a \textit{globally optimal} policy is any policy in the undominated set of policies (Definition \ref{def:2:undominated_set}). To demonstrate this disparity, they use an example with three optimal paths (Figure \ref{fig:5:motivating_vanmoffaert}), where the black path alternates between multiple optimal paths, taking only locally optimal actions at each step, but fails to follow any of the three globally optimal paths.
 
-    This is an issue for MOMCTS algorithms, because MCTS algorithms make local decisions at each decision node, and fundamentally assume that a globally optimal solution (i.e. an undominated policy from the initial state) can be found from making local decisions. 
+    This is an issue for MOMCTS algorithms, because MCTS algorithms make local decisions at each decision node, and fundamentally assume that a globally optimal solution (i.e. an undominated policy from the initial state) can be found by making local decisions.
 
-    Section \ref{sec:5-6-theory} discusses the problem from a more formal perspective, and Theorem \ref{thm:per-step-linear} reconciles the use of MCTS for multi-objective reinforcement learning by showing that selecting locally optimal actions leads to globally optimal policies if any only if the utility is linear. Which is why this thesis assumes that utilities are linear.
+    Section \ref{sec:5-6-theory} discusses the problem more formally: Theorem \ref{thm:per-step-linear} shows that selecting locally optimal actions leads to globally optimal policies if and only if the utility is linear, which is why this thesis assumes a linear utility.
     \end{mccorrection}
 
     % \begin{figure}
@@ -179,7 +178,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=0.6\textwidth]{figures/ch5/motivate_contextual_momdp.pdf}
-        \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}. \todo{update fig to update it to be consistent with writing updates and avoid tree terminology if its just an MOMDP}}
+        \caption[A motivating example MOMDP for contextual tree search.]{A motivating example MOMDP for contextual tree search. The convex hull value set at the root consists of $\{(4,0),(0,4)\}$, following the red paths. The optimal values at the root node require specific actions at the child nodes (blue), while at the child nodes all actions are \textit{locally optimal}.}
         \label{fig:5:motivating_example}
     \end{figure}
 
@@ -188,19 +187,17 @@
 
     Consider the MOMDP illustrated in Figure \ref{fig:5:motivating_example}, with two objectives. The convex hull value set at the initial state of the MOMDP is $\{(4,0),(0,4)\}$: a reward $(4,0)$ is only reachable via the left action, and $(0,4)$ only via the right action. Under a linear utility, the optimal action at the root node therefore depends entirely on the weight vector $\bff{w}$: if $w_1 > w_2$ then the left action is optimal, and if $w_2 > w_1$ then the right action is optimal.
 
-    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all actions at the immediate child nodes are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the implicit commitment made at the root node.
+    Once the agent has taken the left action from the root node, it has implicitly committed to optimising towards the first objective (i.e. weights with $w_1 > w_2$) because the rewards available from the right action are no longer reachable. Although all subsequent actions are \textit{locally optimal} (i.e. they lead to a value in the local convex hull value set), only the action leading to $(4,0)$ is consistent with the commitment implicitly made by the first action.
 
-    Prior MOMCTS work (Section \ref{sec:3-5-momcts}) typically aims to compute a full Pareto Front at all nodes, for example at the blue states in Figure \ref{fig:5:motivating_example}. However, overprioritises exploration in parts of the MOMDP that are suboptimal from the initial state \todo{find a way to highlight this in figure and update this text}, leading to search policies that select actions inconsistently within each trial, and optimising for no particular objective on each trial.
+    Prior MOMCTS work (Section \ref{sec:3-5-momcts}) typically aims to compute a full Pareto front at all nodes, for example at the blue states in Figure \ref{fig:5:motivating_example}. Suppose the MOMDP of Figure \ref{fig:5:motivating_example} had a longer horizon, where rewards past the second action are small. Computing the Pareto front at all nodes, in particular at the blue states, overprioritises exploration in parts of the MOMDP that are suboptimal from the initial state, leading to search policies that select actions inconsistently within each trial, optimising for no particular objective.
     \end{mccorrection}
 
     % \citet{locally_optimal} solve the consistent action selection problem by explicitly tracking the optimal policies across the full MOMDP. 
-    The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. In the context of MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
+    The approach taken in this thesis is to consider a \textit{contextual tree search}, where a context weight vector $\bff{w}$ is sampled at the start of each trial and used to guide action selection throughout that trial. For MORL with linear utilities, this is sufficient to resolve the consistent action selection problem, ensuring that all actions within a trial are consistent with a single objective.
 
     \begin{sloppypar}
-    In the \mbox{\thtspp} framework, the context weight $\bff{w}$ is sampled during the \mbox{\samplecontext} function (Section \ref{sec:2-4-2-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions.
+    In the \mbox{\thtspp} framework, the context weight $\bff{w}$ is sampled during the \mbox{\samplecontext} function (Section \ref{sec:2-4-2-thts}) and passed to all subsequent steps of the trial, including the search policy and backup functions. \mccorrect{To reflect this, the context weight is added as a parameter to the policy notation:}
     \end{sloppypar}
-
-    \todo{Some text before introducing contextual policies}
 
     \begin{defn}
         \label{def:5:context_policy}
@@ -210,11 +207,11 @@
         the probability of selecting action $a$ at state $s$ under 
         weight $\bff{w}$.
 
-        A policy $\pi$ is \textnormal{context independent} if 
-        $\pi(a|s;\bff{w}) = \pi(a|s;\bff{w}')$ for all 
-        $\bff{w},\bff{w}'\in\Delta^{D}$ and all $s\in\cl{S}$, 
-        $a\in\cl{A}$. Otherwise, $\pi$ is 
-        \textnormal{context dependent}.
+        A policy $\pi$ is \textnormal{context-independent} if
+        $\pi(a|s;\bff{w}) = \pi(a|s;\bff{w}')$ for all
+        $\bff{w},\bff{w}'\in\Delta^{D}$ and all $s\in\cl{S}$,
+        $a\in\cl{A}$. Otherwise, $\pi$ is
+        \textnormal{context-dependent}.
     \end{defn}
 
 
@@ -468,7 +465,7 @@
             \sqrt{\frac{\log(N(s))}{N(s,a)}} \right],
             \label{eq:5:chuct_policy}
     \end{align}
-    where $\cchuct > 0$ is a bias parameter controlling exploration. The search policy is context-dependent, since the contextual Q-value $\Qchuctctx{\bff{w}}(s,a)$ depends on $\bff{w}$, ensuring that action selection is consistent with the sampled objective throughout each trial.
+    where $\cchuct > 0$ is a bias parameter controlling exploration. The search policy is context-dependent (Definition \ref{def:5:context_policy}), since the contextual Q-value $\Qchuctctx{\bff{w}}(s,a)$ depends on $\bff{w}$, ensuring that action selection is consistent with the sampled objective throughout each trial.
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
@@ -547,7 +544,7 @@
 \subsection{Prior Search Policies}
 \label{sec:5-3-5-prior}
 
-    The MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork} can be recovered within the CHMCTS framework by substituting appropriate search policies. In general, prior work uses search policies of the following form:
+    The MOMCTS algorithms discussed in Section \ref{sec:3-5-momcts} propose a number of search policies that could also be used within the CHMCTS framework. In general, prior work uses search policies of the following form:
     \begin{align}
         \pialg(a|s;\bff{w}) = \argmax_{a\in\cl{A}} \left[
             \zetaalg(\Qalg(s,a);\bff{w}) + \calg 
@@ -568,17 +565,7 @@
     
 \paragraph{Chebyshev CHMCTS (C-CHMCTS).}
 
-    \citet{chebyshev_momcts} use the \textit{Chebyshev utility}:
-
-    \begin{defn}
-        \label{def:5:chebyshev_utility}
-        Let $\bff{v},\ruto\in\bb{R}^D$ and $\bff{w}\in\Delta^D$. The \textnormal{Chebyshev utility} of $\bff{v}$ with respect to $\bff{w}$ and $\ruto$ is:
-        \begin{align}
-            \ucheby(\bff{v};\bff{w},\ruto) = - \max_{i=1,\ldots,D} w_i |v_i - \rutocomp_i|.
-        \end{align}
-    \end{defn}
-
-    The scalarisation function for C-CHMCTS is:
+    \citet{chebyshev_momcts} use the \textit{Chebyshev utility} \mccorrect{(Definition \mbox{\ref{def:2:chebyshev_utility}}) as a scalarisation function for the search policy. So the scalarisation function used for C-CHMCTS is:}
     \begin{align}
         \zetcchmcts(\bfcl{V};\bff{w},\ruto) = \max_{\bff{v}\in\bfcl{V}} \ucheby(\bff{v};\bff{w},\ruto),
     \end{align}
@@ -860,29 +847,33 @@
 \label{sec:5-5-2-eval_procedure}
 
 \begin{mccorrection}
-    In multi-objective MCTS, the quality of the convex hull
-    at the root node is the primary concern. As discussed in
-    Section \ref{sec:1-2-scope}, in the unknown weights
-    scenario the search tree is built from the initial state
-    during the planning phase, and the root node's convex
-    hull determines the utility that can be achieved: once
-    the weight vector $\bff{w}$ is revealed, the policy
-    executed is the one maximising
-    $\bff{w}^\top\bff{v}$ over the root value estimates.
-    After $\bff{w}$ is revealed the problem also reduces to
-    a single-objective one, so if the agent continues to
-    plan online during execution, it can follow a
-    single-objective MCTS algorithm in the scalarised MDP
-    with reward $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
-    The deeper parts of the multi-objective search tree
-    therefore serve to improve the value estimates at the
-    root, rather than being used directly for action
-    selection during execution.
+    As discussed in Sections \ref{sec:1-2-scope} and \ref{sec:2-6-morl}, MOMCTS is used during the planning phase in the unknown weights scenario, building a search tree from the initial state. To evaluate the performance of the algorithms, two metrics are used, both computed at the initial state: the \textit{Expected Utility Metric} (EUM, Definition \ref{def:2:eum}), which estimates the utility of the recommended solution set under a uniformly random weight vector, and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}), which measures the volume of objective space dominated by that set. The hypervolume does not refer to any particular weight vector or policy, but because the solution set at the initial state determines the utility the agent can achieve once the weight vector is revealed, a larger hypervolume can indicate that a wider range of values is achievable.
+
+    The rest of this subsection specifies how the solution set of recommendation policies is defined given a search tree, and how the EUM is approximated via sampling.
+
+    % In multi-objective MCTS, the quality of the convex hull
+    % at the root node is the primary concern. As discussed in
+    % Section \ref{sec:1-2-scope}, in the unknown weights
+    % scenario the search tree is built from the initial state
+    % during the planning phase, and the root node's convex
+    % hull determines the utility that can be achieved: once
+    % the weight vector $\bff{w}$ is revealed, the policy
+    % executed is the one maximising
+    % $\bff{w}^\top\bff{v}$ over the root value estimates.
+    % After $\bff{w}$ is revealed the problem also reduces to
+    % a single-objective one, so if the agent continues to
+    % plan online during execution, it can follow a
+    % single-objective MCTS algorithm in the scalarised MDP
+    % with reward $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$.
+    % The deeper parts of the multi-objective search tree
+    % therefore serve to improve the value estimates at the
+    % root, rather than being used directly for action
+    % selection during execution.
 \end{mccorrection}
 
-    To evaluate the quality of the convex hull at the root node, the \textit{Expected Utility Metric} (Definition \ref{def:2:eum}) and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}) are used.
+    % To evaluate the quality of the convex hull at the root node, the \textit{Expected Utility Metric} (Definition \ref{def:2:eum}) and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}) are used.
 
-    Given a context $\bff{w}$ and search tree $\cl{T}$ that defines a partial recommendation policy $\psi_{\alg}$, the policy will be made complete similarly to Section \ref{sec:4-4-2-eval_procedure}:
+    Given a context $\bff{w}$ and search tree $\cl{T}$ that defines a partial recommendation policy $\psi_{\alg}$, the policy is completed as in Section \ref{sec:4-4-2-eval_procedure}:
     \begin{align}
         \texttt{complete}(\psi_{\alg})(a|s;\bff{w}) =
         \begin{cases}
@@ -892,21 +883,21 @@
     \end{align}
     % 
 
-    The Convex Hull (of policies) can then be written as 
+    The convex hull of recommendation policies can then be written as
     \begin{align}
-        \Psi_{\alg} = \{\texttt{complete}(\psi_{\alg})\ |\ \bff{w}\in\Delta^D \}.
+        \Psi_{\alg} = \{\texttt{complete}(\psi_{\alg})(\cdot|\cdot;\bff{w})\ |\ \bff{w}\in\Delta^D \}.
     \end{align}
 
-    A Monte Carlo estimate of $\eum(\Psi_{\alg})$ (Definition \ref{def:2:eum}) is computed. Following \cite{well_spaced_points}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then the \eum\ewe can be approximated as:
+    Following \cite{well_spaced_points}, let $E(\Delta^D)$ be an evenly spaced set of points in $\Delta^D$. Then $\eum(\Psi_{\alg})$ can be approximated as:
     \begin{align}
-        \eum(\Psi_{\alg}) \approx \sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{\hat{V}}^{\bff{\tau}(\bff{w})},
+        \eum(\Psi_{\alg}) \approx \frac{1}{|E(\Delta^D)|}\sum_{\bff{w}\in E(\Delta^D)} \bff{w}^\top \bff{\hat{V}}^{\bff{\tau}(\bff{w})},
     \end{align}
     %
     where $\bff{\tau}(\bff{w}) \sim \texttt{complete}(\psi_{\alg})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{\hat{V}}^{\bff{\tau}(\bff{w})}$ is the cumulative return from the trajectory. That is, if the trajectory is $\bff{\tau}(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{\hat{V}}^{\bff{\tau}(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
 
-    Each algorithm is given $60$ seconds of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation and value estimates for the EUM are computed using $128$ Monte Carlo samples, i.e. $|E(\Delta^D)| = 128$.
+    Each algorithm is given $60$ seconds of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation, and the EUM is approximated using $|E(\Delta^D)| = 128$ evenly spaced weight vectors, with one trajectory sampled per weight vector.
 
-    As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms is given in Appendix \ref{app:expr-deets-ch5}.
+    As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms are given in Appendix \ref{app:expr-deets-ch5}.
 
 
 
@@ -914,7 +905,7 @@
 \subsection{Multi-Objective Gridworld Results}
 \label{sec:5-5-3-results_and_discussion}
 
-    For CZT, to compute a hypervolume, an approximate convex hull is computed, using the $\Qczt$ value estimates at each node.
+    For CZT, to compute a hypervolume, an approximate convex hull is computed, using the $\Qczt$ value estimates at each node. \todo{of relevant balls, explicitly state the set, convex prune over Q(B) for B in relevant}
 
     \todo{Add description of some of the parameters that were set consistently across algorithms (single node expansion, heuristic value etc).}
 
@@ -1295,45 +1286,69 @@
 \section{Theoretical Discussion}
 \label{sec:5-6-theory}
 
-\todo{refer back to figure for the previous discussion and try to be more specfic about where it was discussed. Make sure that the references go both ways.}
-
-\todo{MAke the MOMDP appear earlier and use it for the intuitive argument. Make another figure showing contours of the chebychev utility and the three relevant Pareto fronts}
-
 \begin{mccorrection}
-    This section provides theoretical results and discussion for CHMCTS and MOMCTS. It is structured as follows:
+    This section revisits the consistent action selection problem of Section \ref{sec:5-1-1-consistent_tree_search} more precisely, and gives theoretical results for CHMCTS and MOMCTS. It is structured as follows:
     \begin{itemize}
         % \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
-        \item Section \ref{sec:5-6-1-linear_utility} discusses why the assumption of linear utilities is made throughout this thesis;
-        \item Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} shows that locally optimal action selection yields globally optimal policies if and only if the utility function is linear (Theorem \ref{thm:per-step-linear});
-        \item Section \ref{sec:5-6-3-convergence_of_chmcts} outlines convergence proofs for CHMCTS.
+        \item Section \ref{sec:5-6-1-notation} gives some additional notation needed to precisely discuss consistent action selection and to state and prove Theorem \ref{thm:per-step-linear}.
+        \item Section \ref{sec:5-6-2-linear_utility} discusses consistent action selection, and why the assumption of linear utilities is made throughout this thesis;
+        \item Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that locally optimal action selection yields globally optimal policies if and only if the utility function is linear (Theorem \ref{thm:per-step-linear});
+        \item Section \ref{sec:5-6-4-convergence_of_chmcts} outlines how the convergence of CHMCTS can be established.
     \end{itemize}
+
+
+
+\subsection{Notation}
+\label{sec:5-6-1-notation}
+
+    Because this thesis assumes a linear utility throughout, some additional notation is needed to discuss the problem of consistent action selection (Section \ref{sec:5-1-1-consistent_tree_search}) precisely.
+
+    The discussion in this section uses the \textit{Chebyshev utility} as an example, because it is non-linear, and commonly used as a utility where the undominated values recover can the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}. For reference, Equation \eqref{eq:2:cheby} (from Definition \ref{def:2:chebyshev_utility}) is repeated here:
+    %
+    \begin{align}
+        \ucheby(\bff{v};\bff{w},\bff{r}) = - \max_{i=1,\ldots,D} w_i |v_i - r_i|, \label{eq:5:cheby}
+    \end{align}
+    %
+    where $\bff{r}$ is a utopian (reference) point.
+
+    Consider an arbitrary MOMDP $\bfcl{M}$, with a valid set of policies $\Pi$. Recall that $U(\Pi;u)$ is the undominated set of policies with respect to utility function $u$ (Definition \ref{def:2:undominated_set}). As is typical in multi-objective reinforcement learning, this set is taken with respect to the initial state\footnote{The undominated set is typically taken with respect to an initial state distribution, which in the context of this thesis is a fixed initial state.} \cite{morl_survey}. In this discussion it is useful to consider the undominated set of policies from any given state $s$:
+    %
+    \begin{align}
+        U(s,\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s;0);\bff{w}) \right\}. \label{eq:5:undominated_set_def}
+    \end{align}
+
+    Then the sets of optimal values, with respect to utility $u$, at state $s$ can be defined as:
+    %
+    \begin{align}
+        \bfcl{V}^*_u(s) &= \{\bff{V}^{\pi}(s) \mid \pi \in U(s,\Pi;u)\}, \\
+        \bfcl{Q}^*_u(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(s,\Pi;u)\}.
+    \end{align}
     
+    Then a \textit{locally optimal policy} for weight $\bff{w}$, with respect to utility $u$, is:
+    %
+    \begin{align}
+        \pi^{\bff{w}}_{\text{local},u}(s) \in \argmax_{a \in \cl{A}}\;
+            \max_{\bff{q} \in \bfcl{Q}^*_u(s, a)} u(\bff{q}; \bff{w}).
+            \label{eq:5:locally_optimal_policy}
+    \end{align}
 
-    \todo{Move definitions here with intro prose}
-    \todo{Make MOMDP appear in the linear utility assumption}
-    \todo{Use MOMDP to give example with contours}
-    \todo{State (informally) that no weight or utopian point is able to give the optimal policy in this. Say it isn't formally shown here, but the figure is to give intuition}
-    \todo{Say this MOMDP is used to highlight that there are MOMDPs where no local optimal policy gives the global optimum policy}
-    \todo{Add a second MOMDP to highlight that need to add the reward given so far to the local decisions}
-    \todo{Handle todos, including updating figures}
-    \todo{Proof read with claude}
+    And finally, a policy $\pi\in\Pi$ is said to be \textit{utility optimal} for weight $\bff{w}\in\Delta^D$ if
+    %
+    \begin{align}
+        u(\bff{V}^{\pi^{\bff{w}}}(s_0); \bff{w}) = \max_{\pi'\in\Pi} u(\bff{V}^{\pi'}(s_0); \bff{w}). \label{eq:5:utility_optimal}
+    \end{align}
 
 
 
 
+\subsection{Consistent Action Selection and the Linear Utility Assumption}
+\label{sec:5-6-2-linear_utility}
 
-\subsection{The Linear Utility Assumption}
-\label{sec:5-6-1-linear_utility}
+    MCTS methods are built on the assumption that making decisions locally at each decision node can lead to a globally optimal solution. In particular, MCTS methods typically rely on two core components: each node stores a reward-to-go estimate, and actions are selected using those local estimates. As mentioned in Section \ref{sec:5-1-intro}, this is sound for single-objective problems.
 
-    MCTS methods are built on the assumption that making decisions locally at each decision node can lead to a globally optimal solution. However, it has already been observed that locally optimal actions do not always lead to globally optimal policies in the multi-objective setting (Section \ref{sec:5-1-intro}). This section gives intuition behind that claim, and Section \ref{sec:5-6-2-fundamental_assumption_of_momcts} formalises the claim.
+    In MOMCTS the two components become: each node stores a set of vector-valued reward-to-go estimates, such as a convex hull value set in CHMCTS (Section \ref{sec:5-3-chmcts}); and actions are selected by maximising the utility over those estimates. However, for these to be sound, they require that $\pi^{\bff{w}}_{\text{local},u}$ is utility optimal for $\bff{w}$, which Theorem \ref{thm:per-step-linear} establishes is true for any MOMDP if and only if the utility $u$ is linear.
 
-    The algorithms in this chapter rely on the following two components that are typical of MCTS algorithms:
-    \begin{enumerate}
-        \item each node stores a value set, estimating the multi-objective returns-to-go available from that node, for example a convex hull value set in CHMCTS (Section \ref{sec:5-3-chmcts});%, or the value estimates of the active balls in CZT (Section \ref{sec:5-2-czt});
-        \item actions are selected \textit{locally} (only using information stored in the node), by maximising the utility function over the entries of that value set.
-    \end{enumerate}
-
-    These components are sound when the utility is linear. To see why, consider taking the maximum linear utility over the Q-value backup used in CHMCTS (Equation \eqref{eq:5:chmcts_q_backup}):
+    To see why, consider taking the maximum linear utility over the Q-value backup used in CHMCTS (Equation \eqref{eq:5:chmcts_q_backup}):
     %
     \begin{align}
         & \max \left\{ u_{\lin}(\bff{q};\bff{w})\ |\ \bff{q}\in \Qalg(s_t,a_t) \right\} \nonumber \\
@@ -1342,23 +1357,74 @@
     \end{align}
 
     The distributive property of the linear utility in Equation \eqref{eq:5:linear_utility_distributes} does not hold for a general utility. In other words, the second component above requires utilities to be linear for the algorithm to be sound. Theorem \ref{thm:per-step-linear} shows this more formally.
+
+    \end{mccorrection}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/ch5/proof.pdf}
+        \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{\mccorrect{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.}}
+        \label{fig:5:momdp_proof}
+    \end{figure}
+    \begin{mccorrection}
+
+    Figure \ref{fig:5:momdp_proof} gives a concrete example, and is the MOMDP used to prove the ``only if'' direction of Theorem \ref{thm:per-step-linear}. Under the Chebyshev utility, locally optimal actions in this MOMDP do not yield a globally optimal policy. The Pareto front consists of the points $\{(1,3.5),(2.5,2.5),(3.5,1)\}$, where the value of $(2.5,2.5)$ requires the rewards of $(5,0)$ and $(0,5)$ to be selected from the states $\sss{1}$ and $\sss{2}$ respectively. Although it is not shown here --- because it is stronger than what the proof of Theorem \ref{thm:per-step-linear} requires --- there is no choice of $\bff{w}$ and $\bff{r}$ for which $\pi^{\bff{w}}_{\text{local},\ucheby}$ achieves the value $(2.5,2.5)$.
+
+    \end{mccorrection}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch5/cheby_contours.pdf}
+        \caption[Pareto fronts for the MOMDP from Figure \ref{fig:5:momdp_proof} with contours of the Chebyshev utility.]{\mccorrect{Pareto fronts for the MOMDP from Figure \mbox{\ref{fig:5:momdp_proof}} with contours of the Chebyshev utility. The left plot shows the Pareto front at the initial state \mbox{$s_0$}, with the problematic point of \mbox{$(2.5,2.5)$} highlighted in blue. The middle and right plots show the Pareto fronts from \mbox{$\sss{1}$} and \mbox{$\sss{2}$} simultaneously: the circles form the Pareto front at \mbox{$\sss{1}$}, and blue points form the Pareto front at \mbox{$\sss{2}$}. The middle plot shows the pyramid like contours of the Chebyshev utility (Equation \mbox{\ref{eq:5:cheby}}) with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$}, and the right plot with \mbox{$\bff{w}=(0.25,0.75)$} and \mbox{$\bff{r}=(6,6)$}. The dashed red lines run along the vector \mbox{$(1/w_1,1/w_2)$} and passes through the corner points of the contours. For the value of \mbox{$(2.5,2.5)$} to be achievable by a policy of the form of Equation \mbox{\eqref{eq:5:locally_optimal_policy}} that selects greedily with respect to the Chebyshev utility would require a value of \mbox{$\bff{w}$} and \mbox{$\bff{r}$} that assigns a higher value to the blue triangle and white circle than the blue circle, which geometrically is not possible.}}
+        \label{fig:5:momdp_proof_pareto_fronts}
+    \end{figure}
+    \begin{mccorrection}
+
+    The Pareto fronts at the states $s_0, \sss{1}$ and $\sss{2}$ are depicted in Figure \ref{fig:5:momdp_proof_pareto_fronts}, along with contours of the Chebyshev utility to highlight that the Chebyshev utility is not able to simultaneously assign a higher utility to the points $(5,0)$ and $(0,5)$ than $(2,2)$ to achieve the value of $(2.5,2.5)$. 
+
+    In particular, the locally optimal policy using the Chebyshev utility with $\bff{w}=(0.5,0.5)$ and $\bff{r}=(6,6)$ will always achieve a value of $(2,2)$, which is not utility optimal, as it is dominated by the value of $(2.5,2.5)$.
+
+
+
+
+
+    % MCTS methods are built on the assumption that making decisions locally at each decision node can lead to a globally optimal solution. However, it has already been observed that locally optimal actions do not always lead to globally optimal policies in the multi-objective setting (Section \ref{sec:5-1-intro}). This section gives intuition behind that claim, and Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} formalises the claim.
+
+    % The algorithms in this chapter rely on the following two components that are typical of MCTS algorithms:
+    % \begin{enumerate}
+    %     \item each node stores a value set, estimating the multi-objective returns-to-go available from that node, for example a convex hull value set in CHMCTS (Section \ref{sec:5-3-chmcts});%, or the value estimates of the active balls in CZT (Section \ref{sec:5-2-czt});
+    %     \item actions are selected \textit{locally} (only using information stored in the node), by maximising the utility function over the entries of that value set.
+    % \end{enumerate}
+
+    % These components are sound when the utility is linear. To see why, consider taking the maximum linear utility over the Q-value backup used in CHMCTS (Equation \eqref{eq:5:chmcts_q_backup}):
+    % %
+    % \begin{align}
+    %     & \max \left\{ u_{\lin}(\bff{q};\bff{w})\ |\ \bff{q}\in \Qalg(s_t,a_t) \right\} \nonumber \\
+    %     = & u_{\lin}\left(\bff{R}(s_t,a_t);\bff{w}\right) + \sum_{s'\in\suc{s_t}{a_t}} 
+    %         \frac{N(s')}{N(s_t,a_t)} \max \left\{ u_{\lin}(\bff{v};\bff{w})\ |\ \bff{v}\in \Valg(s') \right\}. \label{eq:5:linear_utility_distributes}
+    % \end{align}
+
+    % The distributive property of the linear utility in Equation \eqref{eq:5:linear_utility_distributes} does not hold for a general utility. In other words, the second component above requires utilities to be linear for the algorithm to be sound. Theorem \ref{thm:per-step-linear} shows this more formally.
     
 \subsubsection{Non-Linear Utilities}
-\label{sec:5-6-1-1-non_linear_utilities}
+\label{sec:5-6-2-1-non_linear_utilities}
 
-    While Theorem \ref{thm:per-step-linear} rules out a guarantee for arbitrary MOMDPs for MOMCTS algorithms using the two components above, this does not mean that MCTS cannot be successfully applied when the utility is non-linear. 
-
-    However, with a non-linear utility on a stochastic MOMDP, the best action at a node can depend on outcomes that did not occur. In Figure \ref{fig:5:momdp_proof} below, the (single) optimal policy pairs the $(5,0)$ reward at $\sss{1}$ with the $(0,5)$ reward at $\sss{2}$, giving an expected return of $(2.5,2.5)$. Changing the reward available at $\sss{2}$ would change which action is optimal at $\sss{1}$, even though $\sss{1}$ and $\sss{2}$ are never visited in the same trial. A trial-based method only ever samples one of the two branches, so this combination is not well suited to MCTS, and is left beyond the scope of this thesis.
-
-    When restricted to deterministic MOMDPs, CHMCTS could possibly be adapted for non-linear utilities, which is now outlined for the non-linear \textit{Chebyshev utility}:
-    \begin{align}
-        u_{\text{cheby}}(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|, \label{eq:5:cheby_util}
-    \end{align}
-    as it can be used to recover the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}.
+    While Theorem \ref{thm:per-step-linear} rules out any guarantee for MOMCTS algorithms that use the two components above on arbitrary MOMDPs, this does not mean that MCTS cannot be applied successfully when the utility is non-linear.
     
-    The issues highlighted by Equation \eqref{eq:5:linear_utility_distributes} can be circumvented by instead making decisions over the value set $\bff{R}_{:t-1} + \Qalg(s_t,a_t)$, where $\bff{R}_{:t-1} = \sum_{i=0}^{t-1} \bff{R}(s_i,a_i)$ is the reward accrued so far in the trial. The accrued reward is needed because a non-linear utility depends on the entire return, and the utility does not distribute over the sum of cumulative returns. 
+    As the example MOMDP from Figure \ref{fig:5:momdp_proof} highlights, the best action at a state can depend on outcomes that did not occur: changing the rewards available at $\sss{2}$ cab change which action is optimal at $\sss{1}$. In terms of MCTS, a trial only ever samples one of the two branches, so the optimal action can depend on a branch that the trial never visits. A MOMCTS algorithm using non-linear utilities therefore needs to restrict the types of MOMDP it can soundly solve.
+
+    \end{mccorrection}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/ch5/non_linear_motivation.pdf}
+        \caption[The consistent action selection problem in a deterministic MOMDP with Chebyshev utilities.]{\mccorrect{The consistent action problem in a deterministic MOMDP with Chebyshev utilities. Left: A deterministic MOMDP to highlight that using Chebyshev utilities over Pareto fronts still exhibits a consistent action selection problem. Right: circles form the Pareto front at $s_0$ and triangles the local Pareto front at \mbox{$\sss{1}$}. The contours of the Chebyshev utility with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$} are also shown. The return of \mbox{$(4,4)$} is optimal for this utility and weight, but action \mbox{$\aaa{1}$} is preferred at state \mbox{$\sss{1}$} leading to a suboptimal return of \mbox{$(6,3)$}.}}
+        \label{fig:5:non_linear_motivation}
+    \end{figure}
+    \begin{mccorrection}
+
+    As an example, the remainder of this section will consider using the Chebyshev utility (Equation \eqref{eq:5:cheby}) for deterministic MOMDPs. Figure \ref{fig:5:non_linear_motivation} highlights that if Chebyshev utilities are used to select actions from Pareto fronts during execution, then there is still an issue with consistent action selection (Section \ref{sec:5-1-1-consistent_tree_search}).
+
+    In this case, actions can be selected consistently by instead making decisions over the value set $\bff{R}_{:t-1} + \Qalg(s_t,a_t)$, where $\bff{R}_{:t-1} = \sum_{i=0}^{t-1} \bff{R}(s_i,a_i)$ is the reward accrued so far in the trial. The accrued reward is needed because a non-linear utility depends on the entire return, and the utility does not distribute over the sum of cumulative returns. 
     
-    This adaptation changes one of the components: either the accrued reward is also stored at the node or the accrued reward is tracked through the trial making the decision \textit{non-local}. 
+    This adaptation changes the second of the two components above: the accrued reward is tracked through the trial, making the decision \textit{non-local}\footnote{Alternatively the accrued reward could also be stored in the node (changing the other component), but would not be compatible with transposition tables (Section \ref{sec:2-4-2-thts})}. 
 
     Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives a MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
 
@@ -1367,36 +1433,58 @@
 
 
 
+
+    % While Theorem \ref{thm:per-step-linear} rules out a guarantee for arbitrary MOMDPs for MOMCTS algorithms using the two components above, this does not mean that MCTS cannot be successfully applied when the utility is non-linear. 
+
+    % However, with a non-linear utility on a stochastic MOMDP, the best action at a node can depend on outcomes that did not occur. In Figure \ref{fig:5:momdp_proof} below, the (single) optimal policy pairs the $(5,0)$ reward at $\sss{1}$ with the $(0,5)$ reward at $\sss{2}$, giving an expected return of $(2.5,2.5)$. Changing the reward available at $\sss{2}$ would change which action is optimal at $\sss{1}$, even though $\sss{1}$ and $\sss{2}$ are never visited in the same trial. A trial-based method only ever samples one of the two branches, so this combination is not well suited to MCTS, and is left beyond the scope of this thesis.
+
+    % When restricted to deterministic MOMDPs, CHMCTS could possibly be adapted for non-linear utilities, which is now outlined for the non-linear \textit{Chebyshev utility}:
+    % \begin{align}
+    %     u_{\text{cheby}}(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|, \label{eq:5:cheby_util}
+    % \end{align}
+    % as it can be used to recover the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}.
+    
+    % The issues highlighted by Equation \eqref{eq:5:linear_utility_distributes} can be circumvented by instead making decisions over the value set $\bff{R}_{:t-1} + \Qalg(s_t,a_t)$, where $\bff{R}_{:t-1} = \sum_{i=0}^{t-1} \bff{R}(s_i,a_i)$ is the reward accrued so far in the trial. The accrued reward is needed because a non-linear utility depends on the entire return, and the utility does not distribute over the sum of cumulative returns. 
+    
+    % This adaptation changes one of the components: either the accrued reward is also stored at the node or the accrued reward is tracked through the trial making the decision \textit{non-local}. 
+
+    % Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives a MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
+
+    % Finally, Theorem \ref{thm:per-step-linear} rules out a guarantee rather than good performance. The MOMDP of Figure \ref{fig:5:momdp_proof} is constructed specifically to break local decision-making, however non-linear utilities such as the Chebyshev utility have been used successfully in practice. Using MOMCTS with a non-linear utility may therefore still be effective, but it comes without the guarantees of the linear case.
+
+
+
+
 \subsection{Linear Utility: When Local Optimality Implies Global Optimality}
-\label{sec:5-6-2-fundamental_assumption_of_momcts}
+\label{sec:5-6-3-fundamental_assumption_of_momcts}
+
+    This section formalises the claim that following locally optimal actions gives a globally optimal policy if and only if the utility is linear. The ``only if'' direction is the stronger statement: even when the value sets of the undominated policies are known exactly, the locally optimal policy that selects actions by maximising the utility over those value sets is not guaranteed to be optimal for that utility.
 \end{mccorrection}
 
-    \mccorrect{This section formalises the claim that following locally optimal actions gives a globally optimal policy if and only if the utility is linear. The ``only if'' direction is the stronger statement: even when the value sets of the undominated policies are known exactly, the policy that selects actions by maximising the utility over those value sets is not guaranteed to be optimal for that utility.}
+    % \begin{figure}
+    %     \centering
+    %     \includegraphics[width=\textwidth]{figures/ch5/proof.pdf}
+    %     \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.}
+    %     \label{fig:5:momdp_proof}
+    % \end{figure}
 
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/ch5/proof.pdf}
-        \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.}
-        \label{fig:5:momdp_proof}
-    \end{figure}
+    % Consider an arbitrary MOMDP $\bfcl{M}$, utility function $u$ and set of policies $\Pi$. The optimal value sets are defined as:
+    % \begin{align}
+    %     \bfcl{V}^*_u(s) &= \{\bff{V}^{\pi}(s) \mid \pi \in U(\Pi;u)\}, \\
+    %     \bfcl{Q}^*_u(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(\Pi;u)\}.
+    % \end{align}
 
-    Consider an arbitrary MOMDP $\bfcl{M}$, utility function $u$ and set of policies $\Pi$. The optimal value sets are defined as:
-    \begin{align}
-        \bfcl{V}^*_u(s) &= \{\bff{V}^{\pi}(s) \mid \pi \in U(\Pi;u)\}, \\
-        \bfcl{Q}^*_u(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(\Pi;u)\}.
-    \end{align}
-
-    Then a locally optimal policy for weight $\bff{w}$ is:
-    \begin{align}
-        \pi^{\bff{w}}_{\text{local}}(s) \in \argmax_{a \in \cl{A}}\;
-            \max_{\bff{q} \in \bfcl{Q}^*_u(s, a)} u(\bff{q}; \bff{w}).
-    \end{align}
+    % Then a locally optimal policy for weight $\bff{w}$ is:
+    % \begin{align}
+    %     \pi^{\bff{w}}_{\text{local},u}(s) \in \argmax_{a \in \cl{A}}\;
+    %         \max_{\bff{q} \in \bfcl{Q}^*_u(s, a)} u(\bff{q}; \bff{w}).
+    % \end{align}
 
     \begin{theorem}
         \label{thm:per-step-linear}
-        The policy $\pi^{\bff{w}}_{\text{local}}$ is utility-optimal, that is: 
+        The policy $\pi^{\bff{w}}_{\textnormal{local},u}$ is utility-optimal, that is: 
         \begin{align}
-            u(\bff{V}^{\pi^{\bff{w}}_{\text{local}}}(s_0); \bff{w}) = \max_{\pi\in\Pi} u(\bff{V}^{\pi}(s_0); \bff{w}),
+            u(\bff{V}^{\pi^{\bff{w}}_{\textnormal{local},u}}(s_0); \bff{w}) = \max_{\pi\in\Pi} u(\bff{V}^{\pi}(s_0); \bff{w}),
         \end{align} 
         for every MOMDP $\bfcl{M}$ and every $\bff{w} \in \Delta^D$ if and only if $u(\cdot; \bff{w})$ is linear in its first argument for every $\bff{w} \in \Delta^D$.
     \end{theorem}
@@ -1407,11 +1495,11 @@
 
         \textbf{Only if direction.}
 
-        The contrapositive is established by exhibiting a single MOMDP $\bfcl{M}$, utility function $u$ and weight vector $\bff{w}$ where the locally optimal policy $\pi^{\bff{w}}_{\text{local}}$ is not utility-optimal. 
+        The contrapositive is established by exhibiting a single MOMDP $\bfcl{M}$, utility function $u$ and weight vector $\bff{w}$ where the locally optimal policy $\pi^{\bff{w}}_{\text{local},u}$ is not utility-optimal. 
         
-        Let $\bfcl{M}$ be the MOMDP in Figure \ref{fig:5:momdp_proof} and $u$ be the Chebyshev utility (Equation \eqref{eq:5:cheby_util}) with reference point $\bff{z} = (6, 6)$:
+        Let $\bfcl{M}$ be the MOMDP in Figure \ref{fig:5:momdp_proof} and $u$ be the Chebyshev utility (Equation \eqref{eq:5:cheby}) with reference point $\bff{r} = (6, 6)$:
         \begin{align}
-            u(\bff{v}; \bff{w}) = u_{\text{cheby}}(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|.
+            u(\bff{v}; \bff{w}) = \ucheby(\bff{v}; \bff{w}, \bff{r}) = -\max_i w_i \left| v_i - r_i \right|.
         \end{align}
 
         The four paths through the MOMDP yield rewards of:
@@ -1437,7 +1525,7 @@
         policy selects $\aaa{0}$ at $\sss{1}$ (receiving $(5, 0)$) and $\aaa{1}$ at $\sss{2}$ 
         (receiving $(0, 5)$), giving expected value $(2.5, 2.5)$ and utility $-1.75$.
     
-        Now consider $\pi^{\bff{w}}_{\text{local}}$. The Pareto fronts at the successor 
+        Now consider $\pi^{\bff{w}}_{\text{local},u}$. The Pareto fronts at the successor 
         states are singletons,
         %
         \begin{align*}
@@ -1448,19 +1536,17 @@
         \end{align*}
         %
         and the Chebyshev utilities are $u((5, 0); \bff{w}) = u((0, 5); \bff{w}) = -3$ 
-        and $u((2, 2); \bff{w}) = -2$. Hence $\pi^{\bff{w}}_{\text{local}}$ selects $\aaa{1}$ at 
+        and $u((2, 2); \bff{w}) = -2$. Hence $\pi^{\bff{w}}_{\text{local},u}$ selects $\aaa{1}$ at 
         $\sss{1}$ and $\aaa{0}$ at $\sss{2}$, both yielding $(2, 2)$. The expected value at $s_0$ is
         %
         \begin{equation*}
-            \bff{V}^{\pi^{\bff{w}}_{\text{local}}}(s_0) 
+            \bff{V}^{\pi^{\bff{w}}_{\text{local},u}}(s_0) 
             = \tfrac{1}{2}(2, 2) + \tfrac{1}{2}(2, 2) = (2, 2),
         \end{equation*}
         %
         with utility $u((2, 2); \bff{w}) = -2 < -1.75$. Therefore 
-        $\pi^{\bff{w}}_{\text{local}}$ is not utility-optimal.
+        $\pi^{\bff{w}}_{\text{local},u}$ is not utility-optimal.
     \end{proofoutline}
-
-    % The issue with the MOMDP defined in Figure \ref{fig:5:momdp_proof} is that the optimal policy requires optimising towards the conflicting objectives of $(5, 0)$ and $(0, 5)$ at the same time, depending on the outcome of the stochastic transition to $\sss{1}$ or $\sss{2}$. It can additionally be shown that for any utopian point $\bff{z}$ and weight $\bff{w}$ the reward of $(2,2)$ will be locally optimal for one of the states $\sss{1}$ or $\sss{2}$ and the locally optimal policy $\pi^{\bff{w}}_{\text{local}}$ will not be utility optimal.
 
 
 
@@ -1475,7 +1561,7 @@
 
 
 \subsection{Convergence of CHMCTS}
-\label{sec:5-6-3-convergence_of_chmcts}
+\label{sec:5-6-4-convergence_of_chmcts}
 
     This section outlines how the convergence of CHMCTS can be proven. First, to reason about the performance of a contextual tree search algorithm, the notion simple regret is generalised to \textit{contextual simple regret}, which is the expected regret with respect to utility over a uniformly random weight vector.
     
@@ -1491,14 +1577,14 @@
         where $\bff{w}\sim U(\Delta^D)$ denotes a weight vector sampled uniformly from the unit $(D-1)$-dimensional simplex.
     \end{defn}
     
-    If all states are visited infinitely often, then by the convergence of Convex Hull Value Iteration \cite{chvi} the convex hull value sets converge to the convex coverage sets. 
+    As a first step, if all states are visited infinitely often, then by the convergence of Convex Hull Value Iteration \cite{chvi} the convex hull value sets converge to the convex coverage sets. 
     %
     \begin{theorem}
         \label{thrm:5:chmcts}
         For any MOMDP $\bfcl{M}$, if $N(s)\rap\infty$ and $N(s,a)\rap\infty$ for all $s\in\cl{S}$ and $a\in\cl{A}$, then the convex hull value sets, computed by Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}, satisfy $\Valg(s)\rap\bfcl{V}^*_{u_{\text{lin}}}(s)$ and $\Qalg(s,a)\rap\bfcl{Q}^*_{u_{\text{lin}}}(s,a)$ for all $s\in\cl{S}$ and $a\in\cl{A}$, where $\bfcl{V}^*_{u_{\text{lin}}}(s)$ and $\bfcl{Q}^*_{u_{\text{lin}}}(s,a)$ are the optimal value sets for the linear utility function $u_{\text{lin}}$.
     \end{theorem}
     \begin{proofoutline}
-        Follows from Corrolary \mbox{\ref{cor:4:bound_transition_distribution}} and the convergence of Convex Hull Value Iteration \cite{chvi}.
+        Follows from Corollary \mbox{\ref{cor:4:bound_transition_distribution}} and the convergence of Convex Hull Value Iteration \cite{chvi}.
     \end{proofoutline}
 
     While Lemma \ref{lem:inf_often_action_select} provides the conditions for $N(s)\rap\infty$ and $N(s,a)\rap\infty$ for CH-BTS, the remaining CHMCTS algorithms need a corresponding lemma to show that all reachable states are visited infinitely often for UCT-based policies:
@@ -1515,10 +1601,7 @@
         By contradiction: if $M^m(a)$ remained bounded while every other action's count grew, the $b\sqrt{\log(m)/M^m(a)}$ term would diverge and force $a$ to be selected, contradicting boundedness of $M^m(a)$.
     \end{proofoutline}
 
-    \todo{Write out the theorem statements and adapte the below into proof outline(s). Give the search policy for CH-BTS converges to optimal under the same conditions as BTS. Basically give the 4 corresponding results for CH-BTS. Put this and everything below in mccorrection}
-
-    Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} and Theorem \ref{thrm:5:chmcts} it follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear} it follows that for any CHMCTS algorithm $\alg$ that $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$.
-
+    Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} and Theorem \ref{thrm:5:chmcts} it follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear}, any CHMCTS algorithm $\alg$ satisfies $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$, \mccorrect{mirroring Theorem \mbox{\ref{thrm:4:bts}} for BTS in the single-objective case. CH-BTS also admits analogues of Theorems \mbox{\ref{thrm:4:bts_decay}} and \mbox{\ref{thrm:4:bts_exp}}, again by using Lemma \mbox{\ref{lem:inf_often_action_select}} and Theorems \mbox{\ref{thrm:5:chmcts}} and \mbox{\ref{thm:per-step-linear}}.}
 
 
 
@@ -1557,8 +1640,8 @@
 \label{sec:5-7-summary}
 
     This chapter extended the MCTS framework to the
-    multi-objective \mccorrect{unknown weights scenario} with linear
-    utilities, introducing two approaches for contextual
+    multi-objective \mccorrect{unknown weights scenario with linear
+    utilities}, introducing two approaches for contextual
     planning in MOMDPs.
 
     The consistent action selection problem was identified 
@@ -1567,7 +1650,7 @@
     should be consistent with each other (or all actions consistent with a single weight vector), 
     otherwise the search policy optimises for no 
     particular objective. Contextual tree search was 
-    proposed as a solution, where a weight vector 
+    proposed as a solution \mccorrect{during the planning phase}, where a weight vector 
     $\bff{w}$ is sampled at the start of each trial and 
     used to guide all subsequent action selections. It 
     was also shown (Theorem \ref{thm:per-step-linear}) 

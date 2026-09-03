@@ -96,7 +96,7 @@
 
     Two natural alternatives to the hypervolume indicator have been investigated. \cite{pareto_momcts} apply the Pareto-UCB rule of \cite{pareto_ucb} as a tree action-selection rule, which performs search directly on Pareto-dominance comparisons rather than on a scalar indicator. \cite{chebyshev_momcts} instead use the Chebyshev scalarisation of \cite{moo_chebyshev} as the basis for both node expansion and final move selection in MCTS. The motivation is that the Chebyshev function, unlike linear scalarisation, can recover Pareto-optimal solutions in non-convex regions of the front.
 
-    All of the above MOMCTS algorithms target the SER criterion. \cite{dmcts,dmcts_long} instead address the ESR criterion, and propose Distributional MCTS. At each chance node, Distributional MCTS maintains an approximate posterior distribution over the utility of the returns rather than an expectation, and uses Thompson sampling for action selection. 
+    All of the above MOMCTS algorithms target the SER criterion. \citet{dmcts,dmcts_long} instead address the ESR criterion, and propose Distributional MCTS. At each chance node, Distributional MCTS maintains an approximate posterior distribution over the utility of the returns rather than an expectation, and uses Thompson sampling for action selection. 
 
 
 
