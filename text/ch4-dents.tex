@@ -116,7 +116,7 @@
         \label{fig:4:shortest_path_intro}
     \end{figure}
 
-    This section considers a gridworld shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms.
+    \mccorrect{UCT has been used with great success, but there are environments in which it performs poorly.} This section considers a gridworld shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms. 
 
     In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
 
@@ -158,11 +158,19 @@
 
     The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade-off between exploration and exploitation during its trials, and frequently chooses the same action to exploit, which can result in it getting stuck in local optima, particularly when rewards are sparse or not informative. 
 
+    \begin{mccorrection}
+    In many domains UCT does provide a good trade-off between exploration and exploitation. These tend to be domains where rewards are dense and informative, so that the best action acquires the best value estimate early in the search. Exploiting that estimate is then effective local exploration, concentrating trials on the later timesteps of the paths that currently look most promising. UCT struggles when the optimal action instead retains a worse value estimate throughout the initial exploration, because it then overcommits to a suboptimal action. Sparse or uninformative rewards are one such case, where the optimal action may appear worse by chance early on. A heuristic learned by function approximation that assigns a low value to the optimal action is another. The remainder of this section considers the sparse and uninformative case.
+    \end{mccorrection}
+
     A \textit{sparse reward} is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but uninformative, as the immediate cost of taking any action is the same. 
 
     Suppose that UCT has been run for many trials, and the best paths found by UCT so far are shown in red and blue in Figure \ref{fig:4:shortest_path_intro_a}. The two paths coincide until the shaded state at $(2,2)$, where UCT has the Q-value estimates $\Quct((2,2),\texttt{DOWN}) \approx -8$ and $\Quct((2,2),\texttt{UP}) \approx -12$. When a UCT trial reaches the shaded state at $(2,2)$, it will frequently select the action \texttt{DOWN} over \texttt{UP} to exploit the best path it has found so far, rather than exploring the optimal actions \texttt{UP} and \texttt{RIGHT}.
 
     In theory, UCT selects every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and will converge to the optimal values and policy. In practice, UCT shifts its focus from exploration to exploitation throughout the search, which is determined by the confidence intervals and the bias parameter $\buct$ from Equation (\ref{eq:2:uct_policy}). This is illustrated in Figure \ref{fig:4:shortest_path_intro_results}, where for small bias parameters UCT quickly exploits a suboptimal solution and for large bias parameters UCT is still exploring and its value estimates have not yet converged.
+
+    \begin{mccorrection}
+    Although UCT had to be limited to a small number of trials in this initial example, the same behaviour is visible at scale in the empirical results of Section \ref{sec:4-4-results}. The results on DeterministicGridWorld in Figure \ref{fig:4:dgw_results} show UCT settling on a suboptimal path across all map sizes, with its performance flattening after the initial trials rather than continuing to improve. Its concentration of trials therefore acts as local search around an early estimate, and does not recover the optimal path within the planning budget.
+    \end{mccorrection}
 
 
     
@@ -206,7 +214,7 @@
 % [ ] Final revision
 \subsection{Simple Regret and Consistency}
 
-    This section generalises the concept of simple regret (Definition \ref{def:2:simple_regret}) to MDPs and introduces the concept of consistency for MCTS algorithms. \textit{Simple regret} is used to motivate and analyse the algorithms introduced in this chapter. \textit{Consistency} refers to the correctness of an MCTS algorithm in the limit — informally, a consistent algorithm will eventually find the optimal policy given enough trials. The term originates from the MCTS literature, to describe whether modifications to UCT preserve its asymptotic behaviour \cite{consistency,mcts_survey,poly_uct}.
+    This section generalises the concept of simple regret (Definition \ref{def:2:simple_regret}) to MDPs and introduces the concept of consistency for MCTS algorithms. \mccorrect{\textit{Simple regret} is used to analyse the algorithms introduced in this chapter.} \textit{Consistency} refers to the correctness of an MCTS algorithm in the limit — informally, a consistent algorithm will eventually find the optimal policy given enough trials. The term originates from the MCTS literature, to describe whether modifications to UCT preserve its asymptotic behaviour \cite{consistency,mcts_survey,poly_uct}.
 
     \begin{figure}
         \begin{tcolorbox}
@@ -245,8 +253,6 @@
     Note that the simple regret (Equation (\ref{eq:4:simple_regret})) is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret is used in Definition \ref{def:4:consistency} to define consistency, and is the main value of interest in the theoretical analysis in Section \ref{sec:4-5-theory}.
 
     \citet{exploring_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I dont have time to clean this up and write it into the paper
-    
-
 
 
 
@@ -277,6 +283,16 @@
         \item to be consistent using parameters that do not depend on the MDP.
     \end{itemize}
 
+    \begin{mccorrection}
+    These aims are motivated by the exploration setting of reinforcement learning in practice, that is, with a finite planning budget: the agent plans in a simulator, and is evaluated only on the recommendation it makes once that budget is exhausted (Section \mbox{\ref{sec:2-3-rl}} and Figure \mbox{\ref{fig:4:rl_overview}}). 
+    
+    Simple regret plays a different role: it is used to analyse the algorithms, not to motivate or design them. It gives theoretical guarantees about the behaviour of BTS and DENTS in the limit (Section \mbox{\ref{sec:4-5-theory}}), whereas an algorithm built solely to minimise simple regret need not perform well in practice.
+
+    The first aim is included so that the algorithms introduced here are easy to adopt in existing MCTS frameworks. The second is satisfied by MENTS, whose entropy bonus provides exploration even when rewards are sparse or uninformative, but not by UCT, which tends to exploit (Figure \mbox{\ref{fig:4:shortest_path_intro_results}}, and the gridworld results in Section \mbox{\ref{sec:4-4-3-results_and_discussion}}). The third is satisfied by UCT, and by MENTS only when its temperature is small. The fourth is satisfied by UCT, but not by MENTS, whose consistency requires a temperature that cannot be chosen independently of the MDP \cite{dents}.
+
+    Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored.
+    \end{mccorrection}
+
     In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
 
 
@@ -301,11 +317,21 @@
 \subsection{Boltzmann Tree Search}
 \label{sec:4-2-1-bts}
 
-    \paragraph{Algorithm Definition}
-
     Boltzmann search has been used previously in heuristic search algorithms such as RTDP \cite{rtdp} and THTS \cite{thts_thesis}. This section presents \textit{Boltzmann Tree Search} (BTS), which uses a Boltzmann search policy with decayed temperature similar to \cite{rtdp}, but includes an additional uniform exploration term similar to MENTS \cite{ments}.
 
-    The BTS algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function $\alphabts(x)>0$ for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
+    \begin{mccorrection}
+    BTS therefore has two exploration mechanisms: the Boltzmann search policy, controlled by the temperature $\alphabts$, and the uniform term, controlled by $\epsbts$. They explore in different ways. Boltzmann exploration is directed, in that it is centred on the current Q-value estimates and so favours actions that are currently competitive. Uniform exploration is undirected, and continues to sample actions that the current estimates rate poorly. Retaining both allows the balance between them to be tuned for the domain at hand.
+
+    The Boltzmann temperature is typically decayed towards zero, so that the search policy can exploit and eventually select greedily (Theorem \mbox{\ref{thrm:4:bts_decay}}). There are two reasons for keeping the uniform exploration term from MENTS. The first is that it continues to sample all actions once the Boltzmann term has stopped exploring, which guarantees that an optimal policy is recommended in the limit (Theorem \mbox{\ref{thrm:4:bts}}). The second is that it makes \mbox{$\epsilon$-greedy} search policies available as a limiting case. 
+    
+    There are likewise two reasons for keeping the Boltzmann term. In practice, it is often useful to concentrate search on the actions that already appear competitive, rather than spreading trials evenly across all actions. In theory, holding the temperature above a positive lower bound gives a faster rate of convergence (Theorem \mbox{\ref{thrm:4:bts_exp}}).
+
+    Both exploration methods are sufficient to guarantee that an optimal policy is eventually recommended. In the experimental Section \ref{sec:4-4-results} the Boltzmann temperature is decayed so that the search policy can tend towards a greedy policy for exploitation if necessary, and the uniform exploration is kept so that actions are still explored when the Boltzmann policy is greedy.
+    \end{mccorrection}
+
+    \paragraph{Algorithm Definition}
+
+    The BTS algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function \mccorrect{\mbox{$\alphabts(x)\geq 0$}} for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
 
     The BTS search policy uses the flag $\normalisedq$ to optionally normalise Q-values, and incorporates prior knowledge from $\Qinit$ weighted by $\Nqbts$ pseudo-visits:
     %
@@ -328,7 +354,7 @@
         \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right), \label{eq:4:lambda}
     \end{align}
     %
-    where $\epsbts \in [0,\infty)$ is an exploration parameter. 
+    where $\epsbts \in [0,\infty)$ is an exploration parameter, \mccorrect{and a temperature of \mbox{$\alphabts(N(s))=0$} is taken to mean that \mbox{$\rhobts$} selects greedily with respect to \mbox{$\Qbtsnorm$}.}
 
     For any new decision nodes $s$ added to the tree, the $\initv$ function initialises the visit count to $N(s)=0$ and the value estimate to $\Vbts(s)=\Vinit(s)$. For any new chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count to $N(s,a)=0$ and the Q-value estimate to $\Qbts(s,a)=\Qinit(s,a)$.
     
@@ -425,7 +451,7 @@
 
     \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates} as an exploration bonus. DENTS uses Bellman value estimates $\Vdents$ and $\Qdents$ similarly to BTS, but also uses entropy value estimates, $\HVdents$ and $\HQdents$, which are Monte Carlo estimates of the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in its search policy, and discard it for recommendations.
 
-    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, $\alphadents(x)>0$ and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
+    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, \mccorrect{\mbox{$\alphadents(x)\geq 0$}} and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
     
     The Q-values used during search are computed as follows:
     \begin{align}
@@ -447,6 +473,8 @@
                     \label{eq:dents_value_policy} \\
         \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
     \end{align}
+    %
+    \mccorrect{where \mbox{$\epsdents \in [0,\infty)$} is an exploration parameter, and a temperature of \mbox{$\alphadents(N(s))=0$} is taken to mean that \mbox{$\rhodents$} selects greedily with respect to \mbox{$\Qdentsnorm$}.}
 
     The $\initv$ and $\initq$ functions are also similar to BTS, setting: $N(s)=0$, $N(s,a)=0$, $\Vdents(s)=\Vinit(s)$ and $\Qdents(s,a)=\Qinit(s,a)$. Additionally, the entropy value estimates are initialised to zero: $\HVdents(s)=0$ and $\HQdents(s,a)=0$.
 
@@ -1082,6 +1110,7 @@
         \item Appendix \ref{app:expr-deets-ch4} provides additional details on these experiments, including the \mccorrect{parameters used by each algorithm, and how they were selected}.
     \end{itemize}
 
+    \todo{Make sure alpha tends to zero is at least described somewhere here}
 
 
 
@@ -1230,9 +1259,9 @@
         \begin{cases}
             \psi_{\alg}(a|s)  & \text{ if } s\in\cl{T}, \\
             \frac{1}{|\cl{A}|}      & \text{ otherwise.}
-        \end{cases} \label{eq:full_Recommend}
+        \end{cases} \label{eq:full_recommend}
     \end{align}
-    
+
     Using the completed policy $\psi$, a Monte Carlo estimate of $V^{\psi}(s_0)$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. Unless otherwise stated, each Monte Carlo estimate consists of 1024 trials, and results are averaged over 25 repeated experiments.
 
     The BayesOpt package \cite{bayesopt} was used to tune \mccorrect{the parameters used by each algorithm for the gridworld environments}. Appendix \ref{appsec:4:hps} gives details on the \mccorrect{algorithm parameters} used and how they were tuned.
@@ -1284,8 +1313,6 @@
         \item Section \ref{sec:4-4-3-2-param_sens_fl} gives additional results on the gridworld environments where the temperature and bias parameters are varied;
         \item Section \ref{sec:4-4-3-3-go_results} gives results from the Go round-robin;
     \end{itemize}
-
-
 
 
 
@@ -1360,6 +1387,8 @@
     \ref{fig:4:dgw_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are optimistically set to a constant value of one and the bias term $\Nq$ is set to one. 
 
+    \todo{also explain that UCT will pick every action once first, which is not uniformly random, which is why finding the first solution lags behind all of the other algorithms, in particular BTS}
+
     As discussed in Section \ref{sec:4-1-intro}, UCT-based algorithms 
     converge to a local optimum due to greater focus on exploitation, 
     which is visible across all map sizes. The stochastic search policies all tend towards the optimal path across all map sizes.
@@ -1376,6 +1405,8 @@
     with the optimistic heuristic, this produces behaviour 
     resembling breadth-first search, leading to more thorough 
     exploration on larger maps but slower initial progress, as visible in the 8x8 map.
+
+    \todo{Add some description of hyperparameters, say tended towards mostly epsilon greedy, but also small and deterministic environment. THe parameter sensitivity shows that both boltzmann and epsilon greedy could be useful here, but epsilon won in the parameter optimisation.}
 
     \paragraph{FrozenLake Results.}
 
@@ -1424,17 +1455,21 @@
     \ref{fig:4:fl_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are again optimistically set to a constant value of one and the bias term $\Nq$ is set to one.
 
-    Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy (Equation~\ref{eq:full_Recommend}) remains within 
+    Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy (Equation~\ref{eq:full_recommend}) remains within 
     the search tree as much as possible, since states outside 
-    the tree are handled by a uniformly random policy.
+    the tree \mccorrect{fall back to} a uniformly random policy.
 
     BTS and DENTS perform well across all map sizes in this experiment, demonstrating their ability to balance exploration and exploitation when necessary. In particular, TENTS was the only other algorithm able to effectively solve the 4x16 map.
 
     UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation.
 
+    \todo{also explain the non-monotonicity}
+
     H-MCTS and UCT exhibit an interesting behaviour where beyond $150{,}000$ trials the value of the recommendations declined, likely due to over-commitment to a suboptimal policy close to the goal.
 
     MENTS appears to be slightly misaligned in the 4x12 and 4x16 maps, which leads to interesting (but consistent) behaviour on the 4x12 map, where some progress is made initially before it discovers a region of the map where it can gather entropy rewards.
+
+    \todo{Add some description of hyperparameters, show that epsilon values lower here, and boltzmann exploration was more useful here. Discussion around needing to exploit more in stochastic environments, and eps explore is less in line with that. This is a VERY noisy environment.}
 
     \paragraph{Sailing Results.}
 
@@ -1513,6 +1548,8 @@
     across both initial wind directions and all map sizes. 
 
     An interesting asymmetry can be seen in the performance of RENTS between the 16x16 North map and the 8x16 South-East map. The wind transition probabilities are asymmetric (Figure \ref{fig:sailing_deets}), with transitions towards North being more likely. Because the agent must travel North-East to reach the goal, when the wind is North facing, the agent incurs less cost, and, specifically is less likely to penalise long sequences of North-East actions. In contrast, when the wind is initially South-East facing, the agent is more likely to encounter states where the actions need to adapt to the wind.
+
+    \todo{Add some description of hyperparameters, say tended towards mostly epsilon greedy, but also small and deterministic environment. THe parameter sensitivity shows that both boltzmann and epsilon greedy could be useful here, but epsilon won in the parameter optimisation.}
 
 
 
@@ -2403,7 +2440,13 @@
         If a search policy of the following form is used in MCTS:
         \begin{align}
             \pi^n(a_t|s_t)&=(1-\lambda(s_t,\epsilon))\rho^n(a_t|s_t) + \lambda(s_t,\epsilon) \frac{1}{|\cl{A}|}, \\
-            \rho^n &\propto \exp\left(\frac{\dot{Q}^n(s_t,a_t)}{\alpha(N^n(s_t))}\right), \\
+            \rho^n(a_t|s_t) &\propto 
+                \begin{cases}
+                    \exp\left(\frac{\dot{Q}^n(s_t,a_t)}{\alpha(N^n(s_t))}\right)
+                        & \text{if } \alpha(N^n(s_t)) > 0, \\
+                    \one[\dot{Q}^n(s_t,a_t) = \max_{a\in\cl{A}} \dot{Q}^n(s_t,a)]
+                        & \text{if } \alpha(N^n(s_t)) = 0,
+                \end{cases} \\
             \lambda(s_t,\epsilon) &= \min(1,\epsilon/\log(e+N^n(s_t))),
         \end{align}
         %
@@ -2417,6 +2460,31 @@
 
         Combining these two results gives $\pi^n(a_t|s_t)\rap\pi^*(a_t|s_t)$.
     \end{proofoutline}
+
+    % I can't be bothered to write a proper comment that appears
+    % But the reason this is sufficient for AR-DENTS, even without beta/alpha -> 0 is:
+    %
+    % Boltzmann distribution only cares about ratios
+    % Provided Q is bounded below, then Q/alpha -> infinity anyway
+    % Even if the beta/alpha * entropy term doesnt tend to zero, it doesn't matter
+    % 
+    % Its this nuance about taking two limits at the same time why we left it as an outline
+    % And a full proof would have to consider this
+
+% CLAUDE CORRECTING MY NOTE LMAO
+%
+% Can't be bothered to write this up properly, but the reason this is
+% sufficient for AR-DENTS even without beta/alpha -> 0:
+%
+% Boltzmann only cares about DIFFERENCES between actions, not absolute Q.
+% The gap between the best action and the rest is a fixed positive number,
+% so dividing it by alpha -> 0 already sends the suboptimal probs to zero.
+% The (beta/alpha)*entropy term is a vanishing perturbation on top of that
+% fixed gap (since beta -> 0), so it can't flip the ordering -- doesn't
+% matter whether beta/alpha -> 0.
+%
+% The nuance is taking two limits at once, which is why we left it as an
+% outline; a full proof would have to handle this.
 
     \proofsep
 

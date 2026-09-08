@@ -98,6 +98,12 @@
 
     All of the above MOMCTS algorithms target the SER criterion. \citet{dmcts,dmcts_long} instead address the ESR criterion, and propose Distributional MCTS. At each chance node, Distributional MCTS maintains an approximate posterior distribution over the utility of the returns rather than an expectation, and uses Thompson sampling for action selection. 
 
+    \begin{mccorrection}
+    Most of the MOMCTS algorithms above are motivated by scenarios similar to that of Section \mbox{\ref{sec:1-2-scope}}: search is run as an offline planning phase, and a single policy is extracted at execution time, either in the \textit{unknown weights scenario} (Section \mbox{\ref{sec:2-6-morl}}) or a close variant. In contrast to this thesis, they take a Pareto rather than a utility approach, aiming to compute Pareto fronts, and assume deterministic environments. Distributional MCTS is the exception: it targets the ESR criterion under a known utility, and so the known weights scenario.
+    \end{mccorrection}
+
+    \todo{Check the motivation claim - written offline and couldnt check at time of writing}
+
 
 
 

@@ -26,7 +26,7 @@ I agree that using the unknown weights scenario provides a better motivation for
     - describing the unknown weights scenario, including what is known and when,
     - clarifying that utilities are assumed to be linear, with forward references where it is discussed,
     - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
-    - explaining why planning methods might still be of interest instead of purely learning better prior policy/value functions
+    - explaining why MCTS methods might still be of interest instead of purely learning better prior policy/value functions
 - Updated prose throughout thesis for using the unknown weights scenario instead:
     - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
@@ -39,7 +39,7 @@ I agree that using the unknown weights scenario provides a better motivation for
 > P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilities are non-linear or better expressed as preference functions
 
 Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it and references pointing towards it were lacking. I have made the following changes to address this:
-- restructured Section 5.5, to include a new subsection 5.5.2 to more appropriately give intuition and an example of why only linear utilities are considered
+- restructured Section 5.5, and included a new subsection 5.5.2 to more appropriately give an explanation and an example of why only linear utilities are considered
 - also added subsection 5.5.2.1 to explain how the work could be adapted to a non-linear (Chebyshev) utility
 - added forward references to Section 5.5 to highlight that the choice is addressed later, specifically:
     - Section 1.2 (page TODO) - the scoping section added for the correction above
@@ -78,15 +78,10 @@ Agreed, and corrected. Policies now condition on the timestep throughout Chapter
 
 > P17: It’s confusing to include RL here. You’re just doing sample-based on-line planning.
 
-TODO: ACTUALLY WRITE THESE UPDATES
-
-REMEMBER TO UPDATE THE CORRESPONDING TITLES IN ABBREVIATIONS
-
-
-The difference between planning and RL that I was working with is that planning the transition distribution is known whereas in RL it is unknown. To clarify I've made the following changes:
-- Updated title of Sections 2.3 and 2.3.1: "Reinforcement Learning" -> "Planning and Reinforcement Learning"
-- Minor changes to Section 2.3 to be consistent with updating the heading
-- Added Section 2.3.2 to clarify where MCTS sits within planning and RL, and to additionally clarify that  
+The definition I was implicitly using is that planning uses the transition distribution directly, while RL uses experience. So I settled on the best way to resolve this is to say that MCTS lies in the intersection of the two, so I have made the following changes to Section 2.3:
+- Updated section headers "Reinforcement Learning -> Planning and Reinforcement Learning", across sections 2.3 and 2.6
+- Added a roadmap paragraph at the start of Section 2.3 (page 21), to indicate that the section is more about giving definitions than methods that are relevant to both planning and RL, and to hopefully be more clear what the section covers and that no RL methods are covered
+- Added Section 2.3.2 to be highlight on the difference between planning and reinforcement learning, clarifying that MCTS sits between the two and to clarify that the thesis does not consider learning of function approximations in the typical machine learning sense
 
 
 
@@ -122,6 +117,9 @@ Updated (page 50).
 
 > P53: Reiterate here the motivation for online MO planning.
 
+Most of the prior work in MOMCTS is also used in either the unknown weights scenario or similar, they are used for offline planning and a policy is extracted at execution time. The exception is Distributional MCTS, which considers the ESR criterion, and uses a known utility (i.e. the known weights scenario). 
+
+To address motivation for MO planning in Section 3.6, I have added an additional paragraph (now page 60) at the end explaining the above, referencing back to the new scoping section (from P2 correction) and where unknown weights scenario is defined in Section 2.6.
 
 
 
@@ -137,11 +135,39 @@ When a policy is learned in maximum entropy inverse reinforcement learning the o
 
 > P59: Again, isn’t UCT’s “exploitation” in effect good local exploration?
 
+Yes it often does, I would say that it is problem dependent. Here I'm trying to essentially give a simple example that begins to demonstrate the failure mode of UCT, which is an overcommitment to suboptimal actions when the value estimates of optimal actions are initially poor, and remain poor throughout UCTs initial exploration phase. While in theory UCT is guaranteed to converge to optimal values (and recommend an optimal policy) in these failure modes this will never happen in practise.
+
+I have added the following changes to help clarify:
+- Added a sentence at the start of Section 4.1 (page 63) to highlight that UCT is a successful algorithm, and this section intends to highlight a failure mode and is not claiming that UCT is inherently bad
+- Added a paragraph at the start of Section 4.1.1 (page 65) that agrees with the comment: it explains that UCT's exploitation does act as effective local exploration when rewards are dense and informative, and that the failure mode arises when the optimal action instead retains a poor value estimate throughout the initial exploration. Sparse or uninformative rewards, and a misleading learned heuristic, are given as two examples
+- Added a paragraph at the end of Section 4.1.1 (page 66) that points the reader to the DeterministicGridWorld results, which more clearly show that UCT converges in practise to a suboptimal solution in some environments
+- The existing (now penultimate) paragraph of Section 4.1.1 (page 66) already contrasts UCT's asymptotic guarantee with its behaviour in practice, so this has been left unchanged
+
+
+
 
 > P62: which of these are not satisfied by UCT or MENTS? Why exploit if we care about simple regret?
 
+I have added a few paragraphs to address these questions, after the bullet point list of design aims in Section 4.2 (now page 69). 
+
+The first is to clarify that the design aims are motivated by the exploration setting of reinforcement learning in practise (with a finite planning budget).
+
+The second is to clarify that simple regret is used to give theoretical guarantees about the asymptotic performance of the algorithms. Originally I did use simple regret as a motivating reason for the algorithms. I could only find one place where this still existed, which was shortly before this, so I have also updated that "Simple regret is used *to motivate and analyse*..." -> "Simple regret is used *to analyse*..." (Section 4.1.3, page 67)
+
+The third and fourth paragraphs goes through each of the design aims, if they are satisfied by UCT or MENTS, and why they are relevant in the exploration setting of reinforcement learning
+
+The gridworld results in Section 4.4.3.1 also explain some of this where relevant, particularly where exploitation was useful in the FrozenLake experiments, and reference back to Equation 4.36, which describes the policy used for evaluation, to point out that exploitation is useful to avoid falling back to the uniform policy.
+
+TODO: add description of relevant changes made to results discussion when handled that todo
+- small terminology change (make it inline with the "fall back" terminology)
+
+
 
 > P63: “Uses a Boltzmann search policy with decayed temperature similar to [8], but includes an additional uniform exploration term similar to MENTS” Why? Very procedural with no motivation, which of the above problems are you solving? Why do we need two exploration terms?
+
+Added reasoning to the beginning of Section 4.2.1 (now page 70) to explain. The two terms provide exploration that is centred on the current estimates and uniformly randomly, so provide different types of exploration. 
+
+Boltzmann is largely used to focus the search around the currently competitive value estimates, while the uniform exploration is primarily retained to provide a convergence guarantee when the Boltzmann temperature is decayed to zero, causing the Boltzmann policy to become greedy.
 
 
 

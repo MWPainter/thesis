@@ -211,7 +211,7 @@
 
     When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$. 
     
-    \mccorrect{The simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only recommending optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.}
+    \mccorrect{Simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.}
 
 
 
@@ -410,7 +410,7 @@
 % [ ] Nick comments
 % [ ] Final revision
 \begin{mccorrection}
-\section{Reinforcement Learning}
+\section{Planning and Reinforcement Learning}
 \label{sec:2-3-rl}
 \end{mccorrection}
 
@@ -420,7 +420,13 @@
         \label{fig:2:rl_overview}
     \end{figure}
 
-    This section provides a brief introduction to fundamental concepts and definitions in reinforcement learning and motivates an alternative lens on reinforcement learning considered in this thesis. Typically reinforcement learning is presented as a sequence of agent-environment interactions, where the agent takes actions in an environment and receives \textit{observations} and \textit{rewards} for those actions \cite{sutton}. The objective of the agent is to maximise the rewards that it receives.
+    This section provides a brief introduction to the fundamental concepts and definitions of \mccorrect{planning and} reinforcement learning.
+
+    \begin{mccorrection}
+    It begins by motivating an alternative lens on reinforcement learning that is taken in this thesis, in which the agent plans in a simulator before recommending how to act. Following on from Section \ref{sec:2-2-mdps}, it then defines \textit{value functions} and the objectives of planning and reinforcement learning, and covers \textit{Value Iteration}, a tabular dynamic programming approach for planning. Section \ref{sec:2-3-1-merl} covers \textit{maximum entropy} planning and reinforcement learning, and Section \ref{sec:2-3-2-planning_vs_rl} discusses what distinguishes planning from reinforcement learning, and where the methods of this thesis sit.
+    \end{mccorrection}
+    
+    Typically reinforcement learning is presented as a sequence of agent-environment interactions, where the agent takes actions in an environment and receives \textit{observations} and \textit{rewards} for those actions \cite{sutton}. The objective of the agent is to maximise the rewards that it receives.
 
     However, in the modern era of reinforcement learning, the agent is often equipped with a simulator in which it can plan, learn and explore. The ``target'' environment that the user cares about may be the same simulated environment, or a real-world environment where actions carry genuine costs, unlike interactions with the simulator. After the learning phase, one typically cares only about the policy that the agent recommends at the end, rather than the rewards accrued during planning. 
     
@@ -428,8 +434,6 @@
 
     % Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
-    Following on from Section \ref{sec:2-2-mdps}, the remainder of this section defines \textit{value functions} and the objectives of reinforcement learning and covers \textit{Value Iteration}, a tabular dynamic programming approach to reinforcement learning. Finally, Section \ref{sec:2-3-1-merl} covers \textit{maximum-entropy reinforcement learning}.
-    
     The value of a policy $\pi$ is the expected cumulative reward that is obtained by following the policy:
     %
     \begin{defn}
@@ -521,7 +525,7 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Maximum Entropy Reinforcement Learning}
+\subsection{Maximum Entropy Planning and Reinforcement Learning}
 \label{sec:2-3-1-merl}
 
     In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
@@ -599,6 +603,18 @@
         \hat{V}_{\sft}^{k+1}(s;t) &= \alpha \log \sum_{a\in\cl{A}} \exp\left( \frac{1}{\alpha} \hat{Q}_{\sft}^{k+1}(s,a;t) \right), \label{eq:2:soft_value_iter_v_backup} \\
         \hat{Q}_{\sft}^{k+1}(s,a;t) &= R(s,a) + \bb{E}_{s'\sim p(\cdot|s,a)} [\hat{V}_{\sft}^k(s';t+1)]. \label{eq:2:soft_value_iter_q_backup}
     \end{align}
+
+
+
+\begin{mccorrection}
+\subsection{Planning Versus Reinforcement Learning}
+\label{sec:2-3-2-planning_vs_rl}
+    The objective of both planning and reinforcement learning is typically to compute an optimal policy for an MDP $\cl{M}$. The difference lies in what each has access to: planning methods compute a policy from the transition distribution $p$, whereas reinforcement learning methods learn from experience gathered in the environment \cite{sutton}. Value iteration \cite{dp,kolobov} is therefore a planning method, because it uses $p$ to compute the expectation in Equation \ref{eq:2:value_iter_q_backup}, whereas Q-learning \cite{qlearning} is an example of a purely reinforcement learning method.
+
+    MCTS algorithms may fall on either side of this distinction, depending on how they handle the transition distribution: an algorithm that queries $p$ directly is planning, whereas one that samples from a simulator is learning. Technically, the methods in this thesis are model-based reinforcement learning methods \cite{mbrl}, as rather than using $p$ directly they form maximum likelihood estimates of the transition probabilities from the \textit{visit counts} at each node, which Corollary \ref{cor:4:bound_transition_distribution} shows are tightly bounded around the true transition probabilities. They are nonetheless often thought of as planning methods, because the tree search does plan, in the everyday sense of the word, over the estimated transition probabilities and values.
+
+    Because MCTS sits at the intersection of the two, the terms are used somewhat interchangeably in this thesis, with \textit{planning} tending to refer to tree search and \textit{reinforcement learning} to the wider literature. To be clear, throughout this thesis neither word is used in the sense of training a function approximation, such as a neural network, which is not considered here.
+\end{mccorrection}
 
         
 
