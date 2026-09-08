@@ -296,7 +296,7 @@
     Let $\relevant(s,a;\bff{w})$ denote the set of \textit{relevant} balls at a decision node $s$ for action $a$. A ball is relevant if $(\bff{w},a)$ is in the domain of the ball. Specifically,
     \begin{align}
         \relevant(s,a;\bff{w}) = \{ B \in A(s,a) \mid (\bff{w},a)\in\dom(B)\}, \\
-        \relevant(s;\bff{w}) = \cup_{a\in\cl{A}} \relevant(s,a;\bff{w}).
+        \relevant(s;\bff{w}) = \cup_{a\in\cl{A}} \relevant(s,a;\bff{w}). \label{eq:5:relevant_balls_state}
     \end{align}
 
     Contextual Zooming defines a confidence interval term, called the \textit{pre-index}, around each ball, similar to UCB's confidence interval term:
@@ -327,6 +327,7 @@
     \begin{align}
         M(B_t) &\leftarrow M(B_t) + 1, \\
         \Qczt(B_t) &\leftarrow \frac{M(B_t)-1}{M(B_t)} \Qczt(B_t) + \frac{\Vinitbff(s_h) + \sum_{i=t}^{h-1} \bff{r}_i}{M(B_t)},
+        \label{eq:5:czt_ball_backup}
     \end{align}
     where $\Vinitbff(s_h)$ is the (multi-objective) heuristic value function.
 
@@ -622,6 +623,9 @@
 
     The unsolved values are updated during the backpropagation phase of \thtspp\ewe and used during the selection phase to filter out actions that have already been solved, to a tolerance of $\unsolvedtol$, with high probability. That is, at a decision node $s$, any action $a$ with $\unsolved(s,a) \leq \unsolvedtol$ is filtered out before selecting an action. The remainder of this section describes how the unsolved values are propagated through chance nodes, that is, how the value of $\unsolved(s,a)$ is computed.
 
+
+    % FUTURE_MIKE_HEADER
+
     % Ideally $\unsolved(s,a)$ would be computed either as an expectation or maximisation over the successor states. Using the empirical distribution directly may be overly optimistic when few successor states have been observed, and using a maximisation over successor states penalises nodes with low-probability transitions that are rarely visited. An upper bound on the expected unsolved value is used instead, which accounts for both the estimation error in the empirical distribution and the probability mass of unobserved successor states.
 
     The solved value of a chance node $(s,a)$ is computed as an upper bound on the expected solved values of its successor states, using the empirical transition distribution $\frac{N(s')}{N(s,a)}$ as a proxy for the true distribution $p(s'|s,a)$. Since the true distribution is unknown, the bound must account for the estimation error in the empirical distribution. Let $\deltaunsolved > 0$ be a confidence parameter. The unsolved value $\unsolved(s,a)$ is defined as an upper bound satisfying:
@@ -679,7 +683,7 @@
     
     When the $\unsolved$ labelling is used in CHMCTS, $\unsolvedtol$ and $\deltaunsolved$ are \mccorrect{parameters} of the algorithm. A node is marked as solved when $\unsolved(s,a) \leq \unsolvedtol$, at which point it is excluded from further trials.
 
-\paragraph{Convex Hull Size Pruning.}
+\paragraph{Convex Hull Value Set Size Pruning.}
 
     As the search progresses, the convex hull value sets at each node may grow large, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \cite{nsga_ii}
 
@@ -688,8 +692,13 @@
         \textnormal{cd}_i(\bff{v}) = 
             \frac{v^+_i - v^-_i}{\max_{\bff{v}'\in\bfcl{V}} 
             v'_i - \min_{\bff{v}'\in\bfcl{V}} v'_i},
+            \label{eq:5:crowding_distance}
     \end{align}
     where $v^+_i$ and $v^-_i$ are the $i$th coordinates of the nearest neighbours of $\bff{v}$ above and below in dimension $i$ respectively. The total crowding distance is $\textnormal{cd}(\bff{v}) = \sum_{i=1}^D \textnormal{cd}_i(\bff{v})$. When the value set exceeds $K_{\max}$ points, the $K_{\max}$ points with the largest crowding distances are retained, preserving the spread of the convex hull.
+
+    \todo{Add Kmax to notation}
+
+    \todo{Add solved notation too}
 
 
 % [ ] First Draft
@@ -897,21 +906,34 @@
 
     Each algorithm is given $60$ seconds of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation, and the EUM is approximated using $|E(\Delta^D)| = 128$ evenly spaced weight vectors, with one trajectory sampled per weight vector.
 
+    \todo{Everything below should be in a parameters section. Should do this consistently across all chapters}
+
     As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms are given in Appendix \ref{app:expr-deets-ch5}.
 
-
-
-
-\subsection{Multi-Objective Gridworld Results}
-\label{sec:5-5-3-results_and_discussion}
-
-    For CZT, to compute a hypervolume, an approximate convex hull is computed, using the $\Qczt$ value estimates at each node. \todo{of relevant balls, explicitly state the set, convex prune over Q(B) for B in relevant}
+    For CZT, to compute a hypervolume, an approximate convex hull \mccorrect{value set} is computed, using the $\Qczt$ value estimates at each node. \mccorrect{Specifically the following set of points is used at the root node:}
+    \begin{mccorrection}
+    \begin{align}
+        \cprune \left( \{\Qczt(B)\ |\ B\in\relevant(s_0;\bff{w})\} \right). \label{eq:5:czt_chvs}
+    \end{align}
+    \end{mccorrection} 
 
     \todo{Add description of some of the parameters that were set consistently across algorithms (single node expansion, heuristic value etc).}
 
     \todo{Consistently describe the parameters like single node expansion across ch4 ch5 and ch6 in the respective results sections. Add highlighting but don't explicitly point out in cover letter}
 
     \todo{reminder to fix up appendix B and C}
+
+    \todo{Should explain some of the parameters used somewhere in the main text for all ch4, ch5 and ch6, particularly those that effect the results. HERE, that is the parameters related to section 5.3.6, and particularly that the number of points in pruned}
+
+    \todo{Kmax is 15, unsolvedtol is what??}
+
+    \todo{Update P134 correction, get claude to proof read}
+
+
+
+
+\subsection{Multi-Objective Gridworld Results}
+\label{sec:5-5-3-results_and_discussion}
 
     \begin{figure}
         \centering
@@ -1021,6 +1043,14 @@
     search policy, did not clearly outperform 
     context-independent policies on any of the 
     environments.
+
+    \begin{mccorrection}
+    In Figure \ref{fig:5:gridworld_results}, multiple plots related to the hypervolume metric show non-monotonic trends, for the following two reasons:
+    \begin{itemize}
+        \item The hypervolume for CZT is approximated using the set of value estimates from the relevant balls (Equation \eqref{eq:5:czt_chvs}). The values in this set may shrink, because they are computed using average returns (Equation \eqref{eq:5:czt_ball_backup}), and because the set of relevant balls (Equation \eqref{eq:5:relevant_balls_state}) changes as the algorithm runs.
+        \item The hypervolume for CHMCTS algorithms would grow monotonically were it not for the size pruning of convex hull value sets, which uses the crowding distance (Equation \eqref{eq:5:crowding_distance}) and is described in Section \ref{sec:5-3-6-optimisations}. When value sets are pruned to a maximum of $K_{\max}=15$ points, the convex hull backups (Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}) are no longer guaranteed to converge, and the hypervolume may decrease on any backup that prunes points.
+    \end{itemize}
+    \end{mccorrection}
 
 
 
@@ -1226,11 +1256,16 @@
     this experiment, where objective values are normalised 
     to $[0,1]$ before computing the hypervolume, so that 
     results are comparable across environments of different 
-    scales. As can be seen from the CHVI curves, the 
-    optimal normalised hypervolume is consistently around 
-    $0.8$ across all map sizes.
+    scales. 
 
-    Results are given in Figure \ref{fig:5:dst_scaling}. 
+    \begin{mccorrection}
+    Figure \ref{fig:5:dst_scaling} gives results on randomly generated Deep Sea Treasure environments of increasing size, as described in Section \ref{sec:5-5-1-envs}. Each algorithm is given $15$ seconds of planning time on every environment, regardless of its size, before being evaluated on its recommendation policy as outlined in Section \ref{sec:5-5-2-eval_procedure}.
+
+    The optimal EUM that can be acheived increases with the size of the environment, because the maximum treasure reward is increased at a greater rate than the size of the environment (Section \ref{sec:5-5-1-envs}). Some non-monotonicity exists due to the random generation of the environments, as can be seen in the CHVI plots in Figure \ref{fig:5:dst_scaling:sub:a}. 
+
+    The CHVI curves also suggest that the optimal normalised hypervolume is consistently around $0.8$ across all map sizes and values of $\pswept$. The downward trends of the remaining algorithms are expected, given the fixed compute budget. The kink in the normalised hypervolume plots corresponds to the kink in the CHVI curve for EUM (Figure \ref{fig:5:dst_scaling:sub:a}), and so has the same cause: randomness in the generated environments.
+    \end{mccorrection}
+ 
     On the deterministic environment $\DST(W,0)$, CHVI is 
     able to solve environments up to a width of 
     approximately $W=50$, beyond which the state space has 

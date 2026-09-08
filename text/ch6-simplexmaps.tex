@@ -488,7 +488,8 @@
 
     Each decision node $s$ and chance node $(s,a)$ keeps an associated simplex map 
     \begin{align}
-        \GSM(s) &= (\VSM(s),\ESM(s),\TSM(s),\Vsmd(s;\cdot), \HVsmd(s;\cdot)) \\
+        \GSM(s) &= (\VSM(s),\ESM(s),\TSM(s),\Vsmd(s;\cdot), \HVsmd(s;\cdot))
+            \label{eq:6:simplex_map_decision_node} \\
         \GSM(s,a) &= (\VSM(s,a),\ESM(s,a),\TSM(s,a),\Qsmd(s,a;\cdot), \HQsmd(s,a;\cdot)),
     \end{align}
     %
@@ -617,6 +618,17 @@
     Section \ref{sec:5-5-results} as baselines for SM-BTS 
     and SM-DENTS.
 
+    \todo{Work out if the below needs to be in its own section. Think would like to make it parallel the chapter 5 and chapter 6 results sections, just to emphasize that results are over the same set of things. But need to update labels etc}
+
+    \begin{mccorrection}
+
+    To compute a hypervolume for SM-BTS and SM-DENTS, an approximate convex hull value set is computed from the values stored in the simplex map at the root node, as was done for CZT in Section \ref{sec:5-5-2-eval_procedure}. Given the simplex map $\GSM(s_0)$ defined in Equation \eqref{eq:6:simplex_map_decision_node}, the following set of points is used, where $\Vsmd(s_0;\cdot)$ are the value estimates and $\VSM(s_0)$ are the vertices:
+    \begin{align}
+        \cprune \left( \left\{ \Vsmd(s_0;\bff{w})\ |\ \bff{w}\in \VSM(s_0) 
+            \right\} \right).
+    \end{align}
+
+    \end{mccorrection}
 
 
 
@@ -808,6 +820,10 @@
     convex hull value set, $K_{\max}$, whereas simplex 
     maps are not subject to this constraint.
 
+    \begin{mccorrection}
+    The non-monotonic trends in the CZT, CH-BTS and CH-UCT results are explained in Section \ref{sec:5-5-3-results_and_discussion}, as these results are repeated from Figure \ref{fig:5:gridworld_results}.
+    \end{mccorrection}
+
     \paragraph{Deep Sea Treasure Environments.}
 
     Results on the Deep Sea Treasure environments are 
@@ -895,6 +911,13 @@
         $\DST(W,\frac{1}{5})$ respectively, for a range of widths $W$ from 10 to 100. Each algorithm was allowed up to 16\,GB of memory; the curves for CHVI and CHVI(PS) are truncated where memory was exhausted.}
         \label{fig:6:dst_scaling}
     \end{figure}
+
+
+    \begin{mccorrection}
+    Figure \ref{fig:6:dst_scaling} repeats the scalability experiment of Section \ref{sec:5-5-4-scalability} with the simplex map algorithms added. The experimental setup, and the trends in the CHVI curves --- the increase in optimal EUM with environment size, the constant normalised hypervolume of around $0.8$, and the non-monotonicity arising from the random generation of the environments --- are as described there.
+
+    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM as the environment size increases, before declining once the fixed compute budget becomes the limiting factor.
+    \end{mccorrection}
 
     \paragraph{Deterministic Environments.}
 

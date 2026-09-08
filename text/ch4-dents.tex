@@ -1463,7 +1463,11 @@
 
     UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation.
 
-    \todo{also explain the non-monotonicity}
+    \todo{also explain the non-monotonicity, on 4x16 frozen lake. Because maps were randomly generated, this map has few holes, but critically one next to the }
+
+    \todo{UCT, there is a hole near the goal, one UCT is next to the goal state, the policy that UCT commits to seems to be consistently worse than acting randomly, even though}
+
+    \todo{MENTS behaviour is because it finds an initial solution, but because there are few holes, temperature is misaligned and entropy is prioritised until it finds a high entropy solution that sometimes reaches the goal as its convergent behaviour}
 
     H-MCTS and UCT exhibit an interesting behaviour where beyond $150{,}000$ trials the value of the recommendations declined, likely due to over-commitment to a suboptimal policy close to the goal.
 
@@ -2347,6 +2351,9 @@
         
         Inequality (\ref{eq:4:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-\frac{1}{\log(x)}\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule multiple times gives $\lim_{x\rightarrow\infty} \log f(x) = -\infty$, so $\lim_{x\rightarrow\infty} f(x) = 0$.
         
+    % FUTURE_MIKE_HEADER
+    % sad that we cut LHopital and more Lhopital and more Lhoptial
+
         % To see why the final limit equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule generously gives:
         % \begin{align}
         %     \lim_{x\rightarrow \infty} \log f(x) 
@@ -2362,6 +2369,9 @@
         % %
         % By continuity of the exponential function, thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
     \end{proof}
+
+    % FUTURE_MIKE_HEADER
+
     %
     % Can we also say that if its (1 - 1/o(x)) to the x, then it will generally hold, so x to the power of 0.99 could equally be used. And also any polynomial of log(x) could be used
 
@@ -2460,6 +2470,8 @@
 
         Combining these two results gives $\pi^n(a_t|s_t)\rap\pi^*(a_t|s_t)$.
     \end{proofoutline}
+
+% FUTURE_MIKE_HEADER
 
     % I can't be bothered to write a proper comment that appears
     % But the reason this is sufficient for AR-DENTS, even without beta/alpha -> 0 is:
@@ -2590,64 +2602,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-    % ----------------------------
-    % Old Proof that AR-BTS is not consistent if alpha doesnt tend to zero
-    % But this is kind of subsumed by the above proof of when AR-BTS is consistent
-    % This proof means that AR-BTS consistent if and only if alpha tends to zero
-    % Rather than just if alpha tends to zero
-    % ----------------------------
-
-
-
-    % {Necessity for ar-bts to have temp tend to zero, but would need to change the theorem to say lower bound on temp rather than just fixed temp.}
-    % Firstly, it can be shown that using a non-decaying search temperature with AR-BTS is not guaranteed to recommend the optimal policy.
-    
-    % \begin{figure}
-    %     \centering
-    %     \includegraphics[width=0.7\textwidth]{figures/toodilo.jpg}
-    %     \caption{{Haven't touched this, need to reproduce from neurips paper}An MDP that AR-BTS will not converge to recommending the optimal policy on, for a large enough value of $D$.}
-    %     \label{fig:ar_gen_mdp}
-    % \end{figure}
-
-    % {theorem restate}
-    % % \begin{customprop}{B.1}
-    % %     {Haven't touched this, just c and p from neurips paper}
-
-    % %     For any $\alpha_{\textnormal{fix}}>0$, there is an MDP $\cl{M}$ such that AR-BTS with $\alpha(m)=\alpha_{\textnormal{fix}}$ is not consistent: $\bb{E}[\sreg(s_0,\psi^n_{\textnormal{AR-BTS}})] \not\to 0$ as $n\to\infty$. 
-    % % \end{customprop}
-    % \begin{proofoutline}
-    %     {Haven't touched this, just c and p from neurips paper}
-
-    %     Consider the MDP given in Figure \ref{fig:ar_gen_mdp}. We can show inductively that (as $n\rightarrow\infty$) the value of $\bb{E}\bar{V}^{N(k)}(k)\leq 2E^{D-k+1} < 2$, where $E=e^2/(1+e^2)$ for $2\leq k \leq D$. The inductive step is as follows:
-    %     \begin{align}
-    %         \bb{E}\bar{V}^{N(k)}(k) =& \frac{\exp\left(\bar{V}^{N(k+1)}(k+1)\right)}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \bb{E}\bar{V}^{N(k+1)}(k+1) 
-    %             + \frac{1}{1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)} \cdot 0 \\
-    %             \leq& E \cdot \bb{E} \bar{V}^{N(k+1)}(k+1) \\
-    %             \leq& E \cdot 2E^{D-k} \\
-    %             =& 2E^{D-k+1}.
-    %     \end{align}
-
-    %     where we know that $\exp\left(\bar{V}^{N(k+1)}(k+1)\right)/\left(1+\exp\left(\bar{V}^{N(k+1)}(k+1)\right)\right) < E$, because the function $e^x/(1+e^x)$ is monotonically increasing in $x$, and $\bar{V}^{N(k+1)}(k+1) < 2$. Hence, by choosing an integer $D$ such that $D-1 \geq \log(1/3) / \log(E)$, we have $\bb{E}\bar{V}^{N(2)}(2)=2E^{D-1}\leq 2/3 < 1 = \bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)$. 
-
-    %     A full proof should show that AR-BTS does indeed converge to these expected values, possibly through concentration bounds. 
-    %     {(was camera ready) Do the full proof, and show that AR-BTS converges to these value with non zero prob, hence the non zero simple regret.} 
-
-    %     Hence, AR-BTS does not converge to a simple regret of zero, because the expected Q-values as $n\rightarrow\infty$ are $\bb{E}\bar{Q}^{N(1,a_2)}(1,a_2)=1$ and $\bb{E}\bar{Q}^{N(1,a_1)}(1,a_1)<2/3$, so AR-BTS would incorrectly recommend action $a_2$ from the root node. 
-    %     {(Was camera ready ) Formally give the simple regret converges to something strictly greater than zero. Also can I even do that intersection to product equality? Doesn't that mean that they are independent. Are they independent?}
-    % \end{proofoutline}
-
-    % {Say that AR-DENTS with beta not o(alpha) isn't consistent. Show that it essentially leads to a term of one times the entropy value, and so repeating the arguments that showed MENTS is inconsistent would show that AR-DENTS is inconsistent in this case. So this and the above AR-BTS results show that the conditions are necessary too.}
-
-    % {Sufficiency for most visited stuff could also be done? Probably extending from these arguments, or saying that it would contradict these results.}
 
 
 

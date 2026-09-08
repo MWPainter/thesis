@@ -27,12 +27,12 @@ I agree that using the unknown weights scenario provides a better motivation for
     - clarifying that utilities are assumed to be linear, with forward references where it is discussed,
     - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
     - explaining why MCTS methods might still be of interest instead of purely learning better prior policy/value functions
-- Updated prose throughout thesis for using the unknown weights scenario instead:
+- Updated prose throughout thesis for using the unknown weights scenario instead and to be consistent with scoping section:
     - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
     - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
     - Section 5.1 - restructured to improve clarity and relates back to unknown weights scenario
-    - Section 5.4.2 - updated first paragraph to motivate the use of the two metrics using the unknown weights scenario
+    - Section 5.4.2 - updated first paragraph to motivate the use of the two reported metrics using the unknown weights scenario
 
 
 
@@ -179,8 +179,7 @@ Boltzmann is largely used to focus the search around the currently competitive v
 
 > Again, be clear about the motivation here, and consider switching to unknown weights scenario.
 
-TODO: updated Section 5.1 for this
-
+I believe that this is generally related to chapter 5, and hopefully this is addressed by the changes discussed in the correction for P2.
 
 
 
@@ -190,35 +189,35 @@ TODO: updated Section 5.1 for this
 > 
 > P132: “A more efficient online approach is therefore to run the multi-objective tree search from the initial state, and subsequently follow a single-objective MCTS algorithm in the scalarised MDP with reward R(s,a; w) = w⊤R(s,a), where w is inferred from the choice made at the root node.” The choice may not disambiguate w, which is another reason why unknown weights would give a cleaner motivation. Also, explain why building an MCTS tree is a good way to use the offline planning budget, compared to just learning better prior policies and value functions that apply in any state. Finally, if this only makes sense assuming a deterministic initial state, that needs to be stated clearly up front.
 
-TODO: clean up writing + talk about Section 5.4.2 specifically
-
-- The new Section 1.4 addresses this comment up front: it states that planning is run from a known initial state, explains why the planning budget is spent building a search tree from that state (computation is concentrated on the states reachable from it), and switches to the unknown weights scenario, in which the weight vector is explicitly revealed after planning rather than inferred from the choice made at the root node.
-- Rewrote the opening of Section 5.4.2 (page 132) accordingly: the root node's convex hull determines the achievable utility once the weight vector is revealed, after which the problem reduces to single-objective planning with scalarised rewards, and deeper parts of the multi-objective tree serve to improve the root value estimates.
+- The new scoping section (from P2) addresses these comments up front: 
+    - planning is run from a known initial state
+    - algorithms are evaluated as offline planners 
+    - the unknown weights scenario is used where the weight is revealed after planning
+    - gives the reduction to single-objective MCTS for online planning at evaluation time in the unknown weights scenario
+    - justifying why considering multi-objective MCTS methods can still be relevant beyond just learning function approximators
+- The issue about user choice not disambiguating the weight vector is addressed by moving to the unknown weights scenario as suggested
+- The opening of Section 5.4.2 (now page 141) is now written consistently with the rest of the changes from P2 (and refers back to Sections 1.2 and 2.6). The scoping of running the algorithms during the planning phase of the unknown weights scenario is used to  being clear that metrics computed at the initial state are most relevant
 
 
 > P134: Why is improvement not monotonic? (later plots as well)
 
-For context this is related to Figure (TODO), which are the plots of EUM and Hypervolume for the DST and Multi-Objective Gymnasium environments
+There are a two reasons for the non-monotonic trends in Figures 5.4:
+- In CZT, the hypervolume is estimated using a set of vectors that sample averages that may vary throughout the algorithms runtime, and the relevant set of balls is used to approximate the hypervolume, which will also change throughout the runtime
+- In CHMCTS algorithms, the convex hull value sets are pruned to maintain a maximum size (Section 5.3.6 and Equation 5.41), where the pruning breaks the monotonicity of convex hull backups with respect to hypervolume
 
+The only reason there was a non-monotonic trend in Figure 5.5 was due to a mistake:
+- the non-monotonic trend in the EUM for CZT in Figure 5.5a was due to accidentally using an old (incorrect) version of the recommendation policy (Equation 5.14), where the maximum was taken over all balls rather than just the relevant balls
+    - corrected and plot in updated thesis now shows a monotonic improvement in EUM
 
-- CZT in the DST(10,0) environment (Figure TODO TODO) accidentally used an old (incorrect) version of the recommendation policy (Equation 5.14), where the maximum was taken over all of the balls rather than just the relevant balls. I have corrected and updated the data for this now
+I have added the following additional explanations to the main text in Chapter 5:
+- added more specificity to how the hypervolume is approximated for CZT and specifying some of the algorithm parameters (TODO: add section 5.5.2.1, reference it here, add page reference for new writing)
+- added a paragraph at the end of the gymnasium section of Section 5.5.3, to explain the reasons for the non-monotonic trends for Figure 5.4 given above (page 144)
 
+And I have made the following corresponding changes to Chapter 6:
+- added more specificity to how the hypervolume is computed for simplex map algorithms and specifying some of the algorithms parameters (TODO: add the updated section reference and page reference when do below subpoint)
+    - updated the structure of Section 6.4 to parallel the results sections of Chapters 4 and 5, with information about environments and evaluation referring back to Chapter 5, and providing a place to add this new information as a diff from Chapter 5
+- Added a reference from Section 6.4.1 on (page TODO) back to the explanation of non-monotonic results, as some of the non-monotonic CZT and CHMCTS results are repeated in Figure 6.7
 
-TODO: check that how get convex hull from CZT and SM is explained
-
-TODO: use https://claude.ai/chat/57c0c29a-73fc-4b6f-984c-e6faa09b61c8 
-- crowding distance means HV is non-monotonic in 
-
-Non-monotonic trends that need explaining:
-- 500 fruit tree - HV (all)
-- 520 resource gathering - HV (CZT)
-- 540 breakable bottles - HV (CZT)
-
-- TODO: update plots in doc
-- TODO: bug in how computed hypervolume for CZT algorithms
-- TODO: updated plots in Figures X, Y, 6.7 and 6.8 with correct hypervolumes for CZT algorithm
-- TODO: describe bug
-- TODO: apologize and say that this should have been caught before submission, particularly the hypervolume plots for the Four-Room environment are obviously incorrect
 
 
 

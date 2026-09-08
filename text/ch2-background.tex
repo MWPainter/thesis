@@ -1167,8 +1167,26 @@ This section defines the multi-objective counterparts to various definitions giv
     \label{fig:2:mo_unknown_weights}
 \end{figure}
 
-This thesis follows a utility-based approach to multi-objective reinforcement learning similar to that of \citet{morl_survey} \mccorrect{and specifically considers the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}$} specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed during the execution phase, after which the policy that maximises the utility for that weight vector is typically selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system.} 
-%It is closely related to the \textit{decision support scenario}, in which the weights are never explicitly revealed and a user instead picks their preferred solution from the solution set directly.\footnote{When the user selects a policy, a range of possible preference weights can be inferred, but remain unknown for extracting policies from convex hull value sets}}
+This thesis follows a utility-based approach to multi-objective reinforcement learning similar to that of \citet{morl_survey} \mccorrect{and specifically considers the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}$} specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed during the execution phase, after which the policy that maximises the utility for that weight vector is typically selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system.}
+
+% FUTURE_MIKE_HEADER
+
+% MORE FOR ME IF I EVER LOOK BACK AT THIS:
+%
+% It is closely related to the \textit{decision support scenario}, in which the weights are never explicitly revealed and a user instead picks their preferred solution from the solution set directly.\footnote{When the user selects a policy, a range of possible preference weights can be inferred, but remain unknown for extracting policies from convex hull value sets}}
+%
+% We moved away from decision support because unknown weights is much cleaner + suggested by Shimon
+%
+% As a note to self, any weight that "picks" a multi-objective value on a convex hull will extract a policy acheiving that value
+%
+% The weight is still ambiguous, and could be in a range of values
+%
+% The policy it extracts is NOT unique (there may be multiple difference combinations of actions at children that lead to the same value at the root node)
+%
+% But as a rough/approximate system, picking a weight that maximises the chosen vector value that a user picked probably works alright. Theres of course the whole nuance of SER etc, but in a handwavy way it probably works
+%
+% However, thesis is not very handwavy and very happy to have unknown weights instead because it makes all of the setting and motivation precise
+%
 % Foot note is more a note for future self if ever look back at this
 
 To specify problems with multiple objectives, the reward function of an MDP is changed to give a vector of rewards, rather than a scalar reward:

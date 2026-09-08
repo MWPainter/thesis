@@ -876,6 +876,8 @@
 
     After tuning all of the algorithms, each algorithm using Bellman updates played a match against its average returns counterpart, with results given in Table \ref{tab:y10}. Across all matches, the average returns algorithms won each match by a significant margin. 
     
+    % FUTURE_MIKE_HEADER
+
     % {My hypothesis for this is that average returns are less sensitive to any noisy outputs from the neural networks, as taking a maximum over random variables is more sensitive to extreme values than averages. Additionally, the neural networks are trained using PUCT and so are trained to work with average returns. It could be the case that if the neural networks were fine-tuned or trained using the Bellman versions of the algorithms that the performance would be closer or better from the Bellman versions.}
     
     \begin{table}[]
