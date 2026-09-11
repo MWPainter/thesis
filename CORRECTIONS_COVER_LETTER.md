@@ -147,6 +147,7 @@ I have added the following changes to help clarify:
 - Added a paragraph at the start of Section 4.1.1 (page 65) that agrees with the comment: it explains that UCT's exploitation does act as effective local exploration when rewards are dense and informative, and that the failure mode arises when the optimal action instead retains a poor value estimate throughout the initial exploration. Sparse or uninformative rewards, and a misleading learned heuristic, are given as two examples
 - Added a paragraph at the end of Section 4.1.1 (page 66) that points the reader to the DeterministicGridWorld results, which more clearly show that UCT converges in practise to a suboptimal solution in some environments
 - The existing (now penultimate) paragraph of Section 4.1.1 (page 66) already contrasts UCT's asymptotic guarantee with its behaviour in practice, so this has been left unchanged
+- Added additional detail to the caption for Figure 4.2 to describe what it shows and why it is relevant/interesting 
 
 
 

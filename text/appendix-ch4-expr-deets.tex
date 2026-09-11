@@ -203,12 +203,16 @@
 
     To be compatible with \mccorrect{parameter} optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar paramters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
     \begin{align}
-        \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} \\
+        \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} 
+            \label{eq:app:parameterised_alpha} \\
         \beta(x) &= \begin{cases}
             \beta_c \left(1 - \frac{x}{\betathresh}\right) & \text{if } x \leq \betathresh, \\
             0 & \text{otherwise.}
         \end{cases}
+        \label{eq:app:parameterised_beta}
     \end{align}
+
+    $\alpha_0$ specifies the initial temperature at $x=0$, and $\alphadecay$ specifies the rate of decay. $\beta$ follows a linear schedule, starting at a value of $\beta_c$ at $x=0$ and reaches a value of zero at $x=\betathresh$.
 
     These functions are chosen so that the entropy weighting becomes negligible, and more specifically so that $\frac{\beta(x)}{\alpha(x)}$ tends to zero as $x$ tends to infinity.
 

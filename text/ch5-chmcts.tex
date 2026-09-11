@@ -407,6 +407,8 @@
 
     Let $\alg$ denote any of the CHMCTS algorithms defined in this section. At each decision node $s$, a convex hull value set $\Valg(s)$ is maintained, and at each chance node $(s,a)$, a convex hull Q-value set $\Qalg(s,a)$ is maintained. The specific form of the search policy varies between algorithms and is defined in the subsections below.
 
+    \todo{hbox}
+
     Given a context weight $\bff{w}\in\Delta^D$ and a trajectory $\tau_{:h}=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pialg(\cdot|\cdot;\bff{w})$, the value set estimates are updated for $t=h-1,\ldots,0$:
     \begin{align}
         \Valg(s_t) &\leftarrow \cprune \left( 
@@ -417,6 +419,8 @@
             \frac{N(s')}{N(s_t,a_t)}\Valg(s'). 
             \label{eq:5:chmcts_q_backup}
     \end{align}
+
+    \todo{specify how multi-objective heuristic value is used}
 
     The $\cprune$ operation, defined in Equation 
     (\ref{eq:2:cprune_def}) and repeated here for convenience, 
@@ -926,6 +930,8 @@
 
     \todo{Everything below should be in a parameters section. Should do this consistently across all chapters}
 
+    \todo{Be more clear on convex hull size pruning is used in the core convex hull implementation (even in CHVI) otherwise it just blows up in stochastic cases. Operations grow at least quadratically in the size of the convex hull, and for high D (fruit tree) and stochastic (DST) environment, the number of points grows exponentially. Did try running without pruning, and at around 100 trials or so, compute time of one convex hull backup exceeds the entire compute budget.}
+
     As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms are given in Appendix \ref{app:expr-deets-ch5}.
 
     For CZT, to compute a hypervolume, an approximate convex hull \mccorrect{value set} is computed, using the $\Qczt$ value estimates at each node. \mccorrect{Specifically the following set of points is used at the root node:}
@@ -1316,7 +1322,7 @@
     where convex hull-based algorithms struggle from the computational complexity discussed in Section \ref{sec:5-5-3-results_and_discussion}.
     However, across all environments CZT tends to converge to a locally optimal solution, collecting nearby treasure quickly without sufficiently exploring the environment to discover higher-value options further from the starting state.
 
-
+    \todo{Basically want to say CZTs increase performance on large environments shows a few things, some to do with experimental setup. NHV is larger for no CZT. Optimisations not available for CZT, so it's free to be greedy, being greedy leads to better EUM in large envs, small compute budget, because of the evaluation policy equation (todo ref), where the agent falls back to uniform. So it highlights two things, under the setup used, that greedy can be better because it fills out tree more and more thouroughly plans out a small suboptimal solution. But NHV indicates that better values are found and achievable, but have not explored. Basically want to say that if had a more involved evaluation, using online planning or better fallback policy (function approx) then results would be different. Basically want to give CZT its merit, but also highlight how its an  artifact of the evaluation proceedure}
 
 
 

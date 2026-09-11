@@ -50,7 +50,7 @@
 
 \minitoc
 
-    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, addressing \moscalabilityq\ewe and\stochq\ewe empirically. 
+    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, addressing \moscalabilityq\ewe and \stochq\ewe empirically. 
     Per-vertex entropy estimates allow entropy-based 
     exploration to be lifted to the multi-objective setting, addressing \contextq.
 
@@ -282,7 +282,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=0.8\textwidth]{figures/ch6/non_conforming_example.pdf}
-            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating pair of simplices shown in red and green. \todo{alignment seems off in this fig}}
+            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating pair of simplices shown in red and green. The pair is non-conforming because their intersection is the line segment $AB$, which is an edge of the red simplex but only part of the edge $AC$ of the green simplex.}
             \label{fig:6:conforming_triangulation}
         \end{figure}
 
@@ -358,7 +358,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=0.6\textwidth]{figures/ch6/split.pdf}
-            \caption[Example of the $\splitsimplex$ operation of a simplex map.]{Example of the $\splitsimplex$ operation of a simplex map $\GSM$. The longest edge of the simplex is bisected and the two new simplices are added to the tree. The green and blue edges are added to $\ESM$ and the long red edge is removed. (Left) The vertex graph before the split. (Right) The vertex graph after the split. \todo{Remove the colours, add A,B,C,D labels and talk about the edges with segments AB BC CD BD instead}}
+            \caption[Example of a successful $\splitsimplex$ operation of a simplex map.]{Example of a successful $\splitsimplex$ operation on the simplex $ABC$ in the simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$. The longest edge of the simplex, $BC$, is bisected, and the new vertex $D$ is added to $\VSM$. The edge $BC$ is removed from $\ESM$, and the edges $AD$, $BD$ and $CD$ are added to $\ESM$. The two new simplices $ABD$ and $ACD$ are added as children of $ABC$ in $\TSM$, and $\fSM$ is initialised at the new vertex $D$ using Equation \eqref{eq:6:sm_split}. (Left) The vertex graph before the split. (Right) The vertex graph after the split.}
             \label{fig:6:split_operation}
         \end{figure}
 
@@ -399,7 +399,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=0.5\textwidth]{figures/ch6/push.pdf}
-            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its values estimate, the green arrows indicate the direction of value propagation and the red vertex does not accept or propagate the value.}
+            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its value estimate, and the green arrows indicate the direction of propagation. The red vertex does not accept or propagate the value, shown by the red barriers. Nothing is propagated along the dashed edge, as it joins two vertices at the same depth of the breadth first search from the green vertex.}
             \label{fig:6:push_operation}
         \end{figure}
         

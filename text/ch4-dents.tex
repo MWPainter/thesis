@@ -112,13 +112,13 @@
             \caption{Optimal policy with the maximum entropy objective for varying temperatures.}
             \label{fig:4:shortest_path_intro_b}
         \end{subfigure}
-        \caption[An example gridworld shortest path problem.]{An example gridworld shortest path problem. (a) Shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) Illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large so that gathering entropy ``reward'' outweighs reaching the goal.}
+        \caption[An example gridworld shortest path problem.]{An example gridworld shortest path problem. (a) Shows two paths that UCT may have explored, where the blue path is shorter, but the red path takes one of the optimal actions at the (shaded) state $(2,2)$. (b) Illustrates optimal probability distributions at four states in the maximum entropy objective, with varying temperatures. In red, the temperature is low and in blue the temperature is larger. In green, the temperature is large enough such that gathering entropy ``reward'' outweighs reaching the goal.}
         \label{fig:4:shortest_path_intro}
     \end{figure}
 
     \mccorrect{UCT has been used with great success, but there are environments in which it performs poorly.} This section considers a gridworld shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms. 
 
-    In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}.
+    In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}. \mccorrect{For reference, a uniformly random policy achieves a value of \mbox{$-35.1$}}.
 
     While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS, and Section \ref{sec:4-4-results} considers more complex gridworlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
 
@@ -134,14 +134,13 @@
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figures/ch4/plots/cr_101_intro.png}
-            \caption{Reward of best path relative to the number of trials. ($\alpha=1$ and $\bpuct=0.01,0.1,1$).}
+            \caption{Reward of best path relative to the number of trials. ($\alpha=10$ and $\bpuct=0.01,0.1,10$).}
             \label{fig:4:shortest_path_intro_results_b}
         \end{subfigure}
         \centering
-        \caption[Results on the example gridworld problem for a variety of bias and temperature parameters.]{Results on the example gridworld problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters, and (b) shows the evolution of the reward of the recommended best path as a function of the number of trials. In (a) and (b) each data point is averaged over 25 repeated experiments.}
+        \caption[Results on the example gridworld problem for a variety of bias and temperature parameters.]{Results on the example gridworld problem for a variety of bias and temperature parameters. For comparison, the Boltzmann Tree Search (BTS) and Decaying ENtropy Tree Search (DENTS) algorithms defined in Section \ref{sec:4-2-boltzmannsearch} are also shown. (a) Each algorithm is run for 2500 trials for a range of bias and temperature parameters, and (b) shows the reward of the recommended best path as a function of the number of trials. In both plots each data point is averaged over 25 repeated experiments. \mccorrect{In (a), UCT explores little for small bias parameters, and for larger ones is still exploring at this budget. Taking three of these bias parameters, (b) shows the same behaviour over trials: at \mbox{$b=0.01$} UCT converges quickly to a suboptimal solution, while at \mbox{$b=10$} progress is slow, as many actions are still chosen to exploit rather than explore. For MENTS, (a) shows that the \textit{misalignment threshold} (Definition \mbox{\ref{def:4:misalignment}}) is at most \mbox{$\alpha=10$}. At \mbox{$\alpha=10$}, (b) shows that MENTS consistently reaches the goal but prioritises entropy enough to take a scenic route, placing it in the blue case of Figure \mbox{\ref{fig:4:shortest_path_intro_b}}; for reference, a random policy has an expected value of \mbox{$-35.1$}.}}
         \label{fig:4:shortest_path_intro_results}
     \end{figure}
-    
 
 
 % [X] First Draft
@@ -172,7 +171,6 @@
     Although UCT had to be limited to a small number of trials in this initial example, the same behaviour is visible at scale in the empirical results of Section \ref{sec:4-4-results}. The results on DeterministicGridWorld in Figure \ref{fig:4:dgw_results} show UCT settling on a suboptimal path across all map sizes, with its performance flattening after the initial trials rather than continuing to improve. Its concentration of trials therefore acts as local search around an early estimate, and does not recover the optimal path within the planning budget.
     \end{mccorrection}
 
-
     
     
 
@@ -192,12 +190,13 @@
 
     The optimal soft policy for a large temperature may be different from the optimal policy for the standard objective. In cases such as this, it can be said that the maximum entropy objective is \textit{misaligned} with the standard objective. 
     \begin{defn} 
+        \label{def:4:misalignment}
         The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*_{\sft}(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}). The \textnormal{misalignment threshold} is the smallest temperature parameter at which the maximum entropy objective is misaligned.
     \end{defn}
 
-    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. 
+    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. \mccorrect{At intermediate temperatures (illustrated in blue), the agent still reaches the goal, but prioritises entropy enough that, with high probability, it takes a longer route than necessary.}
 
-    When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is around $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex gridworlds where the misalignment threshold is low enough to significantly affect performance.
+    When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is at most $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex gridworlds where the misalignment threshold is low enough to significantly affect performance.
 
 
 
@@ -1025,9 +1024,9 @@
     The entropy trap problem can therefore be made arbitrarily difficult for UCT by increasing $D$, while the misalignment threshold can be made arbitrarily small by increasing $E$. Theorem \ref{thrm:ments_bad_mdp} uses the case when $D=E$ to show that MENTS must either suffer from misalignment or require an exponential number of trials with respect to the size of the state space.
     %
     \begin{restatable}{theorem}{thrmMENTSbadmdp} \label{thrm:ments_bad_mdp}
-        There exists an MDP, for any value of $\alphaments$ that either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy.
+        For any value of $\alphaments$, there exists an MDP such that either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy.
 
-        More precisely, after $n$ trials of MENTS: $\Pr(\psiments\neq \pi^*) > \frac{1}{2}$ if $n\leq 2^{D-1}$; and either $\mathbb{E}\left[\sreg(s_0,\psiments)\right]\not\rightarrow 0$ or there exist constants $c,k>0$ such that $\mathbb{E}\left[\sreg(s_0,\psiments)\right] \geq c\left(1 - \frac{n}{k^{|\cl{S}|}}\right)$.
+        More precisely, after $n$ trials of MENTS, $\Pr(\psiments\neq \pi^*) > \frac{1}{2}$ whenever $n\leq 2^{D-1}$. Moreover, either $\mathbb{E}\left[\sreg(s_0,\psiments)\right]\not\rightarrow 0$, or there exist constants $c,k>0$ such that $\mathbb{E}\left[\sreg(s_0,\psiments)\right] \geq c\left(1 - \frac{n}{k^{|\cl{S}|}}\right)$.
     \end{restatable}
 
     Results on the Entropy Trap problem are given in Figure \ref{fig:entropy_trap_results} for $(D,E)=(10,10)$ and $(D,E)=(15,25)$. In the $(D,E)=(15,25)$ case, $500{,}000$ trials were run per parameter setting. The misalignment threshold is bounded above by $\frac{1}{25\log(2)}\approx 0.06$, which is prohibitively small for effective exploration. Below this threshold, no more than 1000 of the $500{,}000$ trials reached the third state of the D-chain, and typically fewer than 100. While BTS and MaxUCT are able to produce the optimal policy given a sufficiently large temperature/bias parameter, increasing $D$ further would eventually prevent them from doing so within a reasonable number of trials. DENTS, by contrast, is able to recommend the optimal policy across a wider range of settings since its Bellman value estimates are unaffected by the entropy chain. For BTS and DENTS, each of $\alphabts$, $\alphadents$ and $\betadents$ is set to a constant value. While this leads to the majority of trials in DENTS entering the entropy chain, this can be resolved by using a function that tends to zero for $\betadents$.
