@@ -7,7 +7,7 @@
    viewBox="0 0 261.50171 109.23264"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (1:1.4.3+202512261034+0d15f75042)"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
    sodipodi:docname="thts_trial.svg"
    inkscape:export-filename="thts_trial.pdf"
    inkscape:export-xdpi="96"
@@ -16,7 +16,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:ns14="http://www.iki.fi/pav/software/textext/">
+   xmlns:ns30="http://www.iki.fi/pav/software/textext/">
   <sodipodi:namedview
      id="namedview1"
      pagecolor="#505050"
@@ -27,15 +27,15 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="12.329826"
-     inkscape:cx="634.92379"
-     inkscape:cy="304.74882"
-     inkscape:window-width="3840"
-     inkscape:window-height="2096"
-     inkscape:window-x="1080"
-     inkscape:window-y="27"
+     inkscape:zoom="4.3592518"
+     inkscape:cx="491.48342"
+     inkscape:cy="41.635585"
+     inkscape:window-width="1920"
+     inkscape:window-height="1022"
+     inkscape:window-x="1512"
+     inkscape:window-y="30"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g59-6" />
+     inkscape:current-layer="g41" />
   <defs
      id="defs1">
     <marker
@@ -50,7 +50,8 @@
        viewBox="0 0 1 1"
        inkscape:isstock="true"
        inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
+       preserveAspectRatio="xMidYMid"
+       markerUnits="strokeWidth">
       <path
          style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:round"
          d="M 3,-3 0,0 3,3"
@@ -471,7 +472,7 @@
        id="marker33-9"
        refX="0.3"
        refY="0.05"
-       orient="-95.00"
+       orient="-123.00"
        inkscape:stockid="Wide, rounded arrow"
        markerWidth="1"
        markerHeight="1"
@@ -2315,16 +2316,16 @@
          inkscape:transform-center-y="-0.27270277" />
       <g
          transform="matrix(0.56444499,0,0,0.56444499,100.96679,78.828815)"
-         ns14:version="1.10.2"
-         ns14:texconverter="pdflatex"
-         ns14:pdfconverter="inkscape"
-         ns14:text="$\\hat{V}_{\\text{h}}$"
-         ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-         ns14:scale="1.6"
-         ns14:alignment="middle center"
-         ns14:stroke-to-path="0"
-         ns14:inkscapeversion="1.4.3"
-         ns14:jacobian_sqrt="0.564445"
+         ns30:version="1.10.2"
+         ns30:texconverter="pdflatex"
+         ns30:pdfconverter="inkscape"
+         ns30:text="$\\hat{V}_{\\text{h}}$"
+         ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+         ns30:scale="1.6"
+         ns30:alignment="middle center"
+         ns30:stroke-to-path="0"
+         ns30:inkscapeversion="1.4.3"
+         ns30:jacobian_sqrt="0.564445"
          id="g8"
          style="fill:#ca8435;fill-opacity:1">
         <defs
@@ -2428,16 +2429,16 @@
       </g>
       <g
          transform="matrix(0.56444499,0,0,0.56444499,143.63644,77.305674)"
-         ns14:version="1.10.2"
-         ns14:texconverter="pdflatex"
-         ns14:pdfconverter="inkscape"
-         ns14:text="$\\hat{V}_{\\text{h}}$"
-         ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-         ns14:scale="1.6"
-         ns14:alignment="middle center"
-         ns14:stroke-to-path="0"
-         ns14:inkscapeversion="1.4.3"
-         ns14:jacobian_sqrt="0.564445"
+         ns30:version="1.10.2"
+         ns30:texconverter="pdflatex"
+         ns30:pdfconverter="inkscape"
+         ns30:text="$\\hat{V}_{\\text{h}}$"
+         ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+         ns30:scale="1.6"
+         ns30:alignment="middle center"
+         ns30:stroke-to-path="0"
+         ns30:inkscapeversion="1.4.3"
+         ns30:jacobian_sqrt="0.564445"
          id="g8-3"
          style="fill:#3470cd;fill-opacity:1;stroke-width:0.4;stroke-dasharray:none">
         <defs
@@ -2817,17 +2818,17 @@
       </g>
       <g
          transform="matrix(0.564374,0,0,0.564374,124.71699,94.78361)"
-         ns14:version="1.10.2"
-         ns14:texconverter="pdflatex"
-         ns14:pdfconverter="inkscape"
-         ns14:text="$V_{\\text{init}}$"
-         ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-         ns14:scale="1.5997990237486466"
-         ns14:alignment="middle center"
-         ns14:stroke-to-path="0"
-         ns14:inkscapeversion="1.3.2"
+         ns30:version="1.10.2"
+         ns30:texconverter="pdflatex"
+         ns30:pdfconverter="inkscape"
+         ns30:text="$V_{\\text{init}}$"
+         ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+         ns30:scale="1.5997990237486466"
+         ns30:alignment="middle center"
+         ns30:stroke-to-path="0"
+         ns30:inkscapeversion="1.3.2"
          id="g5071-8"
-         ns14:jacobian_sqrt="1.0"
+         ns30:jacobian_sqrt="1.0"
          style="fill:#ee8310;fill-opacity:1;stroke-width:0.70875;stroke-dasharray:none">
         <defs
            id="id-d34db4fd-67f7-4777-bd10-4f5fc7a29ce7-5">
@@ -3116,17 +3117,17 @@
        ry="0.69636697" />
     <g
        transform="matrix(0.564445,0,0,0.564445,91.911561,100.73857)"
-       ns14:version="1.10.2"
-       ns14:texconverter="pdflatex"
-       ns14:pdfconverter="inkscape"
-       ns14:text="While time remaining"
-       ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns14:scale="1.6"
-       ns14:alignment="middle center"
-       ns14:stroke-to-path="0"
-       ns14:inkscapeversion="1.3.2"
+       ns30:version="1.10.2"
+       ns30:texconverter="pdflatex"
+       ns30:pdfconverter="inkscape"
+       ns30:text="While time remaining"
+       ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns30:scale="1.6"
+       ns30:alignment="middle center"
+       ns30:stroke-to-path="0"
+       ns30:inkscapeversion="1.3.2"
        id="g4891"
-       ns14:jacobian_sqrt="0.564445"
+       ns30:jacobian_sqrt="0.564445"
        style="stroke-width:1.32874;stroke-dasharray:none">
       <defs
          id="id-ebc4d337-42ba-4d26-a746-86a903da6eba">
@@ -3420,17 +3421,17 @@
        ry="0.70125133" />
     <g
        transform="matrix(0.55749129,0,0,0.55749129,6.5719782,2.2911394)"
-       ns14:version="1.10.2"
-       ns14:texconverter="pdflatex"
-       ns14:pdfconverter="inkscape"
-       ns14:text="Sample Context"
-       ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns14:scale="1.0"
-       ns14:alignment="middle center"
-       ns14:stroke-to-path="0"
-       ns14:inkscapeversion="1.3.2"
+       ns30:version="1.10.2"
+       ns30:texconverter="pdflatex"
+       ns30:pdfconverter="inkscape"
+       ns30:text="Sample Context"
+       ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns30:scale="1.0"
+       ns30:alignment="middle center"
+       ns30:stroke-to-path="0"
+       ns30:inkscapeversion="1.3.2"
        id="g2021"
-       ns14:jacobian_sqrt="0.352778"
+       ns30:jacobian_sqrt="0.352778"
        style="stroke-width:1.34531;stroke-dasharray:none">
       <defs
          id="id-996069e3-33ac-49c3-b7db-48e07d3870df">
@@ -3679,17 +3680,17 @@
        ry="0.69441903" />
     <g
        transform="matrix(0.5778781,0,0,0.5778781,138.4692,2.2912889)"
-       ns14:version="1.10.2"
-       ns14:texconverter="pdflatex"
-       ns14:pdfconverter="inkscape"
-       ns14:text="Heuristic"
-       ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns14:scale="1.0"
-       ns14:alignment="middle center"
-       ns14:stroke-to-path="0"
-       ns14:inkscapeversion="1.3.2"
+       ns30:version="1.10.2"
+       ns30:texconverter="pdflatex"
+       ns30:pdfconverter="inkscape"
+       ns30:text="Heuristic"
+       ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns30:scale="1.0"
+       ns30:alignment="middle center"
+       ns30:stroke-to-path="0"
+       ns30:inkscapeversion="1.3.2"
        id="g6432"
-       ns14:jacobian_sqrt="0.352778"
+       ns30:jacobian_sqrt="0.352778"
        style="stroke-width:1.29785;stroke-dasharray:none">
       <defs
          id="id-e5d8cd91-5fc7-45cc-a32d-0d4105a8de3f">
@@ -3870,17 +3871,17 @@
        ry="0.69441903" />
     <g
        transform="matrix(0.55172414,0,0,0.55172414,77.169066,2.2911384)"
-       ns14:version="1.10.2"
-       ns14:texconverter="pdflatex"
-       ns14:pdfconverter="inkscape"
-       ns14:text="Selection"
-       ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns14:scale="1.6"
-       ns14:alignment="middle center"
-       ns14:stroke-to-path="0"
-       ns14:inkscapeversion="1.3.2"
+       ns30:version="1.10.2"
+       ns30:texconverter="pdflatex"
+       ns30:pdfconverter="inkscape"
+       ns30:text="Selection"
+       ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns30:scale="1.6"
+       ns30:alignment="middle center"
+       ns30:stroke-to-path="0"
+       ns30:inkscapeversion="1.3.2"
        id="g3915"
-       ns14:jacobian_sqrt="0.564445"
+       ns30:jacobian_sqrt="0.564445"
        style="stroke-width:1.35938;stroke-dasharray:none">
       <defs
          id="id-6ccb4e76-92c1-430e-88cb-7e2bd5f3b50b">
@@ -4061,17 +4062,17 @@
        ry="0.69441903" />
     <g
        transform="matrix(0.5643739,0,0,0.5643739,202.55991,2.2909296)"
-       ns14:version="1.10.2"
-       ns14:texconverter="pdflatex"
-       ns14:pdfconverter="inkscape"
-       ns14:text="Backup"
-       ns14:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
-       ns14:scale="1.6"
-       ns14:alignment="middle center"
-       ns14:stroke-to-path="0"
-       ns14:inkscapeversion="1.3.2"
+       ns30:version="1.10.2"
+       ns30:texconverter="pdflatex"
+       ns30:pdfconverter="inkscape"
+       ns30:text="Backup"
+       ns30:preamble="/home/michael/.config/inkscape/extensions/textext/default_packages.tex"
+       ns30:scale="1.6"
+       ns30:alignment="middle center"
+       ns30:stroke-to-path="0"
+       ns30:inkscapeversion="1.3.2"
        id="g3199"
-       ns14:jacobian_sqrt="0.564445"
+       ns30:jacobian_sqrt="0.564445"
        style="stroke-width:1.32891;stroke-dasharray:none">
       <defs
          id="id-37e63f81-bcc1-49a0-9a83-9ebc01a6ecfa">
@@ -4234,9 +4235,8 @@
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:2.6;stroke-dasharray:none;marker-end:url(#marker33-9)"
-       d="m 139.29359,9.7723944 c 0.0469,6.2974366 -5.46004,6.1836036 -21.08691,6.1909466 -16.56086,0.0078 -20.824087,0.158542 -20.766555,-6.1445286"
-       id="path79"
-       sodipodi:nodetypes="csc" />
+       style="fill:none;stroke:#000000;stroke-width:0.750001;stroke-miterlimit:3.7;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker33-9)"
+       d="m 137.11504,9.2259211 c -1.82084,5.7052989 -14.50602,6.3729399 -18.32979,6.4336349 -3.82376,0.06069 -15.902,-0.667642 -18.997429,-6.2515511"
+       id="path42" />
   </g>
 </svg>

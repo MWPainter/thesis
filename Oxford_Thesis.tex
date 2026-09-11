@@ -121,6 +121,7 @@
 % maffs
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{needspace}
 \usepackage{mathtools}
 \usepackage{amsthm}
 \usepackage{bbm} % for indicator function
@@ -260,6 +261,12 @@
 \newcommand{\cl}[1]{\mathcal{#1}}
 \newcommand{\bfcl}[1]{\mathbfcal{#1}}
 \newcommand{\bff}[1]{\mathbf{#1}}
+\newcommand{\bfg}[1]{\boldsymbol{#1}}   % bold Greek: \mathbf has no lowercase Greek glyphs
+
+% Heading within the list of notation; \needspace stops it being orphaned at a page break
+\newcommand{\notationheading}[1]{%
+  \par\needspace{3\baselineskip}%
+  \item[{\parbox[t]{\textwidth}{\Large\textbf{#1}\hfill\hfill}}]}
 
 % Test shorthands
 \newcommand{\bld}[1]{\textbold{#1}}

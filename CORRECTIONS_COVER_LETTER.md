@@ -1,3 +1,8 @@
+CHECKS AFTER ALL CORRECTIONS AND UPDATES FINISHED:
+- section numbers correct
+- page references correct
+- figure references correct (we may have added figures after writing response)
+
 # Corrections Cover Letter
 
 Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each comment. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
@@ -100,7 +105,7 @@ Sorry I often use the case where each state has a unique optimal action to simpl
 
 > P39: discuss implications of assuming linear scalarisation
 
-TODO
+Added Section 2.6.2 to discuss this explicitly and added a forward reference where this was suggested (now page 46).
 
 
 
@@ -174,6 +179,20 @@ Boltzmann is largely used to focus the search around the currently competitive v
 
 > Why do we need this approach based on ball? Why not learn separate values for each objective and dot-product them with the weights?
 
+I will address both separately.
+
+Why not learn separate values for each objective?
+- If I understand the suggestion, it is to use a vector value estimate at each node, and use that to obtain utilities as necessary
+    - Some of the prior works use this, and I have an example in the CHMCTS paper that I didn't include in the thesis why the approach is flawed
+    - I have updated Section 3.5 on related work in MOMCTS to include the argument why the point estimates used in some prior work is flawed
+    - I have also generalised the argument informally for why using a single vector 
+
+Why do we need the approach based on balls?
+- Section 5.1.2 poses MOMCTS as a contextual problem, so CZT is introduced for two reasons:
+    - To ask whether a contextual bandit algorithm can be run at each node, in place of UCB in UCT. The balls are Contextual Zooming's representation of the context space, rather than a design choice made for its own sake
+    - To provide a contextual baseline for MOMCTS, where none currently exists
+- I have added a sentence at the start of Section 5.2 (page 128) making this framing more explicit
+- The section already states that CZT also serves as a baseline where none exists, at the end of the third paragraph of Section 5.2 (also page 128), so no update was needed for that
 
 
 
@@ -210,14 +229,13 @@ The only reason there was a non-monotonic trend in Figure 5.5 was due to a mista
     - corrected and plot in updated thesis now shows a monotonic improvement in EUM
 
 I have added the following additional explanations to the main text in Chapter 5:
-- added more specificity to how the hypervolume is approximated for CZT and specifying some of the algorithm parameters (TODO: add section 5.5.2.1, reference it here, add page reference for new writing)
+- added more specificity to how the hypervolume is approximated for CZT and giving details of some parameters upfront (rather than leaving them all to appendix TODO) where they are relevant to the discussion later (TODO: add section 5.5.2.1, reference it here, add page reference for new writing)
 - added a paragraph at the end of the gymnasium section of Section 5.5.3, to explain the reasons for the non-monotonic trends for Figure 5.4 given above (page 144)
 
 And I have made the following corresponding changes to Chapter 6:
 - added more specificity to how the hypervolume is computed for simplex map algorithms and specifying some of the algorithms parameters (TODO: add the updated section reference and page reference when do below subpoint)
     - updated the structure of Section 6.4 to parallel the results sections of Chapters 4 and 5, with information about environments and evaluation referring back to Chapter 5, and providing a place to add this new information as a diff from Chapter 5
 - Added a reference from Section 6.4.1 on (page TODO) back to the explanation of non-monotonic results, as some of the non-monotonic CZT and CHMCTS results are repeated in Figure 6.7
-
 
 
 
@@ -229,14 +247,10 @@ Updated (page 148).
 
 > P163: correct x-axis on figure size to env size/width, not search time.  Also ensure Fig 6.10 is discussed in the text, and the non-monotic trends and fully explained.  (also applies to Fig 5.7 on page 138)
 
-- Updated x-axis to "Environment Size" rather than "Search Time" in Figs 5.7 and 6.10
-
-- Non monotonic because fixed time and problem complexity increases from left to right
-- Performance drops off in stochastic envs particularly when it becomes increasingly likely to leave the explored space of the tree
-- Less of an issue in CZT because it is far greedier, so has a very well explored, but very suboptimal value
-
-- TODO: explain non-monotonic trends in the text
-- TODO: update plots in doc
+- Corrected x-axis for plots in Figures 6.10 and 5.7 to correctly display "Environment Size" rather than search time
+- Added a description of the non-monotonic trends seen in Figure 5.7 and why they occur at the beginning of Section 5.4.4 (page 148)
+- Added a paragraph at the start of Section 6.4.2 (page 178) to refer back to the explanation in Section 5.4.4 for the repeated algorithms
+- Added a paragraph in Section 6.4.2 (3rd paragraph of section, also page 178) to describe the additional non-monotonic trends in the EUM plots seen in Figure 6.10 for SM-BTS and SM-DENTS
 
 
 

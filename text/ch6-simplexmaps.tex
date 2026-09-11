@@ -133,7 +133,7 @@
     maintaining the full convex hull value set, suggests a 
     more scalable approach. 
     
-    Working in weight space has led to more scalable approaches in the prior literature. For example, \cite{lizotte_spline_2d} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions \cite{lizotte_spline_nd}.
+    Working in weight space has led to more scalable approaches in the prior literature. For example, \citet{lizotte_spline_2d} use piecewise linear splines as an alternative to convex hulls, yielding a more efficient value iteration algorithm, although this approach does not extend straightforwardly to higher dimensions \cite{lizotte_spline_nd}.
 
     Following the argument made in Section \ref{sec:5-3-7-entropy-convex-hulls}, working in objective space also does not naturally support entropy-based exploration, and moving to weight space provides a natural way to support entropy-based exploration.
 
@@ -630,6 +630,8 @@
 
     \end{mccorrection}
 
+    \todo{In both Chapter 5 and Chapter 6, should be clear that in the scalability sections that parameters were tuned on the environment of size 10 (the previous DST figure from the scalability figures), and just fixed across all environment sizes}
+
 
 
 \subsection{Multi-Objective Gridworld Results}
@@ -800,10 +802,11 @@
         \label{fig:6:dst_backups}
     \end{figure}
 
-    Hypervolumes for SM-BTS and SM-DENTS are computed 
-    similarly to CZT, by constructing an approximate 
-    convex hull from the $\Qsmd$ and $\Vsmd$ value 
-    estimates at each node.
+
+
+    \todo{just need to make this whole section read better, also say that CH-BTS etc are not discussed directly, because they are covered in Chapter 5}
+
+    \todo{Write a bit more detail}
 
     \paragraph{Gymnasium Environments.}
 
@@ -839,13 +842,13 @@
     \ref{fig:6:dst_backups}, simplex map algorithms are 
     able to perform substantially more backups than convex 
     hull-based algorithms within the same time budget, 
-    which accounts for their improved performance in 
+    which accounts for their improved performance in
     stochastic environments.
 
 
-
-
-
+% Force scalability results onto new page
+% So that figs for above section are flushed before the below section
+\clearpage
 
 
 \subsection{Scalability Results}
@@ -912,20 +915,19 @@
         \label{fig:6:dst_scaling}
     \end{figure}
 
+    \todo{just need to make this whole section read better, also say that CH-BTS etc are not discussed directly, because they are covered in Chapter 5}
 
     \begin{mccorrection}
     Figure \ref{fig:6:dst_scaling} repeats the scalability experiment of Section \ref{sec:5-5-4-scalability} with the simplex map algorithms added. The experimental setup, and the trends in the CHVI curves --- the increase in optimal EUM with environment size, the constant normalised hypervolume of around $0.8$, and the non-monotonicity arising from the random generation of the environments --- are as described there.
-
-    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM as the environment size increases, before declining once the fixed compute budget becomes the limiting factor.
     \end{mccorrection}
-
-    \paragraph{Deterministic Environments.}
 
     On the deterministic environment $\DST(W,0)$, simplex 
     map algorithms perform comparably to CHMCTS algorithms 
     but slightly below them across all map sizes.
 
-    \paragraph{Stochastic Environments.}
+    \begin{mccorrection}
+    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM in the stochastic environments as the environment size increases, before declining once the fixed compute budget becomes the limiting factor. 
+    \end{mccorrection}
 
     On the heavily stochastic environment 
     $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal 
@@ -936,6 +938,8 @@
     CHMCTS algorithms, which are unable to run a 
     sufficient number of trials in stochastic environments 
     at these scales.
+
+    \todo{need to update the below too, we updated the results}
 
     On the mildly stochastic environment 
     $\DST(W,\frac{1}{40})$, simplex map algorithms do not 
@@ -953,6 +957,7 @@
     to promising branches.
 
 
+    \todo{Something along the lines of: Recall that CZT is incompatible with the solved labelling optimisation (back refs), and will generally discover a small local optima and only explore a small portion of the state space. This is reflected in the (SCALABILITY FIG), where the CZTs performance on EUM is relatively stable, but finds significantly smaller convex hulls. Part of SM-BTS and SM-DENTS dropoff in performance in stochastic environments related back to (EVALUATION POLICY), where on a large environment, with small compute budget, the algorithms are able to find larger treasure, so at evaluation time it follows those actions, but is likely to get unlucky and leave the tree in the (EVALUATION POLICY) by encountering an outcome that was not sampled in the small planning time. This is also reflected in the fact that NHV is higher for the simplex map algorithms. Finally, also the parameters were tuned on environment of size 10 and fixed across all environment sizes, so it is likely that the optimal parameters depend on the size of the environment and the compute budget, and is possible that better performance on say the environment of size 100 could be acheived by tuning the parameters on the specific environment (to make them a bit more greedy, and exploit, and fill out the tree, to reduce fallbacks to the uniform policy during evaluation).}
 
 
 

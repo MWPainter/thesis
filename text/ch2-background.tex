@@ -745,7 +745,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp, blue shows an example when \mctsmode\ewe is True, and orange shows an example when \mctsmode\ewe is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted) and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and where dashed lines indicate any new nodes to be added; third shows that new nodes are initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, shows the backup phase, where the arrow directions are changed to show that information is being propagated back up the tree to update the values in the nodes (triangles).}
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}}
         \label{fig:2:thts}
     \end{figure}
 
@@ -1204,9 +1204,9 @@ To specify problems with multiple objectives, the reward function of an MDP is c
 Multi-objective trajectories are defined analogously to single-objective trajectories (Definition \ref{def:2:trajectory}):
 \begin{defn}
     \label{def:2:mo_trajectory}
-    A \textnormal{multi-objective trajectory} $\bff{\tau}$ is a sequence of states, actions and vector rewards that is induced by a policy $\pi$ and an MOMDP $\bfcl{M}$. Let the trajectory be $\bff{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
+    A \textnormal{multi-objective trajectory} $\bfg{\tau}$ is a sequence of states, actions and vector rewards that is induced by a policy $\pi$ and an MOMDP $\bfcl{M}$. Let the trajectory be $\bfg{\tau} = (s_0, a_0, \bff{r}_0, s_1, a_1, \bff{r}_1, \ldots, s_{H-1}, a_{H-1}, \bff{r}_{H-1}, s_H)$, where \mccorrect{\mbox{$a_t \sim \pi(\cdot|s_t;t)$}}, $\bff{r}_t=\bff{R}(s_t,a_t)$ and $s_{t+1} \sim p(\cdot|s_t,a_t)$. 
     
-    The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories, such as $\bff{\tau}\sim\pi$ for sampling trajectories using policies, and $\bff{\tau}_{i:j}$ for truncated trajectories.
+    The notations used for single-objective trajectories (Definition \ref{def:2:trajectory}) will also be used for multi-objective trajectories, such as $\bfg{\tau}\sim\pi$ for sampling trajectories using policies, and $\bfg{\tau}_{i:j}$ for truncated trajectories.
 \end{defn}
 
 Similarly, multi-objective variants of the (Q-)value of a policy are defined:    
@@ -1215,7 +1215,7 @@ Similarly, multi-objective variants of the (Q-)value of a policy are defined:
     \label{def:2:mo_q_value}
     The \textnormal{multi-objective value} of a policy $\pi$ from state $s$ at time $t$ is:
     \begin{align}
-        \bff{V}^{\pi}(s;t) = \bb{E}_{\bff{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_i \Bigg| s_t=s \right]. \label{eq:2:mo_value_fn_def}
+        \bff{V}^{\pi}(s;t) = \bb{E}_{\bfg{\tau}\sim\pi}\left[\sum_{i=t}^{H-1} \bff{r}_i \Bigg| s_t=s \right]. \label{eq:2:mo_value_fn_def}
     \end{align} 
 
     The \textnormal{multi-objective Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
@@ -1252,7 +1252,9 @@ At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value fu
     \end{align}
 \end{defn}
 
-\mccorrect{The algorithms in Chapters \mbox{\ref{ch:5-chmcts}} and \mbox{\ref{ch:6-simplexmaps}} assume a linear utility function, an assumption that is discussed and justified in Section \mbox{\ref{sec:5-6-2-linear_utility}}.}
+\begin{mccorrection}
+The algorithms in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} assume a linear utility function. Section \ref{sec:2-6-2-linear_utility_implications} discusses the implications of this assumption, and Section \ref{sec:5-6-2-linear_utility} discusses why it is a difficult assumption to avoid in an MOMCTS algorithm.
+\end{mccorrection}
 
 Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $\bff{w}\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
 
@@ -1354,7 +1356,7 @@ The Pareto front can be related to the previously defined solution sets in two w
 \end{defn}
 \end{mccorrection}
 
-The second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
+The second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability\footnote{Mixture policies are only appropriate when a policy is run many times and the aggregated return is of main concern, as under the scalarised expected returns criterion used in this thesis (Section \ref{sec:1-2-scope}).}. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
 Several metrics have been proposed for evaluating the 
 quality of a solution set in multi-objective settings 
@@ -1462,7 +1464,26 @@ randomly drawn weight vector.
     %     \bff{w} = \frac{\bff{v}-\bff{v}_\bot}{\Vert\bff{v}-\bff{v}_\bot\Vert_2}, \label{eq:2:chvi_extract_value_weight}
     % \end{align}
 
-    % and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}). 
+    % and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}).
+
+\begin{mccorrection}
+\subsection{Implications of Assuming a Linear Utility}
+\label{sec:2-6-2-linear_utility_implications}
+
+    The algorithms in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} assume a linear utility, which limits the preferences that can be expressed, because linear utility trades objectives off at a fixed rate, regardless of how much of each objective has already been obtained. In particular:
+    \begin{itemize}
+        \item Diminishing returns cannot be expressed, although they are common in practice, the value of additional money being the standard example.
+        \item Lexicographic preferences cannot be expressed, where any improvement in the first objective is preferred to any improvement in the second, and the second over the third and so on.
+        \item An objective with a small weight can be ignored entirely, whereas the Chebyshev utility (Definition \ref{def:2:chebyshev_utility}) forces a compromise, so that improving a low-weighted objective is still necessary to increase the utility.
+    \end{itemize}
+
+    In return, a linear utility gives the following properties, the first of which the methods in this thesis rely on:
+    \begin{itemize}
+        \item Optimal policies can be obtained by selecting actions greedily using the reward-to-go at each node, which Section \ref{sec:5-6-2-linear_utility} shows holds if and only if the utility is linear.
+        \item Scalarising the rewards by $\bff{w}$ reduces the MOMDP to an MDP, so a stationary deterministic optimal policy exists for each weight vector. When a non-linear utility is used, the optimal policy may be non-stationary, depending on the current timestep or the reward accrued so far \cite{white_momdp}. MCTS is able to represent such policies, so this is not in itself a restriction here.
+        \item The scalarised and expected scalarised returns criteria coincide (Section \ref{sec:1-2-scope}), so the algorithms in this thesis can be applied under either criterion.
+    \end{itemize}
+\end{mccorrection}
 
 
 

@@ -163,7 +163,7 @@
 
 
 \begin{mccorrection}
-\section{Parameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments}
+\section[Parameter Details for Gridworld Experiments]{Parameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments}
 \label{appsec:4:hps}
 \end{mccorrection} 
 
@@ -240,7 +240,7 @@
             + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \bar{Q}(s_t,a).
     \end{align}
 
-    In the main thesis the visit counts $N(s'|s,a)$ are breifly mentioned in Section \ref{sec:2-4-2-thts}, but not used for the general presentation to follow prior works presentation. When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \ref{sec:2-4-2-thts} and argued by \cite{katago}. 
+    In the main thesis the visit counts $N(s'|s,a)$ are breifly mentioned in Section \ref{sec:2-4-2-thts}, but not used for the general presentation to follow prior works presentation. When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \ref{sec:2-4-2-thts} and argued by \citet{katago}. 
 
 
 \subsubsection{UCT Implementation with Full Backups}
@@ -344,7 +344,7 @@
             $b$             & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\uctbudget$    & $1$           & $10^5$    & Linear 
         \end{tabular}
-        \caption[The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results})]{The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
+        \caption[The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}).]{The \mccorrect{parameter} search space for gridworld experiments (Section \ref{sec:4-4-3-1-gridworld_results}). Recall that $\alpha$ is the temperature used for maximum entropy algorithms (e.g. MENTS), and $\alpha_0$, $\alphadecay$ $\beta_c$ and $\betathresh$ are parameters for $\alpha(x)$ and $\beta(x)$ used in BTS and DENTS. The search space for $\alphadecay$ and $\betathresh$ are selected such that the function spaces for $\alpha(x)$ and $\beta(x)$ include functions that are nearly constant for the duration of the search. \label{table:gridworld_hps_space}}
     \end{table}
 
     Parameters were optimised using the 8x8 map for DeterministicGridWorld, the 4x4 map for FrozenLake (Figure \ref{appfig:fl_maps}) and the 8x8 map for Sailing with both wind directions.

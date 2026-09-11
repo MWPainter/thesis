@@ -1,4 +1,4 @@
-# Viva Prep Sheet 
+# Viva Prep Sheet
 
 ## -1. Notation + Misc
 - **TODO** = indicates something to update during corrections (not happy with final version unless do)

@@ -1,0 +1,10 @@
+    
+    orig cheby writing:
+    
+    \citet{chebyshev_momcts} instead use the Chebyshev scalarisation of \cite{moo_chebyshev} as the basis selecting actions during planning and execution, although there are some issues with this approach, discussed in Section \ref{sec:5-6-2-linear_utility}, which explains why this thesis assumes linear utilities. The motivation is that the Chebyshev function, unlike linear scalarisation, can recover Pareto-optimal solutions in non-convex regions of the front.
+    
+
+
+    information theoretic general:
+
+    Although the example assumes that values are updated by sample averages, the argument could be generalised to any way that the point estimate is updated by an information theoretic argument. Informally, a single vector cannot carry the information of an entire set of values that can be obtained by an undominated set of policies (Definition \ref{def:2:undominated_set}). 

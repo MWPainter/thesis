@@ -49,7 +49,7 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\chapter{\label{ch:4-dents}Monte Carlo Tree Search With Boltzmann Exploration} 
+\chapter{\label{ch:4-dents}Monte Carlo Tree Search with Boltzmann Exploration} 
 
     \minitoc
     
@@ -229,7 +229,7 @@
                 \end{enumerate} 
             \end{itemize}
         \end{tcolorbox}
-        \caption[The procedure of an exploration planning problem for MDPs]{The procedure of an exploration planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
+        \caption[The procedure of an exploration planning problem for MDPs.]{The procedure of an exploration planning problem for MDPs, where $\psi^m$ is the recommendation policy the agent produces after $m$ trajectories are sampled using the exploration policy $\pi^m$.}
         \label{fig:4:planning_problem}
     \end{figure}
 
@@ -317,7 +317,7 @@
 \subsection{Boltzmann Tree Search}
 \label{sec:4-2-1-bts}
 
-    Boltzmann search has been used previously in heuristic search algorithms such as RTDP \cite{rtdp} and THTS \cite{thts_thesis}. This section presents \textit{Boltzmann Tree Search} (BTS), which uses a Boltzmann search policy with decayed temperature similar to \cite{rtdp}, but includes an additional uniform exploration term similar to MENTS \cite{ments}.
+    Boltzmann search has been used previously in heuristic search algorithms such as RTDP \cite{rtdp} and THTS \cite{thts_thesis}. This section presents \textit{Boltzmann Tree Search} (BTS), which uses a Boltzmann search policy with decayed temperature similar to RTDP, but includes an additional uniform exploration term similar to MENTS \cite{ments}.
 
     \begin{mccorrection}
     BTS therefore has two exploration mechanisms: the Boltzmann search policy, controlled by the temperature $\alphabts$, and the uniform term, controlled by $\epsbts$. They explore in different ways. Boltzmann exploration is directed, in that it is centred on the current Q-value estimates and so favours actions that are currently competitive. Uniform exploration is undirected, and continues to sample actions that the current estimates rate poorly. Retaining both allows the balance between them to be tuned for the domain at hand.
@@ -555,7 +555,7 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Stochastic Search Policies: Prior Knowledge and Computational Efficiency}
+\subsection[Stochastic Search Policies]{Stochastic Search Policies: Prior Knowledge and Computational Efficiency}
 \label{sec:4-2-3-stoch_search_policies}
 
     This subsection discusses two properties of using a stochastic search policy in MCTS. First, the prior policy $\piinit$ can be incorporated into the search policy as a mixture policy, allowing prior knowledge to guide the selection phase. Second, the \textit{Alias Method} \cite{alias_method_one,alias_method_two} is used to derive a more efficient MCTS algorithm by trading off policy accuracy for computational speed, providing an answer to \complexityq.
@@ -1761,7 +1761,7 @@
                 AR-BTS          & 25--25 & 35--15 & 31--19 & 34--16 &   --   & 15--35  & 5375 \\
                 AR-DENTS        & 23--27 & 36--14 & 29--21 & 36--14 & 15--35 &   --    & 4677 \\         
         \end{tabular}
-        \caption[Results for the Go round-robin tournament]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space.}
+        \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space.}
         \label{table:go_results}
     \end{table}
 
