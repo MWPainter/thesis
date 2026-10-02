@@ -62,7 +62,7 @@
     This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a second objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
 
     \begin{mccorrection}
-    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the predeceeding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
+    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the preceding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
 
     While the maximum entropy objective (Definition \ref{def:2:soft_rl_obj_fn}) yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective (Definition \ref{def:2:rl_obj_fn}) for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it is further demonstrated that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
     \end{mccorrection}
@@ -251,7 +251,7 @@
 
     Note that the simple regret (Equation (\ref{eq:4:simple_regret})) is a random variable, as it depends on the recommendation policy $\psi$, which itself depends on the random trajectories that are sampled. Hence the expected simple regret is used in Definition \ref{def:4:consistency} to define consistency, and is the main value of interest in the theoretical analysis in Section \ref{sec:4-5-theory}.
 
-    \citet{exploring_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I dont have time to clean this up and write it into the paper
+    \citet{exploring_bandit} show that upper bounds on cumulative regret lead to both upper and lower bounds on simple regret. Returning to the discussion around UCT and MENTS, using this result, UCT is consistent with respect to Definition \ref{def:4:consistency} because its upper bound on cumulative regret \cite{uct_long} leads to an upper bound on simple regret that tends to zero. However, MENTS is only consistent for a sufficiently small temperature parameter that depends on the MDP \cite{dents}. % I know shouldn't cite own paper and just write up in thesis, but I don't have time to clean this up and write it into the paper
 
 
 
@@ -289,7 +289,7 @@
 
     The first aim is included so that the algorithms introduced here are easy to adopt in existing MCTS frameworks. The second is satisfied by MENTS, whose entropy bonus provides exploration even when rewards are sparse or uninformative, but not by UCT, which tends to exploit (Figure \mbox{\ref{fig:4:shortest_path_intro_results}}, and the gridworld results in Section \mbox{\ref{sec:4-4-3-results_and_discussion}}). The third is satisfied by UCT, and by MENTS only when its temperature is small. The fourth is satisfied by UCT, but not by MENTS, whose consistency requires a temperature that cannot be chosen independently of the MDP \cite{dents}.
 
-    Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored.
+    Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:4:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored.
     \end{mccorrection}
 
     In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
@@ -343,17 +343,19 @@
         \end{cases}
     \end{align}
 
-    The search policy of BTS is similar to MENTS (Section \ref{sec:2-4-4-ments}), but using a variable temperature and (the normalised and biased) Bellman value estimates rather than soft value estimates.
-    %
-    \begin{align}
-        \pibts(a|s) &= (1-\lambdabts)\rhobts(a|s) + \frac{\lambdabts}{|\cl{A}|}, 
-                    \label{eq:4:bts_search_policy} \\ 
-        \rhobts(a|s) &\propto \exp\left(\frac{\Qbtsnorm(s,a)}{\alphabts(N(s))}\right),
-                    \label{eq:4:bts_value_policy} \\
-        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right), \label{eq:4:lambda}
-    \end{align}
-    %
-    where $\epsbts \in [0,\infty)$ is an exploration parameter, \mccorrect{and a temperature of \mbox{$\alphabts(N(s))=0$} is taken to mean that \mbox{$\rhobts$} selects greedily with respect to \mbox{$\Qbtsnorm$}.}
+    \sloppypar{
+        The search policy of BTS is similar to MENTS (Section \ref{sec:2-4-4-ments}), but using a variable temperature and (the normalised and biased) Bellman value estimates rather than soft value estimates.
+        %
+        \begin{align}
+            \pibts(a|s) &= (1-\lambdabts)\rhobts(a|s) + \frac{\lambdabts}{|\cl{A}|}, 
+                        \label{eq:4:bts_search_policy} \\ 
+            \rhobts(a|s) &\propto \exp\left(\frac{\Qbtsnorm(s,a)}{\alphabts(N(s))}\right),
+                        \label{eq:4:bts_value_policy} \\
+            \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right), \label{eq:4:lambda}
+        \end{align} 
+        %
+        where $\epsbts \in [0,\infty)$ is an exploration parameter, \mccorrect{and a temperature of \mbox{$\alphabts(N(s))=0$} is taken to mean that \mbox{$\rhobts$} selects greedily with respect to \mbox{$\Qbtsnorm$}.}
+    }
 
     For any new decision nodes $s$ added to the tree, the $\initv$ function initialises the visit count to $N(s)=0$ and the value estimate to $\Vbts(s)=\Vinit(s)$. For any new chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count to $N(s,a)=0$ and the Q-value estimate to $\Qbts(s,a)=\Qinit(s,a)$.
     
@@ -463,24 +465,26 @@
         \end{cases}
     \end{align}
 
-    The DENTS search policy is similar to BTS: 
-    %
-    \begin{align}
-        \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
-                    \label{eq:dents_search_policy} \\ 
-        \rhodents(a|s) &\propto \exp\left(\frac{\Qdentsnorm(s,a)}{\alphadents(N(s))}\right),
-                    \label{eq:dents_value_policy} \\
-        \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
-    \end{align}
-    %
-    \mccorrect{where \mbox{$\epsdents \in [0,\infty)$} is an exploration parameter, and a temperature of \mbox{$\alphadents(N(s))=0$} is taken to mean that \mbox{$\rhodents$} selects greedily with respect to \mbox{$\Qdentsnorm$}.}
+    \sloppypar{
+        The DENTS search policy is similar to BTS: 
+        %
+        \begin{align}
+            \pidents(a|s) &= (1-\lambdadents)\rhodents(a|s) + \frac{\lambdadents}{|\cl{A}|}, 
+                        \label{eq:dents_search_policy} \\ 
+            \rhodents(a|s) &\propto \exp\left(\frac{\Qdentsnorm(s,a)}{\alphadents(N(s))}\right),
+                        \label{eq:dents_value_policy} \\
+            \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
+        \end{align} % under full \hbox error, but no visual artifacts or margin issues
+        %
+        \mccorrect{where \mbox{$\epsdents \in [0,\infty)$} is an exploration parameter, and a temperature of \mbox{$\alphadents(N(s))=0$} is taken to mean that \mbox{$\rhodents$} selects greedily with respect to \mbox{$\Qdentsnorm$}.}
+    }
 
     The $\initv$ and $\initq$ functions are also similar to BTS, setting: $N(s)=0$, $N(s,a)=0$, $\Vdents(s)=\Vinit(s)$ and $\Qdents(s,a)=\Qinit(s,a)$. Additionally, the entropy value estimates are initialised to zero: $\HVdents(s)=0$ and $\HQdents(s,a)=0$.
 
     Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pidents$, the $\backupq$ and $\backupv$ functions update the entropy value estimates for $t=h-1,\ldots,0$:
     \begin{align}
         \HQdents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVdents(s'), 
-            \label{eq::4dents_entropy_q_backup} \\
+            \label{eq:4:dents_entropy_q_backup} \\
         \HVdents(s_t) &\leftarrow \cl{H}(\pidents(\cdot | s_t)) + \sum_{a\in\cl{A}} \pidents(a|s_t)\HQdents(s_t,a), 
             \label{eq:4:dents_entropy_v_backup} 
     \end{align}
@@ -690,8 +694,8 @@
 %         $c_1$, c1_mass_remaining = big.pop()
 
 %         # add entry to table (accounting for 1/mth of total mass)
-%         thrsh = $m$ * c0_mass_remaining
-%         alias_table.append($(c_0,c_1,$thrsh$)$)
+%         thresh = $m$ * c0_mass_remaining
+%         alias_table.append($(c_0,c_1,$thresh$)$)
 
 %         # put c1 back in lists appropriately
 %         c1_mass_remaining -= c0_mass_remaining
@@ -799,7 +803,7 @@
 
     The complexities of the different components of an MCTS trial are summarised in Table \ref{table:mcts_trial_complexity}. To answer \complexityq in the affirmative, when the Alias Method is used with the most efficient implementations of $\backupv$ and $\backupq$, the complexity of running a trial of MENTS can be improved to $O(H_{\thtspp}+A)$. The complexity of running a trial of BTS and DENTS can be improved to $O(H_{\thtspp}\log(A)+A)$, and the complexity of running a trial of AR-BTS and AR-DENTS can be improved to $O(H_{\thtspp}+A)$. 
 
-    \begin{table*}[]
+    \begin{table*}[tbp]
         \centering   
         \begin{tabular}{l|ccccc}
             Algorithm 
@@ -869,7 +873,7 @@
                 & $O(A)$ 
                 & $O(H_{\thtspp}+A)$ \\
         \end{tabular}  
-        \caption[Summary of complexities for different MCTS algorithms.]{Summary of complexities for different MCTS algorithms. Complexities for each of the significant components are shown for each algorithm. AM is short for Alias Method. $\backupq$ can be implemented in $O(1)$ time for all algorithms in this table so is omitted. Finally, UCT does not use $\piinit$, so it can implement $\initv$ in $O(1)$ by only computing the function approximation $\Vinit=\tilde{V}$. \label{table:mcts_trial_complexity}}
+        \caption[Summary of complexities for different MCTS algorithms.]{Summary of complexities for different MCTS algorithms. Complexities for each of the significant components are shown for each algorithm. AM is short for Alias Method. $\backupq$ can be implemented in $O(1)$ time for all algorithms in this table so is omitted. Finally, UCT does not use $\piinit$, so it can implement $\initv$ in $O(1)$ by only computing the function approximation $\Vinit=\tilde{V}$. \todo{Overfull hbox and margin issue, probably reduce the text size very marginally to make it all fit} \label{table:mcts_trial_complexity}}
     \end{table*}
 
 
@@ -1196,7 +1200,7 @@
                 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.4 \\
                 0.4 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 
                 \end{pmatrix}
-            \end{align*}
+            \end{align*} % over full \hbox warning, but no visual artifact or margin issues
             \caption{Wind transition probabilities.}
             \label{fig:4:sailing_deets:sub:b}
         \end{subfigure}
@@ -1258,7 +1262,7 @@
         \begin{cases}
             \psi_{\alg}(a|s)  & \text{ if } s\in\cl{T}, \\
             \frac{1}{|\cl{A}|}      & \text{ otherwise.}
-        \end{cases} \label{eq:full_recommend}
+        \end{cases} \label{eq:4:full_recommend}
     \end{align}
 
     Using the completed policy $\psi$, a Monte Carlo estimate of $V^{\psi}(s_0)$ is computed by sampling a number of trajectories from $\psi$ and averaging the returns. Unless otherwise stated, each Monte Carlo estimate consists of 1024 trials, and results are averaged over 25 repeated experiments.
@@ -1454,7 +1458,7 @@
     \ref{fig:4:fl_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are again optimistically set to a constant value of one and the bias term $\Nq$ is set to one.
 
-    Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy (Equation~\ref{eq:full_recommend}) remains within 
+    Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy (Equation~\ref{eq:4:full_recommend}) remains within 
     the search tree as much as possible, since states outside 
     the tree \mccorrect{fall back to} a uniformly random policy.
 
@@ -1748,7 +1752,7 @@
 \subsubsection{Go Results}
 \label{sec:4-4-3-3-go_results}
 
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering   
         \begin{tabular}{l|cccccc|c} 
             \textbf{Black \textbackslash White}     & PUCT  & AR-M  & AR-R  & AR-T  & AR-B  & AR-D   & Trials/move\\ 
@@ -1760,7 +1764,7 @@
                 AR-BTS          & 25--25 & 35--15 & 31--19 & 34--16 &   --   & 15--35  & 5375 \\
                 AR-DENTS        & 23--27 & 36--14 & 29--21 & 36--14 & 15--35 &   --    & 4677 \\         
         \end{tabular}
-        \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space.}
+        \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space. \todo{VERY marginal margin overflow, fix same way as table above, probably just use same text size? Or try to make it like 0.1pt smaller than current}}
         \label{table:go_results}
     \end{table}
 
@@ -2070,7 +2074,7 @@
 
     \begin{lemma} 
         \label{lem:imm_regr_to_simp_regr}
-        $\bb{E}\left[\sreg(s_t,\psi^n)\right]=O(f(n))$ for all $s_t\in\cl{S}_0$ if and only if $\bb{E}\left[\immreg(s_t,\psi^n)\right]=O(f(n))$ for all $s_t\in\cl{S}_0$. Consequently, $\bb{E}\left[\sreg(s_t,\psi^n)\right]\rightarrow 0$ if and only if $\bb{E}\left[\immreg(s_t,\psi^n)\right]\rightarrow 0$.
+        $\bb{E}\left[\sreg(s_t,\psi^n)\right]=O(f(n))$ for all $s_t\in\cl{S}_0$ if and only if $\bb{E}\left[\immreg(s_t,\psi^n)\right]=O(f(n))$ for all $s_t\in\cl{S}_0$. Consequently, $\bb{E}\left[\sreg(s_t,\psi^n)\right]\rightarrow 0$ if and only if $\bb{E}\left[\immreg(s_t,\psi^n)\right]\rightarrow 0$. % under full \hbox error, but no margin problems
     \end{lemma}
     \begin{proof}
         Firstly, the simple regret can be written recursively in terms of the immediate simple regret:
@@ -2109,7 +2113,7 @@
 
     
     % ----------------------------
-    % DKW Inequality -> Empirical Probs Converge
+    % DKW Inequality -> Empirical Probabilities Converge
     % ----------------------------
     
     The DKW inequality (Theorem \ref{thrm:2:dkw_inequality}) is used to show that the empirical transition probabilities converge in probability to the true transition probabilities.
@@ -2117,7 +2121,7 @@
     \begin{figure}
         \centering
         \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-        \caption[Intuition behind bounding the empirical transition probabilities to the true transition probabilities.]{Intuition behind bounding the empirical transition probabilities to the true transition probabilities. \mccorrect{The proof of Corollary \mbox{\ref{cor:4:bound_transition_distribution}} constructs cdfs that can be used with Theorem \mbox{\ref{thrm:2:dkw_inequality}} (the DKW inequality). $g$ is a mapping from states to integers used by the construction. This figure depicts the cdf corresponding to the true transition probabilities (solid black line) and the cdf corresponding to the empirical transition probabilities (dashed green line) at the point $g(s_{t+1})$. It shows that if the two cdfs are within $\varepsilon$ of each other, then the probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ must be within $2\varepsilon$ of each other.}}
+        \caption[Intuition behind bounding the empirical transition probabilities to the true transition probabilities.]{Intuition behind bounding the empirical transition probabilities to the true transition probabilities. \mccorrect{The proof of Corollary \mbox{\ref{cor:4:bound_transition_distribution}} constructs cumulative distribution functions (CDFs) that can be used with Theorem \mbox{\ref{thrm:2:dkw_inequality}} (the DKW inequality). $g$ is a mapping from states to integers used by the construction. This figure depicts the CDF corresponding to the true transition probabilities (solid black line) and the CDF corresponding to the empirical transition probabilities (dashed green line) at the point $g(s_{t+1})$. It shows that if the two CDFs are within $\varepsilon$ of each other, then the probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ must be within $2\varepsilon$ of each other.}}
         \label{fig:dkw_diag}
     \end{figure}
     %
@@ -2166,7 +2170,7 @@
                     \leq & 2\exp\left(2\varepsilon^2m\right)
             \end{align}
         \end{proof}
-    \end{mccorrection}
+    \end{mccorrection} % under full \vbox warning, but no margin issues
 
 
 
@@ -2351,7 +2355,10 @@
         Inequality (\ref{eq:4:ioas_one}) holds because the factors in the product are increasing with respect to $m$. To see why the final equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-\frac{1}{\log(x)}\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule multiple times gives $\lim_{x\rightarrow\infty} \log f(x) = -\infty$, so $\lim_{x\rightarrow\infty} f(x) = 0$.
         
     % FUTURE_MIKE_HEADER
-    % sad that we cut LHopital and more Lhopital and more Lhoptial
+
+    % L HOSPITAL = Short of L'H\^{o}pital's in below, to get rid of spelling errors (and don't want to add words found in comments into the spellchecker dictionary)
+
+    % sad that we cut L Hospital and more L hospital and more L hospital
 
         % To see why the final limit equality (\ref{eq:4:ioas_two}) holds, consider the simpler function $f(x)=\left(1-1/\log(x)\right)^x$. Taking logarithms and applying L'H\^{o}pital's rule generously gives:
         % \begin{align}
@@ -2364,7 +2371,7 @@
         %     &= -\infty \label{eq:4:ioas_seven},
         % \end{align} 
         % %
-        % where line (\ref{eq:4:ioas_four}) applies L'Hopital's rule, line (\ref{eq:4:ioas_five}) simplifies the expression and lines (\ref{eq:4:ioas_six}) and (\ref{eq:4:ioas_seven}) each apply L'Hopital's rule again and only the simplified expression is given.
+        % where line (\ref{eq:4:ioas_four}) applies L'H\^{o}pital's rule, line (\ref{eq:4:ioas_five}) simplifies the expression and lines (\ref{eq:4:ioas_six}) and (\ref{eq:4:ioas_seven}) each apply L'H\^{o}pital's rule again and only the simplified expression is given.
         % %
         % By continuity of the exponential function, thus $\lim_{x\rightarrow\infty} f(x) = \lim_{y\rightarrow -\infty} e^{y} = 0$.
     \end{proof}
@@ -2477,19 +2484,19 @@
     %
     % Boltzmann distribution only cares about ratios
     % Provided Q is bounded below, then Q/alpha -> infinity anyway
-    % Even if the beta/alpha * entropy term doesnt tend to zero, it doesn't matter
+    % Even if the beta/alpha * entropy term doesn't tend to zero, it doesn't matter
     % 
     % Its this nuance about taking two limits at the same time why we left it as an outline
     % And a full proof would have to consider this
 
-% CLAUDE CORRECTING MY NOTE LMAO
+% CLAUDE CORRECTING MY NOTE 
 %
 % Can't be bothered to write this up properly, but the reason this is
 % sufficient for AR-DENTS even without beta/alpha -> 0:
 %
 % Boltzmann only cares about DIFFERENCES between actions, not absolute Q.
 % The gap between the best action and the rest is a fixed positive number,
-% so dividing it by alpha -> 0 already sends the suboptimal probs to zero.
+% so dividing it by alpha -> 0 already sends the suboptimal probabilities to zero.
 % The (beta/alpha)*entropy term is a vanishing perturbation on top of that
 % fixed gap (since beta -> 0), so it can't flip the ordering -- doesn't
 % matter whether beta/alpha -> 0.
@@ -2560,10 +2567,10 @@
 
 
     For AR-DENTS, the state value is computed as a visit-count weighted average of Q-values, so convergence additionally requires the search policy to converge.
-
+    %
     \begin{lemma}
         \label{lem:ardents_v_converge}
-        If $N^n(s_t)\raas\infty$, $\piardents^n(a_t|s_t)\rap\pi^*(a_t|s_t)$ and $\mQardents{N^n(s_t,a_t)}(s_t,a_t)\rap Q^*(s_t,a_t)$ for all $s_t\in\cl{S}_0$ and $a_t\in\cl{A}$, then $\mVardents{N^n(s_t)}(s_t)\rap V^*(s_t)$.
+        If $N^n(s_t)\raas\infty$, $\piardents^n(a_t|s_t)\rap\pi^*(a_t|s_t)$ and $\mQardents{N^n(s_t,a_t)}(s_t,a_t)\rap Q^*(s_t,a_t)$ for all $s_t\in\cl{S}_0$ and $a_t\in\cl{A}$, then $\mVardents{N^n(s_t)}(s_t)\rap V^*(s_t)$. %under full \hbox warning but no margin issues
     \end{lemma}
     \begin{proofoutline}
         An equivalent equation, computed using child Q-values and visit counts, for the AR-DENTS state value backup is:
@@ -2659,7 +2666,7 @@
 
         Two cases need to be considered: when the temperature is sufficiently high for the maximum entropy objective to be misaligned; and, when the temperature is lower than this threshold.
         
-        \paragraph{Case 1: $\alphaments>\frac{1}{\log(2)D}$ (Maximum entropy objective is misaligned)} $ $ \\
+        \paragraph{Case 1: $\alphaments>\frac{1}{\log(2)D}$ (Maximum entropy objective is misaligned)} $ $ 
         
         When $\alphaments>\frac{1}{\log(2)D}$, the optimal soft value of the state $\schain{F}$ is greater than one, and so action $\aL$ is preferred over $\aR$ at state $\schain{E}$. Let $\phi$ be a uniform policy. Then:
         \begin{align}
@@ -2671,9 +2678,9 @@
                 &= Q_{\sft}^*(\schain{E}, \aR).
         \end{align}
 
-        Hence the maximum entropy objective is misaligned: $\mathbb{E}\left[\sreg(\schain{1},\psiments)\right] \rightarrow 1 > 0$.
+        Hence the maximum entropy objective is misaligned: $\mathbb{E}\left[\sreg(\schain{1},\psiments)\right] \rightarrow 1 > 0$. % under full \hbox error, words bit spread out, but no margin issues
 
-        \paragraph{Case 2: $\alphaments\leq\frac{1}{\log(2)D}$} $ $ \\
+        \paragraph{Case 2: $\alphaments\leq\frac{1}{\log(2)D}$} $ $ 
 
         In this case, the temperature is sufficiently low that the MENTS search policy is nearly greedy. Hence MENTS will have a small probability of ever having a trial hitting state $\schain{E}$. For now, assume that $\Vments(\schain{E}) = 0$, and $N(\schain{E}) = 0$.
         
@@ -2690,7 +2697,7 @@
                 \frac{D-i}{D},\Vments(\schain{i+1})\right) + \frac{1}{D}
         \end{align}
         %
-        where inequality (\ref{mbm:one}) uses the property of log-sum-exp that $\alpha \log \sum_{j=1}^\ell \exp (x_i/\alpha) \leq \max_j (x_j) + \alpha \log(\ell)$. 
+        where inequality (\ref{mbm:one}) uses the property of log-sum-exp expressions that $\alpha \log \sum_{j=1}^\ell \exp (x_i/\alpha) \leq \max_j (x_j) + \alpha \log(\ell)$. \todo{added "expressions", is that the correct word?}
         
         Then, by induction on $i=D, D-1, \ldots, 1$, it holds that $\Vments(\schain{i})\leq \frac{D-(i-1)}{D}$:
         \begin{align}

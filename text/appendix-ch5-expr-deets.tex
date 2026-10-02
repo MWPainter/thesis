@@ -21,7 +21,7 @@
 
 
 \chapter{\label{app:expr-deets-ch5}Additional Experimental Details for Chapters 5 and 6}
-
+    \todo{Writing offline, claude proof THIS ENTIRE appendix with additional writings}
 
     This appendix gives additional details on the \mccorrect{algorithm parameters} used for the experiments in \ref{sec:5-5-results} and \ref{sec:6-4-results} and the optimisation process used to select them. Organised as follows:
     \begin{itemize}
@@ -41,40 +41,41 @@
     \begin{itemize}
         \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
         \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
-        \item $\normalisedq$ - if Q-values should be normalised before being used in the search policy;
         \item $\initv$ - the heuristic value function;
         \item $\initq$ - the heuristic Q-value function;
-        \item \todo{reference point for the hypervolume}
+        \item $\bff{r}_{\text{hv}}$ - the reference point $\bff{r}$ for computing the hypervolume metric (Definition \ref{def:2:hypervolume}).
+    \end{itemize}
+    
+    The following parameters were used by all CHMCTS algorithms, and relate to the optimisations of Section \ref{sec:5-3-6-optimisations}:
+    \begin{itemize}
+        \item $K_{\max}$ - the maximum size of a convex hull value set, used in the size pruning optimisation;
+        \item $\unsolvedtol$ - the tolerance for marking a chance node as solved, which happens when $\unsolved(s,a)\leq\unsolvedtol$;
+        \item $\deltaunsolved$ - the confidence parameter used when computing $\unsolved$ values from confidence bounds; smaller values give more pessimistic estimates.
     \end{itemize}
 
-    The following parameters were used by all CHMCTS algorithms from Section \ref{sec:5-3-chmcts}:
+    The following parameters were used by both SM-BTS and SM-DENTS from Section \ref{sec:6-3-algorithms}, used in various simplex map operations that are outlined in Section \ref{sec:6-2-1-interface}:
     \begin{itemize}
-        \item \todo{solved labelling params times 2}
-        \item \todo{pruning params}
-    \end{itemize}
-
-    The following parameters were used by both SM-BTS and SM-DENTS from Section \ref{sec:6-3-algorithms}:
-    \begin{itemize}
-        \item \todo{TODO} $\pushradius=10$,
-        \item \todo{TODO} $\splitminradius=0.01$,
-        \item \todo{TODO} $\splitmindelta=0$,
-        \item \todo{TODO} $\splitminvis=10$.
+        \item $\pushradius$ - the radius used in the $\push$ operation;
+        \item $\splitminradius$ - if a simplex has a smaller radius than $\splitminradius$, then it is never further subdivided; % under full \hbox warning, but no margin issues
+        \item $\splitmindelta$ - if value estimates at all vertices of a simplex are within $\splitmindelta$ of each other, then it is not subdivided by $\splitsimplex$ operations;
+        \item $\splitminvis$ - the number of times a simplex map needs to be ``visited'', or updated, before it may be further subdivided.
     \end{itemize}
 
     The following parameters are used by specific algorithms:
     \begin{itemize}
         \item $b_{\text{CZT}}$ - the bias term used in CZT;
         \item $(\Mmin)_{\text{CZT}}$ - the minimum number of visits to a state-action pair before it is considered for selection in CZT;
-        \item $b_{\text{C-CHMCTS}}$ - the bias term used in C-CHMCTS;
-        \item $b_{\text{H-CHMCTS}}$ - the bias term used in H-CHMCTS;
-        \item $b_{\text{P-CHMCTS}}$ - the bias term used in P-CHMCTS;
-        \item \todo{Utopian point for chebychev utility}
         \item $b_{\text{CH-UCT}}$ - the bias term used in CH-UCT;
+        \item $\alphachbts_{0}$ - the initial temperature for CH-BTS;
+        \item $\alphachbts_{\text{decay}}$ - the decay rate for CH-BTS;
+        \item $\epschbts$ - the exploration parameter for CH-BTS;
         \item $b_{\text{CH-CZT}}$ - the bias term used in CH-CZT;
         \item $(\Mmin)_{\text{CH-CZT}}$ - the minimum number of visits to a state-action pair before it is considered for selection in CH-CZT;
-        \item $\alphachbts_{0}$ - the initial temperature for CHBTS;
-        \item $\alphachbts_{\text{decay}}$ - the decay rate for CHBTS;
-        \item $\epschbts$ - the exploration parameter for CHBTS;
+        \item $b_{\text{H-CHMCTS}}$ - the bias term used in H-CHMCTS;
+        \item $\rref$ - the reference point used to compute hypervolumes in H-CHMCTS;
+        \item $b_{\text{C-CHMCTS}}$ - the bias term used in C-CHMCTS;
+        \item $\ruto$ - the utopian point used for the Chebyshev utility in C-CHMCTS;
+        \item $b_{\text{P-CHMCTS}}$ - the bias term used in P-CHMCTS;
         \item $\alpha_{\text{SM-BTS},0}$ - the initial temperature for SM-BTS;
         \item $\alpha_{\text{SM-BTS},\text{decay}}$ - the decay rate for SM-BTS;
         \item $\epsilon_{\text{SM-BTS}}$ - the exploration parameter for SM-BTS;
@@ -84,8 +85,6 @@
         \item $\beta_{\text{SM-DENTS},\text{thresh}}$ - the threshold for SM-DENTS;
         \item $\epsilon_{\text{SM-DENTS}}$ - the exploration parameter for SM-DENTS;
     \end{itemize}
-
-    \todo{check if there are any more missing}
 
 
 
@@ -97,19 +96,23 @@
 \end{mccorrection}
 
     \todo{work out what of this should be a mccorrection env and not?}
-    
-    \todo{specify the lower and upper bounds on the value of an environment here (i.e. Rmax and Vmax and Rmin and Vmin)}
 
-    These values are used to specify the reference point for computing hypervolumes \todo{ref}, and the utopian point used in the Chebyshev utility \todo{ref}:
-        \todo{specify these hardcoded params as a list of length 2}
+    When an upper or lower bound was necessary, the trivial upper and lower bounds, $\bff{V}^{\max}$ and $\bff{V}^{\min}$ were used, computed per objective by considering if the maximum and minimum reward were received on every timestep:
+    \begin{align}
+        V^{\max}_i &= H \cdot \max_{s\in\cl{S},a\in\cl{A}} R(s,a)_i \\
+        V^{\min}_i &= H \cdot \min_{s\in\cl{S},a\in\cl{A}} R(s,a)_i \\
+    \end{align}
 
-    \todo{adapt the following into the multi-objective equivalent}
-    Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. 
+    In particular, when a hypervolume was computed, the lower bound was used as a reference point and similarly the upper bound was used as a utopian point for the Chebyshev utility:
+    \begin{align}
+        \bff{r}_{\text{hv}} &\leftarrow \bff{V}^{\min} \\
+        \rref &\leftarrow \bff{V}^{\min} \\
+        \ruto &\leftarrow \bff{V}^{\max}
+    \end{align}
 
-    \todo{Some comment about how parameters shared between algorithms were handpicked and shared.}
+    Similar to Appendix \ref{appsec:4:hypersearch}, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. So for each environment, the heuristic value functions are set to $\Vinitbff(s) \leftarrow \bff{V}^{\max}$ and $\Qinitbff(s,a) \leftarrow \bff{V}^{\max}$.
 
-    \todo{List of shared params with values (sync single obj below with multi obj equiv above)}
-    The parameters shared between all algorithms were set manually to the following values for all environments:
+    The $\thtspp$ parameters shared between all algorithms were set to: \todo{update list below to be correct, believe it's just deleting the bottom three items}
     \begin{itemize}
         \item $\mctsmode=\text{False}$ - the selection phase continues until the planning horizon or a terminal state is reached;
         \item $\graphmode=\text{True}$ - transposition tables are used to store and re-use decision nodes when they are reached again via another path;
@@ -118,10 +121,24 @@
         \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
     \end{itemize}
 
-    \todo{CHMCTS params list and what they were set to and little justification why}
 
-    \todo{Simplex Maps params list and what they were set to and little justification why}
-    When simplex maps are used, the relevant parameters were always set to the following:
+    The parameters related to the optimisations of Section \ref{sec:5-3-6-optimisations}, used by all CHMCTS algorithms, were set to:
+    \begin{itemize}
+        \item \todo{STATE WHAT THEY WERE SET TO}
+        \item $K_{\max}$ 
+        \item $\unsolvedtol$ 
+        \item $\deltaunsolved$ 
+    \end{itemize}
+
+\todo{souble check the values using commented out config below}
+%         {XPR_PARAM_ID_CONVEX_HULL_MAX_SIZE,             15},
+%         {XPR_PARAM_ID_USE_SOLVED_LABELLING,             true},
+%         {XPR_PARAM_ID_SOLVED_LABELLING_FAIL_CONFIDENCE, 0.05},
+%         {XPR_PARAM_ID_SOLVED_LABELLING_TOLERANCE,       0.1},
+
+    The value of $K_{\max}$ was chosen by hand, as \bd{a value that avoided computational blow up discussed in XXX}. The values of $\unsolvedtol$ and $\deltaunsolved$ \bd{were also hand selected, as values that gives a reasonable level of certainty that a node is marked as solved has computed optimal policy, but also that the confidence bounds for the missing mass bound from Section XXX falls below the tolerance (in isolation from the other part of the confidence bound) within the first 100 trials.} \todo{Add a back of envelope calculation for the missing mass value falling below the tolerance at say 50 trials.}
+
+    The parameters for simplex maps, used by SM-BTS and SM-DENTS in Chapter \ref{ch:6-simplexmaps}, were set to the following:
     \begin{itemize}
         \item $\pushradius=10$,
         \item $\splitminradius=0.01$,
@@ -129,48 +146,7 @@
         \item $\splitminvis=10$.
     \end{itemize}
 
-    \todo{Update single obj below to multi obj. Reference app B appropriately and say the same proceedure was used.}
-    The remaining \mccorrect{algorithm parameters} were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of \mbox{\thtspp} used in this thesis.}
-    
-    \todo{Update single obj below to multi obj. ADD THE TABLE USING COMMENTED OUT CONFIG BELOW}
-    Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
-
-    \todo{Reference back to the experimental sections the parameters are relevant for, and reference DST. For example say, the parameters used for DST environments in Sections X and Y and in Figures Z and A are given in table B. Repeat the same for mogym and say soemthing about the scaling experiments}
-    The selected \mccorrect{algorithm parameters} from the \mccorrect{parameter} optimisation are given in Table \ref{table:hyperparams_mogym}.
-    
-    
-
-
-
-    \todo{Use commented out configs below for the hardcoded params and the ranges of tried for each parameter tables.}
-
-% static const std::vector<ConfigMap> CONFIG_700 =
-% {
-%     // xpr params
-%     {
-%         {XPR_OR_ALG_ID_TAG,                             XPR_PARAMS_ID_TAG},
-%         {XPR_PARAM_ID_NAME,                             "700_dst_scaling"},
-%         {XPR_PARAM_ID_ENV,                              ENV_ID_VAMPLEW_DST_VARIABLE_CPP},
-%         {XPR_PARAM_ID_ENV_SIZE,                         std::vector<int>{10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100}},
-%         {XPR_PARAM_ID_MCTS_MODE,                        false},
-%         {XPR_PARAM_ID_GRAPH_SEARCH,                     true},
-%         {XPR_PARAM_ID_VECTOR_VISIT_COUNTS,              false},
-%         {XPR_PARAM_ID_MAX_TRIAL_LENGTH,                 -1}, // indicates that this will be overridden for each env size
-%         {XPR_PARAM_ID_HEURISTIC_WEIGHT_GLOBAL,          0.0},
-%         {XPR_PARAM_ID_HEURISTIC_WEIGHT_LOCAL,           0.0},
-%         {XPR_PARAM_ID_RUNTIME_BOUNDED,                  true}, 
-%         {XPR_PARAM_ID_TERMINATION_BOUND,                15.0},
-%         {XPR_PARAM_ID_REPEATED_RUNS_PER_ALG,            10},
-%         {XPR_PARAM_ID_SEARCH_THREADS,                   16},
-%         {XPR_PARAM_ID_EVAL_DELTA,                       5.0}, 
-%         {XPR_PARAM_ID_EVAL_ROLLOUTS,                    128},
-%         {XPR_PARAM_ID_EVAL_THREADS,                     16},
-%         {XPR_PARAM_ID_CONVEX_HULL_MAX_SIZE,             15},
-%         {XPR_PARAM_ID_CONVEX_HULL_TOLERANCE,            1e-9},
-%         {XPR_PARAM_ID_USE_SOLVED_LABELLING,             true},
-%         {XPR_PARAM_ID_SOLVED_LABELLING_FAIL_CONFIDENCE, 0.05},
-%         {XPR_PARAM_ID_SOLVED_LABELLING_TOLERANCE,       0.1},
-
+\todo{souble check the values using commented out config below}
 %         {XPR_PARAM_ID_SM_PUSH_RADIUS,                                       10}, 
 %         {XPR_PARAM_ID_SM_MAX_NEIGHBOURS_TO_PUSH_TO,                         -1},
 %         {XPR_PARAM_ID_SM_MIN_SIMPLEX_RADIUS,                                0.01},
@@ -178,123 +154,62 @@
 %         {XPR_PARAM_ID_SM_USE_APPROX_NEAREST_VERTEX,                         false},
 %         {XPR_PARAM_ID_SM_EVENTUALLY_CONFORMING_SIMPLEX_MAP,                 true},
 %         {XPR_PARAM_ID_SM_ALWAYS_ALLOW_NON_CONFORMING_SIMPLEX_TO_SPLIT,      true},
-%     },
-%     // czt params - 0.635828
-%     {
-%         {XPR_OR_ALG_ID_TAG,                         ALG_ID_CZT},
-%         {ALG_PARAM_ID_BIAS,                         8.32416},
-%         {ALG_PARAM_ID_CZT_BALL_SPLIT_VISIT_THRESH,  43},
-%     },
-%     // ch standard cheby params - 0.761888
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_STANDARD_CHEBY},
-%         {ALG_PARAM_ID_BIAS,                 1229.12},
-%     },
-%     // ch hvuct params - 0.747989
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_HVUCT},
-%         {ALG_PARAM_ID_BIAS,                 254.223},
-%     },
-%     // ch pareto params - 0.761744
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_PARETO},
-%         {ALG_PARAM_ID_BIAS,                 388.673},
-%     },
-%     // ch uct params - 0.806178
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_UCT},
-%         {ALG_PARAM_ID_BIAS,                 3.46244},
-%     },
-%     // ch czt params - 0.770735
-%     {
-%         {XPR_OR_ALG_ID_TAG,                         ALG_ID_CH_CZT},
-%         {ALG_PARAM_ID_BIAS,                         99.574},
-%         {ALG_PARAM_ID_CZT_BALL_SPLIT_VISIT_THRESH,  95},
-%     },
-%     // ch bts params - 0.808721
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_BTS},
-%         {ALG_PARAM_ID_INIT_TEMP,            0.000899604},
-%         {ALG_PARAM_ID_TEMP_DECAY_RATE,      12.6078},
-%         {ALG_PARAM_ID_EPSILON,              0.999911},
-%     },
-%     // sm bts params - 0.79171
-%     {
-%         {XPR_OR_ALG_ID_TAG,                 ALG_ID_SM_BTS},
-%         {ALG_PARAM_ID_INIT_TEMP,            0.00130965},
-%         {ALG_PARAM_ID_TEMP_DECAY_RATE,      0.00100101},
-%         {ALG_PARAM_ID_EPSILON,              0.6932},
-%     },
-%     // sm dents params - 0.7876
-%     {
-%         {XPR_OR_ALG_ID_TAG,                     ALG_ID_SM_DENTS},
-%         {ALG_PARAM_ID_INIT_TEMP,                0.00117897},
-%         {ALG_PARAM_ID_TEMP_DECAY_RATE,          0.00159884},
-%         {ALG_PARAM_ID_INIT_ENTROPY_COEFF,       0.233411},
-%         {ALG_PARAM_ID_ENTROPY_COEFF_ZERO_AT,    3197.24},
-%         {ALG_PARAM_ID_EPSILON,                  0.753201},
-%     },
-% };
 
-    % // czt params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                         ALG_ID_CZT},
-    %     {ALG_PARAM_ID_BIAS,                         std::make_pair(1.0e-5,  1.0e5)},
-    %     {ALG_PARAM_ID_CZT_BALL_SPLIT_VISIT_THRESH,  std::make_pair(1.0,     1024.0)},
-    % },
-    % // ch standard cheby params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_STANDARD_CHEBY},
-    %     {ALG_PARAM_ID_BIAS,                 std::make_pair(1.0e-5,   1.0e5)},
-    % },
-    % // ch hvuct params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_HVUCT},
-    %     {ALG_PARAM_ID_BIAS,                 std::make_pair(1.0e-5,   1.0e5)},
-    % },
-    % // ch pareto params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_PARETO},
-    %     {ALG_PARAM_ID_BIAS,                 std::make_pair(1.0e-5,   1.0e5)},
-    % },
-    % // ch uct params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_UCT},
-    %     {ALG_PARAM_ID_BIAS,                 std::make_pair(1.0e-5,   1.0e5)},
-    % },
-    % // ch czt params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                         ALG_ID_CH_CZT},
-    %     {ALG_PARAM_ID_BIAS,                         std::make_pair(1.0e-5,   1.0e5)},
-    %     {ALG_PARAM_ID_CZT_BALL_SPLIT_VISIT_THRESH,  std::make_pair(1.0,     1024.0)},
-    % },
-    % // ch bts params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_CH_BTS},
-    %     {ALG_PARAM_ID_INIT_TEMP,            std::make_pair(1.0e-5,  1.0e2)},
-    %     {ALG_PARAM_ID_TEMP_DECAY_RATE,      std::make_pair(1.0e-3,  1.0e2)},
-    %     {ALG_PARAM_ID_EPSILON,              std::make_pair(1.0e-6,1.0)}, 
-    % },
-    % // sm bts params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                 ALG_ID_SM_BTS},
-    %     {ALG_PARAM_ID_INIT_TEMP,            std::make_pair(1.0e-5,  1.0e2)},
-    %     {ALG_PARAM_ID_TEMP_DECAY_RATE,      std::make_pair(1.0e-3,  1.0e2)},
-    %     {ALG_PARAM_ID_EPSILON,              std::make_pair(1.0e-6,1.0)}, 
-    % },
-    % // sm dents params
-    % {
-    %     {XPR_OR_ALG_ID_TAG,                     ALG_ID_SM_DENTS},
-    %     {ALG_PARAM_ID_INIT_TEMP,                std::make_pair(1.0e-5,  1.0e2)},
-    %     {ALG_PARAM_ID_TEMP_DECAY_RATE,          std::make_pair(1.0e-3,  1.0e2)},
-    %     {ALG_PARAM_ID_EPSILON,                  std::make_pair(1.0e-6,1.0)}, 
-    %     {ALG_PARAM_ID_INIT_ENTROPY_COEFF,       std::make_pair(1.0e-5,  1.0e2)},
-    %     {ALG_PARAM_ID_ENTROPY_COEFF_ZERO_AT,    std::make_pair(1.0e3,  1.0e5)},
-    % },
+    \bd{These values were chosen by hand as values that seem like a reasonable trade off between allowing nodes to share values and avoid the triangulation from becoming too fine-grained too fast. These parameters could have been optimised, and are likely not the optimal values, but gave reasonable performance so I didn't bother.}
 
+    The remaining \mccorrect{algorithm parameters} were optimised using the BayesOpt library similarly to Appendix \ref{appsec:4:hypersearch}. Table \ref{table:mo_hps_space} gives the search space for each parameter, and if the parameter was sampled using a linear or logarithmic scale. 
 
-    \begin{table}[]
+    % FUTURE_MIKE_HEADER
+    %
+    % I think this is an unnecessary level of detail
+    %
+    % "Same early stopping procedure as in \ref{appsec:4:hypersearch}, but optimising EUM instead of the value/average return, and using 128 evaluation rollouts per repeat. 
+
+    \begin{table}[tbp]
         \centering
+        \begin{tabular}{l|c|c|c} 
+            Parameter   
+                & Minimum    
+                & Maximum    
+                & Scaling \\
+            \hline
+            $b_{\text{CZT}}$                        & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $(\Mmin)_{\text{CZT}}$                  & 1             & 1024      & Linear \\
+            $b_{\text{CH-UCT}}$                     & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $\alphachbts_{0}$                       & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alphachbts_{\text{decay}}$            & $10^{-3}$     & $10^2$    & Logarithmic \\
+            $\epschbts$                             & $10^{-6}$     & $1$       & Logarithmic \\
+            $b_{\text{CH-CZT}}$                     & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $(\Mmin)_{\text{CH-CZT}}$               & 1             & 1024      & Linear \\
+            $b_{\text{H-CHMCTS}}$                   & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $b_{\text{C-CHMCTS}}$                   & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $b_{\text{P-CHMCTS}}$                   & $10^{-5}$     & $10^5$    & Logarithmic \\
+            $\alpha_{\text{SM-BTS},0}$              & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alpha_{\text{SM-BTS},\text{decay}}$   & $10^{-3}$     & $10^2$    & Logarithmic \\
+            $\epsilon_{\text{SM-BTS}}$              & $10^{-6}$     & $1$       & Logarithmic \\
+            $\alpha_{\text{SM-DENTS},0}$            & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\alpha_{\text{SM-DENTS},\text{decay}}$ & $10^{-3}$     & $10^2$    & Logarithmic \\
+            $\beta_{\text{SM-DENTS},c}$             & $10^{-6}$     & $1$       & Logarithmic \\
+            $\beta_{\text{SM-DENTS},\text{thresh}}$ & $10^{-5}$     & $10^2$    & Logarithmic \\
+            $\epsilon_{\text{SM-DENTS}}$            & $10^{3}$      & $10^{12}$ & Logarithmic
+        \end{tabular}
+        \caption[The \mccorrect{parameter} search space used MoGymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}).]{The \mccorrect{parameter} search space used MoGymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}). Section \ref{appsec:5:hypersearch} lists each of the parameters optimised and how they are used in their respective algorithms. \label{table:mo_hps_space}}
+    \end{table}
+    
+    Table \ref{table:hyperparams_mogym} provides the selected parameters for the MoGymnasium environments \todo{ref sections and/or figures}, and Table \ref{table:hyperparams_dst} provides the selected parameters for the Deep Sea Treasure environments \todo{ref sections and/or figures}. In the scaling experiments from Sections \ref{sec:5-5-4-scalability} and \ref{sec:6-4-2-scalability}, each algorithm still used the same parameters selected in Table \ref{table:hyperparams_dst} to avoid re-running optimisation for every environment size.
+
+
+    \begin{table}[tbp]
+        \centering
+        {%
+        % Column padding: default \tabcolsep is 6pt. Each of the 5 columns has
+        % padding on both sides, so reducing by 1pt saves roughly 10pt of width.
+        \setlength{\tabcolsep}{4pt}%
+        % \fontsize{X}{Y} sets X = font size and Y = baselineskip (the distance
+        % between baselines of consecutive lines). The document default is
+        % \fontsize{12}{14.5}, so keep Y at roughly 1.2x X.
+        \fontsize{12}{14.5}\selectfont
+        % \fontsize{11}{13.2}\selectfont
         \begin{tabular}{l|c|c|c|c}
             Parameter
                 & FruitTree
@@ -303,18 +218,20 @@
                 & FourRoom  \\
             \hline
             $b_{\text{CZT}}$                                & $1.00\times10^{3}$ & $2.78$ & $1.94$ & $100$ \\
-            $\Mmin (\text{CZT})$                            & $123$ & $11$ & $10$ & $65$ \\
+            $(\Mmin)_{\text{CZT}}$                          & $123$ & $11$ & $10$ & $65$ \\
 
-            $b_{\text{C-CHMCTS}}$                           & $1.00\times10^{3}$ & $263$ & $0.617$ & $8.90$ \\
-            $b_{\text{H-CHMCTS}}$                           & $1.00\times10^{3}$ & $22.4$ & $1.00\times10^{3}$ & $1.00\times10^{3}$ \\
-            $b_{\text{P-CHMCTS}}$                           & $1.00\times10^{3}$ & $1.00\times10^{3}$ & $1.00$ & $1.00\times10^{3}$ \\
             $b_{\text{CH-UCT}}$                             & $1.00\times10^{3}$ & $0.315$ & $1.00$ & $8.03\times10^{-2}$ \\
-            $b_{\text{CH-CZT}}$                             & $995$ & $1.00\times10^{3}$ & $512$ & $1.00\times10^{3}$ \\
-            $\Mmin(\text{CH-CZT})$                          & $123$ & $10$ & $10$ & $32$ \\
 
             $\alphachbts_{0}$                               & $100$ & $4.30\times10^{-3}$ & $1.75\times10^{-4}$ & $0.186$ \\
             $\alphachbts_{\text{decay}}$                    & $100$ & $12.0$ & $9.82\times10^{-3}$ & $1.00\times10^{-3}$ \\
             $\epschbts$                                     & $1.00$ & $3.86\times10^{-2}$ & $1.00$ & $0.150$ \\
+
+            $b_{\text{CH-CZT}}$                             & $995$ & $1.00\times10^{3}$ & $512$ & $1.00\times10^{3}$ \\
+            $(\Mmin)_{\text{CH-CZT}}$                       & $123$ & $10$ & $10$ & $32$ \\
+
+            $b_{\text{H-CHMCTS}}$                           & $1.00\times10^{3}$ & $22.4$ & $1.00\times10^{3}$ & $1.00\times10^{3}$ \\
+            $b_{\text{C-CHMCTS}}$                           & $1.00\times10^{3}$ & $263$ & $0.617$ & $8.90$ \\
+            $b_{\text{P-CHMCTS}}$                           & $1.00\times10^{3}$ & $1.00\times10^{3}$ & $1.00$ & $1.00\times10^{3}$ \\
 
             $\alpha_{\text{SM-BTS},0}$                      & $0.893$ & $1.55\times10^{-3}$ & $1.66\times10^{-2}$ & $8.30\times10^{-2}$ \\
             $\alpha_{\text{SM-BTS},\text{decay}}$           & $3.20\times10^{-2}$ & $8.35$ & $14.1$ & $1.00\times10^{-3}$ \\
@@ -325,13 +242,15 @@
             $\beta_{\text{SM-DENTS},c}$                     & $15.7$ & $1.69\times10^{-3}$ & $5.00\times10^{-2}$ & $1.00\times10^{-2}$ \\
             $\beta_{\text{SM-DENTS},\text{thresh}}$         & $1.00\times10^{3}$ & $3.74\times10^{3}$ & $5.00\times10^{3}$ & $1.00\times10^{3}$ \\
             $\epsilon_{\text{SM-DENTS}}$                    & $1.00$ & $1.00\times10^{-2}$ & $0.500$ & $7.40\times10^{-2}$
-        \end{tabular}
+        \end{tabular}%
+        }
         \caption[\mccorrect{Algorithm parameters} for MO-Gymnasium environments.]{\mccorrect{Algorithm parameters} for each algorithm on the MO-Gymnasium environments.}
         \label{table:hyperparams_mogym}
     \end{table}
 
 
-    \begin{table}[]
+
+    \begin{table}[tbp]
         \centering
         \begin{tabular}{l|c|c|c}
             Parameter
@@ -341,18 +260,24 @@
             \hline
             $b_{\text{CZT}}$ & $8.32$ & $1.64$ & $2.04$ \\
             $\Mmin (\text{CZT})$ & $43$ & $55$ & $150$ \\
-            $b_{\text{C-CHMCTS}}$ & $1.23\times10^{3}$ & $1.58\times10^{3}$ & $1.09$ \\
-            $b_{\text{H-CHMCTS}}$ & $254$ & $20.4$ & $16.0$ \\
-            $b_{\text{P-CHMCTS}}$ & $388$ & $20.1$ & $0.365$ \\
+
             $b_{\text{CH-UCT}}$ & $3.46$ & $4.21$ & $4.21$ \\
-            $b_{\text{CH-CZT}}$ & $99.6$ & $201$ & $5.81$ \\
-            $\Mmin(\text{CH-CZT})$ & $95$ & $222$ & $40$ \\
+
             $\alphachbts_{0}$ & $8.99\times10^{-4}$ & $3.31\times10^{-4}$ & $1.00\times10^{-5}$ \\
             $\alphachbts_{\text{decay}}$ & $12.6$ & $99.9$ & $4.51$ \\
             $\epschbts$ & $0.999$ & $0.113$ & $0.990$ \\
+
+            $b_{\text{CH-CZT}}$ & $99.6$ & $201$ & $5.81$ \\
+            $\Mmin(\text{CH-CZT})$ & $95$ & $222$ & $40$ \\
+
+            $b_{\text{H-CHMCTS}}$ & $254$ & $20.4$ & $16.0$ \\
+            $b_{\text{C-CHMCTS}}$ & $1.23\times10^{3}$ & $1.58\times10^{3}$ & $1.09$ \\
+            $b_{\text{P-CHMCTS}}$ & $388$ & $20.1$ & $0.365$ \\
+
             $\alpha_{\text{SM-BTS},0}$ & $1.31\times10^{-3}$ & $1.86\times10^{-3}$ & $1.00\times10^{-5}$ \\
             $\alpha_{\text{SM-BTS},\text{decay}}$ & $1.00\times10^{-3}$ & $99.9$ & $1.00\times10^{-3}$ \\
             $\epsilon_{\text{SM-BTS}}$ & $0.693$ & $0.138$ & $0.859$ \\
+
             $\alpha_{\text{SM-DENTS},0}$ & $1.18\times10^{-3}$ & $1.01\times10^{-5}$ & $3.88\times10^{-4}$ \\
             $\alpha_{\text{SM-DENTS},\text{decay}}$ & $1.60\times10^{-3}$ & $2.67\times10^{-2}$ & $9.40\times10^{-2}$ \\
             $\beta_{\text{SM-DENTS},c}$ & $0.233$ & $0.425$ & $1.83\times10^{-2}$ \\

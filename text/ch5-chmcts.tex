@@ -1,4 +1,3 @@
-
 % [ ] First Draft
 % [ ] AI proofread/grammar check
 % [ ] Spell check
@@ -407,9 +406,9 @@
 
     Let $\alg$ denote any of the CHMCTS algorithms defined in this section. At each decision node $s$, a convex hull value set $\Valg(s)$ is maintained, and at each chance node $(s,a)$, a convex hull Q-value set $\Qalg(s,a)$ is maintained. The specific form of the search policy varies between algorithms and is defined in the subsections below.
 
-    \todo{hbox}
+    For any new decision node $s$ added to the tree, the $\initv$ function initialises the value set estimate as $\Valg(s)\leftarrow \left\{\Vinitbff(s)\right\}$. Similarly, at new chance nodes $(s,a)$, the $\initq$ function initialises the Q-value set estimate as $\Qalg(s,a)\leftarrow \left\{\Qinitbff(s,a)\right\}$.
 
-    Given a context weight $\bff{w}\in\Delta^D$ and a trajectory $\tau_{:h}=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pialg(\cdot|\cdot;\bff{w})$, the value set estimates are updated for $t=h-1,\ldots,0$:
+    Given a context weight $\bff{w}\in\Delta^D$ and a trajectory $\splitatcommas{\tau_{:h}=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pialg(\cdot|\cdot;\bff{w})}$, the value set estimates are updated for $t=h-1,\ldots,0$ during the backup phase:
     \begin{align}
         \Valg(s_t) &\leftarrow \cprune \left( 
             \bigcup_{a\in\cl{A}} \Qalg(s_t,a) \right), 
@@ -420,12 +419,8 @@
             \label{eq:5:chmcts_q_backup}
     \end{align}
 
-    \todo{specify how multi-objective heuristic value is used}
-
     The $\cprune$ operation, defined in Equation 
-    (\ref{eq:2:cprune_def}) and repeated here for convenience, 
-    retains only those vectors in a set $\bfcl{V}$ that are 
-    optimal for at least one weight vector:
+    (\ref{eq:2:cprune_def}) and repeated here for convenience, retains only those vectors in a set $\bfcl{V}$ that are optimal for at least one weight vector:
     \begin{align}
         \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} \mid 
             \exists \bff{w}\in\Delta^D.\ 
@@ -585,10 +580,10 @@
     \begin{align}
         \Vparetoconf(s) &= \cprune\left( \Vparetou(s) \right), \\
         \Vparetou(s) &= \left\{ 
-            \left(\bff{q} + U_{\textnormal{pucb}}(s,a)\bff{1}, a \right)
+            \left(\bff{q} + U_{\textnormal{ucb}}(s,a)\bff{1}, a \right)
             \mid a \in \cl{A}, \bff{q} \in \Qpareto(s,a)
         \right\}, \\
-        U_{\textnormal{pucb}}(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}.
+        U_{\textnormal{ucb}}(s,a) &= \bpareto \sqrt{\frac{\log(N(s))}{N(s,a)}}.
     \end{align}
     %
     where $\bpareto > 0$ is a bias parameter and where the notation $(\bff{q}, a)$ tags each vector with its corresponding action to allow the action to be recovered after the $\cprune$ operation.
@@ -695,11 +690,11 @@
     %
     % Have just realised that LRTDP actually just truncates the trial at solved nodes, so if we did that then it actually would be compatible with CZT. But we ended up using it to explore further parts of the tree.
     %
-    % Repeating this here, because here is the bit we didnt need to do
+    % Repeating this here, because here is the bit we didn't need to do
     %
     % The way we did it probably makes a lot of sense for CHMCTS, but we didn't give CZT a genuine chance with it I guess. 
     %
-    % But I think the limiting factor of UCB (and CZ) tending to over-exploit in our setting is still very limiting. In DST envs saving exploring one/two extra steps doesn't help much when CZ is just picking the immediate treacher
+    % But I think the limiting factor of UCB (and CZ) tending to over-exploit in our setting is still very limiting. In DST envs saving exploring one/two extra steps doesn't help much when CZ is just picking the immediate treasure
 
     \todo{make a comment about how only compatible if using off-policy value estimates. CZT for example needs to continue to select the solved parts of the tree to "keep" them solved, and avoid clobbering the average returns that the recommendation policy would use to find that solution}
 
@@ -1429,8 +1424,8 @@
     \begin{mccorrection}
 
     Figure \ref{fig:5:momdp_proof} gives a concrete example, and is the MOMDP used to prove the ``only if'' direction of Theorem \ref{thm:per-step-linear}. Under the Chebyshev utility, locally optimal actions in this MOMDP do not yield a globally optimal policy. The Pareto front consists of the points $\{(1,3.5),(2.5,2.5),(3.5,1)\}$, where the value of $(2.5,2.5)$ requires the rewards of $(5,0)$ and $(0,5)$ to be selected from the states $\sss{1}$ and $\sss{2}$ respectively. Although it is not shown here --- because it is stronger than what the proof of Theorem \ref{thm:per-step-linear} requires --- there is no choice of $\bff{w}$ and $\bff{r}$ for which $\pi^{\bff{w}}_{\text{local},\ucheby}$ achieves the value $(2.5,2.5)$.
+    \end{mccorrection} % under full \vbox error, but no visual issues
 
-    \end{mccorrection}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{figures/ch5/cheby_contours.pdf}
@@ -1501,7 +1496,7 @@
 
     % When restricted to deterministic MOMDPs, CHMCTS could possibly be adapted for non-linear utilities, which is now outlined for the non-linear \textit{Chebyshev utility}:
     % \begin{align}
-    %     u_{\text{cheby}}(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|, \label{eq:5:cheby_util}
+    %     u_{\text{chebyshev}}(\bff{v}; \bff{w}) = -\max_i w_i \left| v_i - z_i \right|, \label{eq:5:cheby_util}
     % \end{align}
     % as it can be used to recover the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}.
     

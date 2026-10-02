@@ -214,7 +214,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=0.8\textwidth]{figures/ch6/simplex_map_example.pdf}
-        \caption[Illustration of a simplex map.]{Illustration of a simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ with $D=3$. (Left) The graph of vertices $(\VSM,\ESM)$ is shown. The vertices corresponding to the unit vectors are highlighted to emphasize that simplex map diagrams are using \textit{barycentric coordinates}. (Right) The corresponding binary tree of simplices $\TSM$.}
+        \caption[Illustration of a simplex map.]{Illustration of a simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ with $D=3$. (Left) The graph of vertices $(\VSM,\ESM)$ is shown. The vertices corresponding to the unit vectors are highlighted to emphasise that simplex map diagrams are using \textit{barycentric coordinates}. (Right) The corresponding binary tree of simplices $\TSM$.}
         \label{fig:6:simplex_map}
     \end{figure}
 
@@ -279,14 +279,17 @@
 
     \paragraph{Conforming Triangulations.}
 
+
         \begin{figure}
             \centering
             \includegraphics[width=0.8\textwidth]{figures/ch6/non_conforming_example.pdf}
-            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating pair of simplices shown in red and green. The pair is non-conforming because their intersection is the line segment $AB$, which is an edge of the red simplex but only part of the edge $AC$ of the green simplex.}
+            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating simplex shown in green. It is non-conforming because the intersection between the adjacent red and green simplices is the line segment $AB$, which is an edge of the red simplex but only part of the edge $AC$ of the green simplex. \todo{updated caption offline, further proof}}
             \label{fig:6:conforming_triangulation}
         \end{figure}
 
         Two simplices are \textit{adjacent} if they share at least one point. A pair of simplices are said to be \textit{conforming} if the intersection of the two simplices is exactly a point, edge or face of \textit{both} simplices. A triangulation is \textit{conforming} if every pair of adjacent simplices is conforming. Figure \ref{fig:6:conforming_triangulation} illustrates a conforming and non-conforming triangulation.
+
+        \todo{Place correctly, or UPDATE above and CHECK DONT BREAK REST: in isolation, a simplex is conforming if for any adjacent simplex, the intersection consists of \textbf{exactly} a point, edge or face of the simplex.}
         
         It has been shown that recursive longest edge bisection, in a general $D$-dimensions, produces a conforming triangulation within a finite number of steps \cite{mesh_refine_framework,mesh_refine,simplex_refine}.
 
@@ -300,7 +303,7 @@
 
         The BTG can be used to determine if a simplex in $\TSM$ is conforming by checking if the number of connections in the BTG is equal to the number of edges of a simplex. For example, in Figure \ref{fig:6:conforming_triangulation}, the non-conforming simplex is highlighted in red. It has 3 edges, but is adjacent to 4 edges of $\ESM$ of the vertex graph.
 
-        The simplex map is implemented to be \textit{eventually conforming}, meaning that a non-conforming triangulation is tolerated temporarily, and after every operation described in Section \ref{sec:6-2-1-interface}, a non-conforming simplex is identified and the $\splitsimplex$ operation is performed on it. 
+        The simplex map is implemented to be \textit{eventually conforming}, meaning that a non-conforming triangulation is tolerated temporarily, and after every operation described in Section \ref{sec:6-2-1-interface}, a largest non-conforming simplex is identified and the $\splitsimplex$ operation is performed on it. 
 
 
     \paragraph{Initialisation.}
@@ -362,7 +365,7 @@
             \label{fig:6:split_operation}
         \end{figure}
 
-        The $\splitsimplex$ operation is controlled by three parameters $\splitminradius$,$\splitmindelta$ and $\splitminvis$, which determine the conditions under which a simplex is split. Let $\splitsimplexcounter(\SSM)$ be a counter for the number of times that $\splitsimplex$ has been called on the simplex $\SSM$. 
+        The $\splitsimplex$ operation is controlled by three parameters $\splitminradius$, $\splitmindelta$ and $\splitminvis$, which determine the conditions under which a simplex is split. Let $\splitsimplexcounter(\SSM)$ be a counter for the number of times that $\splitsimplex$ has been called on the simplex $\SSM$. 
         
         The following steps are performed to determine if the simplex should be split:
         \begin{itemize}
@@ -483,6 +486,7 @@
 \section{Simplex Maps for Tree Search}
 \label{sec:6-3-algorithms}
 
+    \todo{Didnt specify the initial values for CHMCTS, did we do that here??}
 
     This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates. The algorithm uses parameters $\alphasmd$, $\betasmd$, and $\epssmd$ corresponding to the DENTS parameters. Throughout this section $\bff{w}$ is the randomly sampled context weight for a trial.
 

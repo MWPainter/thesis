@@ -33,7 +33,7 @@ I agree that using the unknown weights scenario provides a better motivation for
     - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
     - explaining why MCTS methods might still be of interest instead of purely learning better prior policy/value functions
 - Updated prose throughout thesis for using the unknown weights scenario instead and to be consistent with scoping section:
-    - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding refering to user's preferences)
+    - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding referring to user's preferences)
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
     - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
     - Section 5.1 - restructured to improve clarity and relates back to unknown weights scenario

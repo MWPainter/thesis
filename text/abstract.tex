@@ -3,3 +3,10 @@ Monte Carlo Tree Search (MCTS) is a sample-based planning framework for sequenti
 \mccorrect{In the single-objective setting,} the maximum entropy objective, \mccorrect{which is commonly used to encourage exploration, is shown to not always align} with the \mccorrect{standard objective of maximising expected return}, both \mccorrect{theoretically} and empirically. Boltzmann Tree Search (BTS) is adapted from Maximum ENtropy Tree Search (MENTS) by removing entropy from the objective. Decaying ENtropy Tree Search (DENTS) then re-introduces entropy as a \mccorrect{second objective during planning, while still recommending actions that maximise expected return}. BTS and DENTS are shown to \mccorrect{converge} under mild conditions, and outperform Upper Confidence Bound \mccorrect{applied to Trees (UCT)} and MENTS on gridworld environments and on the game of Go.
 
 In the multi-objective setting, two Multi-Objective MCTS (MOMCTS) frameworks are introduced for the \mccorrect{unknown weights scenario} with linear utilities. The first is Convex Hull MCTS (CHMCTS), which generalises prior MOMCTS work to stochastic environments via convex hull backups, \mccorrect{but at high computational cost}. The second is the simplex map, an adaptive data structure that \mccorrect{uses a hierarchical triangulation of the unit simplex to maintain} value and entropy estimates as a function of \mccorrect{how the objectives are weighted}. Simplex maps integrate cleanly with the entropy bonus used by DENTS, \mccorrect{whereas convex hull backups do not}. The methods developed in this thesis outperform existing MOMCTS methods on multi-objective gridworld \mccorrect{and MO-Gymnasium environments}, with simplex map algorithms scaling \mccorrect{substantially} better than CHMCTS in stochastic environments.
+
+
+\todo{list of errors to from formatting and spelling that couldn't fix without internet on train}
+\begin{itemize}
+    \item \todo{Fix references.bib errors}
+    \item \todo{Claude help on the Pi;u error}
+\end{itemize}

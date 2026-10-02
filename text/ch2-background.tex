@@ -98,7 +98,7 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm}
+\subsection{$K$-Armed Bandits and the Upper Confidence Bound Algorithm} % latex whines about the $K$, but it renders fine (it doesn't render fine in the table of contents)
 \label{sec:2-1-1-ucb}
 
     Figure \ref{fig:2:mab_problem} shows how the operation of a $K$-armed bandit problem proceeds. Let $f(1),\ldots,f(K)$ be the probability distributions for the rewards of each of the $K$ arms, with expected values of $\mu(1),\ldots,\mu(K)$ respectively. On the $m$th round, if the arm $x^m\in\{1,\ldots,K\}$ is pulled, then a reward $y^m\sim f(x^m)$ is received. To specify a \textit{strategy} $\sigma$, on each round $m$, a probability distribution $\sigma^m$ over $\{1,\ldots,K\}$ is given, which is sampled to decide which arm to pull, i.e. $x^m\sim\sigma^m$.
@@ -380,11 +380,11 @@
         %
         \begin{itemize}
             \item $\tau\sim\pi$ denotes a trajectory that is sampled using the policy $\pi$, where the MDP $\cl{M}$ is implicit;
-            \item $\tau_{i:j}$ denotes the \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, \ldots, s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive;
+            \item $\tau_{i:j}$ denotes a \textnormal{truncated trajectory} $\tau_{i:j}:=(s_i, a_i, r_i, s_{i+1}, \ldots, s_{j-1}, a_{j-1}, r_{j-1}, s_j)$, between the timesteps $0\leq i < j \leq H$ inclusive; % over full hbox, but no visual artifact, and want to keep s_i and s_j as bookends on the same line for clarity
             \item $\tau_{:j}:=\tau_{0:j}$ denotes a trajectory that is truncated on only one end;
             \item $s\in \tau$ is used as a shorthand for $s\in\{s_i|i=0,\ldots,H\}$;
             \item $(s,a)\in\tau$ is used as a shorthand for $(s,a)\in\{(s_i,a_i)|i=0,\ldots,H-1\}$;
-            \item and finally, when states, actions and rewards are timestep-indexed (i.e. $s_t,a_t,r_t$), they always correspond to a trajectory.
+            \item and finally, when states, actions or rewards are timestep-indexed (e.g. $s_t,a_t,r_t$), they always correspond to a trajectory.
         \end{itemize}
     \end{defn}
 
@@ -489,7 +489,7 @@
     To simplify the notation used for theory in this thesis, it is assumed that there is a \textit{unique optimal policy} for each MDP considered:
     \begin{assumption}
         \label{ass:2:unique_optimal_policy} 
-        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not a necessary assumption, and is only made to simplify the theoretical analysis in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\cdots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. This assumption is made purely to avoid unneccessary complexity in the proofs in this thesis. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
+        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not a necessary assumption, and is only made to simplify the theoretical analysis in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\cdots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. This assumption is made purely to avoid unnecessary complexity in the proofs in this thesis. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
     \end{assumption}
     \end{mccorrection}
 
@@ -527,6 +527,8 @@
 % [ ] Final revision
 \subsection{Maximum Entropy Planning and Reinforcement Learning}
 \label{sec:2-3-1-merl}
+
+    \todo{I'm currently working through formatting issues in this thesis. In the subsection heading I'm getting an overfull hbox error, and it's because the title gets split across two line: learn-ing. It appears fine in the table of contents, and I dont want to change it there, but I think it would look better if learning appeared on a seperate line in its entirity}
 
     In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
     
@@ -745,7 +747,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}}
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}} % (TWO) under full \hbox warning, but it renders fine
         \label{fig:2:thts}
     \end{figure}
 
@@ -814,9 +816,9 @@
     Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
     \begin{description}
         \item[Sample Context:] 
-            At the start of the trial, a context is sampled using the $\samplecontext$ function, and the context is passed to all subsequent steps of the trial.
+            \sloppypar{At the start of the trial, a context is sampled using the $\samplecontext$ function, which is passed to all subsequent steps of the trial. The context is a dictionary that can be used to story any relevant per trial information.} \todo{REWROTE THIS DESCRIPTION, PROOF WITH CLAUDE}
         \item[Selection Phase:] 
-            A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $i=0$:
+            A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $i=0$: % under full \hbox error, but seems to render fine
         \begin{description}
             \item[Selection Step:] 
                 Action $a_i$ is selected using $\selectaction(s_i)$, and an outcome $s_{i+1}$ is sampled using $\sampleoutcome(s_i,a_i)$.
@@ -1177,15 +1179,15 @@ This thesis follows a utility-based approach to multi-objective reinforcement le
 %
 % We moved away from decision support because unknown weights is much cleaner + suggested by Shimon
 %
-% As a note to self, any weight that "picks" a multi-objective value on a convex hull will extract a policy acheiving that value
+% As a note to self, any weight that "picks" a multi-objective value on a convex hull will extract a policy achieving that value
 %
 % The weight is still ambiguous, and could be in a range of values
 %
 % The policy it extracts is NOT unique (there may be multiple difference combinations of actions at children that lead to the same value at the root node)
 %
-% But as a rough/approximate system, picking a weight that maximises the chosen vector value that a user picked probably works alright. Theres of course the whole nuance of SER etc, but in a handwavy way it probably works
+% But as a rough/approximate system, picking a weight that maximises the chosen vector value that a user picked probably works alright. There’s of course the whole nuance of SER etc, but in a hand wavy way it probably works
 %
-% However, thesis is not very handwavy and very happy to have unknown weights instead because it makes all of the setting and motivation precise
+% However, thesis is not very hand wavy and very happy to have unknown weights instead because it makes all of the setting and motivation precise
 %
 % Foot note is more a note for future self if ever look back at this
 

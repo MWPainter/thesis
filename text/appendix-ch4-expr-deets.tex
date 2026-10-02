@@ -25,7 +25,7 @@
 
     This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
     \begin{itemize}
-        \item Section \ref{appsec:4:envs} gives additional details for the environemnts used in Section \ref{sec:4-4-results};
+        \item Section \ref{appsec:4:envs} gives additional details for the environments used in Section \ref{sec:4-4-results};
         \item Section \ref{appsec:4:hps} gives details on the \mccorrect{algorithm parameters} used for the experiments in Section \ref{sec:4-4-results} and the optimisation process used to select them;
         \item Section \ref{appsec:4:go} gives additional details on the Go experiments, including \mccorrect{algorithm parameter} selection;
     \end{itemize}
@@ -165,7 +165,7 @@
 \begin{mccorrection}
 \section[Parameter Details for Gridworld Experiments]{Parameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments}
 \label{appsec:4:hps}
-\end{mccorrection} 
+\end{mccorrection} % under full vbox - believe this is because of the mccorrection around section heading, will not exist in final version
 
     This section is organised as follows:
     \begin{itemize}
@@ -201,7 +201,7 @@
         \item $\uctbudget$ - the search budget for UCT between each round of Sequential Halving in H-MCTS;
     \end{itemize}
 
-    To be compatible with \mccorrect{parameter} optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar paramters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
+    To be compatible with \mccorrect{parameter} optimisation, the functional form of $\alpha$ and $\beta$ need to be specified using tunable scalar parameters. Hence for the experiments in Section \ref{sec:4-4-3-1-gridworld_results}, the following forms were used:
     \begin{align}
         \alpha(x) &= \frac{\alpha_0}{\sqrt{1+\alphadecay x}} 
             \label{eq:app:parameterised_alpha} \\
@@ -233,7 +233,7 @@
         \end{cases}
     \end{align}
 
-    All visit counts and value estimates are initialised to zero: $N(s)=0$, $N(s,a)=0$, $\bar{V}(s)=0$ and $\bar{Q}(s,a)=0$. While MCTS algorithms are often presented as initialising new leaf nodes directly with a visit and the heuristic value (Section \ref{sec:2-4-2-uct}), this biasing term can instead be encorporated into the backups instead, allowing the algorithm to be run with an without the $\mctsmode$ parameter.
+    All visit counts and value estimates are initialised to zero: $N(s)=0$, $N(s,a)=0$, $\bar{V}(s)=0$ and $\bar{Q}(s,a)=0$. While MCTS algorithms are often presented as initialising new leaf nodes directly with a visit and the heuristic value (Section \ref{sec:2-4-2-uct}), this biasing term can instead be incorporated into the backups instead, allowing the algorithm to be run with an without the $\mctsmode$ parameter.
     
     Given a trajectory $\tau=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)$, the \textit{full backups} for the average returns $\bar{V}$ and $\bar{Q}$ including the biasing term for $t=h-1,\ldots,0$ are given by:
     \begin{align}
@@ -244,7 +244,7 @@
             + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nv} \bar{Q}(s_t,a).
     \end{align}
 
-    In the main thesis the visit counts $N(s'|s,a)$ are breifly mentioned in Section \ref{sec:2-4-2-thts}, but not used for the general presentation to follow prior works presentation. When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \ref{sec:2-4-2-thts} and argued by \citet{katago}. 
+    In the main thesis the visit counts $N(s'|s,a)$ are briefly mentioned in Section \ref{sec:2-4-2-thts}, but not used for the general presentation to follow prior works presentation. When using $\graphmode$, all backups need to be of the \textit{full backups}, as discussed in Section \ref{sec:2-4-2-thts} and argued by \citet{katago}. 
 
 
 \subsubsection{UCT Implementation with Full Backups}
@@ -328,10 +328,22 @@
     Using the principle of optimism in the face of uncertainty, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. For the DeterministicGridWorld and FrozenLake environments, this meant the value functions were set to $\Vinit(s)=\Qinit(s,a)=1.0$ for all states $s$ and actions $a$. For the Sailing environments, because all rewards are negative, the value functions were set to $\Vinit(s)=\Qinit(s,a)=0.0$ for all states $s$ and actions $a$. 
     
     The remaining \mccorrect{algorithm parameters} were selected using Bayesian optimisation via the BayesOpt library \cite{bayesopt}. \mccorrect{BayesOpt was chosen as an optimisation package because it provides a C++ interface and easily integrated with the C++ implementation of \mbox{\thtspp} used in this thesis.}
+
+    % FUTURE_MIKE_HEADER
+    %
+    % I think this is an unnecessary level of detail
+    %
+    % \begin{mccorrection}
+    % BayesOpt assumes that the value for each set of parameters is correct, with some noise.
+    % Noise was set to varying values with each environment... 
+    % For each set of parameters, the algorithm was run multiple times, for 50000 trials each time, until the standard error of the value estimate for the parameters was below the threshold, at which point it is given to BayesOpt
+    % Early stopping (for running the algorithm multiple times) was used, using 95\% confidence intervals. At least 10 repeats were run for each set of parameters, after that if the average value estimate plus 95\% conf interval was less than best average value estimate minus its 95\% confidence interval, then the repeats were stopped early. (This gives an error rate of less than 1\% for incorrectly stopping early)
+    % Each value estimate uses 1024 trials to evaluate the policy from Equation \eqref{eq:4:full_recommend}. 
+    % \end{mccorrection}
     
     Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
-    \begin{table}[]
+    \begin{table}[tbp]
         \centering
         \begin{tabular}{l|c|c|c} 
             Parameter   
@@ -365,7 +377,7 @@
     % DeterministicGridWorld
     %
 
-    \begin{table}[]
+    \begin{table}[tbp]
         \centering
         \begin{subtable}{\textwidth}
             \centering
@@ -412,7 +424,7 @@
     %
     % FrozenLake
     %
-    \begin{table}[]
+    \begin{table}[tbp]
         \centering
         \begin{subtable}{\textwidth}
             \centering
@@ -457,7 +469,7 @@
     %
     % Sailing (North)
     %
-    \begin{table}[]
+    \begin{table}[tbp]
         \centering
         \begin{subtable}{\textwidth}
             \centering
@@ -491,7 +503,7 @@
                 DENTS & $0.971$ & & $1.02\times10^{-5}$ & $0.813$ 
                     & $1.14\times10^{-3}$ & $2.18\times10^{4}$ \\
             \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
+            \caption{Boltzmann-based search algorithms. \todo{font scaling trick again to fix margins?}}
         \end{subtable}
     
         \caption[\mccorrect{Algorithm parameters} for Sailing(North) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
@@ -503,7 +515,7 @@
     %
     % Sailing (South-East)
     %
-    \begin{table}[]
+    \begin{table}[tbp]
         \centering
         \begin{subtable}{\textwidth}
             \centering
@@ -537,7 +549,7 @@
                 DENTS & $1.00$ & & $1.01\times10^{-5}$ & $9.91\times10^{2}$ 
                     & $1.01\times10^{-5}$ & $3.91\times10^{4}$ \\
             \end{tabular}
-            \caption{Boltzmann-based search algorithms.}
+            \caption{Boltzmann-based search algorithms. \todo{font scaling fix again to fix margins?}}
         \end{subtable}
 
         \caption[\mccorrect{Algorithm parameters} for Sailing(South-East) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
@@ -628,7 +640,7 @@
 
     Initially the values of $\epsilon$ and $\epsilon_{\tilde{\lambda}}$ were set to $0.03$ and $1.0$ respectively and the search temperatures were tuned first. Tables \ref{tab:w001} and \ref{tab:x001} give results of tuning the initial search temperature $\alpha_{\text{init}}$ for BTS and AR-BTS respectively. 
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -642,7 +654,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS.]{Round robin \mccorrect{parameter} selection for $\alpha_{\text{init}}$ for BTS. The value of 1.0 won all four of its matches so was selected. \label{tab:w001}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -663,7 +675,7 @@
     
     $\epsilon_{\tilde{\lambda}}$ was tuned next, using the selected values of $\alpha_{\text{init}}$ for BTS and AR-BTS. Tables \ref{tab:w020} and \ref{tab:x020} give results for the round-robin tournament to select the prior policy weight for BTS and AR-BTS.
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 10  & 5   & 3   & 2    & 1    \\ 
@@ -677,7 +689,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon_{\tilde{\lambda}}$ for BTS. The value of 2.0 won the most matches so was selected. \label{tab:w020}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 2   & 1   & 0.75    & 0.5    \\ 
@@ -697,7 +709,7 @@
     
     Next the exploration parameter $\epsilon$ was tuned, using the selected values of $\alpha_{\text{init}}$ and $\epsilon_{\tilde{\lambda}}$ for BTS and AR-BTS. Tables \ref{tab:w030} and \ref{tab:x030} give results for the round-robin tournament to select the exploration parameter for BTS and AR-BTS. Although the lowest value of 0.001 was selected for AR-BTS, it is close enough to zero such that very few actions are randomly sampled. A round-robin with values between $10^{-3}$ and $10^{-5}$ was tried, but all matches resulted in draws.
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -711,7 +723,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\epsilon$ for BTS.]{Round robin \mccorrect{parameter} selection for $\epsilon$ for BTS. The value of 0.003 won the most matches so was selected. \label{tab:w030}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -744,7 +756,7 @@
     
     
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -758,7 +770,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for MENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for MENTS. The value of 1.0 won the most matches so was selected. \label{tab:w040}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -772,7 +784,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for AR-MENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for AR-MENTS. The value of 0.3 won the most matches so was selected. \label{tab:x040}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -786,7 +798,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for RENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for RENTS. The value of 1.0 won the most matches so was selected. \label{tab:w050}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -800,7 +812,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for AR-RENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for AR-RENTS. The value of 0.3 won the most matches so was selected. \label{tab:x050}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 300  & 100   & 30   & 10    & 3    \\ 
@@ -814,7 +826,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\alpha$ for TENTS.]{Round robin \mccorrect{parameter} selection for $\alpha$ for TENTS. The value of 30.0 won the most matches so was selected. \label{tab:w060}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 30  & 10   & 3   & 1    & 0.3    \\ 
@@ -836,10 +848,10 @@
     
     
     
-    Finaly, for \mbox{(AR-)DENTS}, all parameters were copied from \mbox{(AR-)BTS}, and the entropy temperature $\beta$ was tuned. Tables \ref{tab:w070} and \ref{tab:x070} give results for the round-robin tournament to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS and AR-DENTS respectively.
+    Finally, for \mbox{(AR-)DENTS}, all parameters were copied from \mbox{(AR-)BTS}, and the entropy temperature $\beta$ was tuned. Tables \ref{tab:w070} and \ref{tab:x070} give results for the round-robin tournament to select the initial entropy temperature $\beta_{\text{init}}$ for DENTS and AR-DENTS respectively.
     
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 0.1  & 0.03   & 0.01   & 0.003    & 0.001    \\ 
@@ -853,7 +865,7 @@
         \caption[Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for DENTS.]{Round robin \mccorrect{parameter} selection for $\beta_{\text{init}}$ for DENTS. The value of 0.3 won the most matches so was selected. \label{tab:w070}}
     \end{table}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White}     & 3  & 1   & 0.3   & 0.1    & 0.03    \\ 
@@ -884,7 +896,7 @@
 
     % {My hypothesis for this is that average returns are less sensitive to any noisy outputs from the neural networks, as taking a maximum over random variables is more sensitive to extreme values than averages. Additionally, the neural networks are trained using PUCT and so are trained to work with average returns. It could be the case that if the neural networks were fine-tuned or trained using the Bellman versions of the algorithms that the performance would be closer or better from the Bellman versions.}
     
-    \begin{table}[]
+    \begin{table}[tbp]
     \centering
         \begin{tabular}{l|cccccc}
             \textbf{Black \textbackslash White} & BTS     & AR-BTS   \\ 

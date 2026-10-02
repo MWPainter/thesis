@@ -142,11 +142,12 @@
         Let $\tau_{:h}=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\piardents$:
         \begin{align}
             \HQardents(s_t,a_t) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVardents(s'), \\
-            \HVardents(s_t) &\leftarrow \cl{H}(\piardents(\cdot | s_t)) + \sum_{a\in\cl{A}} \piardents(a|s_t)\HQardents(s_t,a), \\
+            \HVardents(s_t) &\leftarrow \cl{H}(\piardents(\cdot | s_t)) \nonumber \\
+                &+ \sum_{a\in\cl{A}} \piardents(a|s_t)\HQardents(s_t,a), \\
             \Qardents(s_t,a_t) &\leftarrow 
                 R(s_t,a_t) + \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vardents(s') \right),  \\ 
-            \Vardents(s_t) &\leftarrow \frac{\Nvardents \Vinit(s_t)}{N(s_t)+\Nvardents} 
-                + \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nvardents} \Qardents(s_t,a).
+            \Vardents(s_t) &\leftarrow \frac{\Nvardents \Vinit(s_t)}{N(s_t)+\Nvardents} \nonumber \\
+                &+ \sum_{a\in\cl{A}} \frac{N(s_t,a)}{N(s_t)+\Nvardents} \Qardents(s_t,a).
         \end{align}
 
     \paragraph{Recommendation Policy.}
@@ -174,18 +175,18 @@
 
     % FUTURE_MIKE_HEADER
 
-    % This would have been nice but an absolute ballache wouldnt it
+    % This would have been nice but an absolute ball ache wouldn't it
 
 
 
 
 % \chapter{\label{app:4:algo-ref}Additional Algorithm Details for Chapter 4}
 
-%     This appendix serves as a reference for the algorithms covered in Chapter \ref{ch:4-dents}. Because many MCTS algorithms share a similar structure, \bd{they are often presented as a diff to a previous algorithm, to avoid repetative presentation of the same equations}. For example, \mbox{AR-BTS} and \mbox{AR-DENTS} are presented minimally as replacing the value estimates of BTS and DENTS with average returns in Section \ref{sec:4-2-boltzmannsearch}, and PUCT in Section \ref{sec:2-4-3-puct} is defined with respect to UCT in Section \ref{sec:2-4-2-uct}.
+%     This appendix serves as a reference for the algorithms covered in Chapter \ref{ch:4-dents}. Because many MCTS algorithms share a similar structure, \db{they are often presented as a diff to a previous algorithm, to avoid repetative presentation of the same equations}. For example, \mbox{AR-BTS} and \mbox{AR-DENTS} are presented minimally as replacing the value estimates of BTS and DENTS with average returns in Section \ref{sec:4-2-boltzmannsearch}, and PUCT in Section \ref{sec:2-4-3-puct} is defined with respect to UCT in Section \ref{sec:2-4-2-uct}.
 
 %     Each algorithm is specified minimally using the \thtspp\ewe schema given in Section \ref{sec:2-4-2-thts}.
 
-%     Finally, each algorithm is written in a general form, that allows for $\mctsmode$ and $\graphmode$ to be set to either True or False. As argued by \todo{cite katago blog}, when $\graphmode$ is True, the backups need to be computed as \textit{full backups}, where the value is recomputed from all of the children nodes each time. \bd{Incremental backups, that for example allow for the optimisations from} Section \todo{ref ch4} \bd{are not specified here.}
+%     Finally, each algorithm is written in a general form, that allows for $\mctsmode$ and $\graphmode$ to be set to either True or False. As argued by \odot{cite katago blog}, when $\graphmode$ is True, the backups need to be computed as \textit{full backups}, where the value is recomputed from all of the children nodes each time. \db{Incremental backups, that for example allow for the optimisations from} Section \odot{ref ch4} \db{are not specified here.}
 
 
 
@@ -450,12 +451,12 @@
 
 
 
-% \todo{Full equations for all algorithms in this appendix. This should include the mixing policies too} 
+% \odot{Full equations for all algorithms in this appendix. This should include the mixing policies too} 
 
 
 
 
-% \todo{Currently a pasting ground for currting average returns }
+% \odot{Currently a pasting ground for currting average returns }
 
 % This appendix covers any additional details for algorithms covered in Chapter 4 where 
 
@@ -465,9 +466,9 @@
 % \subsection{AR-BTS} 
 % \label{appsec:arbts}
 
-%     \todo{Write this out in full}
+%     \odot{Write this out in full}
 
-%     \todo{This is original writing for AR-BTS}
+%     \odot{This is original writing for AR-BTS}
 
 %     This search policy can still be used with average returns. The following is a summary of the definitions for \textit{Boltzmann Tree Search with Average Returns} (AR-BTS), which uses the value estimates of $\Varbts$ and $\Qarbts$ at each node, and temperature schedule $\alphaarbts(x) > 0$:
 %     %
@@ -498,30 +499,30 @@
 % \subsection{AR-DENTS}
 % \label{appsec:ardents}
 
-%     \todo{Write this out in ful}
+%     \odot{Write this out in ful}
 
 
 % \subsection{MENTS, RENTS and TENTS with Average Returns} 
 % \label{appsec:arments}
 
-%     \todo{Its DENTS, with alpha \= beta \= const, and different entropy functions.}
+%     \odot{Its DENTS, with alpha \= beta \= const, and different entropy functions.}
 
-%     \todo{Justify using DENTS with these settings to apprixmate AR-MENTS etc by pointing at the DNETS mimicing MENTS search policy empirically,} Appendix \ref{appsec:dents_mimic_ments}.
+%     \odot{Justify using DENTS with these settings to apprixmate AR-MENTS etc by pointing at the DNETS mimicing MENTS search policy empirically,} Appendix \ref{appsec:dents_mimic_ments}.
 
-%     \todo{Below is c and p of original writing on this in the neurips paper}
+%     \odot{Below is c and p of original writing on this in the neurips paper}
 
-%     MENTS uses \textit{soft values}, $\hat{Q}_{\textnormal{sft}}$, which are not obvious how to replace with average returns. So to produce the AR variants of MENTS, RENTS and TENTS we use AR-DENTS as a starting point. \todo{ppara c and p from neurips, clean?}
+%     MENTS uses \textit{soft values}, $\hat{Q}_{\textnormal{sft}}$, which are not obvious how to replace with average returns. So to produce the AR variants of MENTS, RENTS and TENTS we use AR-DENTS as a starting point. \odot{ppara c and p from neurips, clean?}
 
-%     \paragraph{AR-MENTS.} For AR-MENTS we use AR-DENTS, but set $\beta(m)=\alpha(m)=\alpha_{\text{fix}}$. This algorithm resembles MENTS, as the weighting used for entropy in soft values is the same as the Boltzmann policy search temperature. \todo{ppara c and p from neurips, clean?}
+%     \paragraph{AR-MENTS.} For AR-MENTS we use AR-DENTS, but set $\beta(m)=\alpha(m)=\alpha_{\text{fix}}$. This algorithm resembles MENTS, as the weighting used for entropy in soft values is the same as the Boltzmann policy search temperature. \odot{ppara c and p from neurips, clean?}
 
-%     \paragraph{AR-RENTS.} To arrive at AR-RENTS, we replace any use of $\hat{Q}_{\textnormal{sft}}(s,a)$ with $\bar{Q}(s,a)+\beta(m)\cl{H}_Q(s,a)$. So we use Equations (\ref{appeq:average_return}), (\ref{appeq:entropy_v}) and (\ref{appeq:entropy_q}) for backups, but replace the Shannon entropy function $\cl{H}$, with a relative entropy function $\cl{H}_{\textnormal{relative}}$ in Equation (\ref{appeq:entropy_v}). The relative entropy function $\cl{H}_{\textnormal{relative}}$ uses the \textit{Kullback-Leibler divergence} between the search policy and the search policy of the parent decision node. The search policy used is the same as in RENTS, with the aforementioned substitution for soft values. See \todo{cite and or ref}%\cite{rents_your_tents}
-%         for full details on computing relative entropy and the search policy used in RENTS. \todo{ppara c and p from neurips, clean?}
+%     \paragraph{AR-RENTS.} To arrive at AR-RENTS, we replace any use of $\hat{Q}_{\textnormal{sft}}(s,a)$ with $\bar{Q}(s,a)+\beta(m)\cl{H}_Q(s,a)$. So we use Equations (\ref{appeq:average_return}), (\ref{appeq:entropy_v}) and (\ref{appeq:entropy_q}) for backups, but replace the Shannon entropy function $\cl{H}$, with a relative entropy function $\cl{H}_{\textnormal{relative}}$ in Equation (\ref{appeq:entropy_v}). The relative entropy function $\cl{H}_{\textnormal{relative}}$ uses the \textit{Kullback-Leibler divergence} between the search policy and the search policy of the parent decision node. The search policy used is the same as in RENTS, with the aforementioned substitution for soft values. See \odot{cite and or ref}%\cite{rents_your_tents}
+%         for full details on computing relative entropy and the search policy used in RENTS. \odot{ppara c and p from neurips, clean?}
 
-%     \paragraph{AR-TENTS.} Similarly, for AR-TENTS, we replace any use of $\hat{Q}^m_{\textnormal{sft}}(s,a)$ with $\bar{Q}^m(s,a)+\beta(m)\cl{H}_Q(s,a)$, and use Equations (\ref{appeq:average_return}), (\ref{appeq:entropy_v}) and (\ref{appeq:entropy_q}) for backups. This time, we replace the Shannon entropy function $\cl{H}$, with a Tsallis entropy function $\cl{H}_{\textnormal{Tsallis}}$ in Equation (\ref{appeq:entropy_v}). Again, we use the same search policy used in TENTS, with the substitution for soft values. See \todo{cite and or ref}%\cite{rents_your_tents}
-%         for how Tsallis entropy is computed and the corresponding search policy for TENTS. \todo{ppara c and p from neurips, clean?}
+%     \paragraph{AR-TENTS.} Similarly, for AR-TENTS, we replace any use of $\hat{Q}^m_{\textnormal{sft}}(s,a)$ with $\bar{Q}^m(s,a)+\beta(m)\cl{H}_Q(s,a)$, and use Equations (\ref{appeq:average_return}), (\ref{appeq:entropy_v}) and (\ref{appeq:entropy_q}) for backups. This time, we replace the Shannon entropy function $\cl{H}$, with a Tsallis entropy function $\cl{H}_{\textnormal{Tsallis}}$ in Equation (\ref{appeq:entropy_v}). Again, we use the same search policy used in TENTS, with the substitution for soft values. See \odot{cite and or ref}%\cite{rents_your_tents}
+%         for how Tsallis entropy is computed and the corresponding search policy for TENTS. \odot{ppara c and p from neurips, clean?}
 
-%     \bd{although details of the tournaments is left to appendix <TODO>, of note is that each DP and AR set of algorithms were tuned using the same sequence of tournaments, and then each AR version was played off against the DP version to compare. In each case the AR versions won out and hence were used in the final round-robin. <TODO clean up some words about why this might to better: my original hypothesis is that, like using the most visited recommendation poilcy, that the average returns has a smoothing effect on the recommendation poilcy, and lead the algorithms to being less sensitive to noise from the neural nets.>}
+%     \db{although details of the tournaments is left to appendix <TODO>, of note is that each DP and AR set of algorithms were tuned using the same sequence of tournaments, and then each AR version was played off against the DP version to compare. In each case the AR versions won out and hence were used in the final round-robin. <TODO clean up some words about why this might to better: my original hypothesis is that, like using the most visited recommendation poilcy, that the average returns has a smoothing effect on the recommendation poilcy, and lead the algorithms to being less sensitive to noise from the neural nets.>}
 
-%     \todo{Here was the writing where we talked about the above from original neurips}
-%     Additionally, we found that adapting the algorithms to use average returns (recall Equation (\ref{eq:uct_qbar})) outperformed using Bellman backups for Go (Appendix \ref{appsec:go}). The Bellman backups were sensitive to and propogated noise from the neural network evaluations. We use the prefix `AR' to denote the algorithms using average returns, such as AR-DENTS. Full details for these algorithms are given in Appendix \ref{app:average_returns}.
+%     \odot{Here was the writing where we talked about the above from original neurips}
+%     Additionally, we found that adapting the algorithms to use average returns (recall Equation (\ref{eq:uct_qbar})) outperformed using Bellman backups for Go (Appendix \ref{appsec:go}). The Bellman backups were sensitive to and propagated noise from the neural network evaluations. We use the prefix `AR' to denote the algorithms using average returns, such as AR-DENTS. Full details for these algorithms are given in Appendix \ref{app:average_returns}.
 

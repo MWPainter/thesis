@@ -9,6 +9,7 @@
     \item[BTS] Boltzmann Tree Search.
     \item[C-CHMCTS] Chebyshev Convex Hull Monte Carlo Tree Search.
     \item[CCS] Convex Coverage Set.
+    \item[CDF] Cumulative Distribution Function.
     \item[CH-BTS] Convex Hull Boltzmann Tree Search.
     \item[CH-CZT] Convex Hull Contextual Zooming for Trees.
     \item[CHMCTS] Convex Hull Monte Carlo Tree Search.
@@ -88,7 +89,7 @@
     \item[$X_i\rap X$]
         The sequence of random variables $X_i$ converges in probability to the random variable $X$. $\Pr\left(\left|X_i - X\right| > \varepsilon\right) \rightarrow 0 \ \text{as} \ i \rightarrow \infty$ for all $\varepsilon>0$.
     \item[$X_i\raas X$]
-        The sequence of random variables $X_i$ converges almost surely to the random variable $X$. $\Pr\left(\lim_{i\rightarrow\infty} X_i = X\right) = 1$.
+        The sequence of random variables $X_i$ converges almost surely to the random variable $X$. $\Pr\left(\lim_{i\rightarrow\infty} X_i = X\right) = 1$. % under full \hbox error but no visual overflow.
     \\
     %%%%%
     % (MO)MDPs
@@ -135,7 +136,7 @@
     \item[$\tau_{i:j}$]
         A truncated trajectory, starting at timestep $i$, and ending at timestep $j$: $\tau_{i:j} = (s_i, a_i, r_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, r_{j-1}, s_j)$. 
     \item[$\bfg{\tau}_{i:j}$] 
-        A multi-objective truncated trajectory, starting at timestep $i$ and ending at timestep $j$: $\bfg{\tau}_{i:j} = (s_i, a_i, \bff{r}_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, \bff{r}_{j-1}, s_j)$.
+        A multi-objective truncated trajectory, starting at timestep $i$ and ending at timestep $j$: $\bfg{\tau}_{i:j} = (s_i, a_i, \bff{r}_i, s_{i+1}, ..., s_{j-1}, a_{j-1}, \bff{r}_{j-1}, s_j)$. % over full \hbox error but no visual overflow.
     \\
     %%%%%
     % RL
@@ -152,10 +153,10 @@
     \item[$V^*$]
         The optimal value function. $V^*(s;t)$ denotes the maximal expected value that can be achieved by any policy, starting from state $s_t=s$.
     \item[$V^{\pi}$]
-        The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$.
+        The value of a policy $\pi$. $V^{\pi}(s;t)$ denotes the expected cumulative reward that policy $\pi$ will obtain, starting from state $s_t=s$. % under full \hbox error but no visual artifact.
     \\
     %%%%%
-    % MERL
+    % Max Entropy RL
     %%%%%
     \notationheading{Maximum Entropy Reinforcement Learning \\(Section \ref{sec:2-3-1-merl})}
     \item[$\alpha$] 
@@ -173,7 +174,7 @@
     \item[$V_{\sft}^*$]
         The optimal soft value function. $V_{\sft}^*(s;t)$ denotes the maximal expected soft value that can be achieved by any policy, from state $s_t=s$. 
     \item[$V_{\sft}^{\pi}$]
-        The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ is the expected value of the policy from $s_t=s$, with an addition of the entropy of the policy weighted by the temperature $\alpha$.
+        The soft value of a policy $\pi$. $V_{\sft}^{\pi}(s;t)$ is the expected value of the policy from $s_t=s$, with an addition of the entropy of the policy weighted by the temperature $\alpha$. % under full \hbox error but no visual artifact.
         \\
     %%%%%
     % THTS
@@ -222,7 +223,7 @@
     \item[\graphmode] %transposition_table
         \hspace{1cm} Specifies if \thtspp\ewe uses a transposition table to store and re-use the decision nodes of the search tree when they are reached again via another path.
     \item[$\Vinit$]
-        The heuristic value function used in \thtspp, used to initialise the value of a new decision node. 
+        The heuristic value function used in \thtspp, used to initialise the value of a new decision node.  % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % UCT
@@ -239,11 +240,11 @@
     \item[$\Quct(s,a)$] 
         The sample-average value estimate used to estimate the Q-value at a chance node $(s,a)$ in UCT.
     \item[$\Quctnorm(s,a)$] 
-        The optionally linearly normalised (between 0 and 1) Q-value. Used by the UCT search policy to select actions. If $\normalisedq$ is False, then $\Quctnorm(s,a)=\Quct(s,a)$. 
+        \sloppypar{The optionally linearly normalised (between 0 and 1) Q-value. Used by the UCT search policy to select actions. If $\normalisedq$ is False, then $\Quctnorm(s,a)=\Quct(s,a)$.}
     \item[$\hat{V}^{\pirollout}(s)$] 
         An estimate of $V^{\pirollout}(s)$ computed using the return from a single trajectory sampled using policy $\pirollout$. It is used to initialise the value of a state being added to the search tree.
     \item[$\Vuct(s)$] 
-        The sample-average value estimate used to estimate the value at a decision node $s$ in UCT. 
+        The sample-average value estimate used to estimate the value at a decision node $s$ in UCT.  % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % MENTS
@@ -264,7 +265,7 @@
     \item[$\tilde{V}$] 
         A function approximation to $V^*$.
     \item[$\Vments(s)$] 
-        A soft value estimate at the decision node $s$ in MENTS.
+        A soft value estimate at the decision node $s$ in MENTS. % under full \hbox error but no visual artifact.
     \\
     % %%%%%
     % % Convergence
@@ -320,7 +321,7 @@
     \item[$\bff{w}$] 
         A weighting over objectives that quantifies preferences over the multiple objectives, to be used in a utility function.
     \item[$\succ_P$]
-        The \textnormal{Pareto domination} relation over vectors: $\bff{v}\succ_P\bff{v'}$ if and only if $v_i\geq v'_i$ for all $i$ and $v_j>v'_j$ for some $j$.
+        The \textnormal{Pareto domination} relation over vectors: $\bff{v}\succ_P\bff{v'}$ if and only if $v_i\geq v'_i$ for all $i$ and $v_j>v'_j$ for some $j$. % under full \hbox error but no visual artifact.
     % \\
     % %%%%%
     % % CHVI
@@ -337,9 +338,9 @@
     %%%%%
     % Ch 4 - Boltzmann Search
     %%%%%
-    \notationheading{Monte Carlo Tree Search with Boltzmann Exploration (Chapter \ref{ch:4-dents})}
+    \notationheading{Monte Carlo Tree Search with Boltzmann \\Exploration (Chapter \ref{ch:4-dents})}
     \item[$\sreg(s,\psi)$]
-        The \textnormal{simple regret} of a recommendation policy $\psi$ at state $s$: $\sreg(s,\psi) = V^*(s) - V^{\psi}(s)$.
+        The \textnormal{simple regret} of a recommendation policy $\psi$ at state $s$: $\sreg(s,\psi) = V^*(s) - V^{\psi}(s)$. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % BTS
@@ -362,7 +363,7 @@
     \item[$\Qbtsnorm(s,a)$]
         The optionally normalised and heuristic-biased Q-value estimate used by the BTS search policy to select actions.
     \item[$\Vbts(s)$]
-        The Bellman value estimate at decision node $s$ in BTS.
+        The Bellman value estimate at decision node $s$ in BTS. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % DENTS
@@ -393,7 +394,7 @@
     \item[$\Qdentsnorm(s,a)$]
         The optionally normalised and heuristic-biased soft Q-value used by the DENTS search policy to select actions.
     \item[$\Vdents(s)$]
-        The Bellman value estimate at decision node $s$ in DENTS.
+        The Bellman value estimate at decision node $s$ in DENTS. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % Ch 5 - CHMCTS
@@ -408,7 +409,7 @@
     \item[$\pswept$]
         The probability of the agent being swept by a current in the \textit{Deep Sea Treasure} environment used in Chapter \ref{ch:5-chmcts}.
     \item[$\pi(a|s;\bff{w})$]
-        A \textnormal{contextual policy}, extending the policy notation $\pi(a|s)$ to include a context weight $\bff{w}\in\Delta^D$.
+        A \textnormal{contextual policy}, extending the policy notation $\pi(a|s)$ to include a context weight $\bff{w}\in\Delta^D$. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % CZT
@@ -429,14 +430,14 @@
     \item[$\relevant(s;\bff{w})$] 
         A subset of the active balls $A(s)$ at decision node $s$, containing the relevant balls for CZT to use for vector value estimates: $\relevant(s;\bff{w}) = \cup_{a\in\cl{A}} \relevant(s,a;\bff{w})$.
     \item[$\relevant(s,a;\bff{w})$]
-        The subset of active balls $A(s,a)$, consisting of the smallest radius balls that contain $(\bff{w},a)$.
+        The subset of active balls $A(s,a)$, consisting of the smallest radius balls that contain $(\bff{w},a)$. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % CHMCTS Common Framework
     %%%%%
     \notationheading{CHMCTS Common Framework \\(Sections \ref{sec:5-3-1-framework} and \ref{sec:5-3-6-optimisations})}
     \item[$\deltaunsolved$]
-        The confidence parameter used in the solved labelling of CHMCTS.
+        The confidence parameter used when computing $\unsolved$ values in CHMCTS, where smaller values give more pessimistic estimates.
     \item[$K_{\max}$]
         The maximum size of a convex hull value set in CHMCTS, used in the size pruning optimisation.
     \item[$\pialg(a|s;\bff{w})$]
@@ -448,11 +449,11 @@
     \item[$\Qalgctx{\bff{w}}(s,a)$]
         The \textnormal{contextual Q-value estimate} at chance node $(s,a)$ under weight $\bff{w}$: $\Qalgctx{\bff{w}}(s,a)=\max_{\bff{q}\in\Qalg(s,a)}\bff{w}^\top\bff{q}$.
     \item[$\unsolvedtol$]
-        The tolerance used to mark chance nodes as solved in CHMCTS, where a node is marked solved when $\unsolved(s,a)\leq\unsolvedtol$.
+        The tolerance for marking a chance node as solved in CHMCTS, which happens when $\unsolved(s,a)\leq\unsolvedtol$.
     \item[$\Valg(s)$]
         The convex hull value set estimate maintained at decision node $s$ by a CHMCTS algorithm $\alg$.
     \item[$\Valgctx{\bff{w}}(s)$]
-        The \textnormal{contextual value estimate} at decision node $s$ under weight $\bff{w}$: $\Valgctx{\bff{w}}(s)=\max_{\bff{v}\in\Valg(s)}\bff{w}^\top\bff{v}$.
+        The \textnormal{contextual value estimate} at decision node $s$ under weight $\bff{w}$: $\Valgctx{\bff{w}}(s)=\max_{\bff{v}\in\Valg(s)}\bff{w}^\top\bff{v}$. % under full \hbox error but no visual artifact.
     \\
     \notationheading{CHMCTS Algorithms \\(Sections \ref{sec:5-3-2-chuct}, \ref{sec:5-3-3-chbts}, \ref{sec:5-3-4-chczt} and \ref{sec:5-3-5-prior})}
     \item[$\alphachbts$]
@@ -500,7 +501,7 @@
     \item[$\VSM$]
         The set of vertices of a simplex map, $\VSM\subseteq\Delta^D$.
     \item[$\wSM$]
-        A vertex of a simplex map, $\wSM\in\VSM$.
+        A vertex of a simplex map, $\wSM\in\VSM$. % under full \hbox error but no visual artifact.
     \\
     %%%%%
     % SM-DENTS
@@ -519,7 +520,7 @@
     \item[$\pismd$]
         The search policy used in SM-DENTS.
     \item[$\psismd$]
-        The recommendation policy used in SM-DENTS: $\psismd(s;\bff{w})=\argmax_{a\in\cl{A}}\Qsmdctx(s,a)$.
+        The recommendation policy used in SM-DENTS: $\psismd(s;\bff{w})=\argmax_{a\in\cl{A}}\Qsmdctx(s,a)$. % under full \hbox error but no visual artifact.
     \item[$\Qsmd(s,a;\cdot)$]
         The multi-objective Q-value estimate function maintained in the simplex map at chance node $(s,a)$.
     \item[$\Qsmdctx(s,a)$]

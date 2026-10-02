@@ -94,8 +94,8 @@
   basicstyle=\footnotesize\tt, % the size of the fonts that are used for the code
   breakatwhitespace=false, % sets if automatic breaks should only happen at whitespace
   breaklines=true, % sets automatic line breaking
-  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}}, % add arrows to indicate line breaks added
-  framesep = 5px, % add padding to the top/bottom of listings
+  prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}}, % add arrows to indicate line breaks added
+  framesep=5px, % add padding to the top/bottom of listings
   captionpos=b, % sets the caption-position to bottom
   extendedchars=true, % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
   frame=single,  % adds a frame around the code (frame at bot and top)
@@ -228,23 +228,17 @@
 \newcommand{\quest}[1]{\hl{Question: #1}}
 
 
-
-
 % \newcommand{\todo}[1]{}
 % \newcommand{\bd}[1]{}
 % \newcommand{\quest}[1]{}
-
-
-
-
-
-
 
 
 % \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
 % \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
 % \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
 % \newcommand{\htodo}[1]{\hide{\todo{#1}}}
+
+
 
 % Maffs operators that aren't default
 \newcommand{\one}{\mathbbm{1}}                    % indicator functions
@@ -267,6 +261,16 @@
 \newcommand{\notationheading}[1]{%
   \par\needspace{3\baselineskip}%
   \item[{\parbox[t]{\textwidth}{\Large\textbf{#1}\hfill\hfill}}]}
+  
+% Allow linebreaks in long inline maths with commas $<EXPR>$ -> $\splitatcommas{<EXPR>}$
+\newcommand{\splitatcommas}[1]{%
+  \begingroup
+  \begingroup\lccode`~=`, \lowercase{\endgroup
+    \edef~{\mathchar\the\mathcode`, \penalty0 \noexpand\hspace{0pt plus 1em}}%
+  }\mathcode`,="8000 #1%
+  \endgroup
+}
+
 
 % Test shorthands
 \newcommand{\bld}[1]{\textbold{#1}}
@@ -344,6 +348,7 @@
 \newcommand{\graphmode}{{\textnormal{\texttt{transposition\_table}}}}
 \newcommand{\Vinit}{{\hat{V}_{\textnormal{heuristic}}}}
 \newcommand{\Vinitbff}{{\hat{\bff{V}}_{\textnormal{heuristic}}}}
+\newcommand{\Qinitbff}{{\hat{\bff{Q}}_{\textnormal{heuristic}}}}
 \newcommand{\Vh}{{\hat{V}_{\textnormal{h}}}}
 
 
