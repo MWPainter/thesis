@@ -182,8 +182,8 @@
 
     The following parameters were used by all algorithms considered in section \ref{sec:4-4-results}:
     \begin{itemize}
-        \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
-        \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
+        \item $\mctsmode$ - a $\thtspp$ parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
+        \item $\graphmode$ - a $\thtspp$ parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
         \item $\normalisedq$ - if Q-values should be normalised before being used in the search policy;
         \item $\initv$ - the heuristic value function;
         \item $\initq$ - the heuristic Q-value function;
@@ -249,7 +249,7 @@
 
 \subsubsection{UCT Implementation with Full Backups}
 \label{appsec:4:uct_full_backups}
-    As a worked example, the version of UCT used in experiments that utilises all of the parameters from Section \ref{appsec:4:hyperparams} is given. The algorithm is specified minimally using the \thtspp\ewe schema given in Section \ref{sec:2-4-2-thts}.
+    As a worked example, the version of UCT used in experiments that utilises all of the parameters from Section \ref{appsec:4:hyperparams} is given. The algorithm is specified minimally using the $\thtspp$ schema given in Section \ref{sec:2-4-2-thts}.
 
     \paragraph{Value Estimates and Parameters.}
     
@@ -591,7 +591,7 @@
 \section{Additional Details for Go Experiments} 
 \label{appsec:4:go}
 
-    These experiments were run with \mctsmode\ewe turned on.
+    These experiments were run with $\mctsmode$ turned on.
 
     Because running Bayesian optimisation at the scale of the Go experiments would be prohibitively expensive, a round-robin tournament was used to select the \mccorrect{algorithm parameters}. This section gives the results of the round-robin tournaments.
 

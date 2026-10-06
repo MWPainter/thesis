@@ -40,7 +40,7 @@
 
     \minitoc
 
-    This chapter introduces the fundamental concepts which are used throughout this thesis, in particular Section \ref{sec:2-4-2-thts} introduces the \thtspp\ewe schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
+    This chapter introduces the fundamental concepts which are used throughout this thesis, in particular Section \ref{sec:2-4-2-thts} introduces the $\thtspp$ schema, which will be used throughout this thesis to define Monte Carlo Tree Search algorithms modularly. 
 
     Section \ref{sec:2-1-mab} briefly covers Multi-Armed Bandit problems, which are commonly used to study decision-making algorithms and as a building block in Monte Carlo Tree Search methods. In particular, \textit{Contextual} Multi-Armed Bandit problems (Section \ref{sec:2-1-3-contextual-mab}) are covered, which will be relevant in the design and analysis of the multi-objective algorithms discussed in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps}. 
     
@@ -656,7 +656,7 @@
 
     Monte Carlo Tree Search (MCTS) refers to heuristic algorithms that build a search tree using \textit{Monte Carlo Trials}, where nodes are added to the tree from randomly sampled trajectories. Two advantages of using MCTS methods in the modern day are: that they allow for statistical analysis, which may provide \textit{probabilistic guarantees} on the performance of the algorithm; and that they offer interpretability, as the search tree can be inspected post-hoc to identify why the algorithm made certain decisions. 
 
-    MCTS trials are commonly presented using four stages, selection, expansion, simulation/heuristic and backup phases \cite{mcts_survey}, which are depicted in Figure \ref{fig:2:mcts}. To avoid confusion with the broader definition of MCTS above, this thesis refers to this specific form of MCTS as \mctsone. Each of the four phases of \mctsone\ewe are described in more detail below: 
+    MCTS trials are commonly presented using four stages, selection, expansion, simulation/heuristic and backup phases \cite{mcts_survey}, which are depicted in Figure \ref{fig:2:mcts}. To avoid confusion with the broader definition of MCTS above, this thesis refers to this specific form of MCTS as \mctsone. Each of the four phases of $\mctsone$ are described in more detail below: 
     \begin{enumerate}
         \item \textit{Selection phase} - a \textit{search policy} is used to traverse the search tree from the root node until it reaches a state not contained in the search tree;
         \item \textit{Expansion phase} - a new child node is added to the search tree;
@@ -664,9 +664,9 @@
         \item \textit{Backup phase} - the value from the heuristic or simulation is used to back up values through the path traversed in the selection phase.
     \end{enumerate}
 
-    Trial-Based Heuristic Tree Search (THTS) \cite{thts,thts_thesis} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how \mctsone\ewe is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
+    Trial-Based Heuristic Tree Search (THTS) \cite{thts,thts_thesis} generalises heuristic tree search methods used for planning, such as Trial-Based Real Time Dynamic Programming \cite{rtdp} and LAO$^*$ \cite{lao_star}. However, THTS differs slightly from how $\mctsone$ is presented above. In a THTS trial, after the expansion/heuristic phases are run, the trial ``switches back to the selection phase and alternates between those phases'', until the planning horizon is reached.
 
-    \thtspp\ewe \cite{thtspp} is introduced in Section \ref{sec:2-4-2-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises \mctsone\ewe algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-4-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
+    $\thtspp$ \cite{thtspp} is introduced in Section \ref{sec:2-4-2-thts}, which is an open-source, parallelised extension of the THTS schema --- which also generalises $\mctsone$ algorithms --- and was built to facilitate the work in this thesis. Section \ref{sec:2-4-2-uct} covers the Upper Confidence Bound applied to Trees (UCT) algorithm \cite{uct,uct_long}, which is a commonly used MCTS algorithm, and Section \ref{sec:2-4-4-ments} presents the Maximum ENtropy Tree Search (MENTS) algorithm \cite{ments}, which is related to the algorithms introduced in Chapter \ref{ch:4-dents} of this thesis.
     
     
 
@@ -688,7 +688,7 @@
 % [ ] Final revision
 \subsection{Notation}
 \label{sec:2-4-1-notation}
-    To simplify notation in the presentation and analysis of \thtspp\ewe algorithms, this thesis assumes a \textit{unique state assumption}, that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. %This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
+    To simplify notation in the presentation and analysis of $\thtspp$ algorithms, this thesis assumes a \textit{unique state assumption}, that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. %This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
     \begin{mccorrection}
     \begin{assumption}
@@ -707,13 +707,13 @@
         \label{fig:2:tree_notation}
     \end{figure}
 
-    \thtspp\ewe builds a \textit{search tree} $\cl{T}$ incrementally by running \textit{trials} from the root node and adding them to the tree until a stopping criterion is met. Trees consist of \textit{decision nodes} that correspond to states $s\in\cl{T}$, and \textit{chance nodes} that correspond to state-action pairs $(s,a)\in\cl{T}$. For brevity, $s$ refers to both states and decision nodes, and $(s,a)$ refers to both state-action pairs and chance nodes. Where necessary for clarity, the notation $\node(s)$ and $\node(s,a)$ is used to explicitly refer to nodes rather than states or state-action pairs. At the start of search, the search tree is initialised to contain only the root node, $\cl{T}\leftarrow\{s_0\}$. Figure \ref{fig:2:tree_notation} gives an example of how decision and chance nodes are depicted as circles and diamonds in diagrams throughout this thesis.
+    $\thtspp$ builds a \textit{search tree} $\cl{T}$ incrementally by running \textit{trials} from the root node and adding them to the tree until a stopping criterion is met. Trees consist of \textit{decision nodes} that correspond to states $s\in\cl{T}$, and \textit{chance nodes} that correspond to state-action pairs $(s,a)\in\cl{T}$. For brevity, $s$ refers to both states and decision nodes, and $(s,a)$ refers to both state-action pairs and chance nodes. Where necessary for clarity, the notation $\node(s)$ and $\node(s,a)$ is used to explicitly refer to nodes rather than states or state-action pairs. At the start of search, the search tree is initialised to contain only the root node, $\cl{T}\leftarrow\{s_0\}$. Figure \ref{fig:2:tree_notation} gives an example of how decision and chance nodes are depicted as circles and diamonds in diagrams throughout this thesis.
     \begin{defn}
         \label{def:2:search_tree}
         A \textnormal{search tree} $\cl{T}$ is a subset of the state and state-action spaces, $\cl{T}\subseteq \cl{S} \cup \cl{S} \times \cl{A}$, where for each $s\in\cl{T}$, there exists some truncated trajectory $\tau_{:h}$ such that $s_h = s$, each $s'\in\tau_{:h}$ is also in the tree, $s'\in\cl{T}$, and each $s',a'\in\tau_{:h}$ is also in the tree, $(s',a')\in\cl{T}$.
     \end{defn}
 
-    Each decision and chance node stores some algorithm-dependent data, typically including but not limited to a \textit{value estimate} and a \textit{visit count}. Let $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in \thtspp\ewe trials. $\dnodedata{s}$ denotes the set of variables stored at the decision node $\node(s)$, and $\cnodedata{s,a}$ denotes the set of variables stored at the chance node $\node(s,a)$. For example $N(s)\in\dnodedata{s}$ and $N(s,a)\in\cnodedata{s,a}$.
+    Each decision and chance node stores some algorithm-dependent data, typically including but not limited to a \textit{value estimate} and a \textit{visit count}. Let $N(s)$ and $N(s,a)$ denote the number of times $\node(s)$ and $\node(s,a)$ have been visited, or equivalently, the number of times $s$ and $(s,a)$ appear in trajectories sampled in $\thtspp$ trials. $\dnodedata{s}$ denotes the set of variables stored at the decision node $\node(s)$, and $\cnodedata{s,a}$ denotes the set of variables stored at the chance node $\node(s,a)$. For example $N(s)\in\dnodedata{s}$ and $N(s,a)\in\cnodedata{s,a}$.
 
     Additionally, let $\node(s)\dotchildren$ be a mapping from actions to the chance nodes that are children of $\node(s)$. Likewise, $\node(s,a)\dotchildren$ is a mapping from outcomes (successor states) to the decision nodes that are children of $\node(s,a)$. For example, $\node(s)\dotchildren[a] = \node(s,a)$.
 
@@ -737,7 +737,7 @@
 \subsection{Trial Based Heuristic Tree Search}
 \label{sec:2-4-2-thts}
 
-    \thtspp\ewe \cite{thtspp} provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates \mctsone\ewe algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alpha_go,alpha_go_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
+    $\thtspp$ \cite{thtspp} provides a modular framework for defining and implementing MCTS algorithms. It extends the Trial-Based Heuristic Tree Search (THTS) schema \cite{thts} in a way that incorporates $\mctsone$ algorithms and more modern MCTS algorithms that use a neural network or heuristic in place of a rollout simulation \cite{alpha_go,alpha_go_zero}. It is largely presented in a single-threaded manner, which is sufficient for the purposes of this thesis.
 
     Each trial has an associated \textit{context}, which is a \textit{per-trial} key-value store that can be used to store any algorithm-dependent data. The algorithms defined in Sections \ref{sec:2-4-2-uct} and \ref{sec:2-4-4-ments} will not make use of this context, but it will be used in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} for multi-objective MCTS algorithms where \textit{contextual tree search} is discussed. Contexts allow algorithms to store additional information within a trial without altering the interface. Beyond the scope of this thesis, contexts enable algorithms that require additional per-trial state to be implemented in \thtspp, such as Partially Observable Monte Carlo Planning \cite{pomcp}, where a state is sampled from a \textit{belief state} at the beginning of each trial.
     \begin{defn}
@@ -747,11 +747,11 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}} % (TWO) under full \hbox warning, but it renders fine
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}} % (TWO) under full \hbox warning, but it renders fine with no margin problems
         \label{fig:2:thts}
     \end{figure}
 
-    The main four steps performed during a \thtspp\ewe trial are (depicted in Figure \ref{fig:2:thts}):
+    The main four steps performed during a $\thtspp$ trial are (depicted in Figure \ref{fig:2:thts}):
     \begin{enumerate}
         \item  
             \textit{Context Sampling} - a \textit{context} is sampled for the trial;
@@ -765,27 +765,27 @@
 
     Collectively, the selection and heuristic steps are referred to as the \textit{selection phase} of the trial, and the backup steps are collectively referred to as the \textit{backup phase}.
 
-    In \thtspp\ewe there are two options for when to progress from the selection phase to the backup phase, which is indicated by the boolean flag \mctsmode. The selection phase will always end if a terminal state is reached, which includes reaching the planning horizon. When \mctsmode\ewe is True, the selection phase will end earlier, once a new decision node is added to the search tree. Figure \ref{fig:2:thts} shows an example of a trial when \mctsmode\ewe is True (blue), and when it is False (orange).
+    In $\thtspp$ there are two options for when to progress from the selection phase to the backup phase, which is indicated by the boolean flag \mctsmode. The selection phase will always end if a terminal state is reached, which includes reaching the planning horizon. When $\mctsmode$ is True, the selection phase will end earlier, once a new decision node is added to the search tree. Figure \ref{fig:2:thts} shows an example of a trial when $\mctsmode$ is True (blue), and when it is False (orange).
     \begin{defn}
         \label{def:2:mctsmode}
-        When \mctsmode\ewe is True, the selection phase will end once a new decision node is added to the search tree.
+        When $\mctsmode$ is True, the selection phase will end once a new decision node is added to the search tree.
     \end{defn} 
 
-    If the search is equipped with an informative heuristic function, then running with \mctsmode\ewe set to True can allow the algorithm to avoid wasting resources (time and memory) on parts of the search tree that are not promising. Moreover, if the search is using a large planning horizon or the search will run for a long time, then it may be necessary to run with \mctsmode\ewe set to True to avoid running out of memory.
+    If the search is equipped with an informative heuristic function, then running with $\mctsmode$ set to True can allow the algorithm to avoid wasting resources (time and memory) on parts of the search tree that are not promising. Moreover, if the search is using a large planning horizon or the search will run for a long time, then it may be necessary to run with $\mctsmode$ set to True to avoid running out of memory.
 
-    In contrast, a random \textit{rollout} is often used in \mctsone\ewe algorithms when no informative heuristic is available (for example Section \ref{sec:2-4-2-uct}). In such cases, where memory allows, running with \mctsmode\ewe set to False can be beneficial, because it avoids throwing away potentially useful information from states visited during the rollout \cite{rollout_add,rollout_add_mcgs}.
+    In contrast, a random \textit{rollout} is often used in $\mctsone$ algorithms when no informative heuristic is available (for example Section \ref{sec:2-4-2-uct}). In such cases, where memory allows, running with $\mctsmode$ set to False can be beneficial, because it avoids throwing away potentially useful information from states visited during the rollout \cite{rollout_add,rollout_add_mcgs}.
 
     \begin{figure}
         \centering\includegraphics[width=0.9\textwidth]{figures/ch2/transposition_table_example.pdf} 
-        \caption[A complication arising from the use of a transposition table.]{A complication arising from the use of a transposition table. Many MCTS algorithms use the ratio $\frac{N(s')}{N(s,a)}$ as an empirical estimate of transition probability $p(s'|s,a)$. Left: an example MDP with horizon $H=1$ where using this ratio to estimate transition probabilities gives the incorrect ratios. Right: the corresponding \textit{acyclic graph} created by running \thtspp\ewe on the MDP with \graphmode\ewe set to True and sampling actions uniformly. After 12 trials, the resulting visit counts at the leaf nodes are $N(s^1)=3,N(s^2)=6,N(s^3)=3$. The ratio of visit counts $\frac{N(s^1)}{N(s^0,a^1)}=\frac{1}{2}$ and $\frac{N(s^2)}{N(s^0,a^1)}=1$, which do not form an (empirical) probability distribution, and even if normalised do not give the correct uniform distribution over successor states. To fix this issue, the \textit{conditional visit counts} $N(s'|s,a)$ for $s'\in\suc(s,a)$ are needed instead, that keep track of the number of times $s'$ was sampled from the chance node $(s,a)$. In this example, the conditional visit counts at node $(s^0,a^0)$ would be $N(s^1|s^0,a^0)=3$ and $N(s^2|s^0,a^0)=3$, and give the correct ratios of $\frac{N(s^1|s^0,a^0)}{N(s^0,a^0)} = \frac{N(s^2|s^0,a^0)}{N(s^0,a^0)} = \frac{1}{2}$. That is, the ratios $\frac{N(s'|s,a)}{N(s,a)}$ correctly maintain an empirical estimate for the probability $p(s'|s,a)$, even when using a transposition table.}
+        \caption[A complication arising from the use of a transposition table.]{A complication arising from the use of a transposition table. Many MCTS algorithms use the ratio $\frac{N(s')}{N(s,a)}$ as an empirical estimate of transition probability $p(s'|s,a)$. Left: an example MDP with horizon $H=1$ where using this ratio to estimate transition probabilities gives the incorrect ratios. Right: the corresponding \textit{acyclic graph} created by running $\thtspp$ on the MDP with $\graphmode$ set to True and sampling actions uniformly. After 12 trials, the resulting visit counts at the leaf nodes are $N(s^1)=3,N(s^2)=6,N(s^3)=3$. The ratio of visit counts $\frac{N(s^1)}{N(s^0,a^1)}=\frac{1}{2}$ and $\frac{N(s^2)}{N(s^0,a^1)}=1$, which do not form an (empirical) probability distribution, and even if normalised do not give the correct uniform distribution over successor states. To fix this issue, the \textit{conditional visit counts} $N(s'|s,a)$ for $s'\in\suc(s,a)$ are needed instead, that keep track of the number of times $s'$ was sampled from the chance node $(s,a)$. In this example, the conditional visit counts at node $(s^0,a^0)$ would be $N(s^1|s^0,a^0)=3$ and $N(s^2|s^0,a^0)=3$, and give the correct ratios of $\frac{N(s^1|s^0,a^0)}{N(s^0,a^0)} = \frac{N(s^2|s^0,a^0)}{N(s^0,a^0)} = \frac{1}{2}$. That is, the ratios $\frac{N(s'|s,a)}{N(s,a)}$ correctly maintain an empirical estimate for the probability $p(s'|s,a)$, even when using a transposition table.}
         \label{fig:2:transposition_table_example}
     \end{figure}
 
-    If the unique state assumption (Assumption \ref{ass:2:unique_state_assumption}) is temporarily set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the \graphmode\ewe flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
+    If the unique state assumption (Assumption \ref{ass:2:unique_state_assumption}) is temporarily set aside, environments may contain \textit{transpositions}, where the same state can be reached from multiple different paths. When the $\graphmode$ flag is set, a \textit{transposition table} is used to re-use the $\node(s)$ when the state $s$ is reached again via another path \cite{transposition,ucd,graph_search}.
 
     Many MCTS algorithms, whether explicitly or implicitly, use the ratio of visit counts, $\frac{N(s')}{N(s,a)}$, as an empirical estimate of the transition distribution $p(s'|s,a)$. Figure \ref{fig:2:transposition_table_example} illustrates the issue that arises with this when using a transposition table and how it can be resolved, following an argument similar to that of \citet{graph_search}.
 
-    To run an algorithm in the \thtspp\ewe schema, the following \textit{modules} and \textit{parameters} need to be specified. Algorithms specify the operation of each module:
+    To run an algorithm in the $\thtspp$ schema, the following \textit{modules} and \textit{parameters} need to be specified. Algorithms specify the operation of each module:
     \begin{description}
         \item[Value Estimates:]
             What data will be stored at each decision and chance node. That is, $\dnodedata{s}$ and $\cnodedata{s,a}$ need to be defined. It is assumed that $\dnodedata{s}$ and $\cnodedata{s,a}$ always contain the visit counts $N(s)$, and $N(s,a)$ respectively;
@@ -794,9 +794,9 @@
         \item[Context Sampler:]
             A function $\samplecontext$ which creates a context key-value store, and samples any initial values to be stored in the context;
         \item[Action Selection (Search Policy):]
-            A function $\selectaction$ which selects an action at a decision node. In this thesis, this will be specified as a function $\pisearch$, and \selectaction\ewe will return an action sampled from the search policy: $a\sim\pisearch(s)$;
+            A function $\selectaction$ which selects an action at a decision node. In this thesis, this will be specified as a function $\pisearch$, and $\selectaction$ will return an action sampled from the search policy: $a\sim\pisearch(s)$;
         \item[(Optional) Outcome Sampler:]
-            A function \sampleoutcome\ewe that samples outcomes from chance nodes. By default, this will sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$ and this default will always be used in this thesis\footnote{One may want to use a different \sampleoutcome\ewe function to implement \textit{double progressive widening} \cite{progressive_widen} for example.};
+            A function $\sampleoutcome$ that samples outcomes from chance nodes. By default, this will sample a state from the transition distribution of the MDP: $s'\sim p(\cdot|s,a)$ and this default will always be used in this thesis\footnote{One may want to use a different $\sampleoutcome$ function to implement \textit{double progressive widening} \cite{progressive_widen} for example.};
         \item[Backup functions:]
             Two functions $\backupv$ and $\backupq$ which specify how to update $\dnodedata{s}$ and $\cnodedata{s,a}$ respectively.
     \end{description}
@@ -806,14 +806,14 @@
         \item[(Optional) Heuristic functions:]
             The functions $\Vinit$, $\Qinit$ and $\piinit$ are the heuristic functions. $\Vinit$ is used to initialise value estimates in $\dnodedata{s}$. $\Qinit$ and $\piinit$ can be used by the search policy to incorporate prior knowledge about unexplored actions. If not specified then by default $\Vinit$ and $\Qinit$ are set to zero, and $\piinit$ is set to a uniform distribution;
         \item[Single Node Expansion:]
-            A boolean flag, \mctsmode, specifying whether \thtspp\ewe should only expand one decision node per trial;
+            A boolean flag, \mctsmode, specifying whether $\thtspp$ should only expand one decision node per trial;
         \item[Transposition Table:]
-            A boolean flag, \graphmode, specifying whether \thtspp\ewe should use a transposition table to re-use nodes when the same state is reached via another path;
+            A boolean flag, \graphmode, specifying whether $\thtspp$ should use a transposition table to re-use nodes when the same state is reached via another path;
         \item[Planning horizon:]
             A (problem dependent) planning horizon for the tree search $H_{\thtspp}$, which is no longer than the horizon of the MDP, $H_{\thtspp}\leq H$\footnote{In this thesis, MDPs have a finite horizon $H$, so $H_{\thtspp}$ is somewhat redundant. However, it is useful in practice for environments with a long or infinite horizon, where a finite planning horizon is still required for the tree search.}.
     \end{description}
     
-    Given all of the modules and parameters are specified, the full operation of a trial in \thtspp\ewe is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
+    Given all of the modules and parameters are specified, the full operation of a trial in $\thtspp$ is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
     \begin{description}
         \item[Sample Context:] 
             \sloppypar{At the start of the trial, a context is sampled using the $\samplecontext$ function, which is passed to all subsequent steps of the trial. The context is a dictionary that can be used to story any relevant per trial information.} \todo{REWROTE THIS DESCRIPTION, PROOF WITH CLAUDE}
@@ -912,9 +912,9 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Upper Confidence Bound Applied to Trees (UCT)}
 \label{sec:2-4-2-uct}
 
-    Upper Confidence Bound Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision-making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the \thtspp\ewe schema given in Section \ref{sec:2-4-2-thts}.
+    Upper Confidence Bound Applied to Trees (UCT) \cite{uct,uct_long} is a commonly used tree search algorithm, which is based on the Upper Confidence Bound (UCB) algorithm covered in Section \ref{sec:2-1-mab}. UCT is a good example of a common paradigm in tree search algorithms for sequential decision-making, where each node in the tree is tasked with making a single decision in the sequence, and so adapts methods from the MAB literature. More specifically, UCT can be viewed as running UCB on a non-stationary MAB at every decision node, where it is non-stationary because the rewards obtained depend on the decisions that children make. The remainder of this subsection will outline how UCT can be defined using the $\thtspp$ schema given in Section \ref{sec:2-4-2-thts}.
 
-    The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. The parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy, which is useful if the Q-values can vary in magnitude throughout the search tree. Typically \mctsmode\ewe is set to True for UCT, and this section assumes that this is the case.
+    The variables used in UCT consist of sample average value estimates $\Vuct(s)$ and $\Quct(s,a)$, visit counts $N(s)$ and $N(s,a)$. The parameters consist of: $\buct$, a bias parameter which controls the amount of exploration UCT will perform and $\normalisedq$, a flag indicating whether the Q-value estimates should be normalised when used in the search policy, which is useful if the Q-values can vary in magnitude throughout the search tree. Typically $\mctsmode$ is set to True for UCT, and this section assumes that this is the case.
 
     The search policy that UCT follows is given by:
     \begin{align}
@@ -1011,7 +1011,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-4-ments}
 
-    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, \mctsmode\ewe is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, $\mctsmode$ is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
     \begin{align}
         \piments(a|s) &= 
             (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
@@ -1241,7 +1241,7 @@ At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value fu
 \begin{defn}
     \label{def:2:utility_fn}
     \label{def:2:scalarisation_fn}
-    A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\mathbb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
+    A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\bb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
 \end{defn}
 
 \mccorrect{A common choice of utility} is the \textit{linear utility function}, where the scalar value takes the form of a dot product:
@@ -1308,12 +1308,12 @@ When computing solution sets, it is often useful to first compute the multi-obje
     The \textnormal{(multi-objective) value set} with respect to a set of policies $\Pi'\subseteq\Pi$ is defined as $\valset(\Pi') = \{\bff{V}^{\pi}(s_0;0) | \pi \in \Pi'\}$.
 \end{defn}
 
-Given a value set, the \cprune\ewe operation removes any vectors that are dominated or redundant. That is, for every vector that remains after the pruning operation, there is some weight for which it \textit{uniquely} gives the maximal linear utility. Given a set of vectors $\bfcl{V}$, the \cprune\ewe operation is defined as:
+Given a value set, the $\cprune$ operation removes any vectors that are dominated or redundant. That is, for every vector that remains after the pruning operation, there is some weight for which it \textit{uniquely} gives the maximal linear utility. Given a set of vectors $\bfcl{V}$, the $\cprune$ operation is defined as:
 \begin{align}
     \cprune(\bfcl{V}) = \{\bff{v}\in\bfcl{V} | \exists \bff{w}\in\Delta^D. \forall \bff{v}'\in\bfcl{V}-\{\bff{v}\}. \bff{w}^\top \bff{v} > \bff{w}^\top \bff{v}' \}. \label{eq:2:cprune_def}
 \end{align}
 
-As illustrated in Figure \ref{fig:2:convex_hull_geometry}, the \cprune\ewe operation computes the \textit{extreme points} of a \textit{(partial) geometric convex hull}. As such, for any set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(\textnormal{MCCS}(\Pi'))$, and \cprune\ewe can be implemented using \textit{linear programming} \cite{cccs}.
+As illustrated in Figure \ref{fig:2:convex_hull_geometry}, the $\cprune$ operation computes the \textit{extreme points} of a \textit{(partial) geometric convex hull}. As such, for any set of policies $\Pi'$ the $\cprune$ operation satisfies $\cprune(\valset(\Pi')) = \valset(\textnormal{MCCS}(\Pi'))$, and $\cprune$ can be implemented using \textit{linear programming} \cite{cccs}.
 
 % The geometry of convex coverage sets is now considered, to see how something like $\valset(\textnormal{CCS}_{\min}(\Pi))$ can be computed. Firstly, any multi-objective values that obtain the same linear utility will lie on a hyperplane, whose normal is the weight vector used in the linear utility function (see (a) in Figure \ref{fig:2:convex_hull_geometry}). As a result, the values of the convex hull, $\valset(\textnormal{CH}(\Pi))$ lie on a \textit{geometric (partial) convex hull} (see (b) in Figure \ref{fig:2:convex_hull_geometry}). Moreover, any points in $\valset(\textnormal{CH}(\Pi))$ that lie on the edge of the geometric convex hull are redundant, as the values corresponding to the neighbouring vertices of the geometric convex hull will always achieve the same or greater utility (see (c) in Figure \ref{fig:2:convex_hull_geometry}).
 
@@ -1432,13 +1432,15 @@ randomly drawn weight vector.
         \label{fig:2:vectorset_arithmetic}
     \end{figure}
 
-    Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,\ldots,0)\in\bb{R}^D$. The CHVI backups are then:
+    \begin{sloppypar}
+        Now to define the multi-objective Bellman backups used in CHVI, let $\Vchvi^0(s;t) = \{ \bff{0} \}$, where $\bff{0}=(0,\ldots,0)\in\bb{R}^D$. The CHVI backups are then:
+    \end{sloppypar}
     \begin{align}
         \Vchvi^{k+1}(s;t) &= \cprune \left( \bigcup_{a\in\cl{A}} \Qchvi^{k+1}(s,a;t) \right), \label{eq:2:chvi_v_backup} \\
         \Qchvi^{k+1}(s,a;t) &= \bb{E}_{s'\sim p(\cdot|s,a)} [\bff{R}(s,a) + \Vchvi^k(s';t+1)]. \label{eq:2:chvi_q_backup}
     \end{align}
     
-    This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the \cprune\ewe operation over the set of achievable values from the current state $s$.
+    This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the $\cprune$ operation over the set of achievable values from the current state $s$.
     
     Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
     \begin{mccorrection}
@@ -1485,7 +1487,7 @@ randomly drawn weight vector.
         \item Scalarising the rewards by $\bff{w}$ reduces the MOMDP to an MDP, so a stationary deterministic optimal policy exists for each weight vector. When a non-linear utility is used, the optimal policy may be non-stationary, depending on the current timestep or the reward accrued so far \cite{white_momdp}. MCTS is able to represent such policies, so this is not in itself a restriction here.
         \item The scalarised and expected scalarised returns criteria coincide (Section \ref{sec:1-2-scope}), so the algorithms in this thesis can be applied under either criterion.
     \end{itemize}
-\end{mccorrection}
+\end{mccorrection} % overfull vbox warning, but seems to render fine and no margin problems
 
 
 

@@ -429,6 +429,14 @@
 
 \usepackage{framed}
 \OuterFrameSep=-9pt
+
+% framed's environments collect their contents into boxes and \vsplit them
+% across pages, which discards footnote inserts. The footnote package's
+% \makesavenoteenv saves any footnotes raised inside shaded and emits them
+% once the environment ends, so \footnote works inside mccorrection.
+\usepackage{footnote}
+\makesavenoteenv{shaded}
+
 \newenvironment{mccorrection}
 {\ifcorrections\if@nobreak\m@csectiontrue\fi\begin{shaded}\ifm@csection\noindent\ignorespaces\fi\fi}
 {\ifcorrections\end{shaded}\m@csectionfalse\ifx\@captype\@undefined\@nobreakfalse\fi\fi}

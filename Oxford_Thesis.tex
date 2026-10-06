@@ -153,6 +153,19 @@
 \declaretheorem[name=Remark, numberwithin=section]{remark}
 \declaretheorem[name=Assumption, numberwithin=section]{assumption}
 
+% thmtools' numberwithin= redefines \the<counter> but not hyperref's
+% \theH<counter>, so PDF anchors collide each time a counter resets at a new
+% section, and \ref links jump to the first occurrence. Pointing
+% \theH<counter> at the printed number makes the anchors unique.
+\renewcommand{\theHtheorem}{\thetheorem}
+\renewcommand{\theHdefn}{\thedefn}
+\renewcommand{\theHprop}{\theprop}
+\renewcommand{\theHcorollary}{\thecorollary}
+\renewcommand{\theHlemma}{\thelemma}
+\renewcommand{\theHcounterexample}{\thecounterexample}
+\renewcommand{\theHremark}{\theremark}
+\renewcommand{\theHassumption}{\theassumption}
+
 % % Maffs theorems envs
 % \theoremstyle{plain}
 % \newtheorem{theorem}{Theorem}[section]

@@ -359,7 +359,7 @@
 
     For any new decision nodes $s$ added to the tree, the $\initv$ function initialises the visit count to $N(s)=0$ and the value estimate to $\Vbts(s)=\Vinit(s)$. For any new chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count to $N(s,a)=0$ and the Q-value estimate to $\Qbts(s,a)=\Qinit(s,a)$.
     
-    BTS also allows the value estimates to be biased by $\Vinit$ with a weighting of $\Nvbts$ pseudo-visits. When \mctsmode\ewe is True, $\Nvbts$ is typically set to one, weighting the heuristic value estimate as a single pseudo-trial. When \mctsmode\ewe is False, $\Nvbts$ is set to zero, as the trajectory already captures the rollout information.
+    BTS also allows the value estimates to be biased by $\Vinit$ with a weighting of $\Nvbts$ pseudo-visits. When $\mctsmode$ is True, $\Nvbts$ is typically set to one, weighting the heuristic value estimate as a single pseudo-trial. When $\mctsmode$ is False, $\Nvbts$ is set to zero, as the trajectory already captures the rollout information.
     
     Let $\tau_{:h}=(s_0,a_0,r_0,\ldots,s_{h-1},a_{h-1},r_{h-1},s_h)\sim\pibts$ be the trajectory sampled during the selection phase. The $\backupv$ and $\backupq$ functions then update the value estimates for $t=h-1,\ldots,0$:
     \begin{align}
@@ -641,7 +641,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=0.9\textwidth]{figures/ch2/alias_table.pdf} 
-        \caption[Example of building and sampling from an alias table.]{Example of building and sampling from an alias table, on a distribution with four categories. Left: shows how the probability mass is split into the four entries of the table. Right: shows how two random variables can be used to sample from the table in $O(1)$ time, where $i$ is used to index into the table, and $u$ is used to compare with \thresh\ewe and decide which of the two arrows from the entry to follow.}
+        \caption[Example of building and sampling from an alias table.]{Example of building and sampling from an alias table, on a distribution with four categories. Left: shows how the probability mass is split into the four entries of the table. Right: shows how two random variables can be used to sample from the table in $O(1)$ time, where $i$ is used to index into the table, and $u$ is used to compare with $\thresh$ and decide which of the two arrows from the entry to follow.}
         \label{fig:2:alias_table_eg} 
     \end{figure}
 
@@ -1030,7 +1030,7 @@
     \begin{restatable}{theorem}{thrmMENTSbadmdp} \label{thrm:ments_bad_mdp}
         For any value of $\alphaments$, there exists an MDP such that either the maximum entropy objective is misaligned, or MENTS requires an exponential number of trials to recommend the optimal policy.
 
-        More precisely, after $n$ trials of MENTS, $\Pr(\psiments\neq \pi^*) > \frac{1}{2}$ whenever $n\leq 2^{D-1}$. Moreover, either $\mathbb{E}\left[\sreg(s_0,\psiments)\right]\not\rightarrow 0$, or there exist constants $c,k>0$ such that $\mathbb{E}\left[\sreg(s_0,\psiments)\right] \geq c\left(1 - \frac{n}{k^{|\cl{S}|}}\right)$.
+        More precisely, after $n$ trials of MENTS, $\Pr(\psiments\neq \pi^*) > \frac{1}{2}$ whenever $n\leq 2^{D-1}$. Moreover, either $\bb{E}\left[\sreg(s_0,\psiments)\right]\not\rightarrow 0$, or there exist constants $c,k>0$ such that $\bb{E}\left[\sreg(s_0,\psiments)\right] \geq c\left(1 - \frac{n}{k^{|\cl{S}|}}\right)$.
     \end{restatable}
 
     Results on the Entropy Trap problem are given in Figure \ref{fig:entropy_trap_results} for $(D,E)=(10,10)$ and $(D,E)=(15,25)$. In the $(D,E)=(15,25)$ case, $500{,}000$ trials were run per parameter setting. The misalignment threshold is bounded above by $\frac{1}{25\log(2)}\approx 0.06$, which is prohibitively small for effective exploration. Below this threshold, no more than 1000 of the $500{,}000$ trials reached the third state of the D-chain, and typically fewer than 100. While BTS and MaxUCT are able to produce the optimal policy given a sufficiently large temperature/bias parameter, increasing $D$ further would eventually prevent them from doing so within a reasonable number of trials. DENTS, by contrast, is able to recommend the optimal policy across a wider range of settings since its Bellman value estimates are unaffected by the entropy chain. For BTS and DENTS, each of $\alphabts$, $\alphadents$ and $\betadents$ is set to a constant value. While this leads to the majority of trials in DENTS entering the entropy chain, this can be resolved by using a function that tends to zero for $\betadents$.
@@ -1774,7 +1774,7 @@
     biases the policy towards selecting it in subsequent 
     timesteps.
 
-    To validate the strength of the \thtspp\ewe PUCT agent, 
+    To validate the strength of the $\thtspp$ PUCT agent, 
     it was played directly against KataGo \cite{katago} for 100 games with 
     a budget of 1600 trials per move, winning 61--39 in 9x9 
     Go and losing 35--65 in 19x19 Go, suggesting it is strong 
@@ -2678,7 +2678,7 @@
                 &= Q_{\sft}^*(\schain{E}, \aR).
         \end{align}
 
-        Hence the maximum entropy objective is misaligned: $\mathbb{E}\left[\sreg(\schain{1},\psiments)\right] \rightarrow 1 > 0$. % under full \hbox error, words bit spread out, but no margin issues
+        Hence the maximum entropy objective is misaligned: $\bb{E}\left[\sreg(\schain{1},\psiments)\right] \rightarrow 1 > 0$. % under full \hbox error, words bit spread out, but no margin issues
 
         \paragraph{Case 2: $\alphaments\leq\frac{1}{\log(2)D}$} $ $ 
 
@@ -2734,14 +2734,14 @@
         
         For the second part of the result, a simple regret of at least $\frac{D-1}{D}$ is incurred with probability at least $\Pr(Z(n))$. Hence,  the expected simple regret can be bounded below as follows:
         \begin{align}
-            \mathbb{E}\left[\sreg(\schain{1},\psiments)\right] 
+            \bb{E}\left[\sreg(\schain{1},\psiments)\right] 
                 & \geq \left(1-\frac{D-1}{D}\right) \Pr(Z(n)) \\
                 & \geq \frac{1}{D} \left( 1-n2^{-D} \right).
         \end{align}
         
         Then $|\cl{S}|=4D+3 \leq 5D$ for $D\geq 3$ and so substituting $D\geq \frac{|\cl{S}|}{5}$ gives the result with $c=\frac{1}{D}$ and $k=2^{1/5}$:
         \begin{align}
-            \mathbb{E}\left[\sreg(\schain{1},\psiments)\right]
+            \bb{E}\left[\sreg(\schain{1},\psiments)\right]
                 &\geq \frac{1}{D} \left( 1-n2^{-D} \right) \\
                 &\geq \frac{1}{D} \left( 1-\frac{n}{\left(2^{\frac{1}{5}}\right)^{|\cl{S}|}} \right).
         \end{align}
@@ -2804,10 +2804,10 @@
         
     %     Consider that the best simple regret an agent can achieve after selecting action 1 from the starting state is $1/10$. Let $M=\log(2C)/k$, so that $C\exp(-kM)=1/2$. Then, for all $n>M$ we have $\Pr(\psi^n_{\text{MENTS}}(1)=1)> 1/2$, and hence:
     %     \begin{align}
-    %         \bb{E}\sreg(1,\mpsiments{n}) &> \frac{1}{10} \cdot \Pr(\psi^n_{\text{MENTS}}(1)=1) \\
+    %         \bb{E}\left[ \sreg(1,\mpsiments{n}) \right] &> \frac{1}{10} \cdot \Pr(\psi^n_{\text{MENTS}}(1)=1) \\
     %             &> \frac{1}{20}.
     %     \end{align}
-    %     Thus $\bb{E}\sreg(1,\mpsidents{n})\not\rightarrow 0$.
+    %     Thus $\bb{E}\left[ \sreg(1,\mpsidents{n}) \right] \not\rightarrow 0$.
     % \end{proof}
 
 

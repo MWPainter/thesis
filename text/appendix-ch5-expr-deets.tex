@@ -21,9 +21,8 @@
 
 
 \chapter{\label{app:expr-deets-ch5}Additional Experimental Details for Chapters 5 and 6}
-    \todo{Writing offline, claude proof THIS ENTIRE appendix with additional writings}
 
-    This appendix gives additional details on the \mccorrect{algorithm parameters} used for the experiments in \ref{sec:5-5-results} and \ref{sec:6-4-results} and the optimisation process used to select them. Organised as follows:
+    This appendix gives additional details on the \mccorrect{algorithm parameters} used for the experiments in Sections \ref{sec:5-5-results} and \ref{sec:6-4-results}, and the optimisation process used to select them. The appendix is organised as follows:
     \begin{itemize}
         \item Section \ref{appsec:5:hyperparams} gives a list of shared and algorithm specific \mccorrect{parameters} used for the experiments;
         \item Section \ref{appsec:5:hypersearch} gives details on the \mccorrect{parameter} optimisation and the final \mccorrect{algorithm parameters} that were selected.
@@ -35,12 +34,12 @@
 \label{appsec:5:hyperparams}
 \end{mccorrection}
 
-    In the experiments in Sections \ref{sec:5-5-results} and \ref{sec:6-4-results}, when an algorithm used temperature schedules $\alpha(x)$ and entropy weighting functions $\beta(x)$ then the same parametric form was used from Equations \eqref{eq:app:parameterised_alpha} and \eqref{eq:app:parameterised_beta}, with $\alpha_0$, $\alphadecay$, $\beta_c$ nad $\betathresh$, for compatibility with the parameter optimisation performed in Section \ref{appsec:5:hypersearch}.
+    In the experiments in Sections \ref{sec:5-5-results} and \ref{sec:6-4-results}, when an algorithm used a temperature schedule $\alpha(x)$ or an entropy weighting function $\beta(x)$, the parametric forms of Equations \eqref{eq:app:parameterised_alpha} and \eqref{eq:app:parameterised_beta} were used, with parameters $\alpha_0$, $\alphadecay$, $\beta_c$ and $\betathresh$. This keeps all algorithms compatible with the parameter optimisation performed in Section \ref{appsec:5:hypersearch}.
 
     The following parameters were used by all algorithms considered in Sections \ref{sec:5-5-results} and \ref{sec:6-4-results}:
     \begin{itemize}
-        \item $\mctsmode$ - a \thtspp\ewe parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
-        \item $\graphmode$ - a \thtspp\ewe parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
+        \item $\mctsmode$ - a $\thtspp$ parameter that specifies whether the selection phase should end when a new decision node is added to the tree;
+        \item $\graphmode$ - a $\thtspp$ parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
         \item $\initv$ - the heuristic value function;
         \item $\initq$ - the heuristic Q-value function;
         \item $\bff{r}_{\text{hv}}$ - the reference point $\bff{r}$ for computing the hypervolume metric (Definition \ref{def:2:hypervolume}).
@@ -53,7 +52,7 @@
         \item $\deltaunsolved$ - the confidence parameter used when computing $\unsolved$ values from confidence bounds; smaller values give more pessimistic estimates.
     \end{itemize}
 
-    The following parameters were used by both SM-BTS and SM-DENTS from Section \ref{sec:6-3-algorithms}, used in various simplex map operations that are outlined in Section \ref{sec:6-2-1-interface}:
+    The following parameters were used by both SM-BTS and SM-DENTS from Section \ref{sec:6-3-algorithms}, and control the simplex map operations outlined in Section \ref{sec:6-2-1-interface}:
     \begin{itemize}
         \item $\pushradius$ - the radius used in the $\push$ operation;
         \item $\splitminradius$ - if a simplex has a smaller radius than $\splitminradius$, then it is never further subdivided; % under full \hbox warning, but no margin issues
@@ -61,7 +60,7 @@
         \item $\splitminvis$ - the number of times a simplex map needs to be ``visited'', or updated, before it may be further subdivided.
     \end{itemize}
 
-    The following parameters are used by specific algorithms:
+    The following parameters were each used by a single algorithm:
     \begin{itemize}
         \item $b_{\text{CZT}}$ - the bias term used in CZT;
         \item $(\Mmin)_{\text{CZT}}$ - the minimum number of visits to a state-action pair before it is considered for selection in CZT;
@@ -83,7 +82,7 @@
         \item $\alpha_{\text{SM-DENTS},\text{decay}}$ - the decay rate for SM-DENTS;
         \item $\beta_{\text{SM-DENTS},c}$ - the constant term for SM-DENTS;
         \item $\beta_{\text{SM-DENTS},\text{thresh}}$ - the threshold for SM-DENTS;
-        \item $\epsilon_{\text{SM-DENTS}}$ - the exploration parameter for SM-DENTS;
+        \item $\epsilon_{\text{SM-DENTS}}$ - the exploration parameter for SM-DENTS.
     \end{itemize}
 
 
@@ -95,48 +94,38 @@
 \label{appsec:5:hypersearch}
 \end{mccorrection}
 
-    \todo{work out what of this should be a mccorrection env and not?}
-
-    When an upper or lower bound was necessary, the trivial upper and lower bounds, $\bff{V}^{\max}$ and $\bff{V}^{\min}$ were used, computed per objective by considering if the maximum and minimum reward were received on every timestep:
+    When an upper or lower bound was necessary, the trivial upper and lower bounds, $\bff{V}^{\max}$ and $\bff{V}^{\min}$, were used. These are computed by assuming that the maximum or minimum reward for each objective was received at each timestep:
     \begin{align}
-        V^{\max}_i &= H \cdot \max_{s\in\cl{S},a\in\cl{A}} R(s,a)_i \\
-        V^{\min}_i &= H \cdot \min_{s\in\cl{S},a\in\cl{A}} R(s,a)_i \\
+        V^{\max}_i &= H \cdot \max_{s\in\cl{S},a\in\cl{A}} R(s,a)_i, \\
+        V^{\min}_i &= H \cdot \min_{s\in\cl{S},a\in\cl{A}} R(s,a)_i.
     \end{align}
 
-    In particular, when a hypervolume was computed, the lower bound was used as a reference point and similarly the upper bound was used as a utopian point for the Chebyshev utility:
+    In particular, when a hypervolume was computed, the lower bound was used as the reference point, and the upper bound was used as the utopian point for the Chebyshev utility:
     \begin{align}
-        \bff{r}_{\text{hv}} &\leftarrow \bff{V}^{\min} \\
-        \rref &\leftarrow \bff{V}^{\min} \\
-        \ruto &\leftarrow \bff{V}^{\max}
+        \bff{r}_{\text{hv}} &\leftarrow \bff{V}^{\min}, \\
+        \rref &\leftarrow \bff{V}^{\min}, \\
+        \ruto &\leftarrow \bff{V}^{\max}.
     \end{align}
 
-    Similar to Appendix \ref{appsec:4:hypersearch}, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. So for each environment, the heuristic value functions are set to $\Vinitbff(s) \leftarrow \bff{V}^{\max}$ and $\Qinitbff(s,a) \leftarrow \bff{V}^{\max}$.
+    As in Appendix \ref{appsec:4:hypersearch}, the heuristic value functions were set to a trivial upper bound on the values that could be achieved in each environment. That is, for each environment, the heuristic value functions were set to $\Vinitbff(s) \leftarrow \bff{V}^{\max}$ and $\Qinitbff(s,a) \leftarrow \bff{V}^{\max}$.
 
-    The $\thtspp$ parameters shared between all algorithms were set to: \todo{update list below to be correct, believe it's just deleting the bottom three items}
+    The $\thtspp$ parameters shared by all algorithms were set to:
     \begin{itemize}
         \item $\mctsmode=\text{False}$ - the selection phase continues until the planning horizon or a terminal state is reached;
-        \item $\graphmode=\text{True}$ - transposition tables are used to store and re-use decision nodes when they are reached again via another path;
-        \item $\normalisedq=\text{True}$ - Q-values are linearly normalised before being used in the search policy;
-        \item $\Nv=0$ - the number of pseudo-visits assigned to $\initv$ in backups;
-        \item $\Nq=1$ - the number of pseudo-visits assigned to $\initq$  to the Q-value estimate.
+        \item $\graphmode=\text{True}$ - transposition tables are used to store and re-use decision nodes when they are reached again via another path.
     \end{itemize}
 
 
     The parameters related to the optimisations of Section \ref{sec:5-3-6-optimisations}, used by all CHMCTS algorithms, were set to:
     \begin{itemize}
-        \item \todo{STATE WHAT THEY WERE SET TO}
-        \item $K_{\max}$ 
-        \item $\unsolvedtol$ 
-        \item $\deltaunsolved$ 
+        \item $K_{\max} = 15$, 
+        \item $\unsolvedtol = 0.1$, 
+        \item $\deltaunsolved = 0.05$.
     \end{itemize}
 
-\todo{souble check the values using commented out config below}
-%         {XPR_PARAM_ID_CONVEX_HULL_MAX_SIZE,             15},
-%         {XPR_PARAM_ID_USE_SOLVED_LABELLING,             true},
-%         {XPR_PARAM_ID_SOLVED_LABELLING_FAIL_CONFIDENCE, 0.05},
-%         {XPR_PARAM_ID_SOLVED_LABELLING_TOLERANCE,       0.1},
+    The value of $K_{\max}$ was chosen by hand to be small enough to avoid the rapid growth in the cost of convex hull operations discussed in Section \ref{sec:5-3-6-optimisations}, while still retaining enough points for the value sets to be a useful approximation.
 
-    The value of $K_{\max}$ was chosen by hand, as \bd{a value that avoided computational blow up discussed in XXX}. The values of $\unsolvedtol$ and $\deltaunsolved$ \bd{were also hand selected, as values that gives a reasonable level of certainty that a node is marked as solved has computed optimal policy, but also that the confidence bounds for the missing mass bound from Section XXX falls below the tolerance (in isolation from the other part of the confidence bound) within the first 100 trials.} \todo{Add a back of envelope calculation for the missing mass value falling below the tolerance at say 50 trials.}
+    The values of $\unsolvedtol$ and $\deltaunsolved$ were also chosen by hand. Small values of both parameters give more confidence that a node marked as solved has computed an optimal policy. However, the confidence terms in Equation \eqref{eq:5:solved_value} shrink at a rate of $O(1/\sqrt{N(s,a)})$, so values that are too small prevent any node from being labelled as solved within the compute budget. The values chosen gave a reasonable trade-off. For example, the missing mass confidence term alone falls below the tolerance, $\sqrt{\log(2/\deltaunsolved)/N(s,a)} \leq \unsolvedtol$, once $N(s,a) \geq \log(40)/0.01 \approx 369$, so solved labelling can only take effect in parts of the tree that have been visited at least a few hundred times.
 
     The parameters for simplex maps, used by SM-BTS and SM-DENTS in Chapter \ref{ch:6-simplexmaps}, were set to the following:
     \begin{itemize}
@@ -146,18 +135,13 @@
         \item $\splitminvis=10$.
     \end{itemize}
 
-\todo{souble check the values using commented out config below}
-%         {XPR_PARAM_ID_SM_PUSH_RADIUS,                                       10}, 
-%         {XPR_PARAM_ID_SM_MAX_NEIGHBOURS_TO_PUSH_TO,                         -1},
-%         {XPR_PARAM_ID_SM_MIN_SIMPLEX_RADIUS,                                0.01},
-%         {XPR_PARAM_ID_SM_SIMPLEX_SPLIT_COUNTER_THRESHOLD,                   10},
-%         {XPR_PARAM_ID_SM_USE_APPROX_NEAREST_VERTEX,                         false},
-%         {XPR_PARAM_ID_SM_EVENTUALLY_CONFORMING_SIMPLEX_MAP,                 true},
-%         {XPR_PARAM_ID_SM_ALWAYS_ALLOW_NON_CONFORMING_SIMPLEX_TO_SPLIT,      true},
+    These values were also chosen by hand, as a reasonable trade-off between allowing nearby weight vectors to share value estimates and avoiding the triangulation becoming too fine-grained too quickly. As they already gave reasonable performance in preliminary runs, they were not included in the parameter optimisation below, which kept the size of the search space down.
 
-    \bd{These values were chosen by hand as values that seem like a reasonable trade off between allowing nodes to share values and avoid the triangulation from becoming too fine-grained too fast. These parameters could have been optimised, and are likely not the optimal values, but gave reasonable performance so I didn't bother.}
+    % FUTURE_MIKE_HEADER
+    %
+    % At one point I think I was including it in the hp opt, but I believe that they got over-tuned to the small environments that we were tuning them on. (Allowing fine-grained triangulation makes little/no different in DST(10,0), but makes a big difference in say DST(50,0))
 
-    The remaining \mccorrect{algorithm parameters} were optimised using the BayesOpt library similarly to Appendix \ref{appsec:4:hypersearch}. Table \ref{table:mo_hps_space} gives the search space for each parameter, and if the parameter was sampled using a linear or logarithmic scale. 
+    As in Appendix \ref{appsec:4:hypersearch}, the remaining \mccorrect{algorithm parameters} were optimised using the BayesOpt library. Table \ref{table:mo_hps_space} gives the search space for each parameter, and whether the parameter was sampled on a linear or logarithmic scale.
 
     % FUTURE_MIKE_HEADER
     %
@@ -193,10 +177,10 @@
             $\beta_{\text{SM-DENTS},\text{thresh}}$ & $10^{-5}$     & $10^2$    & Logarithmic \\
             $\epsilon_{\text{SM-DENTS}}$            & $10^{3}$      & $10^{12}$ & Logarithmic
         \end{tabular}
-        \caption[The \mccorrect{parameter} search space used MoGymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}).]{The \mccorrect{parameter} search space used MoGymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}). Section \ref{appsec:5:hypersearch} lists each of the parameters optimised and how they are used in their respective algorithms. \label{table:mo_hps_space}}
+        \caption[The \mccorrect{parameter} search space used in the MO-Gymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}).]{The \mccorrect{parameter} search space used in the MO-Gymnasium and Deep Sea Treasure experiments (Sections \ref{sec:5-5-3-results_and_discussion} and \ref{sec:6-4-1-results_and_discussion}). Section \ref{appsec:5:hyperparams} lists each of the parameters optimised and how they are used in their respective algorithms. \label{table:mo_hps_space}}
     \end{table}
     
-    Table \ref{table:hyperparams_mogym} provides the selected parameters for the MoGymnasium environments \todo{ref sections and/or figures}, and Table \ref{table:hyperparams_dst} provides the selected parameters for the Deep Sea Treasure environments \todo{ref sections and/or figures}. In the scaling experiments from Sections \ref{sec:5-5-4-scalability} and \ref{sec:6-4-2-scalability}, each algorithm still used the same parameters selected in Table \ref{table:hyperparams_dst} to avoid re-running optimisation for every environment size.
+    Table \ref{table:hyperparams_mogym} provides the selected parameters for the MO-Gymnasium environments (Figures \ref{fig:5:gridworld_results} and \ref{fig:6:gridworld_results}), and Table \ref{table:hyperparams_dst} provides the selected parameters for the Deep Sea Treasure environments (Figures \ref{fig:5:dst_results} and \ref{fig:6:dst_results}). In the scaling experiments from Sections \ref{sec:5-5-4-scalability} and \ref{sec:6-4-2-scalability}, each algorithm still used the same parameters selected in Table \ref{table:hyperparams_dst} to avoid re-running optimisation for every environment size.
 
 
     \begin{table}[tbp]

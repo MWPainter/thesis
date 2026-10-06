@@ -191,7 +191,7 @@
     \item[$N(s,a)$]
         The number of visits at the chance node corresponding to state-action pair $(s,a)$.
     \item[$N(s'|s,a)$]
-        The \textnormal{conditional visit count} at chance node $(s,a)$, which is the number of times successor state $s'$ was sampled from $(s,a)$ across all \thtspp\ewe trials.
+        The \textnormal{conditional visit count} at chance node $(s,a)$, which is the number of times successor state $s'$ was sampled from $(s,a)$ across all $\thtspp$ trials.
     \item[$\node(s)$] 
         The decision node corresponding to the state $s$.
     \item[$\node(s)\dotchildren$]
@@ -207,21 +207,21 @@
     \item[$\piinit$]
         A heuristic policy, which can be used by the search policy to utilise prior knowledge of the environment.
     \item[$\pisearch$]
-        The search policy used in \thtspp\ewe to sample a trajectory in the selection phase.
+        The search policy used in $\thtspp$ to sample a trajectory in the selection phase.
     \item[$\Qinit$]
         The heuristic action function used in \thtspp, used to provide a Q-value estimate for any state-action pairs that aren't in the search tree.
     \item[$\samplecontext$]
-        A function used in \thtspp\ewe that creates a context, or key-value store, and samples any initial values to be stored in the context.
+        A function used in $\thtspp$ that creates a context, or key-value store, and samples any initial values to be stored in the context.
     \item[$\sampleoutcome$]
-        A function used in \thtspp\ewe to sample outcomes (successor states) from the environment (MDP).
+        A function used in $\thtspp$ to sample outcomes (successor states) from the environment (MDP).
     \item[$\selectaction$]
-        A function used in \thtspp\ewe to select an action at a decision node.
+        A function used in $\thtspp$ to select an action at a decision node.
     \item[\mctsmode] %single_node_expansion
-        \hspace{1.35cm} Specifies if \thtspp\ewe samples a trajectory such that only one decision node is added to the search tree per trial. If not running with \mctsmode\ewe set, \thtspp\ewe samples a trajectory until a terminal state or the planning horizon $H_{\thtspp}$ is reached.
+        \hspace{1.35cm} Specifies if $\thtspp$ samples a trajectory such that only one decision node is added to the search tree per trial. If not running with $\mctsmode$ set, $\thtspp$ samples a trajectory until a terminal state or the planning horizon $H_{\thtspp}$ is reached.
     \item[$\cl{T}$] 
-        The \thtspp\ewe search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. Initially it consists of the root node, and new nodes are added from the trajectories/trials sampled in the selection phase.
+        The $\thtspp$ search tree. $\cl{T}\subseteq \cl{S} \cup \cl{S}\times\cl{A}$. Initially it consists of the root node, and new nodes are added from the trajectories/trials sampled in the selection phase.
     \item[\graphmode] %transposition_table
-        \hspace{1cm} Specifies if \thtspp\ewe uses a transposition table to store and re-use the decision nodes of the search tree when they are reached again via another path.
+        \hspace{1cm} Specifies if $\thtspp$ uses a transposition table to store and re-use the decision nodes of the search tree when they are reached again via another path.
     \item[$\Vinit$]
         The heuristic value function used in \thtspp, used to initialise the value of a new decision node.  % under full \hbox error but no visual artifact.
     \\

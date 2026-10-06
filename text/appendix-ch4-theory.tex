@@ -183,7 +183,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
     \begin{theorem} \label{thrm:hoeffding}
         Let $\{X_i\}_{i=1}^k$ be indicator random variables (i.e. $X_i\in\{0,1\}$), and $S_k=\sum_{i=1}^k X_i$. Then Hoeffding's inequality for indicator random variables states for any $\varepsilon > 0$ that:
         \begin{align}
-            \Pr(|S_k - \bb{E}S_k|>\varepsilon)\leq 2\exp\left(-\frac{2\varepsilon^2}{k}\right).
+            \Pr(|S_k - \bb{E}[S_k]|>\varepsilon)\leq 2\exp\left(-\frac{2\varepsilon^2}{k}\right).
         \end{align}
     \end{theorem}
     \begin{proof}
@@ -543,7 +543,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
     \begin{lemma} \label{lem:dents_imm_simple_regret}
         Consider a DENTS process with positive $\alphadents$ and bounded $\betadents$. Let $s_t\in\cl{S}_0$, with $0\leq t \leq H$ then there is some $C',k'>0$ such that:
         \begin{align}
-            \bb{E} \ireg(s_{t},\mpsidents{n}) &\leq C'\exp\left( -k' N^n(s_{t}) \right).
+            \bb{E} \left[ \ireg(s_{t},\mpsidents{n}) \right] &\leq C'\exp\left( -k' N^n(s_{t}) \right).
         \end{align}
     \end{lemma}
     \begin{proof}
@@ -572,7 +572,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
         
         Finally, the bound on the expected immediate regret follows:
         \begin{align}
-            & \bb{E}\ireg(s_t,\mpsidents{n})  \\
+            & \bb{E}\left[ \ireg(s_t,\mpsidents{n}) \right]  \\
                 =& \sum_{a\in\cl{A}-\{a^*\}} 
                     \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mpsidents{n}(s_t) =a \right) \\
                 =& \sum_{a\in\cl{A}-\{a^*\}} 

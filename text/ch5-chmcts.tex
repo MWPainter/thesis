@@ -273,8 +273,8 @@
 
     Two rules are applied to run contextual zooming: 
     \begin{itemize}
-        \item the \textit{selection rule}, to select a ball (and action) from the set of active balls at the current decision node, as part of the \selectaction\ewe function;
-        \item the \textit{activation rule}, which optionally adds a ball with smaller radius to the set of active balls, as part of the \backupv\ewe function.
+        \item the \textit{selection rule}, to select a ball (and action) from the set of active balls at the current decision node, as part of the $\selectaction$ function;
+        \item the \textit{activation rule}, which optionally adds a ball with smaller radius to the set of active balls, as part of the $\backupv$ function.
     \end{itemize}
     
 \paragraph{Selection Rule}
@@ -311,7 +311,7 @@
 
     where $d(B,B')$ is the distance between the centres of balls $B$ and $B'$ according to the metric $d$. In CZT the constant $\Cczt$ is set to a large enough value such that balls with a different action will never minimise the expression, so it suffices to consider only balls with the same action as $B$ in Equation (\ref{eq:5:cz_index}).
 
-    To select a ball, the \selectball\ewe function chooses the ball from the set of relevant balls with the highest index:
+    To select a ball, the $\selectball$ function chooses the ball from the set of relevant balls with the highest index:
     \begin{align}
         \selectball(s,\bff{w}) = \argmax_{B\in\relevant(s;\bff{w})} \Iczt(B).
     \end{align}
@@ -389,7 +389,7 @@
 
     This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS \ref{sec:3-5-momcts} to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork}.
 
-    The common \thtspp\ewe framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-3-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
+    The common $\thtspp$ framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-3-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
@@ -624,7 +624,7 @@
         \unsolved(s) = \max_{a\in\cl{A}} \unsolved(s,a).
     \end{align}
 
-    The unsolved values are updated during the backpropagation phase of \thtspp\ewe and used during the selection phase to filter out actions that have already been solved, to a tolerance of $\unsolvedtol$, with high probability. That is, at a decision node $s$, any action $a$ with $\unsolved(s,a) \leq \unsolvedtol$ is filtered out before selecting an action. The remainder of this section describes how the unsolved values are propagated through chance nodes, that is, how the value of $\unsolved(s,a)$ is computed.
+    The unsolved values are updated during the backpropagation phase of $\thtspp$ and used during the selection phase to filter out actions that have already been solved, to a tolerance of $\unsolvedtol$, with high probability. That is, at a decision node $s$, any action $a$ with $\unsolved(s,a) \leq \unsolvedtol$ is filtered out before selecting an action. The remainder of this section describes how the unsolved values are propagated through chance nodes, that is, how the value of $\unsolved(s,a)$ is computed.
 
 
     % FUTURE_MIKE_HEADER
@@ -640,7 +640,7 @@
 
     To derive this bound, the expected unsolved value is decomposed into contributions from observed and unobserved successor states:
     \begin{align}
-        \mathbb{E}[\unsolved(s')] 
+        \bb{E}[\unsolved(s')] 
             =& \sum_{s'\in\sucobs{s}{a}} 
                 p(s'|s,a)\unsolved(s') \label{eq:5:local6} \\
             & + \sum_{s'\notin\sucobs{s}{a}} 
@@ -679,7 +679,7 @@
         \unsolved(s,a) \leftarrow &
             \sum_{s'\in\sucobs{s}{a}} 
             \left(\frac{N(s')}{N(s,a)} + 
-            2\sqrt{\frac{\log(4/\deltaunsolved)}{2N(s,a)}}\right)\unsolved(s') \\
+            2\sqrt{\frac{\log(4/\deltaunsolved)}{2N(s,a)}}\right)\unsolved(s') \nonumber \\
             + &\ \goodturingestimate(s,a) + \sqrt{\frac{\log(2/\deltaunsolved)}{N(s,a)}}.
             \label{eq:5:solved_value}
     \end{align}
@@ -700,7 +700,7 @@
 
 \paragraph{Convex Hull Value Set Size Pruning.}
 
-    As the search progresses, the convex hull value sets at each node may grow large, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \cite{nsga_ii}
+    As the search progresses, the convex hull value sets at each node may grow rapidly, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \cite{nsga_ii}.
 
     The crowding distance of a point $\bff{v}$ in a set $\bfcl{V}$ measures how isolated $\bff{v}$ is from its neighbours in objective space. For each objective dimension $i=1,\ldots,D$, the points in $\bfcl{V}$ are sorted by their $i$th coordinate. The boundary points (those with the smallest and largest values in dimension $i$) are assigned an infinite crowding distance and are always retained. For interior points, the crowding distance contribution from dimension $i$ is:
     \begin{align}
@@ -1367,7 +1367,7 @@
     %
     where $\bff{r}$ is a utopian (reference) point.
 
-    Consider an arbitrary MOMDP $\bfcl{M}$, with a valid set of policies $\Pi$. Recall that $U(\Pi;u)$ is the undominated set of policies with respect to utility function $u$ (Definition \ref{def:2:undominated_set}). As is typical in multi-objective reinforcement learning, this set is taken with respect to the initial state\footnote{The undominated set is typically taken with respect to an initial state distribution, which in the context of this thesis is a fixed initial state.} \cite{morl_survey}. In this discussion it is useful to consider the undominated set of policies from any given state $s$:
+    Consider an arbitrary MOMDP $\bfcl{M}$, with a valid set of policies $\Pi$. Recall that $U(\Pi;u)$ is the undominated set of policies with respect to utility function $u$ (Definition \ref{def:2:undominated_set}). As is typical in multi-objective reinforcement learning, this set is taken with respect to the initial state\footnote{\mccorrect{The undominated set is typically taken with respect to an initial state distribution, which in the context of this thesis is a fixed initial state.}} \cite{morl_survey}. In this discussion it is useful to consider the undominated set of policies from any given state $s$:
     %
     \begin{align}
         U(s,\Pi;u) = \left\{\pi\in\Pi\ \big|\ \exists \bff{w}\in\Delta^D. \forall \pi'\in\Pi: u(\bff{V}^{\pi}(s;0);\bff{w}) \geq u(\bff{V}^{\pi'}(s;0);\bff{w}) \right\}. \label{eq:5:undominated_set_def}
@@ -1480,7 +1480,7 @@
 
     In this case, actions can be selected consistently by instead making decisions over the value set $\bff{R}_{:t-1} + \Qalg(s_t,a_t)$, where $\bff{R}_{:t-1} = \sum_{i=0}^{t-1} \bff{R}(s_i,a_i)$ is the reward accrued so far in the trial. The accrued reward is needed because a non-linear utility depends on the entire return, and the utility does not distribute over the sum of cumulative returns. 
     
-    This adaptation changes the second of the two components above: the accrued reward is tracked through the trial, making the decision \textit{non-local}\footnote{Alternatively the accrued reward could also be stored in the node (changing the other component), but would not be compatible with transposition tables (Section \ref{sec:2-4-2-thts})}. 
+    This adaptation changes the second of the two components above: the accrued reward is tracked through the trial, making the decision \textit{non-local}\footnote{\mccorrect{Alternatively the accrued reward could also be stored in the node (changing the other component), but would not be compatible with transposition tables (Section \mbox{\ref{sec:2-4-2-thts}}).}}. 
 
     Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives a MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
 
