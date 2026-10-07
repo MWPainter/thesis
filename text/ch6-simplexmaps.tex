@@ -218,7 +218,7 @@
         \label{fig:6:simplex_map}
     \end{figure}
 
-    A simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ consists of a set of vertices $\VSM \subseteq \Delta^D$, a set of undirected edges $\ESM \subseteq \VSM \times \VSM$, a binary tree of simplices $\TSM$ and a function $\fSM$ mapping vertices to value estimates. The root node of $\TSM$ is the unit simplex and the tree is formed using longest edge bisections so that the leaf nodes of the tree form a triangulation of the unit simplex. Figure \ref{fig:6:simplex_map} illustrates a simplex map with $D=3$.
+    A simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ consists of a set of vertices $\VSM \subseteq \Delta^D$, a set of undirected edges $\ESM \subseteq \VSM \times \VSM$, a binary tree of simplices $\TSM$ and a function $\fSM$ mapping vertices to value estimates. The root node of $\TSM$ is the unit simplex and the tree is formed using longest edge bisections so that the leaf nodes of the tree form a triangulation of the unit simplex. Each simplex in $\TSM$ is represented by its set of $D$ vertices from $\VSM$, and a simplex is identified with its vertex set throughout, since a simplex is uniquely determined by its vertices. Figure \ref{fig:6:simplex_map} illustrates a simplex map with $D=3$.
 
 
 
@@ -278,19 +278,16 @@
     The BTG consists of edges of $\ESM$ on one side and the leaf simplices of $\TSM$ on the other. The BTG is used to determine adjacency between simplices and to support the conformity checks described below.
 
     \paragraph{Conforming Triangulations.}
-
-
+    
         \begin{figure}
             \centering
             \includegraphics[width=0.8\textwidth]{figures/ch6/non_conforming_example.pdf}
-            \caption[An example of a conforming and non-conforming triangulation.]{(Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex, with a violating simplex shown in green. It is non-conforming because the intersection between the adjacent red and green simplices is the line segment $AB$, which is an edge of the red simplex but only part of the edge $AC$ of the green simplex. \todo{updated caption offline, further proof}}
+            \caption[Examples of conforming and non-conforming triangulations.]{Examples of conforming and non-conforming triangulations. (Left) A conforming triangulation of the unit simplex. (Right) A non-conforming triangulation of the unit simplex. The green simplex is non-conforming because its intersection with the adjacent red simplex is the line segment $AB$, which is an edge of the red simplex but only part of the edge $AC$ of the green simplex.}
             \label{fig:6:conforming_triangulation}
         \end{figure}
 
-        Two simplices are \textit{adjacent} if they share at least one point. A pair of simplices are said to be \textit{conforming} if the intersection of the two simplices is exactly a point, edge or face of \textit{both} simplices. A triangulation is \textit{conforming} if every pair of adjacent simplices is conforming. Figure \ref{fig:6:conforming_triangulation} illustrates a conforming and non-conforming triangulation.
+        Two simplices are \textit{adjacent} if they share at least one point. A simplex is \textit{conforming} if, for every adjacent simplex, the intersection of the two is \textit{exactly} a point, edge or face of the simplex itself. A triangulation is \textit{conforming} if every simplex in it is conforming. Figure \ref{fig:6:conforming_triangulation} illustrates a conforming and a non-conforming triangulation.
 
-        \todo{Place correctly, or UPDATE above and CHECK DONT BREAK REST: in isolation, a simplex is conforming if for any adjacent simplex, the intersection consists of \textbf{exactly} a point, edge or face of the simplex.}
-        
         It has been shown that recursive longest edge bisection, in a general $D$-dimensions, produces a conforming triangulation within a finite number of steps \cite{mesh_refine_framework,mesh_refine,simplex_refine}.
 
         The implementation of the $\fcv$ operation assumes that 
@@ -301,18 +298,14 @@
         similarity classes in higher dimensions 
         \cite{leb_nd_regular_empirical}.
 
-        The BTG can be used to determine if a simplex in $\TSM$ is conforming by checking if the number of connections in the BTG is equal to the number of edges of a simplex. For example, in Figure \ref{fig:6:conforming_triangulation}, the non-conforming simplex is highlighted in red. It has 3 edges, but is adjacent to 4 edges of $\ESM$ of the vertex graph.
+        The BTG can be used to determine if a simplex in $\TSM$ is conforming by checking if the number of connections in the BTG is equal to the number of edges of a simplex. For example, in Figure \ref{fig:6:conforming_triangulation}, the non-conforming simplex is highlighted in green. It has 3 edges, but is adjacent to 4 edges of the vertex graph $\ESM$.
 
         The simplex map is implemented to be \textit{eventually conforming}, meaning that a non-conforming triangulation is tolerated temporarily, and after every operation described in Section \ref{sec:6-2-1-interface}, a largest non-conforming simplex is identified and the $\splitsimplex$ operation is performed on it. 
 
 
     \paragraph{Initialisation.}
 
-        The simplex map is initialised with the unit simplex $\Delta^D$, whose $D$ vertices are the standard basis vectors $\bff{e}_1,\ldots,\bff{e}_D\in\bb{R}^D$. 
-        The edges are initialised to connect every pair of 
-        vertices, and the binary tree is initialised to a 
-        single root node containing the unit simplex. The 
-        value estimates are initialised to zero.
+        The vertex set is initialised to the vertices of the unit simplex $\Delta^D$, which are the standard basis vectors of $\bb{R}^D$, giving $\VSM=\{\bff{e}_1,\ldots,\bff{e}_D\}$. The edge set $\ESM$ is initialised to every unique pair of these vertices, and the binary tree of simplices $\TSM$ is initialised to a single root node, the unit simplex $\Delta^D$. The value estimates $\fSM(\bff{w})$ are initialised uniformly for all $\bff{w}\in\VSM$, to zero unless stated otherwise.
 
 
     \paragraph{$\fcs(\GSM, \bff{w})$:}
@@ -365,7 +358,7 @@
             \label{fig:6:split_operation}
         \end{figure}
 
-        The $\splitsimplex$ operation is controlled by three parameters $\splitminradius$, $\splitmindelta$ and $\splitminvis$, which determine the conditions under which a simplex is split. Let $\splitsimplexcounter(\SSM)$ be a counter for the number of times that $\splitsimplex$ has been called on the simplex $\SSM$. 
+        The $\splitsimplex$ operation is controlled by three parameters $\splitminradius$, $\splitmindelta$ and $\splitminvis$, which determine the conditions under which a simplex is split. Let $\NSM(\SSM)$ be a counter for the number of times that $\splitsimplex$ has been called on the simplex $\SSM$. 
         
         The following steps are performed to determine if the simplex should be split:
         \begin{itemize}
@@ -374,9 +367,9 @@
             \item 
                 If the radius of the simplex $\SSM$ is less than $\splitminradius$, then the simplex is not split;
             \item 
-                If $\max_{\bff{w},\bff{w'}\in\SSM}\| \fSM(\bff{w}) - \fSM(\bff{w'}) \| < \splitmindelta$, then the counter $\splitsimplexcounter(\SSM)$ is reset to 0, and the simplex is not split;
+                If $\max_{\bff{w},\bff{w'}\in\SSM}\| \fSM(\bff{w}) - \fSM(\bff{w'}) \|_2 < \splitmindelta$, then the counter $\NSM(\SSM)$ is reset to 0, and the simplex is not split;
             \item 
-                $\splitsimplexcounter(\SSM)$ is incremented by 1, and if $\splitsimplexcounter(\SSM) < \splitminvis$, then the simplex is not split;
+                $\NSM(\SSM)$ is incremented by 1, and if $\NSM(\SSM) < \splitminvis$, then the simplex is not split;
             \item 
                 Otherwise, the simplex is split as described below.
         \end{itemize}
@@ -386,16 +379,30 @@
             \ESM \leftarrow \left(\ESM - \{(\wSMi{1},\wSMi{2})\}\right) \cup \{(\wSM,\wSMi{\text{mid}}) \mid \wSM\in\SSM\}.
         \end{align}
         %
-        Figure \ref{fig:6:split_operation} illustrates this operation. Finally, the new vertex $\wSMi{\text{mid}}$ inherits its value estimate from the values of the edge that was split:
+        The following simplices are added as the children of $\SSM$ in the binary tree $\TSM$:
         \begin{align}
-            \fSM(\wSMi{\text{mid}}) \leftarrow \begin{cases}
-                \fSM(\wSMi{1}) & \text{if } \wSMi{\text{mid}}^\top \fSM(\wSMi{1}) > \wSMi{\text{mid}}^\top \fSM(\wSMi{2}), \\
-                \fSM(\wSMi{2}) & \text{otherwise}.
+            \SSMa{1} = \{\wSMi{1},\wSMi{\text{mid}},\wSMi{3},\wSMi{4},\ldots,\wSMi{D}\}, \\
+            \SSMa{2} = \{\wSMi{2},\wSMi{\text{mid}},\wSMi{3},\wSMi{4},\ldots,\wSMi{D}\}.
+        \end{align}
+        %
+        Finally, the new vertex $\wSMi{\text{mid}}$ inherits its value estimate from the values of the edge that was split:
+        \begin{align}
+            \fSM(\wSMi{\text{mid}}) \leftarrow 
+            \begin{cases}
+                \fSM(\wSMi{1}) 
+                    & \text{if } \NSM(\wSMi{2}) = 0, \\
+                \fSM(\wSMi{2})
+                    & \text{if } \NSM(\wSMi{1}) = 0, \\
+                \fSM(\wSMi{1}) 
+                    & \text{if } \wSMi{\text{mid}}^\top \fSM(\wSMi{1}) > \wSMi{\text{mid}}^\top \fSM(\wSMi{2}), \\
+                \fSM(\wSMi{2}) & \text{otherwise},
             \end{cases}
             \label{eq:6:sm_split}
         \end{align}
+        %
+        where $\NSM(\bff{w})$ is the number of times that $\fSM(\bff{w})$ has been updated for the vertex weight $\bff{w}\in\VSM$.
 
-        The BTG is updated accordingly; the details are omitted as they do not affect the algorithm semantics.
+        Figure \ref{fig:6:split_operation} illustrates a successful $\splitsimplex(\GSM,\SSM)$ operation. The BTG is updated accordingly; the details are omitted as they do not affect the algorithm semantics.
 
     \paragraph{$\push$:} 
 
@@ -486,7 +493,7 @@
 \section{Simplex Maps for Tree Search}
 \label{sec:6-3-algorithms}
 
-    \todo{Didnt specify the initial values for CHMCTS, did we do that here??}
+    \todo{Didnt specify the initial values for CHMCTS, did we do that here?? Also does simplex map allow for f to be multi objective? Think there is some notation issues here. Also we did not update that here}
 
     This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates. The algorithm uses parameters $\alphasmd$, $\betasmd$, and $\epssmd$ corresponding to the DENTS parameters. Throughout this section $\bff{w}$ is the randomly sampled context weight for a trial.
 

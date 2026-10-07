@@ -168,9 +168,14 @@
 \usepackage[colorlinks=false,pdfpagelabels]{hyperref} 
 	% for linking between references, figures, TOC, etc in the pdf document
 
-\usepackage[nohints,tight]{minitoc} 
-	\setcounter{minitocdepth}{2} 
+\usepackage[nohints,tight]{minitoc}
+	\setcounter{minitocdepth}{2}
 	% Generates mini tables of contents per chapter
+	% \mtcindent is applied to both sides, so the default 24pt makes each
+	% minitoc 48pt narrower than \textwidth. Long section titles then
+	% hyphenate and overrun in the minitoc while still fitting the main
+	% table of contents. 12pt keeps a visible indent with 24pt more room.
+	\setlength{\mtcindent}{0pt}
 	
 % JEM: The following fixes minitoc to not be multiple-spaced.
 \let\oldmtc@verse\mtc@verse
@@ -449,6 +454,30 @@
 % JEM: adjust start-of-chapter spacing
 \renewcommand{\chapterheadstartvskip}{\vspace*{40pt}}
 \renewcommand{\chapterheadendvskip}{\vspace{30pt}}
+
+
+% Suppress hyphenation in section headings. Headings are display type, read at
+% a glance rather than linearly, so a broken word is more disruptive there than
+% a short line. \raggedright accompanies it for two reasons: it stops the first
+% line of a two-line heading being stretched to the margin, and without it
+% suppressing hyphenation could force an overfull line instead.
+%
+% This patches \@startsection so it applies to every sectioning level at once,
+% rather than restating report.cls's spacing parameters for each. Levels above
+% 3 (\paragraph, \subparagraph) are excluded: those are run-in headings that
+% share a paragraph with the body text that follows, so \raggedright would
+% leak out and unjustify that text. \chapter is handled by quotchap, not
+% \@startsection, so it is unaffected.
+\makeatletter
+\let\mc@startsection\@startsection
+\def\@startsection#1#2#3#4#5#6{%
+  \ifnum#2>\thr@@
+    \def\mc@secstyle{#6}%
+  \else
+    \def\mc@secstyle{#6\raggedright\hyphenpenalty\@M\exhyphenpenalty\@M}%
+  \fi
+  \mc@startsection{#1}{#2}{#3}{#4}{#5}{\mc@secstyle}}
+\makeatother
 
 
 % JEM: combine all of the commands you run before appendices start

@@ -22,15 +22,17 @@
 
 \chapter{\label{app:expr-deets-ch5}Additional Experimental Details for Chapters 5 and 6}
 
+    \minitoc
+
     This appendix gives additional details on the \mccorrect{algorithm parameters} used for the experiments in Sections \ref{sec:5-5-results} and \ref{sec:6-4-results}, and the optimisation process used to select them. The appendix is organised as follows:
     \begin{itemize}
-        \item Section \ref{appsec:5:hyperparams} gives a list of shared and algorithm specific \mccorrect{parameters} used for the experiments;
+        \item Section \ref{appsec:5:hyperparams} gives a list of shared and algorithm-specific \mccorrect{parameters} used for the experiments;
         \item Section \ref{appsec:5:hypersearch} gives details on the \mccorrect{parameter} optimisation and the final \mccorrect{algorithm parameters} that were selected.
     \end{itemize}
 
 
 \begin{mccorrection}
-\section{Common Algorithm Parameters Reference}
+\section{Parameter Summary}
 \label{appsec:5:hyperparams}
 \end{mccorrection}
 
@@ -201,31 +203,31 @@
                 & BreakableBottles
                 & FourRoom  \\
             \hline
-            $b_{\text{CZT}}$                                & $1.00\times10^{3}$ & $2.78$ & $1.94$ & $100$ \\
+            $b_{\text{CZT}}$                                & $\sci{1.00}{3}$ & $2.78$ & $1.94$ & $100$ \\
             $(\Mmin)_{\text{CZT}}$                          & $123$ & $11$ & $10$ & $65$ \\
 
-            $b_{\text{CH-UCT}}$                             & $1.00\times10^{3}$ & $0.315$ & $1.00$ & $8.03\times10^{-2}$ \\
+            $b_{\text{CH-UCT}}$                             & $\sci{1.00}{3}$ & $0.315$ & $1.00$ & $\sci{8.03}{-2}$ \\
 
-            $\alphachbts_{0}$                               & $100$ & $4.30\times10^{-3}$ & $1.75\times10^{-4}$ & $0.186$ \\
-            $\alphachbts_{\text{decay}}$                    & $100$ & $12.0$ & $9.82\times10^{-3}$ & $1.00\times10^{-3}$ \\
-            $\epschbts$                                     & $1.00$ & $3.86\times10^{-2}$ & $1.00$ & $0.150$ \\
+            $\alphachbts_{0}$                               & $100$ & $\sci{4.30}{-3}$ & $\sci{1.75}{-4}$ & $0.186$ \\
+            $\alphachbts_{\text{decay}}$                    & $100$ & $12.0$ & $\sci{9.82}{-3}$ & $\sci{1.00}{-3}$ \\
+            $\epschbts$                                     & $1.00$ & $\sci{3.86}{-2}$ & $1.00$ & $0.150$ \\
 
-            $b_{\text{CH-CZT}}$                             & $995$ & $1.00\times10^{3}$ & $512$ & $1.00\times10^{3}$ \\
+            $b_{\text{CH-CZT}}$                             & $995$ & $\sci{1.00}{3}$ & $512$ & $\sci{1.00}{3}$ \\
             $(\Mmin)_{\text{CH-CZT}}$                       & $123$ & $10$ & $10$ & $32$ \\
 
-            $b_{\text{H-CHMCTS}}$                           & $1.00\times10^{3}$ & $22.4$ & $1.00\times10^{3}$ & $1.00\times10^{3}$ \\
-            $b_{\text{C-CHMCTS}}$                           & $1.00\times10^{3}$ & $263$ & $0.617$ & $8.90$ \\
-            $b_{\text{P-CHMCTS}}$                           & $1.00\times10^{3}$ & $1.00\times10^{3}$ & $1.00$ & $1.00\times10^{3}$ \\
+            $b_{\text{H-CHMCTS}}$                           & $\sci{1.00}{3}$ & $22.4$ & $\sci{1.00}{3}$ & $\sci{1.00}{3}$ \\
+            $b_{\text{C-CHMCTS}}$                           & $\sci{1.00}{3}$ & $263$ & $0.617$ & $8.90$ \\
+            $b_{\text{P-CHMCTS}}$                           & $\sci{1.00}{3}$ & $\sci{1.00}{3}$ & $1.00$ & $\sci{1.00}{3}$ \\
 
-            $\alpha_{\text{SM-BTS},0}$                      & $0.893$ & $1.55\times10^{-3}$ & $1.66\times10^{-2}$ & $8.30\times10^{-2}$ \\
-            $\alpha_{\text{SM-BTS},\text{decay}}$           & $3.20\times10^{-2}$ & $8.35$ & $14.1$ & $1.00\times10^{-3}$ \\
-            $\epsilon_{\text{SM-BTS}}$                      & $0.995$ & $1.00\times10^{-2}$ & $0.500$ & $7.44\times10^{-2}$ \\
+            $\alpha_{\text{SM-BTS},0}$                      & $0.893$ & $\sci{1.55}{-3}$ & $\sci{1.66}{-2}$ & $\sci{8.30}{-2}$ \\
+            $\alpha_{\text{SM-BTS},\text{decay}}$           & $\sci{3.20}{-2}$ & $8.35$ & $14.1$ & $\sci{1.00}{-3}$ \\
+            $\epsilon_{\text{SM-BTS}}$                      & $0.995$ & $\sci{1.00}{-2}$ & $0.500$ & $\sci{7.44}{-2}$ \\
 
-            $\alpha_{\text{SM-DENTS},0}$                    & $1.00\times10^{-5}$ & $9.21\times10^{-3}$ & $1.67\times10^{-2}$ & $8.29\times10^{-2}$ \\
-            $\alpha_{\text{SM-DENTS},\text{decay}}$         & $2.91\times10^{-3}$ & $16.4$ & $13.9$ & $1.00\times10^{-3}$ \\
-            $\beta_{\text{SM-DENTS},c}$                     & $15.7$ & $1.69\times10^{-3}$ & $5.00\times10^{-2}$ & $1.00\times10^{-2}$ \\
-            $\beta_{\text{SM-DENTS},\text{thresh}}$         & $1.00\times10^{3}$ & $3.74\times10^{3}$ & $5.00\times10^{3}$ & $1.00\times10^{3}$ \\
-            $\epsilon_{\text{SM-DENTS}}$                    & $1.00$ & $1.00\times10^{-2}$ & $0.500$ & $7.40\times10^{-2}$
+            $\alpha_{\text{SM-DENTS},0}$                    & $\sci{1.00}{-5}$ & $\sci{9.21}{-3}$ & $\sci{1.67}{-2}$ & $\sci{8.29}{-2}$ \\
+            $\alpha_{\text{SM-DENTS},\text{decay}}$         & $\sci{2.91}{-3}$ & $16.4$ & $13.9$ & $\sci{1.00}{-3}$ \\
+            $\beta_{\text{SM-DENTS},c}$                     & $15.7$ & $\sci{1.69}{-3}$ & $\sci{5.00}{-2}$ & $\sci{1.00}{-2}$ \\
+            $\beta_{\text{SM-DENTS},\text{thresh}}$         & $\sci{1.00}{3}$ & $\sci{3.74}{3}$ & $\sci{5.00}{3}$ & $\sci{1.00}{3}$ \\
+            $\epsilon_{\text{SM-DENTS}}$                    & $1.00$ & $\sci{1.00}{-2}$ & $0.500$ & $\sci{7.40}{-2}$
         \end{tabular}%
         }
         \caption[\mccorrect{Algorithm parameters} for MO-Gymnasium environments.]{\mccorrect{Algorithm parameters} for each algorithm on the MO-Gymnasium environments.}
@@ -247,7 +249,7 @@
 
             $b_{\text{CH-UCT}}$ & $3.46$ & $4.21$ & $4.21$ \\
 
-            $\alphachbts_{0}$ & $8.99\times10^{-4}$ & $3.31\times10^{-4}$ & $1.00\times10^{-5}$ \\
+            $\alphachbts_{0}$ & $\sci{8.99}{-4}$ & $\sci{3.31}{-4}$ & $\sci{1.00}{-5}$ \\
             $\alphachbts_{\text{decay}}$ & $12.6$ & $99.9$ & $4.51$ \\
             $\epschbts$ & $0.999$ & $0.113$ & $0.990$ \\
 
@@ -255,17 +257,17 @@
             $\Mmin(\text{CH-CZT})$ & $95$ & $222$ & $40$ \\
 
             $b_{\text{H-CHMCTS}}$ & $254$ & $20.4$ & $16.0$ \\
-            $b_{\text{C-CHMCTS}}$ & $1.23\times10^{3}$ & $1.58\times10^{3}$ & $1.09$ \\
+            $b_{\text{C-CHMCTS}}$ & $\sci{1.23}{3}$ & $\sci{1.58}{3}$ & $1.09$ \\
             $b_{\text{P-CHMCTS}}$ & $388$ & $20.1$ & $0.365$ \\
 
-            $\alpha_{\text{SM-BTS},0}$ & $1.31\times10^{-3}$ & $1.86\times10^{-3}$ & $1.00\times10^{-5}$ \\
-            $\alpha_{\text{SM-BTS},\text{decay}}$ & $1.00\times10^{-3}$ & $99.9$ & $1.00\times10^{-3}$ \\
+            $\alpha_{\text{SM-BTS},0}$ & $\sci{1.31}{-3}$ & $\sci{1.86}{-3}$ & $\sci{1.00}{-5}$ \\
+            $\alpha_{\text{SM-BTS},\text{decay}}$ & $\sci{1.00}{-3}$ & $99.9$ & $\sci{1.00}{-3}$ \\
             $\epsilon_{\text{SM-BTS}}$ & $0.693$ & $0.138$ & $0.859$ \\
 
-            $\alpha_{\text{SM-DENTS},0}$ & $1.18\times10^{-3}$ & $1.01\times10^{-5}$ & $3.88\times10^{-4}$ \\
-            $\alpha_{\text{SM-DENTS},\text{decay}}$ & $1.60\times10^{-3}$ & $2.67\times10^{-2}$ & $9.40\times10^{-2}$ \\
-            $\beta_{\text{SM-DENTS},c}$ & $0.233$ & $0.425$ & $1.83\times10^{-2}$ \\
-            $\beta_{\text{SM-DENTS},\text{thresh}}$ & $3.20\times10^{3}$ & $9.41\times10^{3}$ & $1.60\times10^{3}$ \\
+            $\alpha_{\text{SM-DENTS},0}$ & $\sci{1.18}{-3}$ & $\sci{1.01}{-5}$ & $\sci{3.88}{-4}$ \\
+            $\alpha_{\text{SM-DENTS},\text{decay}}$ & $\sci{1.60}{-3}$ & $\sci{2.67}{-2}$ & $\sci{9.40}{-2}$ \\
+            $\beta_{\text{SM-DENTS},c}$ & $0.233$ & $0.425$ & $\sci{1.83}{-2}$ \\
+            $\beta_{\text{SM-DENTS},\text{thresh}}$ & $\sci{3.20}{3}$ & $\sci{9.41}{3}$ & $\sci{1.60}{3}$ \\
             $\epsilon_{\text{SM-DENTS}}$ & $0.753$ & $0.189$ & $0.374$
         \end{tabular}
         \caption[\mccorrect{Algorithm parameters} for DST environments.]{\mccorrect{Algorithm parameters} for each algorithm on the DST environments.}

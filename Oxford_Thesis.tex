@@ -641,7 +641,7 @@
 \newcommand{\update}{{\textnormal{\texttt{update}}}}
 \newcommand{\push}{{\textnormal{\texttt{push}}}}
 \newcommand{\splitsimplex}{{\textnormal{\texttt{maybe\_split}}}}
-\newcommand{\splitsimplexcounter}{{\textnormal{\texttt{N}}_{\SM}}}
+\newcommand{\NSM}{{\textnormal{\texttt{N}}_{\SM}}}
 \newcommand{\splitmindelta}{{\textnormal{\texttt{split\_min\_delta}}_{\SM}}}
 \newcommand{\splitminradius}{{\textnormal{\texttt{split\_min\_radius}}_{\SM}}}
 \newcommand{\splitminvis}{{\textnormal{\texttt{split\_min\_visit}}_{\SM}}}
@@ -651,7 +651,8 @@
 \newcommand{\ESM}{{\bfcl{E}_{\SM}}}
 \newcommand{\TSM}{{\bfcl{T}_{\SM}}}
 \newcommand{\SSM}{{\bfcl{S}_{\SM}}}
-\newcommand{\fSM}{{f_{\SM}}}
+\newcommand{\SSMa}[1]{{\bfcl{S}^{(#1)}_{\SM}}}
+\newcommand{\fSM}{{\bff{f}_{\SM}}}
 \newcommand{\wSM}{{\bff{w}_{\SM}}}
 \newcommand{\wSMi}[1]{{\bff{w}^{(#1)}_{\SM}}}
 \newcommand{\wSMprime}{{\bff{w}'_{\SM}}}
@@ -670,8 +671,6 @@
 \newcommand{\Qsmd}{{\hat{\bff{Q}}_{\SMDENTS}}}
 \newcommand{\wV}{{\bff{w}_V}}
 \newcommand{\wQ}{{\bff{w}_Q}}
-\newcommand{\fSMV}{{f^V_{\SM}}}
-\newcommand{\fSMQ}{{f^Q_{\SM}}}
 \newcommand{\HSM}{{\cl{H}}_{\SM}}
 \newcommand{\HVsmd}{{\bar{\cl{H}}_{V,\SMDENTS}}}
 \newcommand{\HQsmd}{{\bar{\cl{H}}_{Q,\SMDENTS}}}
@@ -694,6 +693,13 @@
 \newcommand{\Qbias}{{\bar{Q}^{\bias}}}
 \newcommand{\alphadecay}{{\alpha_{\text{decay}}}}
 \newcommand{\betathresh}{{\beta_{\text{thresh}}}}
+
+% Scientific notation for parameter tables, e.g. \sci{5.40}{-4} for
+% 5.40x10^{-4}. \times is a binary operator, so TeX surrounds it with 4mu of
+% space; each \! removes 3mu of that. The visual difference is negligible, but
+% it recovers useful width when the notation fills a narrow table column.
+% Widen or tighten the \! here to adjust every table at once.
+\newcommand{\sci}[2]{#1\!\times\!10^{#2}}
 
 
 

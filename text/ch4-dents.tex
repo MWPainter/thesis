@@ -805,6 +805,14 @@
 
     \begin{table*}[tbp]
         \centering   
+            {%
+            % Column padding: default \tabcolsep is 6pt. Each of the columns has padding on both sides
+            \setlength{\tabcolsep}{4pt}%
+            % \fontsize{X}{Y} sets X = font size and Y = baselineskip (the distance
+            % between baselines of consecutive lines). The document default is
+            % \fontsize{12}{14.5}, so keep Y at roughly 1.2x X.
+            \fontsize{12}{14.5}\selectfont
+            % \fontsize{11}{13.2}\selectfont
         \begin{tabular}{l|ccccc}
             Algorithm 
                 & $\selectaction$ 
@@ -873,6 +881,7 @@
                 & $O(A)$ 
                 & $O(H_{\thtspp}+A)$ \\
         \end{tabular}  
+            }
         \caption[Summary of complexities for different MCTS algorithms.]{Summary of complexities for different MCTS algorithms. Complexities for each of the significant components are shown for each algorithm. AM is short for Alias Method. $\backupq$ can be implemented in $O(1)$ time for all algorithms in this table so is omitted. Finally, UCT does not use $\piinit$, so it can implement $\initv$ in $O(1)$ by only computing the function approximation $\Vinit=\tilde{V}$. \todo{Overfull hbox and margin issue, probably reduce the text size very marginally to make it all fit} \label{table:mcts_trial_complexity}}
     \end{table*}
 
@@ -1754,6 +1763,14 @@
 
     \begin{table}[tbp]
     \centering   
+            {%
+            % Column padding: default \tabcolsep is 6pt. Each of the columns has padding on both sides
+            \setlength{\tabcolsep}{4pt}%
+            % \fontsize{X}{Y} sets X = font size and Y = baselineskip (the distance
+            % between baselines of consecutive lines). The document default is
+            % \fontsize{12}{14.5}, so keep Y at roughly 1.2x X.
+            \fontsize{12}{14.5}\selectfont
+            % \fontsize{11}{13.2}\selectfont
         \begin{tabular}{l|cccccc|c} 
             \textbf{Black \textbackslash White}     & PUCT  & AR-M  & AR-R  & AR-T  & AR-B  & AR-D   & Trials/move\\ 
             \hline
@@ -1764,6 +1781,7 @@
                 AR-BTS          & 25--25 & 35--15 & 31--19 & 34--16 &   --   & 15--35  & 5375 \\
                 AR-DENTS        & 23--27 & 36--14 & 29--21 & 36--14 & 15--35 &   --    & 4677 \\         
         \end{tabular}
+            }
         \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space. \todo{VERY marginal margin overflow, fix same way as table above, probably just use same text size? Or try to make it like 0.1pt smaller than current}}
         \label{table:go_results}
     \end{table}

@@ -22,6 +22,7 @@
 
 \chapter{\label{app:expr-deets-ch4}Additional Experimental Details for Chapter 4}
 
+    \minitoc
 
     This appendix gives additional details for the experiments conducted in Chapter 4. It is structured as follows:
     \begin{itemize}
@@ -170,17 +171,17 @@
     This section is organised as follows:
     \begin{itemize}
         \item Section \ref{appsec:4:hyperparams} gives a list of shared and algorithm-specific \mccorrect{parameters} used for the experiments;
-        \item Section \ref{appsec:4:bias_term_integration} describes how the common \mccorrect{parameters} are integrated into prior algorithms, using UCT as an example;
+        \item Section \ref{appsec:4:bias_term_integration} describes how the shared \mccorrect{parameters} are integrated into prior algorithms, using UCT as an example;
         \item Section \ref{appsec:4:hypersearch} gives details on the \mccorrect{parameter} optimisation and the final \mccorrect{algorithm parameters} that were selected.
     \end{itemize}
 
 
 \begin{mccorrection}
-\subsection{Common Algorithm Parameters Reference}
+\subsection{Parameter Summary}
 \label{appsec:4:hyperparams}
 \end{mccorrection}
 
-    The following parameters were used by all algorithms considered in section \ref{sec:4-4-results}:
+    The following parameters were used in common by all algorithms considered in section \ref{sec:4-4-results}:
     \begin{itemize}
         \item $\mctsmode$ - a $\thtspp$ parameter that specifies whether the selection phase should end when a new decision node is added to the tree or not;
         \item $\graphmode$ - a $\thtspp$ parameter that specifies whether a transposition table should be used to store and re-use the decision nodes of the search tree when they are reached again via another path;
@@ -370,7 +371,7 @@
     The selected \mccorrect{algorithm parameters} for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively. 
 
     \begin{mccorrection}
-    The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters are varied and have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $1.00\times 10^{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
+    The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters are varied and have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $\sci{1.00}{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
     \end{mccorrection}
 
     %
@@ -386,7 +387,7 @@
                 \hline
                 UCT     & $7.00$ & \\
                 MaxUCT  & $6.86$ & \\
-                H-MCTS  & $1.50$ & $9.95\times10^4$ \\
+                H-MCTS  & $1.50$ & $\sci{9.95}{4}$ \\
             \end{tabular}
             \caption{UCT-based search algorithms.}
         \end{subtable}
@@ -404,12 +405,12 @@
                     & $\beta_c$
                     & $\betathresh$ \\
                 \hline
-                MENTS & $1.00$ & $6.81\times10^{-4}$ & & & & \\
-                RENTS & $1.00$ & $1.34\times10^{-4}$ & & & & \\
-                TENTS & $1.00$ & $9.20\times10^{-5}$ & & & & \\
-                BTS   & $1.00$ & & $1.00\times10^{-5}$ & $3.16$ & & \\
-                DENTS & $0.744$ & & $4.04\times10^{-3}$ & $0.977$ 
-                    & $3.36\times10^{-4}$ & $10^{12}$ \\
+                MENTS & $1.00$ & $\sci{6.81}{-4}$ & & & & \\
+                RENTS & $1.00$ & $\sci{1.34}{-4}$ & & & & \\
+                TENTS & $1.00$ & $\sci{9.20}{-5}$ & & & & \\
+                BTS   & $1.00$ & & $\sci{1.00}{-5}$ & $3.16$ & & \\
+                DENTS & $0.744$ & & $\sci{4.04}{-3}$ & $0.977$ 
+                    & $\sci{3.36}{-4}$ & $10^{12}$ \\
             \end{tabular}
             \caption{Boltzmann-based search algorithms.}
             \label{table:gridworld_params:b}
@@ -451,11 +452,11 @@
                     & $\beta_c$
                     & $\betathresh$ \\
                 \hline
-                MENTS & $0.248$ & $1.02\times10^{-2}$ & & & & \\
-                RENTS & $0.432$ & $2.89\times10^{-3}$ & & & & \\
-                TENTS & $0.288$ & $1.01\times10^{-2}$ & & & & \\
-                BTS   & $0.460$ & & $0.134$ & $4.82\times 10^{-2}$ & & \\
-                DENTS & $0.444$ & & $0.264$ & $0.200$ & $9.17\times10^{-4}$ & $1.38\times10^4$ \\
+                MENTS & $0.248$ & $\sci{1.02}{-2}$ & & & & \\
+                RENTS & $0.432$ & $\sci{2.89}{-3}$ & & & & \\
+                TENTS & $0.288$ & $\sci{1.01}{-2}$ & & & & \\
+                BTS   & $0.460$ & & $0.134$ & $\sci{4.82}{-2}$ & & \\
+                DENTS & $0.444$ & & $0.264$ & $0.200$ & $\sci{9.17}{-4}$ & $\sci{1.38}{4}$ \\
             \end{tabular}
             \caption{Boltzmann-based search algorithms.}
         \end{subtable}
@@ -476,15 +477,23 @@
             \begin{tabular}{l|c|c}
                 Algorithm & $b$ & $\uctbudget$ \\
                 \hline
-                UCT     & $9.48\times10^{-2}$ & \\
-                MaxUCT  & $9.05\times10^{-2}$ & \\
-                H-MCTS  & $8.10\times10^{-2}$ & $32$ \\
+                UCT     & $\sci{9.48}{-2}$ & \\
+                MaxUCT  & $\sci{9.05}{-2}$ & \\
+                H-MCTS  & $\sci{8.10}{-2}$ & $32$ \\
             \end{tabular}
             \caption{UCT-based search algorithms.}
         \end{subtable}
     
         \vspace{1em}
     
+            {%
+            % Column padding: default \tabcolsep is 6pt. Each of the columns has padding on both sides
+            \setlength{\tabcolsep}{4pt}%
+            % \fontsize{X}{Y} sets X = font size and Y = baselineskip (the distance
+            % between baselines of consecutive lines). The document default is
+            % \fontsize{12}{14.5}, so keep Y at roughly 1.2x X.
+            \fontsize{12}{14.5}\selectfont
+            % \fontsize{11}{13.2}\selectfont
         \begin{subtable}{\textwidth}
             \centering
             \begin{tabular}{l|c|c|c|c|c|c}
@@ -496,15 +505,16 @@
                     & $\beta_c$
                     & $\betathresh$ \\
                 \hline
-                MENTS & $1.00$ & $5.40\times10^{-4}$ & & & & \\
-                RENTS & $0.319$ & $1.57\times10^{-4}$ & & & & \\
-                TENTS & $1.00$ & $7.61\times10^{-4}$ & & & & \\
-                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.16\times10^{-3}$ & & \\
-                DENTS & $0.971$ & & $1.02\times10^{-5}$ & $0.813$ 
-                    & $1.14\times10^{-3}$ & $2.18\times10^{4}$ \\
+                MENTS & $1.00$ & $\sci{5.40}{-4}$ & & & & \\
+                RENTS & $0.319$ & $\sci{1.57}{-4}$ & & & & \\
+                TENTS & $1.00$ & $\sci{7.61}{-4}$ & & & & \\
+                BTS   & $1.00$ & & $\sci{2.32}{-3}$ & $\sci{1.16}{-3}$ & & \\
+                DENTS & $0.971$ & & $\sci{1.02}{-5}$ & $0.813$ 
+                    & $\sci{1.14}{-3}$ & $\sci{2.18}{4}$ \\
             \end{tabular}
-            \caption{Boltzmann-based search algorithms. \todo{font scaling trick again to fix margins?}}
+            \caption{Boltzmann-based search algorithms.}
         \end{subtable}
+            }
     
         \caption[\mccorrect{Algorithm parameters} for Sailing(North) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(North) experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:sailing_north_params}
@@ -531,6 +541,14 @@
     
         \vspace{1em}
     
+            {%
+            % Column padding: default \tabcolsep is 6pt. Each of the columns has padding on both sides
+            \setlength{\tabcolsep}{4pt}%
+            % \fontsize{X}{Y} sets X = font size and Y = baselineskip (the distance
+            % between baselines of consecutive lines). The document default is
+            % \fontsize{12}{14.5}, so keep Y at roughly 1.2x X.
+            \fontsize{12}{14.5}\selectfont
+            % \fontsize{11}{13.2}\selectfont
         \begin{subtable}{\textwidth}
             \centering
             \begin{tabular}{l|c|c|c|c|c|c}
@@ -542,15 +560,16 @@
                     & $\beta_c$
                     & $\betathresh$ \\
                 \hline
-                MENTS & $1.00$ & $6.05\times10^{-4}$ & & & & \\
-                RENTS & $1.00$ & $1.00\times10^{-5}$ & & & & \\
-                TENTS & $1.00$ & $3.24\times10^{-3}$ & & & & \\
-                BTS   & $1.00$ & & $2.32\times10^{-3}$ & $1.17\times10^{-3}$ & & \\
-                DENTS & $1.00$ & & $1.01\times10^{-5}$ & $9.91\times10^{2}$ 
-                    & $1.01\times10^{-5}$ & $3.91\times10^{4}$ \\
+                MENTS & $1.00$ & $\sci{6.05}{-4}$ & & & & \\
+                RENTS & $1.00$ & $\sci{1.00}{-5}$ & & & & \\
+                TENTS & $1.00$ & $\sci{3.24}{-3}$ & & & & \\
+                BTS   & $1.00$ & & $\sci{2.32}{-3}$ & $\sci{1.17}{-3}$ & & \\
+                DENTS & $1.00$ & & $\sci{1.01}{-5}$ & $\sci{9.91}{2}$ 
+                    & $\sci{1.01}{-5}$ & $\sci{3.91}{4}$ \\
             \end{tabular}
-            \caption{Boltzmann-based search algorithms. \todo{font scaling fix again to fix margins?}}
+            \caption{Boltzmann-based search algorithms.}
         \end{subtable}
+            }
 
         \caption[\mccorrect{Algorithm parameters} for Sailing(South-East) experiments.]{\mccorrect{Algorithm parameters} used for  Sailing(South-East) experiments. Empty cells indicate the parameter is not used by that algorithm.}
         \label{table:sailing_south_east_params}

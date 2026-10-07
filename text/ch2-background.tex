@@ -525,10 +525,11 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\subsection{Maximum Entropy Planning and Reinforcement Learning}
+% The optional argument keeps the title on one line in the table of contents
+% and the PDF bookmarks, while the \\ in the heading itself breaks before
+% ``Learning'' rather than hyphenating it as ``Learn-ing''.
+\subsection[Maximum Entropy Planning and Reinforcement Learning]{Maximum Entropy Planning and Reinforcement Learning}
 \label{sec:2-3-1-merl}
-
-    \todo{I'm currently working through formatting issues in this thesis. In the subsection heading I'm getting an overfull hbox error, and it's because the title gets split across two line: learn-ing. It appears fine in the table of contents, and I dont want to change it there, but I think it would look better if learning appeared on a seperate line in its entirity}
 
     In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
     
