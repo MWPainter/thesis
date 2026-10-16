@@ -817,7 +817,7 @@
     Given all of the modules and parameters are specified, the full operation of a trial in $\thtspp$ is described below. Additionally, pseudocode is given in Listing \ref{lst:2:thts_trial}. 
     \begin{description}
         \item[Sample Context:] 
-            \sloppypar{At the start of the trial, a context is sampled using the $\samplecontext$ function, which is passed to all subsequent steps of the trial. The context is a dictionary that can be used to story any relevant per trial information.} \todo{REWROTE THIS DESCRIPTION, PROOF WITH CLAUDE}
+            \sloppypar{At the start of the trial, a context is sampled using the $\samplecontext$ function, and the context is passed to all subsequent steps of the trial.}
         \item[Selection Phase:] 
             A trajectory is sampled using the $\selectaction$ and $\sampleoutcome$ functions, and new nodes are initialised using the heuristic functions and added to the search tree. More specifically, starting with $i=0$: % under full \hbox error, but seems to render fine
         \begin{description}
@@ -1165,12 +1165,12 @@ def backup_phase($\tau_{:h}$, ctx)
 This section defines the multi-objective counterparts to various definitions given in Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
 
 \begin{figure}
-    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/decision_support_scenario.pdf}
-    \caption{The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}. \todo{UPDATE FIGURE}}
+    \centering\includegraphics[width=1.0\textwidth]{figures/ch2/unknown_weights_scenario.pdf}
+    \caption[The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}.]{The \mccorrect{unknown weights} scenario for multi-objective reinforcement learning \cite{morl_survey}. \mccorrect{A multi-objective algorithm produces a solution set during the planning phase; the objective weights are then revealed in the weight selection phase and used to choose a single solution from the set for the execution phase.}}
     \label{fig:2:mo_unknown_weights}
 \end{figure}
 
-This thesis follows a utility-based approach to multi-objective reinforcement learning similar to that of \citet{morl_survey} \mccorrect{and specifically considers the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}$} specifying the preferences over the objectives is unknown during the planning (or learning) phase, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed during the execution phase, after which the policy that maximises the utility for that weight vector is typically selected and executed. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system.}
+This thesis follows a utility-based approach to multi-objective reinforcement learning similar to that of \citet{morl_survey} \mccorrect{and specifically considers the \textit{unknown weights scenario} \mbox{\cite{survey_mo_seq_dec_make}}, which is depicted in Figure \mbox{\ref{fig:2:mo_unknown_weights}}. In the unknown weights scenario, the weight vector \mbox{$\bff{w}$} specifying the preferences over the objectives is unknown during the \textit{planning} (or \textit{learning}) \textit{phase}, so the algorithm computes a \textit{solution set} consisting of multiple \textit{possibly optimal} solutions. The weight vector is revealed during the \textit{weight selection phase}, and the policy that maximises the utility for that weight vector is typically selected from the solution set. The selected policy is then followed during the \textit{execution phase}. This scenario arises when preferences are unavailable at the time of planning, or vary between uses of the system.}
 
 % FUTURE_MIKE_HEADER
 

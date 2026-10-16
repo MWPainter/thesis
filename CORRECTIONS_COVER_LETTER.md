@@ -239,6 +239,9 @@ And I have made the following corresponding changes to Chapter 6:
 - Added a reference from Section 6.4.1 on (page TODO) back to the explanation of non-monotonic results, as some of the non-monotonic CZT and CHMCTS results are repeated in Figure 6.7
 
 
+TODO: also talk about updating the non-monotonic trends in ch4
+TODO: (from ch5 todo) "Update P134 correction, get claude to proof read"
+
 
 > P148: concave -> convex
 

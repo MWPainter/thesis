@@ -48,8 +48,7 @@
 
     \minitoc
 
-    This chapter considers multi-objective Monte Carlo Tree Search 
-    (MOMCTS) for the \mccorrect{unknown weights scenario (Section \mbox{\ref{sec:2-6-morl}} and Figure \mbox{\ref{fig:2:mo_unknown_weights}})} with linear utilities, where the agent must plan for an unknown weight vector $\bff{w}$ over the objectives. Primarily, this chapter aims to address \stochq.
+    This chapter considers multi-objective Monte Carlo Tree Search (MOMCTS) for the \mccorrect{unknown weights scenario (Section \mbox{\ref{sec:2-6-morl}} and Figure \mbox{\ref{fig:2:mo_unknown_weights}})} with linear utilities, where the agent must plan for an unknown weight vector $\bff{w}$ over the objectives. Primarily, this chapter aims to address \stochq.
     
     Two approaches are considered in this chapter, the first following the same design paradigm as UCT where an algorithm for CMAB problems (Section \ref{sec:2-1-3-contextual-mab}) is applied at each decision node; the second is to maintain a convex hull value set at each node in the 
     search tree, representing the set of achievable expected returns 
@@ -76,7 +75,6 @@
             the assumption of a linear utility function, and
             outlines convergence proofs for CHMCTS.}
     \end{itemize}
-
 
 
 
@@ -387,7 +385,7 @@
 \section{Convex Hull Monte Carlo Tree Search}
 \label{sec:5-3-chmcts}
 
-    This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS \ref{sec:3-5-momcts} to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork}.
+    This section introduces \textit{Convex Hull Monte Carlo Tree Search} (CHMCTS), which generalises prior work in MOMCTS (Section \ref{sec:3-5-momcts}) to stochastic environments by maintaining \textit{convex hull value sets} at each node in the search tree and updating them using convex hull backups (Section \ref{sec:2-6-1-chvi}). When the MOMDP is deterministic and a search policy from prior work is used, CHMCTS reduces to the prior MOMCTS algorithms discussed in Chapter \ref{ch:3-relatedwork}.
 
     The common $\thtspp$ framework and backup equations shared by all CHMCTS algorithms are given first. The search policies for each algorithm are then defined. Two practical optimisations are discussed in Section \ref{sec:5-3-6-optimisations}, and the section concludes with a brief discussion on the relationship between entropy and convex hull value sets.
 
@@ -494,6 +492,10 @@
             \frac{\epsilon}{\log(e+N(s))}\right),
     \end{align}
     where $\alphachbts(x) > 0$ is a temperature function and $\epschbts \in [0,\infty)$ is an exploration parameter. As in BTS, the temperature function controls the trade-off between exploration and exploitation, and the exploration parameter ensures that all actions are eventually explored.
+
+    % FUTURE_MIKE_HEADER
+    %
+    % Wanted to update to allow \alpha = 0, but tired and just need to turn this in
 
 % [ ] First Draft
 % [ ] AI proofread/grammar check
@@ -696,8 +698,6 @@
     %
     % But I think the limiting factor of UCB (and CZ) tending to over-exploit in our setting is still very limiting. In DST envs saving exploring one/two extra steps doesn't help much when CZ is just picking the immediate treasure
 
-    \todo{make a comment about how only compatible if using off-policy value estimates. CZT for example needs to continue to select the solved parts of the tree to "keep" them solved, and avoid clobbering the average returns that the recommendation policy would use to find that solution}
-
 \paragraph{Convex Hull Value Set Size Pruning.}
 
     As the search progresses, the convex hull value sets at each node may grow rapidly, increasing the computational cost of the $\cprune$ operation and the convex hull backups. To limit this cost, a maximum size $K_{\max}$ is imposed on each convex hull value set. When a value set exceeds this limit after a backup, points are pruned using the \textit{crowding distance} from the NSGA-II algorithm \cite{nsga_ii}.
@@ -710,10 +710,6 @@
             \label{eq:5:crowding_distance}
     \end{align}
     where $v^+_i$ and $v^-_i$ are the $i$th coordinates of the nearest neighbours of $\bff{v}$ above and below in dimension $i$ respectively. The total crowding distance is $\textnormal{cd}(\bff{v}) = \sum_{i=1}^D \textnormal{cd}_i(\bff{v})$. When the value set exceeds $K_{\max}$ points, the $K_{\max}$ points with the largest crowding distances are retained, preserving the spread of the convex hull.
-
-    \todo{Add Kmax to notation}
-
-    \todo{Add solved notation too}
 
 
 % [ ] First Draft
@@ -804,8 +800,6 @@
 
 
 
-
-
 % [ ] First Draft
 % [ ] AI proofread/grammar check
 % [ ] Spell check
@@ -858,7 +852,7 @@
 
     To enable scalability experiments, a range of map sizes are generated using the MORLGlue library \cite{morl_glue}, parameterised by the width of the gridworld. Let $\DST(W,\pswept)$ denote a DST environment with width $W$ and probability of being swept $\pswept$. For each map of width $W$, if $(x_{\text{treasure}},y_{\text{treasure}})$ is the coordinate of furthest treasure, then the maximum treasure value and planning horizon are both set to $2\times (x_{\text{treasure}}+y_{\text{treasure}})$, so that both rewards are given a consistent scale.
 
-    \todo{value and planning horizon set to X is a bit dense and not clear? Could also address the hypervolume of 0.75 todo here}
+    % \odot{value and planning horizon set to X is a bit dense and not clear? Could also address the hypervolume of 0.75 todo here}
 
     In Section \ref{sec:5-5-3-results_and_discussion} the $\DST(10,0)$, $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$ environments are used. In Section \ref{sec:5-5-4-scalability} the environments $\DST(W,0)$, $\DST(W,\frac{1}{40})$ and $\DST(W,\frac{1}{5})$ are used, with $W$ ranging from $10$ to $100$.
 
@@ -873,7 +867,9 @@
 \label{sec:5-5-2-eval_procedure}
 
 \begin{mccorrection}
-    As discussed in Sections \ref{sec:1-2-scope} and \ref{sec:2-6-morl}, MOMCTS is used during the planning phase in the unknown weights scenario, building a search tree from the initial state. To evaluate the performance of the algorithms, two metrics are used, both computed at the initial state: the \textit{Expected Utility Metric} (EUM, Definition \ref{def:2:eum}), which estimates the utility of the recommended solution set under a uniformly random weight vector, and the \textit{Hypervolume} (Definition \ref{def:2:hypervolume}), which measures the volume of objective space dominated by that set. The hypervolume does not refer to any particular weight vector or policy, but because the solution set at the initial state determines the utility the agent can achieve once the weight vector is revealed, a larger hypervolume can indicate that a wider range of values is achievable.
+    As discussed in Sections \ref{sec:1-2-scope} and \ref{sec:2-6-morl}, MOMCTS is used during the planning phase in the unknown weights scenario, building a search tree from the initial state. To evaluate the performance of the algorithms, two metrics are used, both computed at the initial state. The \textit{Expected Utility Metric} (EUM, Definition \ref{def:2:eum}) estimates the utility of the recommended solution set under a uniformly random weight vector. The \textit{Hypervolume} (Definition \ref{def:2:hypervolume}) measures the volume of objective space dominated by that set, and can therefore indicate how wide a range of values is achievable.
+    
+    The EUM is the metric of primary interest, as it estimates the utility that the agent would actually achieve with no prior knowledge of the objective weights. Both metrics are commonly used to assess the quality of recommended solution sets, so both are reported here. Neither is perfect. EUM assumes that all weightings over the objectives are equally likely, which need not hold in a given application. While the hypervolume respects domination --- if every policy in a set $\Pi_1$ is dominated by a policy in another set $\Pi_2$, then the hypervolume for $\Pi_2$ is greater than that for $\Pi_1$ --- the converse does not hold, so a larger hypervolume does not imply a better solution set.
 
     The rest of this subsection specifies how the solution set of recommendation policies is defined given a search tree, and how the EUM is approximated via sampling.
 
@@ -921,32 +917,17 @@
     %
     where $\bfg{\tau}(\bff{w}) \sim \texttt{complete}(\psi_{\alg})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{\hat{V}}^{\bfg{\tau}(\bff{w})}$ is the cumulative return from the trajectory. That is, if the trajectory is $\bfg{\tau}(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{\hat{V}}^{\bfg{\tau}(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
 
-    Each algorithm is given $60$ seconds of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation, and the EUM is approximated using $|E(\Delta^D)| = 128$ evenly spaced weight vectors, with one trajectory sampled per weight vector.
-
-    \todo{Everything below should be in a parameters section. Should do this consistently across all chapters}
-
-    \todo{Be more clear on convex hull size pruning is used in the core convex hull implementation (even in CHVI) otherwise it just blows up in stochastic cases. Operations grow at least quadratically in the size of the convex hull, and for high D (fruit tree) and stochastic (DST) environment, the number of points grows exponentially. Did try running without pruning, and at around 100 trials or so, compute time of one convex hull backup exceeds the entire compute budget.}
-
-    As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms are given in Appendix \ref{app:expr-deets-ch5}.
-
     For CZT, to compute a hypervolume, an approximate convex hull \mccorrect{value set} is computed, using the $\Qczt$ value estimates at each node. \mccorrect{Specifically the following set of points is used at the root node:}
     \begin{mccorrection}
     \begin{align}
-        \cprune \left( \{\Qczt(B)\ |\ B\in\relevant(s_0;\bff{w})\} \right). \label{eq:5:czt_chvs}
+        \cprune \left( \{\Qczt(B)\ |\ 
+            B\in\relevant(s_0;\bff{w})\} \right). \label{eq:5:czt_chvs}
     \end{align}
     \end{mccorrection} 
 
-    \todo{Add description of some of the parameters that were set consistently across algorithms (single node expansion, heuristic value etc).}
+    Each algorithm is given $60$ seconds of search time, except for DST environments where $15$ seconds are given. Each algorithm uses $16$ threads for computation, and the EUM is approximated using $|E(\Delta^D)| = 128$ evenly spaced weight vectors, with one trajectory sampled per weight vector.
 
-    \todo{Consistently describe the parameters like single node expansion across ch4 ch5 and ch6 in the respective results sections. Add highlighting but don't explicitly point out in cover letter}
-
-    \todo{reminder to fix up appendix B and C}
-
-    \todo{Should explain some of the parameters used somewhere in the main text for all ch4, ch5 and ch6, particularly those that effect the results. HERE, that is the parameters related to section 5.3.6, and particularly that the number of points in pruned}
-
-    \todo{Kmax is 15, unsolvedtol is what??}
-
-    \todo{Update P134 correction, get claude to proof read}
+    As in Section \ref{sec:4-4-results}, the BayesOpt package \cite{bayesopt} is used to tune the \mccorrect{parameters} of all algorithms. Full details on the \mccorrect{parameter} tuning of multi-objective algorithms are given in Appendix \ref{app:expr-deets-ch5}.
 
 
 
@@ -1032,46 +1013,21 @@
 
     \paragraph{Gymnasium Environments.}
 
-    \todo{Make the results sections read better and a bit more thorough. At the moment seem copied from claude chats because on many lines}
-
-    Results on the MO-Gymnasium environments are given in 
-    Figure \ref{fig:5:gridworld_results}. On all four 
-    environments, algorithms using convex hull backups 
-    generally outperformed CZT. This is consistent with 
-    the exploitation bias of UCT-based algorithms discussed in Chapter 
-    \ref{ch:4-dents}, where UCT-style algorithms tend to 
-    converge to a local optimum.
-
-    On the Resource-Gathering and Breakable-Bottles 
-    environments, CH-UCT and CH-BTS clearly outperform 
-    all other algorithms on both EUM and hypervolume 
-    metrics. These environments have larger state spaces 
-    and more complex reward structures, where the benefit 
-    of contextual search policies is most pronounced.
-
-    On Four-Room and Fruit-Tree-7, contextual search 
-    policies did not clearly outperform context-independent 
-    ones. Fruit-Tree-7 is a small environment where the 
-    difference between algorithms is less significant. 
-    Four-Room is larger, 
-    but its deterministic nature and lack of a time cost 
-    reward means that a single path collecting all 
-    collectibles is sufficient to achieve a near-optimal 
-    solution for any weight vector, enabling a 
-    context-independent policy to perform comparably to 
-    a contextual one.
-    P-CHMCTS, despite using a contextual 
-    search policy, did not clearly outperform 
-    context-independent policies on any of the 
-    environments. \todo{because it is using a mismatched utility function}
+    Results on the MO-Gymnasium environments are given in Figure \ref{fig:5:gridworld_results}, \mccorrect{where both EUM and hypervolume are reported against the elapsed search time. Multiple hypervolume plots show non-monotonic trends, for which there are two explanations, one for CZT and one for the CHMCTS algorithms.}
 
     \begin{mccorrection}
-    In Figure \ref{fig:5:gridworld_results}, multiple plots related to the hypervolume metric show non-monotonic trends, for the following two reasons:
-    \begin{itemize}
-        \item The hypervolume for CZT is approximated using the set of value estimates from the relevant balls (Equation \eqref{eq:5:czt_chvs}). The values in this set may shrink, because they are computed using average returns (Equation \eqref{eq:5:czt_ball_backup}), and because the set of relevant balls (Equation \eqref{eq:5:relevant_balls_state}) changes as the algorithm runs.
-        \item The hypervolume for CHMCTS algorithms would grow monotonically were it not for the size pruning of convex hull value sets, which uses the crowding distance (Equation \eqref{eq:5:crowding_distance}) and is described in Section \ref{sec:5-3-6-optimisations}. When value sets are pruned to a maximum of $K_{\max}=15$ points, the convex hull backups (Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}) are no longer guaranteed to converge, and the hypervolume may decrease on any backup that prunes points.
-    \end{itemize}
-    \end{mccorrection}
+    The hypervolume for CZT is approximated using the set of value estimates from the relevant balls (Equation \eqref{eq:5:czt_chvs}). The individual estimates are computed using average returns (Equation \eqref{eq:5:czt_ball_backup}), so they may decrease. The set of relevant balls (Equation \eqref{eq:5:relevant_balls_state}) also changes as the \textit{activation rule} (Section \ref{sec:5-2-1-czt}) adds new balls, each starting with a fresh average return. Either effect can lower the hypervolume.
+
+    The hypervolume for CHMCTS algorithms would grow monotonically were it not for the size pruning of convex hull value sets, which uses the crowding distance (Equation \eqref{eq:5:crowding_distance}) and is described in Section \ref{sec:5-3-6-optimisations}. When the value sets are pruned to a maximum of $K_{\max}=15$ points, the convex hull backups (Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}) are no longer guaranteed to converge, and the hypervolume may decrease on any backup that prunes points.
+    \end{mccorrection} % overfull vbox but no margin issues
+
+    \mccorrect{On all four environments, CZT is outperformed by at least one CHMCTS algorithm, if not all of them.} This is consistent with the exploitation bias of UCT-based algorithms discussed in Chapter \ref{ch:4-dents}, where UCT-style algorithms tend to converge to a local optimum.
+
+    On the Resource-Gathering and Breakable-Bottles environments, CH-UCT and CH-BTS \mccorrect{--- which use contextual search policies ---} clearly outperform all other algorithms with respect to EUM. These environments have larger state spaces and more complex reward structures, where the benefit of contextual search policies is most pronounced.
+
+    \mccorrect{Fruit-Tree-7 consists of a binary tree of decisions, and so contains only \mbox{$2^8-1=255$} states. These can be explored exhaustively in a small number of trials, and all CHMCTS algorithms solve the environment.}
+
+    The Four-Room environment is larger, but its deterministic nature and lack of a time cost reward mean that a single \mccorrect{meandering} path collecting many collectibles is sufficient to achieve a near-optimal solution for \mccorrect{all weight vectors simultaneously}. A context-independent policy can therefore perform comparably to a contextual one, \mccorrect{so all CHMCTS algorithms achieve a similar EUM, although the contextual search policies find value sets with larger hypervolumes.}
 
 
 
@@ -1174,32 +1130,11 @@
 
     \paragraph{Deep Sea Treasure Environments.}
 
-    \todo{Make the results sections read better and a bit more thorough. At the moment seem copied from claude chats because on many lines}
+    \mccorrect{For the DST environments, CHVI \mbox{(Section \ref{sec:2-6-1-chvi})} and} CHVI with Prioritised Sweeping (CHVI(PS)) \mccorrect{are used as baseline algorithms}, where Prioritised Sweeping \cite{sutton} performs Bellman backups from timestep $t=H$ down to $t=0$. \mccorrect{To provide a fair comparison, the implementation of convex hull backups is shared between CHVI and the CHMCTS algorithms. Hence CHVI uses the same value of \mbox{$K_{\max}$} for the size pruning optimisation (Section \mbox{\ref{sec:5-3-6-optimisations}}) as the CHMCTS algorithms (Appendix \mbox{\ref{appsec:5:hypersearch}}), and so does not necessarily compute the exact convex hulls.} %under full hbox but no visible margin issues
 
-    CHVI with Prioritised Sweeping (CHVI(PS)) is used as an additional baseline to CHVI, where Prioritised Sweeping \cite{sutton} performs Bellman backups from timestep $t=H$ down to $t=0$.
+    Results are given in Figures \ref{fig:5:dst_results} and \ref{fig:5:dst_backups}. On the deterministic environment $\DST(10,0)$, CH-BTS and CH-UCT performed best among the CHMCTS algorithms. On the stochastic environments, CH-BTS and P-CHMCTS performed better than the other CHMCTS algorithms.
 
-    Results on the Deep Sea Treasure environments are given 
-    in Figures \ref{fig:5:dst_results} and 
-    \ref{fig:5:dst_backups}. On the deterministic 
-    environment $\DST(10,0)$, CH-BTS and CH-UCT performed 
-    best among the CHMCTS algorithms. On the stochastic 
-    environments, CH-BTS and P-CHMCTS performed better 
-    than other CHMCTS algorithms.
-
-    However, CHMCTS algorithms generally struggled in the 
-    stochastic environments. As shown in Figure 
-    \ref{fig:5:dst_backups}, CHMCTS is only able to 
-    perform approximately one third as many backups in the 
-    stochastic environments compared to the deterministic 
-    one, due to the growth of intermediate convex hull 
-    value sets and the additional complexity of taking expectations over value sets (particularly the addition operation in Equation \ref{eq:2:vector_set_arithmetic_two}). With low stochasticity 
-    ($\DST(10,\frac{1}{40})$), despite the performance penalty, CH-BTS is able to outperform the remaining MOMCTS algorithms, although it is still far from the optimal value that CHVI computes. With higher stochasticity 
-    ($\DST(10,\frac{1}{5})$) CHMCTS is unable to run a 
-    sufficient number of trials within the time budget to 
-    perform well. CZT, which limits the rate of ball 
-    additions, does not suffer from this issue and 
-    maintains a competitive number of trials across all 
-    three environments.
+    However, CHMCTS algorithms generally struggled in the stochastic environments. As shown in Figure \ref{fig:5:dst_backups}, CHMCTS is only able to perform approximately one third as many backups in the stochastic environments as in the deterministic one, due to the growth of intermediate convex hull value sets and the additional complexity of taking expectations over them (particularly the addition operation in Equation \eqref{eq:2:vector_set_arithmetic_two}). With low stochasticity ($\DST(10,\frac{1}{40})$), despite the performance penalty, CH-BTS is able to outperform the remaining MOMCTS algorithms, although it remains far short of the value computed by CHVI. With higher stochasticity ($\DST(10,\frac{1}{5})$), CHMCTS is unable to run a sufficient number of trials within the time budget to perform well. CZT, which limits the rate of ball additions, does not suffer from this issue and maintains a competitive number of trials across all three environments.
 
 
 
@@ -1273,51 +1208,29 @@
         \label{fig:5:dst_scaling}
     \end{figure}
 
-    \todo{Make the results sections read better and a bit more thorough. At the moment seem copied from claude chats because on many lines}
+    \begin{mccorrection}
+    Figure \ref{fig:5:dst_scaling} gives results on randomly generated Deep Sea Treasure environments of increasing size, as described in Section \ref{sec:5-5-1-envs}. Each algorithm is given $15$ seconds of planning time on every environment, regardless of its size, before being evaluated on its recommendation policy as outlined in Section \ref{sec:5-5-2-eval_procedure}. The \textit{normalised hypervolume} (NHV) is used in this experiment, where values for both objectives are normalised to the range $[0,1]$ before computing the hypervolume, so that results are comparable across environments of different scales.
 
-    The \textit{normalised hypervolume} (NHV) is used in 
-    this experiment, where objective values are normalised 
-    to $[0,1]$ before computing the hypervolume, so that 
-    results are comparable across environments of different 
-    scales. 
+    The best achievable EUM increases with the size of the environment, because the maximum treasure reward is set to twice the number of steps needed to reach it (Section \ref{sec:5-5-1-envs}), so the treasure reward outgrows the time cost of collecting it. The random generation of the environments introduces some non-monotonicity, visible as a kink at $W=30$ in the CHVI plot (Figure \ref{fig:5:dst_scaling:sub:a}). The dip in EUM for CHVI and CHVI(PS) is expected, since the planning budget is the same for all environment sizes.
 
-    \todo{when making hypervolume 0.8 argument, can also say that the deterministic version, with just the first and last treasures is designed by how it is generated to be at least 0.75 in the deterministic case. And computing exactly in the stochastic case is infeasible currently}
+    The CHVI(PS) curves suggest that the best achievable NHV is consistently around $0.8$. This is clearest for $\pswept=0$, where it holds across all environment sizes. In the stochastic environments CHVI(PS) only converges for environment sizes up to and including $W=20$, so the $0.8$ value can only be confirmed over that range. The downward trends of NHV for all algorithms are expected, given the fixed planning budget, and the kinks in the NHV plots (Figures \ref{fig:5:dst_scaling:sub:b}, \ref{fig:5:dst_scaling:sub:d} and \ref{fig:5:dst_scaling:sub:f}) have the same cause as the kink in EUM (Figure \ref{fig:5:dst_scaling:sub:a}).
+    \end{mccorrection}
+
+    % FUTURE_MIKE_HEADER
+    %
+    % We computed treasure as 2 x time_cost,, so the shortest paths to the first and last treasure (two points on the convex hull), will give a hypervolume of 0.75. So we can say the 0.8 claim confidently (for deterministic)
+ 
+    On the deterministic environment $\DST(W,0)$, CHVI is able to solve environments up to a width of approximately $W=50$, beyond which the state space has grown too large for CHVI to converge within the time budget. At $W=80$, CHVI exhausts the 16\,GB memory limit. CH-BTS maintains strong performance across all environment sizes, with an NHV consistently above $0.4$. Its EUM and NHV start close to optimal for small environments, but are outperformed by CHVI at intermediate sizes. \mccorrect{Above \mbox{$W=50$}, the tree search algorithms still produce a policy where CHVI and CHVI(PS) cannot, and their NHV degrades gradually rather than dropping sharply.}
+
+    On both stochastic environments, all convex hull-based algorithms struggle. The performance of CHVI(PS) drops sharply after $W=20$, while CHVI degrades more gradually. This is consistent with the results of Section \ref{sec:5-5-3-results_and_discussion}, where stochasticity increases \mccorrect{the number of points in the convex hull value sets, and hence} the computational cost of convex hull backups.
+
+    CZT performs best on the larger stochastic environments, maintaining its performance where convex hull-based algorithms are limited by the computational complexity discussed in Section \ref{sec:5-5-3-results_and_discussion}. However, across all environments CZT tends to exploit, converging to a locally optimal solution that collects nearby treasure quickly without exploring enough of the environment to discover higher-value options further from the starting state.
 
     \begin{mccorrection}
-    Figure \ref{fig:5:dst_scaling} gives results on randomly generated Deep Sea Treasure environments of increasing size, as described in Section \ref{sec:5-5-1-envs}. Each algorithm is given $15$ seconds of planning time on every environment, regardless of its size, before being evaluated on its recommendation policy as outlined in Section \ref{sec:5-5-2-eval_procedure}.
-
-    The optimal EUM that can be achieved increases with the size of the environment, because the maximum treasure reward is set to twice the number of steps needed to reach it (Section \ref{sec:5-5-1-envs}), so the treasure reward outgrows the time cost of collecting it. Some non-monotonicity exists due to the random generation of the environments, as can be seen in the CHVI plots in Figure \ref{fig:5:dst_scaling:sub:a}. 
-
-    The CHVI curves suggest that the optimal normalised hypervolume is consistently around $0.8$. This is clearest for $\pswept=0$, where it holds across all environment sizes. In the stochastic environments CHVI only converges to an optimal solution for sizes below 20, so the same value can only be confirmed over that range. The downward trends of the remaining algorithms are expected, given the fixed compute budget. The kink in the normalised hypervolume plots (Figures \ref{fig:5:dst_scaling:sub:b}, \ref{fig:5:dst_scaling:sub:d} and \ref{fig:5:dst_scaling:sub:f}) corresponds to the kink in the CHVI curve for EUM (Figure \ref{fig:5:dst_scaling:sub:a}), and so has the same cause: randomness in the generated environments.
+    This exploitation is advantageous under EUM at large environment sizes with a limited compute budget. CZT settles on a policy that collects treasure near the starting state and then fills out the search tree around it, much as exploitation was beneficial in the stochastic FrozenLake experiments of Section \mbox{\ref{sec:4-4-3-1-gridworld_results}}. The larger hypervolumes found by the CHMCTS algorithms suggest that they do discover larger treasure values in the stochastic environments, but their search trees are not filled out for all of the stochastic outcomes, so the recommendation policy is more likely to leave the tree and fall back to acting uniformly at random (Equation \mbox{\eqref{eq:5:full_Recommend}}), which lowers their EUM. It should be noted, however, that no algorithm achieves an EUM that increases with the environment size, despite the best achievable EUM doing so. Even CZT, which performs best at the larger sizes, only maintains an EUM of between 10 and 20 throughout.
     \end{mccorrection}
- 
-    On the deterministic environment $\DST(W,0)$, CHVI is 
-    able to solve environments up to a width of 
-    approximately $W=50$, beyond which the state space has 
-    grown too large for CHVI to converge within the time 
-    budget. At $W=80$, CHVI exhausts the 16\,GB memory 
-    limit. CH-BTS maintains strong performance across all 
-    map sizes, with a normalised hypervolume consistently 
-    above $0.4$. Its EUM and NHV start close to optimal 
-    for small maps, are outperformed by CHVI for 
-    intermediate sizes, but degrade at a much slower rate 
-    than CHVI as the map size increases, remaining 
-    competitive even at $W=100$.
 
-    On both stochastic environments, all convex hull-based 
-    algorithms struggle. The performance of CHVI(PS) drops 
-    sharply at around $W=25$, while CHVI degrades more 
-    gradually. This is consistent with the results of 
-    Section \ref{sec:5-5-3-results_and_discussion}, where 
-    stochasticity significantly increases the 
-    computational cost of convex hull backups.
 
-    CZT performs best on the larger stochastic 
-    environments, maintaining its performance 
-    where convex hull-based algorithms struggle from the computational complexity discussed in Section \ref{sec:5-5-3-results_and_discussion}.
-    However, across all environments CZT tends to converge to a locally optimal solution, collecting nearby treasure quickly without sufficiently exploring the environment to discover higher-value options further from the starting state.
-
-    \todo{Basically want to say CZTs increase performance on large environments shows a few things, some to do with experimental setup. NHV is larger for no CZT. Optimisations not available for CZT, so it's free to be greedy, being greedy leads to better EUM in large envs, small compute budget, because of the evaluation policy equation (todo ref), where the agent falls back to uniform. So it highlights two things, under the setup used, that greedy can be better because it fills out tree more and more thouroughly plans out a small suboptimal solution. But NHV indicates that better values are found and achievable, but have not explored. Basically want to say that if had a more involved evaluation, using online planning or better fallback policy (function approx) then results would be different. Basically want to give CZT its merit, but also highlight how its an  artifact of the evaluation proceedure}
 
 
 

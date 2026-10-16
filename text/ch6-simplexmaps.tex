@@ -218,7 +218,7 @@
         \label{fig:6:simplex_map}
     \end{figure}
 
-    A simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ consists of a set of vertices $\VSM \subseteq \Delta^D$, a set of undirected edges $\ESM \subseteq \VSM \times \VSM$, a binary tree of simplices $\TSM$ and a function $\fSM$ mapping vertices to value estimates. The root node of $\TSM$ is the unit simplex and the tree is formed using longest edge bisections so that the leaf nodes of the tree form a triangulation of the unit simplex. Each simplex in $\TSM$ is represented by its set of $D$ vertices from $\VSM$, and a simplex is identified with its vertex set throughout, since a simplex is uniquely determined by its vertices. Figure \ref{fig:6:simplex_map} illustrates a simplex map with $D=3$.
+    A simplex map $\GSM=(\VSM,\ESM,\TSM,\fSM)$ consists of a set of vertices $\VSM \subseteq \Delta^D$, a set of undirected edges $\ESM \subseteq \VSM \times \VSM$, a binary tree of simplices $\TSM$ and a function $\fSM:\VSM\rightarrow\bb{R}^D$ mapping vertices to value estimates. The root node of $\TSM$ is the unit simplex and the tree is formed using longest edge bisections so that the leaf nodes of the tree form a triangulation of the unit simplex. Each simplex in $\TSM$ is represented by its set of $D$ vertices from $\VSM$, and a simplex is identified with its vertex set throughout, since a simplex is uniquely determined by its vertices. Figure \ref{fig:6:simplex_map} illustrates a simplex map with $D=3$.
 
 
 
@@ -243,7 +243,7 @@
             Given a leaf simplex $\SSM\in\TSM$, performs a longest edge bisection and adds the two new simplices in the tree.
     \end{description}
 
-    This interface is sufficient to define MOMCTS algorithms using simplex maps. In particular, if the value estimates $\fSM$ of a simplex map $\GSM$ represent multi-objective Q-values at a chance node $(s,a)$, then the following can be used as a contextual value estimate:
+    Together with direct writes to the value estimates $\fSM$, this interface is sufficient to define MOMCTS algorithms using simplex maps. In particular, if the value estimates $\fSM$ of a simplex map $\GSM$ represent multi-objective Q-values at a chance node $(s,a)$, then the following can be used as a contextual value estimate:
     %
     \begin{align}
         \Qsmctx{\bff{w}}(s,a) 
@@ -305,7 +305,7 @@
 
     \paragraph{Initialisation.}
 
-        The vertex set is initialised to the vertices of the unit simplex $\Delta^D$, which are the standard basis vectors of $\bb{R}^D$, giving $\VSM=\{\bff{e}_1,\ldots,\bff{e}_D\}$. The edge set $\ESM$ is initialised to every unique pair of these vertices, and the binary tree of simplices $\TSM$ is initialised to a single root node, the unit simplex $\Delta^D$. The value estimates $\fSM(\bff{w})$ are initialised uniformly for all $\bff{w}\in\VSM$, to zero unless stated otherwise.
+        The vertex set is initialised to the vertices of the unit simplex $\Delta^D$, which are the standard basis vectors of $\bb{R}^D$, giving $\VSM=\{\bff{e}_1,\ldots,\bff{e}_D\}$. The edge set $\ESM$ is initialised to every unique pair of these vertices, and the binary tree of simplices $\TSM$ is initialised to a single root node, the unit simplex $\Delta^D$. The value estimates $\fSM(\wSM)$ are initialised uniformly for all $\wSM\in\VSM$, to zero unless stated otherwise.
 
 
     \paragraph{$\fcs(\GSM, \bff{w})$:}
@@ -349,6 +349,19 @@
 
         Figure \ref{fig:6:vertex_lookup_examples} illustrates that for $D=3$, setting $k=0$ is insufficient and that a neighbouring triangle may contain the closest vertex to $\bff{w}$. Also illustrated for $D=3$ is that $k=1$ is insufficient to find the closest vertex if the triangulation is non-conforming.
 
+    \paragraph{$\push$:} 
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth]{figures/ch6/push.pdf}
+            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its value estimate, and the green arrows indicate the direction of propagation. The red vertex does not accept or propagate the value, shown by the red barriers. Nothing is propagated along the dashed edge, as it joins two vertices at the same depth of the breadth first search from the green vertex.}
+            \label{fig:6:push_operation}
+        \end{figure}
+        
+        The description of $\push$ given in Section \ref{sec:6-2-1-interface} is sufficient to implement it, and Figure \ref{fig:6:push_operation} illustrates the operation.
+        
+        The function $\fSM$ is implemented as a hash map from vertices to value estimates, which an algorithm can update directly.
+
     \paragraph{$\splitsimplex(\GSM,\SSM)$:}
 
         \begin{figure}
@@ -367,7 +380,7 @@
             \item 
                 If the radius of the simplex $\SSM$ is less than $\splitminradius$, then the simplex is not split;
             \item 
-                If $\max_{\bff{w},\bff{w'}\in\SSM}\| \fSM(\bff{w}) - \fSM(\bff{w'}) \|_2 < \splitmindelta$, then the counter $\NSM(\SSM)$ is reset to 0, and the simplex is not split;
+                If $\max_{\wSM,\wSMprime\in\SSM}\| \fSM(\wSM) - \fSM(\wSMprime) \|_2 < \splitmindelta$, then the counter $\NSM(\SSM)$ is reset to 0, and the simplex is not split;
             \item 
                 $\NSM(\SSM)$ is incremented by 1, and if $\NSM(\SSM) < \splitminvis$, then the simplex is not split;
             \item 
@@ -403,17 +416,6 @@
         where $\NSM(\bff{w})$ is the number of times that $\fSM(\bff{w})$ has been updated for the vertex weight $\bff{w}\in\VSM$.
 
         Figure \ref{fig:6:split_operation} illustrates a successful $\splitsimplex(\GSM,\SSM)$ operation. The BTG is updated accordingly; the details are omitted as they do not affect the algorithm semantics.
-
-    \paragraph{$\push$:} 
-
-        \begin{figure}
-            \centering
-            \includegraphics[width=0.5\textwidth]{figures/ch6/push.pdf}
-            \caption[Illustration of the $\push$ operation of a simplex map.]{Illustration of the $\push$ operation of a simplex map, with $\pushradius=2$. The green vertex is pushing its value estimate, and the green arrows indicate the direction of propagation. The red vertex does not accept or propagate the value, shown by the red barriers. Nothing is propagated along the dashed edge, as it joins two vertices at the same depth of the breadth first search from the green vertex.}
-            \label{fig:6:push_operation}
-        \end{figure}
-        
-        The descriptions of $\update$ and $\push$ given in Section \ref{sec:6-2-1-interface} are sufficient to implement these operations. $\push$ is illustrated in Figure \ref{fig:6:push_operation}. The function $\fSM$ is implemented as a hash map from vertices to value estimates.
 
 
 
@@ -493,9 +495,7 @@
 \section{Simplex Maps for Tree Search}
 \label{sec:6-3-algorithms}
 
-    \todo{Didnt specify the initial values for CHMCTS, did we do that here?? Also does simplex map allow for f to be multi objective? Think there is some notation issues here. Also we did not update that here}
-
-    This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates. The algorithm uses parameters $\alphasmd$, $\betasmd$, and $\epssmd$ corresponding to the DENTS parameters. Throughout this section $\bff{w}$ is the randomly sampled context weight for a trial.
+    This section defines the DENTS with Simplex Maps (SM-DENTS) algorithm. SM-DENTS is a variant of DENTS that uses simplex maps to maintain the value and entropy estimates. The algorithm uses parameters $\alphasmd$, $\betasmd$, and $\epssmd$ corresponding to the DENTS parameters. SM-DENTS also follows the contextual tree search approach (Section \ref{sec:5-1-2-contextual_tree_search}), where a context weight $\bff{w}$ is randomly sampled and used throughout the trial.
 
     Each decision node $s$ and chance node $(s,a)$ keeps an associated simplex map 
     \begin{align}
@@ -504,26 +504,36 @@
         \GSM(s,a) &= (\VSM(s,a),\ESM(s,a),\TSM(s,a),\Qsmd(s,a;\cdot), \HQsmd(s,a;\cdot)),
     \end{align}
     %
-    noting that $\Vsmd$ and $\Qsmd$ are the value and Q-value estimate functions, and $\HVsmd(s)$ and $\HQsmd(s,a)$ are additional entropy value estimate functions, maintained in each simplex map. Contextual value estimates are computed using the simplex maps, as outlined in Equation (\ref{eq:6:sm_contextual_qvalue}):
+    where $\Vsmd$ and $\Qsmd$ are the value and Q-value estimate functions for each map, and $\HVsmd(s;\cdot)$ and $\HQsmd(s,a;\cdot)$ are the corresponding entropy estimate functions, where SM-DENTS is abbreviated to SM-D in subscripts. The simplex maps are initialised as described in Section \ref{sec:6-2-2-implementation}, and the value estimates $\Vsmd(s;\cdot)$ and $\Qsmd(s,a;\cdot)$ are initialised to $\Vinitbff(s)$ and $\Qinitbff(s,a)$ for each vertex in $\VSM(s)$ and $\VSM(s,a)$ respectively.
+    
+    Two further pieces of notation are convenient for defining SM-DENTS. First, the context weight $\bff{w}$ sampled for a trial is generally not itself a vertex of the simplex maps, so the closest vertex in each map is often looked up:
     %
     \begin{align}
-        \wV &= \fcv(\GSM(s), \bff{w}), \\
-        \wQ &= \fcv(\GSM(s,a), \bff{w}), \\
-        \Vsmdctx(s) 
-            &= \bff{w}^\top \Vsmd(s;\wV),
-        \label{eq:6:smdents_contextual_value} \\
-        \Qsmdctx(s,a) 
-            &= \bff{w}^\top \Qsmd(s,a;\wQ),
-        \label{eq:6:smdents_contextual_qvalue} 
+        \wSMat{s} &= \fcv(\GSM(s), \bff{w}), \label{eq:6:smdents_v_vertex_lookup} \\
+        \wSMat{s,a} &= \fcv(\GSM(s,a), \bff{w}). \label{eq:6:smdents_q_vertex_lookup} 
     \end{align}
+
+    Second, following Equation (\ref{eq:6:sm_contextual_qvalue}), contextual value estimates for an arbitrary weight $\bff{w}'\in\Delta^D$ are obtained by using the linear utility from the closest vertex in the simplex map:
     %
+    \begin{align}
+        \Vsmdctxcstm{\bff{w}'}(s)
+            &= \bff{w}'^\top \Vsmd(s;\fcv(\GSM(s),\bff{w}')),
+        \label{eq:6:smdents_contextual_value} \\
+        \Qsmdctxcstm{\bff{w}'}(s,a)
+            &= \bff{w}'^\top \Qsmd(s,a;\fcv(\GSM(s,a),\bff{w}')).
+        \label{eq:6:smdents_contextual_qvalue}
+    \end{align}
 
 
+
+
+    
     \paragraph{Search Policy}
 
-    The search policy is defined similarly to DENTS (Section \ref{sec:4-2-2-dents}), using the contextual value and entropy estimates:
+    The search policy is defined similarly to DENTS (Section \ref{sec:4-2-2-dents}), given a context weight $\bff{w}\in\Delta^D$, using the contextual value and entropy estimates:
     \begin{align}
-        \Qsmdsoft(s,a) &= \Qsmdctx(s,a)+\betasmd(N(s))\HQsmd(s,a;\bff{w}), \\
+        \Qsmdsoft(s,a) &= \Qsmdctx(s,a) \nonumber \\
+            &+\betasmd(N(s))\HQsmd(s,a;\wSMat{s,a}), \\
         \pismd(a|s;\bff{w}) &= (1-\lambdasmd)\rhosmd(a|s;\bff{w}) + \frac{\lambdasmd}{|\cl{A}|}, 
                     \label{eq:sm_dents_search_policy} \\ 
         \rhosmd(a|s;\bff{w}) &\propto \exp\left(\frac{\Qsmdsoft(s,a)}{\alphasmd(N(s))}\right),
@@ -531,45 +541,49 @@
         \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
     \end{align}
 
+    % FUTURE_MIKE_HEADER
+    %
+    % Wanted to update to allow \alpha = 0, but tired and just need to turn this in
 
 
 
     \paragraph{Backups}
 
-    Given a trajectory $\tau=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pismd$, the $\backupq$ and $\backupv$ functions update the multi-objective and entropy value estimates for $t=h-1,\ldots,0$:
+    Given a context weight $\bff{w}\in\Delta^D$ and a trajectory $\splitatcommas{\tau_{:h}=(s_0,a_0,\bff{r}_0,\ldots,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)\sim\pismd(\cdot|\cdot;\bff{w})}$, the $\backupq$ and $\backupv$ functions update the multi-objective and entropy value estimates for $t=h-1,\ldots,0$:
     \begin{align}
-        \wQ &= \fcv(\GSM(s,a), \bff{w}), \label{eq:6:smdents_backup_q_w} \\
-        \wV &= \fcv(\GSM(s), \bff{w}), \label{eq:6:smdents_backup_v_w} \\
-        \HQsmd(s_t,a_t;\wQ) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVsmd(s';\wQ), 
+        \HQsmd(s_t,a_t;\wSMat{s_t,a_t}) &\leftarrow \sum_{s'\in \suc{s_t}{a_t}} \frac{N(s')}{N(s_t,a_t)} \HVsmd(s';\wSMat{s'}),
             \label{eq:6:smdents_entropy_q_backup} \\
-        \HVsmd(s_t;\wV) &\leftarrow \cl{H}(\pismd(\cdot | s_t;\wV)) \nonumber \\
-            &+ \sum_{a\in\cl{A}} \pismd(a|s_t;\wV)\HQsmd(s_t,a;\wQ), 
+        \HVsmd(s_t;\wSMat{s_t}) &\leftarrow \cl{H}(\pismd(\cdot | s_t;\wSMat{s_t})) \nonumber \\
+            &+ \sum_{a\in\cl{A}} \pismd(a|s_t;\wSMat{s_t})\HQsmd(s_t,a;\wSMat{s_t,a}),
             \label{eq:6:smdents_entropy_v_backup}  \\
-        \Qsmd(s_t,a_t;\wQ) &\leftarrow 
+        \Qsmd(s_t,a_t;\wSMat{s_t,a_t}) &\leftarrow
             \bff{R}(s_t,a_t) \nonumber \\
-            &+ \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vsmd(s';\wQ) \right), 
-                    \label{eq:6:smdents_q_backup} \\ 
-        \Vsmd(s_t;\wV) &\leftarrow  \Qsmd\left(s_t,\argmax_{a\in\cl{A}} \Qsmdctxcstm{\wV}(s_t,a);\wV\right).
-                    \label{eq:6:smdents_backup_v} 
+            &+ \sum_{s' \in \suc{s_t}{a_t}} \left( \frac{N(s')}{N(s_t,a_t)} \Vsmd(s';\wSMat{s'}) \right),
+                    \label{eq:6:smdents_q_backup} \\
+        \hat{a}_t &= \argmax_{a\in\cl{A}} \Qsmdctxcstm{\wSMat{s_t}}(s_t,a),
+                    \label{eq:6:smdents_greedy_action} \\
+        \Vsmd(s_t;\wSMat{s_t}) &\leftarrow  \Qsmd(s_t,\hat{a}_t;\wSMat{s_t,\hat{a}_t}).
+                    \label{eq:6:smdents_backup_v}
     \end{align}
 
-    There are two significant differences of note in the backups of SM-DENTS compared to its single-objective counterpart DENTS and multi-objective counterpart in CH-BTS: 
+    Two points are worth noting about these backups:
     \begin{itemize}
-        
-        \item The value estimates are updated with respect to the closest vertices $\wQ$ and $\wV$ looked up from the simplex maps of $\GSM(s,a)$ and $\GSM(s)$ from Equations \ref{eq:6:smdents_backup_q_w} and \ref{eq:6:smdents_backup_v_w}.
-        \item Since a maximum is not well-defined over vectors, Equation (\ref{eq:6:smdents_backup_v}) computes the action that leads to the maximum contextual Q-value for $\wV$, which is then used to update the value estimate.
+        \item The value estimates are updated only at the closest vertices $\wSMat{s_t}$ and $\wSMat{s_t,a_t}$, looked up from the simplex maps $\GSM(s_t)$ and $\GSM(s_t,a_t)$ in Equations \eqref{eq:6:smdents_v_vertex_lookup} and \eqref{eq:6:smdents_q_vertex_lookup}, rather than at the context $\bff{w}$ used for selection.
+        \item Since a maximum is not well-defined over vectors, Equation (\ref{eq:6:smdents_greedy_action}) computes the action $\hat{a}_t$ that maximises the contextual Q-value with respect to $\wSMat{s_t}$, and Equation (\ref{eq:6:smdents_backup_v}) uses that action to update the value estimate.
     \end{itemize}
 
-    After the Q-values are updated from Equations (\ref{eq:6:smdents_entropy_q_backup}) and (\ref{eq:6:smdents_q_backup}), a call is made to the $\splitsimplex$ operation to split a simplex in the simplex map if necessary. Specifically, 
+    Once the Q-value estimates are updated by Equations (\ref{eq:6:smdents_entropy_q_backup}) and (\ref{eq:6:smdents_q_backup}), the new values at $\wSMat{s_t,a_t}$ are propagated across the simplex map by $\push(\GSM(s_t,a_t),\wSMat{s_t,a_t})$. A simplex is then split if necessary by calling:
     \begin{align}
-        \splitsimplex(\GSM(s_t,a_t),\fcs(\GSM(s_t,a_t),\wQ)).
-    \end{align} 
+        \splitsimplex(\GSM(s_t,a_t),\fcs(\GSM(s_t,a_t),\bff{w})).
+    \end{align}
 
-    Similarly, after the value estimates are updated from Equations (\ref{eq:6:smdents_entropy_v_backup}) and (\ref{eq:6:smdents_backup_v}), the following call is made:
+    Likewise, once the value estimates are updated by Equations (\ref{eq:6:smdents_entropy_v_backup}) and (\ref{eq:6:smdents_backup_v}), the new values at $\wSMat{s_t}$ are propagated by $\push(\GSM(s_t),\wSMat{s_t})$, followed by:
     \begin{align}
-        \splitsimplex(\GSM(s_t),\fcs(\GSM(s_t),\wV)).
+        \splitsimplex(\GSM(s_t),\fcs(\GSM(s_t),\bff{w})).
     \end{align}
     
+
+
 
     \paragraph{Recommendation Policy}
 
@@ -610,39 +624,41 @@
 \section{Empirical Results}
 \label{sec:6-4-results}
 
-    This section presents the empirical results for this 
-    chapter. The experimental setup follows that of Section 
-    \ref{sec:5-5-results} in Chapter \ref{ch:5-chmcts}, 
-    and only the results are presented here:
+    This section presents the empirical results for this chapter. The experimental setup follows that of Section \ref{sec:5-5-results} in Chapter \ref{ch:5-chmcts}, so only the differences are given here:
     \begin{itemize}
-        \item Section \ref{sec:6-4-1-results_and_discussion} 
-            presents the results on the MOMDP environments 
-            described in Section \ref{sec:5-5-1-envs};
-        \item Section \ref{sec:6-4-2-scalability} presents 
-            scalability results on the Deep Sea Treasure 
-            environment (Section \ref{sec:5-5-1-envs});
+        \item \mccorrect{Section \mbox{\ref{sec:5-5-1-envs}} describes the MOMDP environments used in the experiments;}
+        \item \mccorrect{Section \mbox{\ref{sec:6-4-0-eval_procedure}} gives additional details on the evaluation setup used;}
+        \item Section \ref{sec:6-4-1-results_and_discussion}
+            presents the results on those environments;
+        \item Section \ref{sec:6-4-2-scalability} presents
+            scalability results on the Deep Sea Treasure
+            environment;
         \item Appendix \ref{app:expr-deets-ch5} provides 
             the \mccorrect{algorithm parameters} used and how they were chosen.
     \end{itemize}
 
-    Results for CZT, CH-BTS and CH-UCT are repeated from 
-    Section \ref{sec:5-5-results} as baselines for SM-BTS 
-    and SM-DENTS.
-
-    \todo{Work out if the below needs to be in its own section. Think would like to make it parallel the chapter 5 and chapter 6 results sections, just to emphasize that results are over the same set of things. But need to update labels etc}
+    Results for CZT, CH-BTS and CH-UCT are repeated from Section \ref{sec:5-5-results} as baselines for SM-BTS and SM-DENTS.
 
     \begin{mccorrection}
 
-    To compute a hypervolume for SM-BTS and SM-DENTS, an approximate convex hull value set is computed from the values stored in the simplex map at the root node, as was done for CZT in Section \ref{sec:5-5-2-eval_procedure}. Given the simplex map $\GSM(s_0)$ defined in Equation \eqref{eq:6:simplex_map_decision_node}, the following set of points is used, where $\Vsmd(s_0;\cdot)$ are the value estimates and $\VSM(s_0)$ are the vertices:
+\subsection{Evaluation Procedure} 
+\label{sec:6-4-0-eval_procedure}
+
+    The evaluation setup used for this chapter is identical to that of Section \ref{sec:5-5-2-eval_procedure}. However, like CZT, the SM-BTS and SM-DENTS algorithms do not operate directly on convex hull value sets, so a value set must be specified in order to compute the hypervolume metric.
+
+    As was done for CZT in Section \ref{sec:5-5-2-eval_procedure}, an approximate convex hull value set is constructed from the values stored in the simplex map at the root node. Given the simplex map $\GSM(s_0)$ defined in Equation \eqref{eq:6:simplex_map_decision_node}, the following set of points is used:
     \begin{align}
-        \cprune \left( \left\{ \Vsmd(s_0;\bff{w})\ |\ \bff{w}\in \VSM(s_0) 
-            \right\} \right).
+        \cprune \left( \left\{ \Vsmd(s_0;\bff{w})\ |\ \bff{w}\in \VSM(s_0), \NSM(\bff{w}) > 0 
+            \right\} \right),
     \end{align}
+    %
+    where $\NSM(\bff{w})$ is the number of times that the value estimate at the vertex $\bff{w}$ of the simplex map has been updated.
 
     \end{mccorrection}
 
-    \todo{In both Chapter 5 and Chapter 6, should be clear that in the scalability sections that parameters were tuned on the environment of size 10 (the previous DST figure from the scalability figures), and just fixed across all environment sizes}
-
+    % No time to fix this, and wasn't asked to
+    %
+    % \odot{In both Chapter 5 and Chapter 6, should be clear that in the scalability sections that parameters were tuned on the environment of size 10 (the previous DST figure from the scalability figures), and just fixed across all environment sizes}
 
 
 \subsection{Multi-Objective Gridworld Results}
@@ -723,6 +739,26 @@
         and Breakable-Bottles respectively.}
         \label{fig:6:gridworld_results}
     \end{figure}
+
+    \paragraph{Gymnasium Environments.}
+
+    Results on the MO-Gymnasium environments are given in Figure \ref{fig:6:gridworld_results}. SM-BTS and SM-DENTS perform comparably to the CHMCTS algorithms across all four environments, though generally converging slightly more slowly. On Fruit-Tree-7, the hypervolume curves for the simplex map algorithms are higher than those of the CHMCTS algorithms. This is because size pruning limits each convex hull value set to $K_{\max}=15$ points (Section \mbox{\ref{sec:5-3-6-optimisations}}), which limits the hypervolume that the CHMCTS algorithms can achieve, whereas simplex maps are not subject to such a constraint.
+
+    \begin{mccorrection}
+    The results for CZT, CH-BTS and CH-UCT are repeated from Figure \ref{fig:5:gridworld_results}, so the non-monotonic trends in their hypervolume curves are explained in Section \ref{sec:5-5-3-results_and_discussion}.
+    \end{mccorrection}
+
+
+
+
+
+
+
+
+
+
+
+
 
     \begin{figure}
         \centering
@@ -813,53 +849,18 @@
         \label{fig:6:dst_backups}
     \end{figure}
 
-
-
-    \todo{just need to make this whole section read better, also say that CH-BTS etc are not discussed directly, because they are covered in Chapter 5}
-
-    \todo{Write a bit more detail}
-
-    \paragraph{Gymnasium Environments.}
-
-    Results on the MO-Gymnasium environments are given in 
-    Figure \ref{fig:6:gridworld_results}. SM-BTS and 
-    SM-DENTS perform comparably to the CHMCTS algorithms 
-    across all four environments, though generally 
-    converging slightly more slowly. On Fruit-Tree-7, the 
-    hypervolume curves for simplex map algorithms are 
-    consistently higher than those of the CHMCTS 
-    algorithms. This is because the hypervolume 
-    achievable by CHMCTS algorithms is limited by the 
-    maximum number of points that can be stored in each 
-    convex hull value set, $K_{\max}$, whereas simplex 
-    maps are not subject to this constraint.
-
-    \begin{mccorrection}
-    The non-monotonic trends in the CZT, CH-BTS and CH-UCT results are explained in Section \ref{sec:5-5-3-results_and_discussion}, as these results are repeated from Figure \ref{fig:5:gridworld_results}.
-    \end{mccorrection}
-
     \paragraph{Deep Sea Treasure Environments.}
 
-    Results on the Deep Sea Treasure environments are 
-    given in Figures \ref{fig:6:dst_results} and 
-    \ref{fig:6:dst_backups}. On the deterministic 
-    environment $\DST(10,0)$, simplex map algorithms 
-    perform similarly to the CHMCTS algorithms. However, 
-    on both stochastic environments, 
-    $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$, 
-    the EUM of SM-BTS and SM-DENTS is significantly 
-    higher than all algorithms from Chapter 
-    \ref{ch:5-chmcts}. As shown in Figure 
-    \ref{fig:6:dst_backups}, simplex map algorithms are 
-    able to perform substantially more backups than convex 
-    hull-based algorithms within the same time budget, 
-    which accounts for their improved performance in
-    stochastic environments.
+    Results on the Deep Sea Treasure environments are given in Figures \ref{fig:6:dst_results} and \ref{fig:6:dst_backups}. On the deterministic environment $\DST(10,0)$, simplex map algorithms perform similarly to the CHMCTS algorithms. However, on both stochastic environments, $\DST(10,\frac{1}{40})$ and $\DST(10,\frac{1}{5})$, the EUM of SM-BTS and SM-DENTS is significantly higher than all algorithms from Chapter \ref{ch:5-chmcts}, matching the performance of CHVI (Figure \ref{fig:6:dst_results:sub:e}). As shown in Figure \ref{fig:6:dst_backups}, simplex map algorithms are able to perform substantially more backups than convex hull-based algorithms within the same time budget, which accounts for their improved performance in stochastic environments.
+
+
+
+
 
 
 % Force scalability results onto new page
 % So that figs for above section are flushed before the below section
-\clearpage
+% \clearpage
 
 
 \subsection{Scalability Results}
@@ -926,49 +927,35 @@
         \label{fig:6:dst_scaling}
     \end{figure}
 
-    \todo{just need to make this whole section read better, also say that CH-BTS etc are not discussed directly, because they are covered in Chapter 5}
-
     \begin{mccorrection}
-    Figure \ref{fig:6:dst_scaling} repeats the scalability experiment of Section \ref{sec:5-5-4-scalability} with the simplex map algorithms added. The experimental setup, and the trends in the CHVI curves --- the increase in optimal EUM with environment size, the constant normalised hypervolume of around $0.8$, and the non-monotonicity arising from the random generation of the environments --- are as described there.
+    Figure \ref{fig:6:dst_scaling} repeats the scalability experiment of Section \ref{sec:5-5-4-scalability} with the simplex map algorithms added. The experimental setup, use of normalised hypervolume (NHV), and the trends in the CHVI, CZT and CHMCTS curves 
+    % --- the increase in best achievable EUM with environment size, the constant normalised hypervolume of around $0.8$, and the non-monotonicity arising from the random generation of the environments --- 
+    are as described there.
     \end{mccorrection}
 
-    On the deterministic environment $\DST(W,0)$, simplex 
-    map algorithms perform comparably to CHMCTS algorithms 
-    but slightly below them across all map sizes.
+    On the deterministic environment $\DST(W,0)$, the simplex map algorithms perform similarly to the CHMCTS algorithms, though slightly below them on both EUM and NHV across all environment sizes.
 
     \begin{mccorrection}
-    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM in the stochastic environments as the environment size increases, before declining once the fixed compute budget becomes the limiting factor. 
+    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM in the stochastic environments as the environment size increases, before declining once the fixed planning budget becomes the limiting factor. On the mildly stochastic environment $\DST(W,\frac{1}{40})$, both maintain good performance up to $W=40$.
     \end{mccorrection}
 
-    On the heavily stochastic environment 
-    $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal 
-    EUM for map widths up to $W=20$, continues to improve 
-    until around $W=40$, plateaus until $W=80$, and then 
-    degrades to performance comparable to CZT at $W=100$. 
-    This represents a substantial improvement over all 
-    CHMCTS algorithms, which are unable to run a 
-    sufficient number of trials in stochastic environments 
-    at these scales.
+    On the heavily stochastic environment $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal EUM for environment sizes up to $W=20$ \mccorrect{(beyond which CHVI and CHVI(PS) degrade)}, continues to improve until around $W=40$, plateaus until $W=70$, and then degrades to performance comparable to CZT at $W=100$. This represents a substantial improvement over all CHMCTS algorithms, which are unable to run a sufficient number of trials to make progress in stochastic environments at these scales.
 
-    \todo{need to update the below too, we updated the results}
+    \begin{mccorrection}
+    SM-BTS does not match this performance. Its temperature is tuned so low that the search policy is close to greedy, leaving the uniform exploration parameter, set to more than twice the value used by SM-DENTS (Table \ref{table:hyperparams_dst}), as its main source of exploration. SM-DENTS instead obtains exploration from the entropy bonus, which allows it to exploit more later in the search. As discussed in Section \ref{sec:4-4-3-1-gridworld_results}, exploitation is still necessary in these stochastic environments so that the recommendation policy does not leave the tree and fall back to acting uniformly at random (Equation \eqref{eq:5:full_Recommend}).
+    \end{mccorrection}
 
-    On the mildly stochastic environment 
-    $\DST(W,\frac{1}{40})$, simplex map algorithms do not 
-    show the same advantage. Two factors likely contribute 
-    to this. First, \mccorrect{parameter} tuning on this 
-    environment yielded a lower entropy coefficient 
-    $\betasmd$, reducing the benefit of entropy-based 
-    exploration. Second, the tuned \mccorrect{parameters} for 
-    the mildly stochastic maps were significantly more 
-    exploratory than those for the deterministic and 
-    heavily stochastic maps. On larger maps, exploitation 
-    is necessary to explore deeper regions of the tree 
-    effectively, and an overly exploratory configuration 
-    may prevent the algorithm from committing sufficiently 
-    to promising branches.
+    % FUTURE_MIKE_HEADER
+    %
+    % Also pretty sure that parameter tuning on environment size 10 not necessarily extrapolating to larger environments probably has something to do with why SM-DENTS doesn't do better on DST(W,1/40), compared to SM-BTS, but given old version of results they didn't even outperform CZT, this was good enough. Pretty sure SM-DENTS should do better in both
+
+    % OLD VERSION OF FIGURE
+    %
+    % On the mildly stochastic environment $\DST(W,\frac{1}{40})$, simplex map algorithms do not show the same advantage. Two factors likely contribute to this. First, \mccorrect{parameter} tuning on this environment yielded a lower entropy coefficient $\betasmd$, reducing the benefit of entropy-based exploration. Second, the tuned \mccorrect{parameters} for the mildly stochastic maps were significantly more exploratory than those for the deterministic and heavily stochastic maps. On larger maps, exploitation is necessary to explore deeper regions of the tree effectively, and an overly exploratory configuration may prevent the algorithm from committing sufficiently to promising branches.
 
 
-    \todo{Something along the lines of: Recall that CZT is incompatible with the solved labelling optimisation (back refs), and will generally discover a small local optima and only explore a small portion of the state space. This is reflected in the (SCALABILITY FIG), where the CZTs performance on EUM is relatively stable, but finds significantly smaller convex hulls. Part of SM-BTS and SM-DENTS dropoff in performance in stochastic environments related back to (EVALUATION POLICY), where on a large environment, with small compute budget, the algorithms are able to find larger treasure, so at evaluation time it follows those actions, but is likely to get unlucky and leave the tree in the (EVALUATION POLICY) by encountering an outcome that was not sampled in the small planning time. This is also reflected in the fact that NHV is higher for the simplex map algorithms. Finally, also the parameters were tuned on environment of size 10 and fixed across all environment sizes, so it is likely that the optimal parameters depend on the size of the environment and the compute budget, and is possible that better performance on say the environment of size 100 could be acheived by tuning the parameters on the specific environment (to make them a bit more greedy, and exploit, and fill out the tree, to reduce fallbacks to the uniform policy during evaluation).}
+    % we described this in the ch5 updates
+    % \odot{Something along the lines of: Recall that CZT is incompatible with the solved labelling optimisation (back refs), and will generally discover a small local optima and only explore a small portion of the state space. This is reflected in the (SCALABILITY FIG), where the CZTs performance on EUM is relatively stable, but finds significantly smaller convex hulls. Part of SM-BTS and SM-DENTS dropoff in performance in stochastic environments related back to (EVALUATION POLICY), where on a large environment, with small compute budget, the algorithms are able to find larger treasure, so at evaluation time it follows those actions, but is likely to get unlucky and leave the tree in the (EVALUATION POLICY) by encountering an outcome that was not sampled in the small planning time. This is also reflected in the fact that NHV is higher for the simplex map algorithms. Finally, also the parameters were tuned on environment of size 10 and fixed across all environment sizes, so it is likely that the optimal parameters depend on the size of the environment and the compute budget, and is possible that better performance on say the environment of size 100 could be acheived by tuning the parameters on the specific environment (to make them a bit more greedy, and exploit, and fill out the tree, to reduce fallbacks to the uniform policy during evaluation).}
 
 
 

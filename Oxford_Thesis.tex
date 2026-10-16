@@ -43,8 +43,8 @@
 % your corrected thesis to your examiners for review.  Turn it off, and the blue disappears.
 
 % MIKE COMMENT: because the \begin{mccorrection} ... \end{mccorrection} still makes some formatting changes, even with the below commented out. For final "camera-ready" going to find-and-replace:
-% \begin{mccorrection} -> %\begin{mccorrection}
-% \end{mccorrection} -> %\end{mccorrection}
+% \begin{mccorrection} <-> %\begin{mccorrection}
+% \end{mccorrection} <-> %\end{mccorrection}
 %
 % Because we always put those on new lines, it will be as if those environments didn't exist
 
@@ -132,8 +132,11 @@
 \usepackage{caption}
 \usepackage{subcaption}
 
-% float barrier
-\usepackage{placeins}
+% float barrier. The [section] option inserts a \FloatBarrier at every
+% \section, so a float can never drift past a section heading into the next
+% section. Unlike \clearpage this does not force a page break, so no
+% whitespace is left at the foot of the preceding page.
+\usepackage[section]{placeins}
 
 % ticks and crosses
 \usepackage{pifont}
@@ -236,20 +239,14 @@
 
 
 
-\newcommand{\todo}[1]{\hl{TODO: #1}}
-\newcommand{\bd}[1]{\hl{BD: #1}}
-\newcommand{\quest}[1]{\hl{Question: #1}}
+% \newcommand{\todo}[1]{\hl{TODO: #1}} % todo for later
+% \newcommand{\bd}[1]{\hl{BD: #1}} % brain dumping (get idea down, but probably needs re-writing/cleaning up)
+% \newcommand{\quest}[1]{\hl{Question: #1}} % question for advisors (could be used by claude for me though)
 
-
+% Replace above with this to hide the notes
 % \newcommand{\todo}[1]{}
 % \newcommand{\bd}[1]{}
 % \newcommand{\quest}[1]{}
-
-
-% \newcommand{\todonow}[1]{\hl{TODOnow: #1}}
-% \newcommand{\hide}[1]{} % TODO: use this to hide things that are personal notes when sharing work
-% \newcommand{\hide}[1]{#1} % TODO: uncomment this and make sure that this is all handled
-% \newcommand{\htodo}[1]{\hide{\todo{#1}}}
 
 
 
@@ -654,6 +651,7 @@
 \newcommand{\SSMa}[1]{{\bfcl{S}^{(#1)}_{\SM}}}
 \newcommand{\fSM}{{\bff{f}_{\SM}}}
 \newcommand{\wSM}{{\bff{w}_{\SM}}}
+\newcommand{\wSMat}[1]{{\bff{w}_{\SM}(#1)}}
 \newcommand{\wSMi}[1]{{\bff{w}^{(#1)}_{\SM}}}
 \newcommand{\wSMprime}{{\bff{w}'_{\SM}}}
 \newcommand{\Qsmctx}[1]{{\hat{Q}^{#1}_{\SM}}}
@@ -662,15 +660,14 @@
 
 
 
-\newcommand{\SMDENTS}{{\textnormal{SM-DNTS}}}
+\newcommand{\SMDENTS}{{\textnormal{SM-D}}}
 \newcommand{\pushradiusdents}{{\textnormal{\texttt{push\_radius}}_{\SMDENTS}}}
 \newcommand{\Vsmdctx}{{\hat{V}^{\bff{w}}_{\SMDENTS}}}
+\newcommand{\Vsmdctxcstm}[1]{{\hat{V}^{#1}_{\SMDENTS}}}
 \newcommand{\Qsmdctx}{{\hat{Q}^{\bff{w}}_{\SMDENTS}}}
-\newcommand{\Qsmdctxcstm}[1]{{\hat{Q}^{(#1)}_{\SMDENTS}}}
+\newcommand{\Qsmdctxcstm}[1]{{\hat{Q}^{#1}_{\SMDENTS}}}
 \newcommand{\Vsmd}{{\hat{\bff{V}}_{\SMDENTS}}}
 \newcommand{\Qsmd}{{\hat{\bff{Q}}_{\SMDENTS}}}
-\newcommand{\wV}{{\bff{w}_V}}
-\newcommand{\wQ}{{\bff{w}_Q}}
 \newcommand{\HSM}{{\cl{H}}_{\SM}}
 \newcommand{\HVsmd}{{\bar{\cl{H}}_{V,\SMDENTS}}}
 \newcommand{\HQsmd}{{\bar{\cl{H}}_{Q,\SMDENTS}}}

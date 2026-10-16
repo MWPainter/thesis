@@ -289,7 +289,9 @@
 
     The first aim is included so that the algorithms introduced here are easy to adopt in existing MCTS frameworks. The second is satisfied by MENTS, whose entropy bonus provides exploration even when rewards are sparse or uninformative, but not by UCT, which tends to exploit (Figure \mbox{\ref{fig:4:shortest_path_intro_results}}, and the gridworld results in Section \mbox{\ref{sec:4-4-3-results_and_discussion}}). The third is satisfied by UCT, and by MENTS only when its temperature is small. The fourth is satisfied by UCT, but not by MENTS, whose consistency requires a temperature that cannot be chosen independently of the MDP \cite{dents}.
 
-    Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:4:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored.
+    Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:4:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored. 
+    
+    The FrozenLake environment (Section \ref{sec:4-4-1-1-frozenlake}) is an example of a stochastic environment, where exploitation is beneficial for performance in practice (Section \ref{sec:4-4-3-1-gridworld_results}).
     \end{mccorrection}
 
     In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
@@ -882,7 +884,8 @@
                 & $O(H_{\thtspp}+A)$ \\
         \end{tabular}  
             }
-        \caption[Summary of complexities for different MCTS algorithms.]{Summary of complexities for different MCTS algorithms. Complexities for each of the significant components are shown for each algorithm. AM is short for Alias Method. $\backupq$ can be implemented in $O(1)$ time for all algorithms in this table so is omitted. Finally, UCT does not use $\piinit$, so it can implement $\initv$ in $O(1)$ by only computing the function approximation $\Vinit=\tilde{V}$. \todo{Overfull hbox and margin issue, probably reduce the text size very marginally to make it all fit} \label{table:mcts_trial_complexity}}
+        \caption[Summary of complexities for different MCTS algorithms.]{Summary of complexities for different MCTS algorithms. Complexities for each of the significant components are shown for each algorithm. AM is short for Alias Method. $\backupq$ can be implemented in $O(1)$ time for all algorithms in this table so is omitted. Finally, UCT does not use $\piinit$, so it can implement $\initv$ in $O(1)$ by only computing the function approximation $\Vinit=\tilde{V}$.
+        \label{table:mcts_trial_complexity}}
     \end{table*}
 
 
@@ -1122,7 +1125,7 @@
         \item Appendix \ref{app:expr-deets-ch4} provides additional details on these experiments, including the \mccorrect{parameters used by each algorithm, and how they were selected}.
     \end{itemize}
 
-    \todo{Make sure alpha tends to zero is at least described somewhere here}
+    % \odot{Make sure alpha tends to zero is at least described somewhere here}
 
 
 
@@ -1148,13 +1151,7 @@
 \subsection{Environments}
 \label{sec:4-4-1-envs}
 
-    Gridworld environments are used to investigate the 
-    behaviour of the search algorithms in controlled, solvable 
-    settings. Three gridworld environments are used: a 
-    heavily stochastic environment with sparse rewards 
-    (FrozenLake), a deterministic environment with sparse 
-    rewards (DeterministicGridWorld), and a mildly stochastic environment 
-    with dense rewards (the Sailing Problem).
+    Gridworld environments are used to investigate the behaviour of the search algorithms in controlled, solvable settings. Three gridworld environments are used: a heavily stochastic environment with sparse rewards (FrozenLake), a deterministic environment with sparse rewards (DeterministicGridWorld), and a mildly stochastic environment with dense rewards (the Sailing Problem).
     
 
 
@@ -1178,14 +1175,14 @@
 
 \subsubsection{DeterministicGridWorld}
 \label{sec:4-4-1-2-dgw}
-    \textit{DeterministicGridWorld} (DGW) is used to refer to the deterministic version of FrozenLake in these experiments. The environment is the same as FrozenLake, but the agent cannot slip and move in a perpendicular direction. To differentiate between paths of different lengths a discount factor of $\gamma$ is used, so that shorter paths gain more reward than longer ones. That is, if the agent reaches a goal after $t$ timesteps, then a reward of $\gamma^t$ is received. Maps of sizes 8x8 to 8x32, defined in Appendix \ref{appsec:4:envs}, are used in the experiments for this environment.
+    \textit{DeterministicGridWorld} (DGW) is used to refer to the deterministic version of FrozenLake. The environment is the same as FrozenLake, but the agent cannot slip and always moves in its intended direction. To differentiate between paths of different lengths a discount factor of $\gamma$ is used, so that shorter paths gain more reward than longer ones. That is, if the agent reaches a goal after $t$ timesteps, then a reward of $\gamma^t$ is received. Maps of sizes 8x8 to 8x32, defined in Appendix \ref{appsec:4:envs}, are used in the experiments for this environment.
 
 
 
 \subsubsection{Sailing Problem}
 \label{sec:4-4-1-3-sailing}
 
-    The \textit{Sailing Problem} has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue}. It is another gridworld environment with one goal location, at the opposite corner to the starting location of the agent. The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/left. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. Figure \ref{fig:sailing_deets} illustrates the problem and gives the wind transition probabilities for the Sailing problem, using the same map notation as for FrozenLake. 
+    The \textit{Sailing Problem} has often been used to evaluate MCTS algorithms \cite{peret2004line,uct,tolpin2012mcts,brue}. It is another gridworld environment with one goal location, at the opposite corner to the starting location of the agent. The agent has 8 different actions, where it can travel in any cardinal or semi-cardinal direction. In each state of the MDP, the wind is blowing in a given direction and will stochastically change after every transition. The agent cannot sail directly into the wind. Actions and wind directions can take values in $\{0,1,\ldots,7\}$, with a value of $0$ representing North/up, $2$ representing East/right, $4$ representing South/down and $6$ representing West/left. The remaining numbers represent the inter-cardinal directions. The cost of each action depends on the \textit{tack}, the angle between the direction of the agent's travel and the wind. Figure \ref{fig:sailing_deets} illustrates the problem and gives the wind transition probabilities for the Sailing problem. 
 
     \begin{figure}
         \centering
@@ -1264,6 +1261,7 @@
 
 
 \subsubsection{Gridworld Environments}
+\label{sec:4-4-2-1-gridworld_eval_procedure}
     Consider an algorithm with search tree $\cl{T}$, which provides a partial recommendation policy $\psi_{\alg}$. The recommendation policy is made complete by using a uniformly random policy for states and actions that are outside of the tree $\cl{T}$ as follows:
     % 
     \begin{align}
@@ -1293,7 +1291,7 @@
 
     \mccorrect{Algorithm parameters} were tuned using round-robin tournaments on 9x9 Go boards, details are given in Appendix \ref{appsec:round_robin}.
 
-    The PUCT algorithm is used as a baseline, as described in Alpha Go Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions. The Alias method (Section \ref{sec:4-2-3-stoch_search_policies}) is used for all algorithms using stochastic search policies.
+    The PUCT algorithm is used as a baseline, as described in Alpha Go Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions in this domain. The Alias method (Section \ref{sec:4-2-3-stoch_search_policies}) is used for all algorithms using stochastic search policies.
 
             
 
@@ -1349,9 +1347,13 @@
     In each of the following figures, results are given for 
     a range of map sizes in the three gridworld environments. 
     \mccorrect{Algorithm parameters} were tuned on the smallest map of each 
-    environment and then used across all map sizes, to 
+    environment (Appendix \ref{appsec:4:hypersearch}) and then used across all map sizes, to 
     investigate how well each algorithm generalises to 
     larger state spaces.
+
+
+
+
 
     \paragraph{DeterministicGridWorld Results.}
 
@@ -1395,19 +1397,17 @@
         \label{fig:4:dgw_results}
     \end{figure}
 
-    Results for DeterministicGridWorld are given in Figure 
+    Results for DGW are given in Figure 
     \ref{fig:4:dgw_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are optimistically set to a constant value of one and the bias term $\Nq$ is set to one. 
 
-    \todo{also explain that UCT will pick every action once first, which is not uniformly random, which is why finding the first solution lags behind all of the other algorithms, in particular BTS}
+    As discussed in Section \ref{sec:4-1-intro}, UCT-based algorithms
+    converge to a local optimum due to greater focus on exploitation,
+    which is visible across all map sizes. \mccorrect{UCT and MaxUCT both take many trials to find any solution on the larger maps. Two factors contribute: the high bias parameters selected (Table \mbox{\ref{table:gridworld_params}}), and that every action is tried once before any action is selected a second time (Section \mbox{\ref{sec:2-4-2-uct}}). The latter causes a broad initial search before exploiting, whereas a stochastic search policy such as that of BTS can reach the goal early by chance while exploring throughout its search. H-MCTS finds a solution and converges faster, with a smaller bias parameter.}
+    
+    The stochastic search policies all tend towards the optimal path across all map sizes. However, particularly in the larger maps, 8x24 and 8x32, the path recommended by BTS improves rapidly initially, but without the benefit of entropy exploration it is slower to converge to the optimal path.
 
-    As discussed in Section \ref{sec:4-1-intro}, UCT-based algorithms 
-    converge to a local optimum due to greater focus on exploitation, 
-    which is visible across all map sizes. The stochastic search policies all tend towards the optimal path across all map sizes.
-
-    Particularly in the larger maps, 8x24 and 8x32, the path recommended by BTS improves rapidly initially, but without the benefit of entropy exploration it is slower to converge to the optimal path.
-
-    The tuned temperature parameter $\alphadents$ is below the misalignment threshold for all maps, however the 8x32 map contains some larger regions without any holes where MENTS can gather entropy rewards, leading to slow convergence. DENTS is able to improve on this by using a comparable search temperature (i.e. $\alphadents(x)$) to MENTS, but with a lower entropy coefficient. This allows DENTS to converge to the optimal path faster than MENTS, particularly on the 8x32 map.
+    The tuned temperature parameter $\alphaments$ is below the misalignment threshold for all maps \mccorrect{as it converges to an optimal policy}, however the 8x32 map contains some larger regions without any holes where MENTS can gather entropy rewards, leading to slow convergence. DENTS is able to improve on this by using a larger search temperature (i.e. $\alphadents(x)$) to MENTS, but with a lower entropy coefficient \mccorrect{(Table \mbox{\ref{table:gridworld_params}})}. This allows DENTS to converge to the optimal path faster than MENTS, particularly on the 8x32 map.
 
     RENTS uses \textit{relative entropy} instead of Shannon entropy, which performs a KL regularization between the search policy at each timestep and the previous timestep, which in practice leads to sampling long sequences of the same action. This strategy is effective on smaller maps, but becomes less effective on larger maps where the optimal path is more complex.
 
@@ -1418,7 +1418,10 @@
     resembling breadth-first search, leading to more thorough 
     exploration on larger maps but slower initial progress, as visible in the 8x8 map.
 
-    \todo{Add some description of hyperparameters, say tended towards mostly epsilon greedy, but also small and deterministic environment. THe parameter sensitivity shows that both boltzmann and epsilon greedy could be useful here, but epsilon won in the parameter optimisation.}
+
+
+
+
 
     \paragraph{FrozenLake Results.}
 
@@ -1473,19 +1476,22 @@
 
     BTS and DENTS perform well across all map sizes in this experiment, demonstrating their ability to balance exploration and exploitation when necessary. In particular, TENTS was the only other algorithm able to effectively solve the 4x16 map.
 
-    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation.
+    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation. \mccorrect{UCT and H-MCTS performed similarly on every map and all three algorithms made little or no progress on the 4x16 map.}
 
-    \todo{also explain the non-monotonicity, on 4x16 frozen lake. Because maps were randomly generated, this map has few holes, but critically one next to the }
+    \begin{mccorrection}
+    Recall that parameters were optimised using the 4x4 map and reused for all maps. The temperature selected for MENTS was misaligned on the 4x12 and 4x16 maps. TENTS selected a similar temperature but was not misaligned, which suggests that the misalignment threshold is higher for Tsallis entropy than for Shannon entropy on these maps. RENTS selected a much lower temperature, and behaved as it did in the DGW environments, preferring long sequences of the same action. This was relatively successful until the 4x16 map, where RENTS made little or no progress, although its temperature may also have been above the misalignment threshold for that map.
 
-    \todo{UCT, there is a hole near the goal, one UCT is next to the goal state, the policy that UCT commits to seems to be consistently worse than acting randomly, even though}
+    The 4x12 map displays two non-monotonic trends, both of which are consistent across runs. Because the maps were randomly generated, this one happened to have the lowest ratio of holes to area, with one hole directly next to the goal and another to the north of it.
 
-    \todo{MENTS behaviour is because it finds an initial solution, but because there are few holes, temperature is misaligned and entropy is prioritised until it finds a high entropy solution that sometimes reaches the goal as its convergent behaviour}
+    The first trend is for MENTS, which makes some initial progress, because the map is open and the goal is easy to reach. Being open, the map also contains regions where a large entropy reward can be collected. Performance therefore dips once such a region has been explored enough for the entropy reward to accumulate, at which point MENTS prioritises that reward over reaching the goal. It converges to a misaligned, high-entropy policy that reaches the goal with lower probability than the optimal policy.
 
-    H-MCTS and UCT exhibit an interesting behaviour where beyond $150{,}000$ trials the value of the recommendations declined, likely due to over-commitment to a suboptimal policy close to the goal.
+    The second trend is that the value of the recommendations from UCT and H-MCTS declines beyond $150{,}000$ trials. MaxUCT does not follow this trend, and differs from UCT only in its backups, so the cause must lie in estimating values with sample averages. At a state with one good action and several bad ones, the sample average remains low for a long time, so a state whose actions are all of moderate value may be preferred instead. The states next to the goal have exactly this structure, because of the adjacent holes. A likely explanation is therefore that before $150{,}000$ trials the recommendation policy leaves the tree and falls back to acting uniformly at random (Equation~\ref{eq:4:full_recommend}) before reaching the goal, and that beyond $150{,}000$ trials UCT instead commits to actions near the goal that perform worse than the uniformly random fallback they replace. Committing to a single action removes the chance of selecting the good action that acting at random retains. 
+    \end{mccorrection} %overfull vbox, but no visual error/margin problems
+    
 
-    MENTS appears to be slightly misaligned in the 4x12 and 4x16 maps, which leads to interesting (but consistent) behaviour on the 4x12 map, where some progress is made initially before it discovers a region of the map where it can gather entropy rewards.
 
-    \todo{Add some description of hyperparameters, show that epsilon values lower here, and boltzmann exploration was more useful here. Discussion around needing to exploit more in stochastic environments, and eps explore is less in line with that. This is a VERY noisy environment.}
+
+
 
     \paragraph{Sailing Results.}
 
@@ -1558,16 +1564,16 @@
 
     The UCT-based algorithms are more competitive on this environment, although they again converge to a local optimum, 
     consistent with the pattern observed in the other 
-    environments.
+    environments. 
 
     Boltzmann-based algorithms generally outperform UCT 
     across both initial wind directions and all map sizes. 
 
     An interesting asymmetry can be seen in the performance of RENTS between the 16x16 North map and the 8x16 South-East map. The wind transition probabilities are asymmetric (Figure \ref{fig:sailing_deets}), with transitions towards North being more likely. Because the agent must travel North-East to reach the goal, when the wind is North facing, the agent incurs less cost, and, specifically is less likely to penalise long sequences of North-East actions. In contrast, when the wind is initially South-East facing, the agent is more likely to encounter states where the actions need to adapt to the wind.
 
-    \todo{Add some description of hyperparameters, say tended towards mostly epsilon greedy, but also small and deterministic environment. THe parameter sensitivity shows that both boltzmann and epsilon greedy could be useful here, but epsilon won in the parameter optimisation.}
-
-
+    \begin{mccorrection}
+    The temperatures used for MENTS and TENTS remained below the misalignment threshold on all of the maps, and both performed well, converging to the optimal policy. As in DGW, the TENTS search policy often made a slow start, behaving somewhat like a breadth-first search.
+    \end{mccorrection}
 
     
 
@@ -1647,44 +1653,23 @@
         \label{fig:4:fl_param_sens}
     \end{figure}
 
-    This experiment investigates how the temperature parameter 
-    affects algorithm performance in practice, and whether 
-    the entropy misalignment problem identified in Section 
-    \ref{sec:4-1-intro} manifests empirically in gridworld 
-    environments.
+    This experiment investigates how the temperature parameter affects algorithm performance in practice, and whether the entropy misalignment problem identified in Section \ref{sec:4-1-intro} manifests empirically in gridworld environments.
 
     Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} show results where each algorithm is run for $100{,}000$ trials for a range of parameter settings. Values are estimated with 256 Monte Carlo trials and results are averaged over 10 repeated experiments.
 
-    For BTS and DENTS, the temperature and entropy coefficient 
-    functions are set to constant values, 
+    For BTS and DENTS, the temperature and entropy coefficient functions are set to constant values, 
     \begin{align}
         \alphadents(x) = \betadents(x) = \alpha_{\text{const}},
     \end{align} 
     with $\alpha_{\text{const}}$ varied across the range shown.
     
-    As shown in Figures \ref{fig:4:dgw_param_sens} and 
-    \ref{fig:4:fl_param_sens}, when the temperature 
-    parameter of MENTS or TENTS is sufficiently large, the 
-    value of the recommended policy falls to zero, 
-    consistent with the misalignment behaviour predicted 
-    theoretically.
+    As shown in Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens}, when the temperature parameter of MENTS or TENTS is sufficiently large, the value of the recommended policy falls to zero, consistent with the misalignment behaviour predicted theoretically.
 
-    Moreover, in Figure \ref{fig:4:fl_param_sens} it can be seen that the most effective temperature for exploration is around the misalignment threshold. This is consistent with Figure \ref{fig:4:fl_results} where MENTS suffered from misalignment on the larger maps. The latter is explained by the larger maps containing more open spaces without holes, providing greater opportunity to 
-    gather entropy rewards and effectively lowering the 
-    misalignment threshold.
+    Moreover, in Figure \ref{fig:4:fl_param_sens} it can be seen that the most effective temperature for exploration is around the misalignment threshold. This is consistent with Figure \ref{fig:4:fl_results} where MENTS suffered from misalignment on the larger maps. The latter is explained by the larger maps containing more open spaces without holes, providing greater opportunity to gather entropy rewards and effectively lowering the misalignment threshold.
 
-    Empirically, RENTS does not exhibit entropy 
-    misalignment. This can be understood by again noting that 
-    the relative entropy objective encourages 
-    the search policy to repeat the same action across 
-    consecutive timesteps within a trial, which in 
-    the 8x8 DGW and 4x4 FrozenLake maps is an effective strategy.
-    For example, in the 8x8 DGW map (Figure \ref{appfig:fl_maps}) there is a path around the edge of the map from the starting state to the goal, where the optimal path involves sustained movement in a single direction.
+    Empirically, RENTS does not exhibit entropy misalignment. This can be understood by again noting that the relative entropy objective encourages the search policy to repeat the same action across consecutive timesteps within a trial, which in the 8x8 DGW and 4x4 FrozenLake maps is an effective strategy. For example, in the 8x8 DGW map (Figure \ref{appfig:fl_maps}) there is a path around the edge of the map from the starting state to the goal, where the optimal path involves sustained movement in a single direction.
 
-    RENTS also performs well at low temperature, where the search policy is nearly greedy, even when $\epsilon_{\text{RENTS}}=0$. 
-    The RENTS regularisation 
-    will still bias early trials towards sustained sequences of 
-    the same action.
+    RENTS also performs well at low temperature, where the search policy is nearly greedy, even when $\epsilon_{\text{RENTS}}=0$. The RENTS regularisation will still bias early trials towards sustained sequences of the same action.
 
     \begin{figure}
         \centering
@@ -1782,7 +1767,7 @@
                 AR-DENTS        & 23--27 & 36--14 & 29--21 & 36--14 & 15--35 &   --    & 4677 \\         
         \end{tabular}
             }
-        \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space. \todo{VERY marginal margin overflow, fix same way as table above, probably just use same text size? Or try to make it like 0.1pt smaller than current}}
+        \caption[Results for the Go round-robin tournament.]{Results for the Go round-robin tournament. The first column gives the agent playing as black. The final column gives the average trials run per move across the entire round-robin. In the top row, algorithm names are abbreviated for space.}
         \label{table:go_results}
     \end{table}
 
@@ -2705,17 +2690,21 @@
         First consider the composed and simplified soft backup on the D-chain states for $1\leq i\leq D$:
         \begin{align}
             \Vments(\schain{i}) 
-                &\leftarrow \alpha \log\left( 
-                        \frac{1}{\alpha} 
-                            \left( \frac{D-i}{D} + \Vments(\schain{i+1}) \right)\right) \\
-            & \leq \max\left(
+                % &\leftarrow \alpha \log\left( 
+                %         \frac{1}{\alpha} 
+                %             \left( \frac{D-i}{D} + \Vments(\schain{i+1}) \right)\right) \\
+                &\leftarrow \alphaments \log\left(
+                        \exp\left( \frac{D-i}{D\alphaments} \right)
+                        + \exp\left(\frac{\Vments(\schain{i+1})}{\alphaments} \right)
+                        \right) \\
+            & \leq \max\left( 
                 \frac{D-i}{D},\Vments(\schain{i+1})\right) 
                     + \alphaments\log(2) \label{mbm:one} \\
             & \leq \max\left(
                 \frac{D-i}{D},\Vments(\schain{i+1})\right) + \frac{1}{D}
-        \end{align}
+        \end{align} % under full hbox, but no margin issues
         %
-        where inequality (\ref{mbm:one}) uses the property of log-sum-exp expressions that $\alpha \log \sum_{j=1}^\ell \exp (x_i/\alpha) \leq \max_j (x_j) + \alpha \log(\ell)$. \todo{added "expressions", is that the correct word?}
+        where inequality (\ref{mbm:one}) uses the property of log-sum-exp functions that $\alpha \log \sum_{j=1}^\ell \exp (x_j/\alpha) \leq \max_j (x_j) + \alpha \log(\ell)$.
         
         Then, by induction on $i=D, D-1, \ldots, 1$, it holds that $\Vments(\schain{i})\leq \frac{D-(i-1)}{D}$:
         \begin{align}
