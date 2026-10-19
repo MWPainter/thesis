@@ -1,4 +1,4 @@
-% [X] First Draft
+% [X] First Draft % under full vbox error here?
 % [X] AI proofread/grammar check
 % [X] Spell check
 % [ ] Citations + Refs
@@ -211,7 +211,9 @@
 
     When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$. 
     
-    \mccorrect{Simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.}
+    \begin{mccorrection}
+    Simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.
+    \end{mccorrection}
 
 
 
@@ -309,7 +311,7 @@
 
     \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision-making problems \cite{kolobov}. This section provides definitions and notation related to MDPs used throughout this thesis.
     
-    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends \mccorrect{only} on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action.
+    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends \mccorrect{only} on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action. %mrc
 
     In this thesis, unless otherwise stated, MDPs are assumed to have finite state and action spaces, and \textit{trajectories} (sequences of states, actions and rewards) are of finite length.
 
@@ -423,14 +425,14 @@
     This section provides a brief introduction to the fundamental concepts and definitions of \mccorrect{planning and} reinforcement learning.
 
     \begin{mccorrection}
-    It begins by motivating an alternative lens on reinforcement learning that is taken in this thesis, in which the agent plans in a simulator before recommending how to act. Following on from Section \ref{sec:2-2-mdps}, it then defines \textit{value functions} and the objectives of planning and reinforcement learning, and covers \textit{Value Iteration}, a tabular dynamic programming approach for planning. Section \ref{sec:2-3-1-merl} covers \textit{maximum entropy} planning and reinforcement learning, and Section \ref{sec:2-3-2-planning_vs_rl} discusses what distinguishes planning from reinforcement learning, and where the methods of this thesis sit.
+    It begins by motivating the alternative lens on reinforcement learning taken in this thesis, in which the agent plans in a simulator before recommending how to act. Following on from Section \ref{sec:2-2-mdps}, it then defines \textit{value functions} and the objectives of planning and reinforcement learning, and covers \textit{Value Iteration}, a tabular dynamic programming approach for planning. Section \ref{sec:2-3-1-merl} covers \textit{maximum entropy} planning and reinforcement learning, and Section \ref{sec:2-3-2-planning_vs_rl} discusses what distinguishes planning from reinforcement learning, and where the methods of this thesis sit.
     \end{mccorrection}
     
     Typically reinforcement learning is presented as a sequence of agent-environment interactions, where the agent takes actions in an environment and receives \textit{observations} and \textit{rewards} for those actions \cite{sutton}. The objective of the agent is to maximise the rewards that it receives.
 
     However, in the modern era of reinforcement learning, the agent is often equipped with a simulator in which it can plan, learn and explore. The ``target'' environment that the user cares about may be the same simulated environment, or a real-world environment where actions carry genuine costs, unlike interactions with the simulator. After the learning phase, one typically cares only about the policy that the agent recommends at the end, rather than the rewards accrued during planning. 
     
-    Figure \ref{fig:2:rl_overview} depicts the classical reinforcement learning setting (in black) where the agent interacts with the environment directly, and this alternative setting (in blue) where the agent is equipped with a simulator to plan and explore, until a user queries the agent for a recommendation. This perspective shift changes the nature of the exploration-exploitation trade off, almost separating the two issues. During the learning phase there is a greater emphasis on exploring, while recommendations are concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
+    Figure \ref{fig:2:rl_overview} depicts the classical reinforcement learning setting (in black) where the agent interacts with the environment directly, and this alternative setting (in blue) where the agent is equipped with a simulator to plan and explore, until a user queries the agent for a recommendation. This perspective shift changes the nature of the exploration-exploitation trade-off, almost separating the two issues. During the learning phase there is a greater emphasis on exploring, while recommendations are concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
     % Also depicted in Figure \ref{fig:2:rl_overview} is a scenario where the agent is equipped with a simulator that it can use to plan and explore, and is either asked to recommend a strategy after a planning/learning phase, or is occasionally queried to recommend actions. This scenario more closely resembles how reinforcement learning is used in the modern era with greater amounts of compute power available, and interactions with the simulator occur at orders of magnitude quicker. Hence, in this scenario, the only significant real-world cost comes from following the recommendations output, to be used in the real-world environment. This changes the nature of the exploration-exploitation trade off, almost separating the two issues, where there is an emphasis on exploring during the planning phase, and the problem of providing good recommendations is concerned with pure exploitation. This perspective on reinforcement learning motivates the research questions around exploration: \exploreq. 
 
@@ -489,7 +491,7 @@
     To simplify the notation used for theory in this thesis, it is assumed that there is a \textit{unique optimal policy} for each MDP considered:
     \begin{assumption}
         \label{ass:2:unique_optimal_policy} 
-        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not a necessary assumption, and is only made to simplify the theoretical analysis in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\cdots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. This assumption is made purely to avoid unnecessary complexity in the proofs in this thesis. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
+        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not necessary; it is made purely to avoid unnecessary complexity in the proofs in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\ldots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
     \end{assumption}
     \end{mccorrection}
 
@@ -540,7 +542,7 @@
     \end{align}
     \end{mccorrection}
 
-    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective} \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}} below)}. Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts.
+    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective} (Definition \mbox{\ref{def:2:soft_rl_obj_fn}} below). Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts. %mrc
 
     \begin{defn}
         \label{def:2:sft_value}
@@ -612,11 +614,11 @@
 \begin{mccorrection}
 \subsection{Planning Versus Reinforcement Learning}
 \label{sec:2-3-2-planning_vs_rl}
-    The objective of both planning and reinforcement learning is typically to compute an optimal policy for an MDP $\cl{M}$. The difference lies in what each has access to: planning methods compute a policy from the transition distribution $p$, whereas reinforcement learning methods learn from experience gathered in the environment \cite{sutton}. Value iteration \cite{dp,kolobov} is therefore a planning method, because it uses $p$ to compute the expectation in Equation \ref{eq:2:value_iter_q_backup}, whereas Q-learning \cite{qlearning} is an example of a purely reinforcement learning method.
+    The objective of both planning and reinforcement learning is typically to compute an optimal policy for an MDP $\cl{M}$. The difference lies in what each has access to: planning methods compute a policy from the transition distribution $p$, whereas reinforcement learning methods learn from experience gathered in the environment \cite{sutton}. Value iteration \cite{dp,kolobov} is therefore a planning method, because it uses $p$ to compute the expectation in Equation \ref{eq:2:value_iter_q_backup}, whereas Q-learning \cite{qlearning} is an example of a pure reinforcement learning method.
 
-    MCTS algorithms may fall on either side of this distinction, depending on how they handle the transition distribution: an algorithm that queries $p$ directly is planning, whereas one that samples from a simulator is learning. Technically, the methods in this thesis are model-based reinforcement learning methods \cite{mbrl}, as rather than using $p$ directly they form maximum likelihood estimates of the transition probabilities from the \textit{visit counts} at each node, which Corollary \ref{cor:4:bound_transition_distribution} shows are tightly bounded around the true transition probabilities. They are nonetheless often thought of as planning methods, because the tree search does plan, in the everyday sense of the word, over the estimated transition probabilities and values.
+    MCTS algorithms may fall on either side of this distinction, depending on how they handle the transition distribution: an algorithm that queries $p$ directly is planning, whereas one that samples from a simulator is learning. Technically, the methods in this thesis are model-based reinforcement learning methods \cite{mbrl}, as rather than using $p$ directly they form maximum likelihood estimates of the transition probabilities from the \textit{visit counts} at each node. Corollary \ref{cor:4:bound_transition_distribution} shows that these estimates are tightly bounded around the true transition probabilities. They are nonetheless often thought of as planning methods, because the tree search does plan, in the everyday sense of the word, over the estimated transition probabilities and values.
 
-    Because MCTS sits at the intersection of the two, the terms are used somewhat interchangeably in this thesis, with \textit{planning} tending to refer to tree search and \textit{reinforcement learning} to the wider literature. To be clear, throughout this thesis neither word is used in the sense of training a function approximation, such as a neural network, which is not considered here.
+    Because MCTS sits at the intersection of the two, the terms are used somewhat interchangeably in this thesis, with \textit{planning} tending to refer to tree search and \textit{reinforcement learning} to the wider literature. To be clear, throughout this thesis neither term is used in the sense of training a function approximation, such as a neural network, which is not considered here.
 \end{mccorrection}
 
         
@@ -694,11 +696,11 @@
     \begin{mccorrection}
     \begin{assumption}
         \label{ass:2:unique_state_assumption}
-        The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a single unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. 
+        The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. 
         
-        This assumption is not a necessary one, is purely to simplify notation in this thesis, and any results discussed in this thesis generalise to settings where this assumption does not hold. For example, the environments used in most of the empirical experiments in this thesis do not satisfy this assumption.
+        This assumption is not necessary; it is made purely to simplify notation, and any results discussed in this thesis generalise to settings where it does not hold. For example, the environments used in most of the empirical experiments in this thesis do not satisfy this assumption.
 
-        Specifically, this assumption allows the notation for value functions and policies to avoid explicitly writing the timestep parameter, because under this assumption the timestep \mbox{$t$} at which a state \mbox{$s$} is visited is uniquely determined by \mbox{$s$} itself. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$, and \mbox{$\pi(a|s)$} can be written instead of \mbox{$\pi(a|s;t)$}. With the exception of Section \ref{sec:2-6-morl}, the timestep parameter is dropped for the remainder of this thesis.
+        Specifically, this assumption allows the notation for value functions and policies to avoid explicitly writing the timestep parameter, because under this assumption the timestep \mbox{$t$} at which a state \mbox{$s$} is visited is uniquely determined by \mbox{$s$} itself. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$, and \mbox{$\pi(a|s)$} can be written instead of \mbox{$\pi(a|s;t)$}. With the exception of Section \ref{sec:2-6-morl}, the explicit timestep parameter is dropped for the remainder of this thesis.
     \end{assumption}
     \end{mccorrection}
 
@@ -748,7 +750,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is True (blue) the trial proceeds to the backup phase, whereas if \mbox{\mctsmode} is False (orange) the trial returns to selection, unless a terminal state or the planning horizon has been reached.}} % (TWO) under full \hbox warning, but it renders fine with no margin problems
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is False (orange) the trial returns to the selection phase after the heuristic step, unless a terminal state or the planning horizon has been reached, in which case it proceeds to the backup phase. When \mbox{\mctsmode} is True (blue) the trial instead leaves the loop as soon as a new decision node is added to the tree, and proceeds to the backup phase.}} %mrc % (TWO) under full \hbox warning, but it renders fine with no margin problems
         \label{fig:2:thts}
     \end{figure}
 
@@ -757,11 +759,11 @@
         \item  
             \textit{Context Sampling} - a \textit{context} is sampled for the trial;
         \item 
-            \textit{Selection Step} - starting from a decision node $s$, an action is selected to reach a chance node $(s,a)$, and an outcome is sampled to reach the next decision node $s'$. $(s,a)$ and $s'$ are added to the search tree $\cl{T}$ if they were not already.
+            \textit{Selection Phase} - starting from a decision node $s$, an action is selected to reach a chance node $(s,a)$, and an outcome is sampled to reach the next decision node $s'$. $(s,a)$ and $s'$ are added to the search tree $\cl{T}$ if they were not already.
         \item 
             \textit{Heuristic Step} - any new nodes added from the selection step are initialised using a \textit{heuristic function}; 
         \item 
-            \textit{Backup Step} - value estimates in the search tree are updated, along the path sampled in the selection step(s). 
+            \textit{Backup Phase} - value estimates in the search tree are updated, along the path sampled in the selection step(s). 
     \end{enumerate}
 
     Collectively, the selection and heuristic steps are referred to as the \textit{selection phase} of the trial, and the backup steps are collectively referred to as the \textit{backup phase}.
@@ -1012,7 +1014,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-4-ments}
 
-    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, $\mctsmode$ is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by:
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, $\mctsmode$ is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by: %mrc
     \begin{align}
         \piments(a|s) &= 
             (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
@@ -1131,7 +1133,7 @@ def backup_phase($\tau_{:h}$, ctx)
         \end{align}
     \end{theorem}
 
-    The Good-Turing estimate is used in Chapter \ref{ch:5-chmcts} to bound the probability mass of unobserved successor states when computing the solved value of a chance node $(s,a)$ (Section \ref{sec:5-3-6-optimisations}).
+    The Good-Turing estimate is used in Chapter \ref{ch:5-chmcts} to bound the probability mass of unobserved successor states when computing the unsolved value of a chance node $(s,a)$ (Section \ref{sec:5-3-6-optimisations}).
 
 
 
@@ -1299,7 +1301,7 @@ A convex coverage set may contain redundant policies and is not necessarily mini
 
 \begin{figure}
     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(\textnormal{CH}(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $\textnormal{MCCS}(\Pi')$, so form the set of values $\valset(\textnormal{MCCS}(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, and shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$, which are weights for which the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.}
+    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(\textnormal{CH}(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $\textnormal{MCCS}(\Pi')$, so form the set of values $\valset(\textnormal{MCCS}(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, and shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$, which are weights for which the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.} %mrc
     \label{fig:2:convex_hull_geometry} 
 \end{figure}
 
@@ -1347,7 +1349,7 @@ Whilst this thesis focuses on the linear utility setting, another commonly used 
     \end{align}
 \end{defn}
 
-The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function, \mccorrect{which recovers the Pareto front is the utopian point $\ruto$ is appropriately set \mbox{\cite{moo_chebyshev}}:}
+The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function, \mccorrect{which recovers the Pareto front if the utopian point $\ruto$ is appropriately set \mbox{\cite{moo_chebyshev}}:} %mrc
 %
 \begin{mccorrection}
 \begin{defn}
@@ -1357,7 +1359,7 @@ The Pareto front can be related to the previously defined solution sets in two w
         \ucheby(\bff{v};\bff{w},\ruto) = - \max_{i=1,\ldots,D} w_i |v_i - \rutocomp_i|. \label{eq:2:cheby}
     \end{align}
 \end{defn}
-\end{mccorrection}
+\end{mccorrection} %mrc
 
 The second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability\footnote{Mixture policies are only appropriate when a policy is run many times and the aggregated return is of main concern, as under the scalarised expected returns criterion used in this thesis (Section \ref{sec:1-2-scope}).}. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
@@ -1419,7 +1421,8 @@ randomly drawn weight vector.
 \subsection{Convex Hull Value Iteration}
 \label{sec:2-6-1-chvi}
 
-    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector.\footnote{\mccorrect{Note that because CHVI computes convex hulls (Definition \mbox{\ref{def:2:convex_hull}}), it is also assuming a linear utility.}} In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
+    Convex Hull Value Iteration (CHVI) \cite{chvi} is a tabular dynamic programming algorithm similar to Value Iteration (Section \ref{sec:2-3-rl}) that computes optimal convex hull value sets and provides a method for extracting policies for any given weight vector. %\footnote{\mccorrect{Note that because CHVI computes convex hulls (Definition \mbox{\ref{def:2:convex_hull}}), it also assumes a linear utility.}} 
+    In CHVI the value estimates of Value Iteration are replaced by CHVSs, which are estimates of the optimal CHVS. These estimates are denoted $\Vchvi(s;t)$ and $\Qchvi(s,a;t)$.
 
     Firstly, to define a multi-objective version of Value Iteration, arithmetic over sets of vectors needs to be defined. An example of the following arithmetic is given in Figure \ref{fig:2:vectorset_arithmetic}. Given the vector sets $\bfcl{U}$ and $\bfcl{V}$, define multiplication by a scalar $s$, addition with a vector $\bff{x}$ and addition between sets as follows:
     \begin{align}
@@ -1443,15 +1446,15 @@ randomly drawn weight vector.
     
     This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the $\cprune$ operation over the set of achievable values from the current state $s$.
     
-    Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
     \begin{mccorrection}
+    Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
     \begin{align}
         Q^{\bff{w}}_{\chvi}(s,a;t) = \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qchvi(s,a;t) \}, \label{eq:2:chvi_scalar_q_fn} \\
         \pichvi(s;t,\bff{w}) = \argmax_{a\in\cl{A}} Q^{\bff{w}}_{\chvi}(s,a;t). \label{eq:2:chvi_policy}
     \end{align}
-    \end{mccorrection}
     
     Note that if a policy is extracted for every weight vector $\bff{w}\in\Delta^D$, the resulting set of policies forms a convex coverage set.
+    \end{mccorrection}
     
     % \begin{figure}
     %     \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
@@ -1475,18 +1478,18 @@ randomly drawn weight vector.
 \subsection{Implications of Assuming a Linear Utility}
 \label{sec:2-6-2-linear_utility_implications}
 
-    The algorithms in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} assume a linear utility, which limits the preferences that can be expressed, because linear utility trades objectives off at a fixed rate, regardless of how much of each objective has already been obtained. In particular:
+    The algorithms in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} assume a linear utility, which limits the preferences that can be expressed, because a linear utility trades objectives off at a fixed rate, regardless of how much of each objective has already been obtained. In particular:
     \begin{itemize}
-        \item Diminishing returns cannot be expressed, although they are common in practice, the value of additional money being the standard example.
-        \item Lexicographic preferences cannot be expressed, where any improvement in the first objective is preferred to any improvement in the second, and the second over the third and so on.
+        \item Diminishing returns cannot be expressed, although they are common in practice, with the value of additional money being a common example.
+        \item Lexicographic preferences cannot be expressed, where any improvement in the first objective is preferred to any improvement in the second, the second over the third, and so on.
         \item An objective with a small weight can be ignored entirely, whereas the Chebyshev utility (Definition \ref{def:2:chebyshev_utility}) forces a compromise, so that improving a low-weighted objective is still necessary to increase the utility.
     \end{itemize}
 
     In return, a linear utility gives the following properties, the first of which the methods in this thesis rely on:
     \begin{itemize}
-        \item Optimal policies can be obtained by selecting actions greedily using the reward-to-go at each node, which Section \ref{sec:5-6-2-linear_utility} shows holds if and only if the utility is linear.
+        \item Optimal policies can be obtained by selecting actions greedily using the reward-to-go at each node, as in Equation~\eqref{eq:2:chvi_policy}; Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that this holds if and only if the utility is linear.
         \item Scalarising the rewards by $\bff{w}$ reduces the MOMDP to an MDP, so a stationary deterministic optimal policy exists for each weight vector. When a non-linear utility is used, the optimal policy may be non-stationary, depending on the current timestep or the reward accrued so far \cite{white_momdp}. MCTS is able to represent such policies, so this is not in itself a restriction here.
-        \item The scalarised and expected scalarised returns criteria coincide (Section \ref{sec:1-2-scope}), so the algorithms in this thesis can be applied under either criterion.
+        \item The scalarised expected returns and expected scalarised returns criteria coincide (Section \ref{sec:1-2-scope}), so the algorithms in this thesis can be applied under either criterion.
     \end{itemize}
 \end{mccorrection} % overfull vbox warning, but seems to render fine and no margin problems
 

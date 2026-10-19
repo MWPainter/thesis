@@ -1,4 +1,4 @@
-% [ ] First Draft
+% [ ] First Draft % under full vbox here???
 % [ ] AI proofread/grammar check
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -137,7 +137,7 @@
     This is an issue for MOMCTS algorithms, because MCTS algorithms make local decisions at each decision node, and fundamentally assume that a globally optimal solution (i.e. an undominated policy from the initial state) can be found by making local decisions.
 
     Section \ref{sec:5-6-theory} discusses the problem more formally: Theorem \ref{thm:per-step-linear} shows that selecting locally optimal actions leads to globally optimal policies if and only if the utility is linear, which is why this thesis assumes a linear utility.
-    \end{mccorrection}
+    \end{mccorrection} %overfull vbox, but no margin issues
 
     % \begin{figure}
     %     \centering
@@ -557,8 +557,7 @@
     convex hull Q-value set to a scalar, and $\calg > 0$ is 
     a bias parameter. Notably, when $\zetaalg$ does not depend 
     on $\bff{w}$, the search policy is context-independent, 
-    which as discussed in Section \ref{sec:5-1-intro} leads to 
-    linear contextual cumulative regret.
+    which leads to linear cumulative contextual regret \cite{chmcts}.
  
 
 \paragraph{Hypervolume CHMCTS (H-CHMCTS).}
@@ -567,7 +566,7 @@
     
 \paragraph{Chebyshev CHMCTS (C-CHMCTS).}
 
-    \citet{chebyshev_momcts} use the \textit{Chebyshev utility} \mccorrect{(Definition \mbox{\ref{def:2:chebyshev_utility}}) as a scalarisation function for the search policy. So the scalarisation function used for C-CHMCTS is:}
+    \citet{chebyshev_momcts} use the \textit{Chebyshev utility} \mccorrect{(Definition \mbox{\ref{def:2:chebyshev_utility}}) as a scalarisation function for the search policy. So the scalarisation function used for C-CHMCTS is:} %mrc
     \begin{align}
         \zetcchmcts(\bfcl{V};\bff{w},\ruto) = \max_{\bff{v}\in\bfcl{V}} \ucheby(\bff{v};\bff{w},\ruto),
     \end{align}
@@ -619,7 +618,7 @@
     %
     % Have just realised that LRTDP actually just truncates the trial at solved nodes, so if we did that then it actually would be compatible with CZT. But we ended up using it to explore further parts of the tree.
 
-    Each chance node $(s,a)$ is assigned an \textit{unsolved value} $\unsolved(s,a)\in[0,1]$, where $\unsolved(s,a)=0$ indicates that the node is solved and $\unsolved(s,a)=1$ indicates that it is unsolved. The solved value of a node is an upper bound on the probability that the node's value estimate has not yet converged.
+    Each chance node $(s,a)$ is assigned an \textit{unsolved value} $\unsolved(s,a)\in[0,1]$, where $\unsolved(s,a)=0$ indicates that the node is solved and $\unsolved(s,a)=1$ indicates that it is unsolved. The unsolved value of a node is an upper bound on the probability that the node's value estimate has not yet converged.
 
     The unsolved value of a decision node is computed as the maximum unsolved value of its children:
     \begin{align}
@@ -633,12 +632,12 @@
 
     % Ideally $\unsolved(s,a)$ would be computed either as an expectation or maximisation over the successor states. Using the empirical distribution directly may be overly optimistic when few successor states have been observed, and using a maximisation over successor states penalises nodes with low-probability transitions that are rarely visited. An upper bound on the expected unsolved value is used instead, which accounts for both the estimation error in the empirical distribution and the probability mass of unobserved successor states.
 
-    The solved value of a chance node $(s,a)$ is computed as an upper bound on the expected solved values of its successor states, using the empirical transition distribution $\frac{N(s')}{N(s,a)}$ as a proxy for the true distribution $p(s'|s,a)$. Since the true distribution is unknown, the bound must account for the estimation error in the empirical distribution. Let $\deltaunsolved > 0$ be a confidence parameter. The unsolved value $\unsolved(s,a)$ is defined as an upper bound satisfying:
+    The unsolved value of a chance node $(s,a)$ is computed as an upper bound on the expected unsolved values of its successor states, using the empirical transition distribution $\frac{N(s')}{N(s,a)}$ as a proxy for the true distribution $p(s'|s,a)$. Since the true distribution is unknown, the bound must account for the estimation error in the empirical distribution. Let $\deltaunsolved > 0$ be a confidence parameter. The unsolved value $\unsolved(s,a)$ is defined as an upper bound satisfying:
     \begin{align}
         \Pr\left(\bb{E}_{s'\sim p(\cdot|s,a)}[\unsolved(s')] \leq \unsolved(s,a)\right) \geq 1-\deltaunsolved. \label{eq:5:unsolved_chance_defn}
     \end{align}
 
-    In words, with probability at least $1-\deltaunsolved$, the expected solved value of the children of chance node $(s,a)$ is bounded by the upper bound $\unsolved(s,a)$.
+    In words, with probability at least $1-\deltaunsolved$, the expected unsolved value of the children of chance node $(s,a)$ is bounded by the upper bound $\unsolved(s,a)$.
 
     To derive this bound, the expected unsolved value is decomposed into contributions from observed and unobserved successor states:
     \begin{align}
@@ -917,7 +916,7 @@
     %
     where $\bfg{\tau}(\bff{w}) \sim \texttt{complete}(\psi_{\alg})$ is a sampled trajectory for the point $\bff{w}\in\Delta^D$, and $\bff{\hat{V}}^{\bfg{\tau}(\bff{w})}$ is the cumulative return from the trajectory. That is, if the trajectory is $\bfg{\tau}(\bff{w})=(s_0,a_0,\bff{r}_0,...,s_{h-1},a_{h-1},\bff{r}_{h-1},s_h)$, then $\bff{\hat{V}}^{\bfg{\tau}(\bff{w})} = \sum_{i=0}^{h-1} \bff{r}_i$.
 
-    For CZT, to compute a hypervolume, an approximate convex hull \mccorrect{value set} is computed, using the $\Qczt$ value estimates at each node. \mccorrect{Specifically the following set of points is used at the root node:}
+    For CZT, to compute a hypervolume, an approximate convex hull \mccorrect{value set} is computed, using the $\Qczt$ value estimates at each node. \mccorrect{Specifically, the following set of points is used at the root node:}
     \begin{mccorrection}
     \begin{align}
         \cprune \left( \{\Qczt(B)\ |\ 
@@ -1018,16 +1017,16 @@
     \begin{mccorrection}
     The hypervolume for CZT is approximated using the set of value estimates from the relevant balls (Equation \eqref{eq:5:czt_chvs}). The individual estimates are computed using average returns (Equation \eqref{eq:5:czt_ball_backup}), so they may decrease. The set of relevant balls (Equation \eqref{eq:5:relevant_balls_state}) also changes as the \textit{activation rule} (Section \ref{sec:5-2-1-czt}) adds new balls, each starting with a fresh average return. Either effect can lower the hypervolume.
 
-    The hypervolume for CHMCTS algorithms would grow monotonically were it not for the size pruning of convex hull value sets, which uses the crowding distance (Equation \eqref{eq:5:crowding_distance}) and is described in Section \ref{sec:5-3-6-optimisations}. When the value sets are pruned to a maximum of $K_{\max}=15$ points, the convex hull backups (Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}) are no longer guaranteed to converge, and the hypervolume may decrease on any backup that prunes points.
+    The hypervolume for CHMCTS algorithms would grow monotonically were it not for the size pruning of convex hull value sets, which uses the crowding distance (Equation \eqref{eq:5:crowding_distance}) and is described in Section \ref{sec:5-3-6-optimisations}. When the value sets are pruned to a maximum of $K_{\max}=15$ points, the convex hull backups (Equations \eqref{eq:5:chmcts_v_backup} and \eqref{eq:5:chmcts_q_backup}) are no longer guaranteed to converge, and the hypervolume may decrease on any backup that prunes points (for example in Figures \ref{fig:5:gridworld_results:sub:f} and \ref{fig:5:gridworld_results:sub:h}).
     \end{mccorrection} % overfull vbox but no margin issues
 
-    \mccorrect{On all four environments, CZT is outperformed by at least one CHMCTS algorithm, if not all of them.} This is consistent with the exploitation bias of UCT-based algorithms discussed in Chapter \ref{ch:4-dents}, where UCT-style algorithms tend to converge to a local optimum.
+    On all four environments, CZT is outperformed by at least one CHMCTS algorithm, if not all of them. This is consistent with the exploitation bias of UCT-based algorithms discussed in Chapter \ref{ch:4-dents}, where UCT-style algorithms tend to converge to a local optimum.
 
-    On the Resource-Gathering and Breakable-Bottles environments, CH-UCT and CH-BTS \mccorrect{--- which use contextual search policies ---} clearly outperform all other algorithms with respect to EUM. These environments have larger state spaces and more complex reward structures, where the benefit of contextual search policies is most pronounced.
+    On the Resource-Gathering and Breakable-Bottles environments, CH-UCT and CH-BTS --- which use contextual search policies --- clearly outperform all other algorithms with respect to EUM. These environments have larger state spaces and more complex reward structures, where the benefit of contextual search policies is most pronounced.
 
-    \mccorrect{Fruit-Tree-7 consists of a binary tree of decisions, and so contains only \mbox{$2^8-1=255$} states. These can be explored exhaustively in a small number of trials, and all CHMCTS algorithms solve the environment.}
+    Fruit-Tree-7 consists of a binary tree of decisions, and so contains only \mbox{$2^8-1=255$} states. These can be explored exhaustively in a small number of trials, and all CHMCTS algorithms solve the environment.
 
-    The Four-Room environment is larger, but its deterministic nature and lack of a time cost reward mean that a single \mccorrect{meandering} path collecting many collectibles is sufficient to achieve a near-optimal solution for \mccorrect{all weight vectors simultaneously}. A context-independent policy can therefore perform comparably to a contextual one, \mccorrect{so all CHMCTS algorithms achieve a similar EUM, although the contextual search policies find value sets with larger hypervolumes.}
+    The Four-Room environment is larger, but its deterministic nature and lack of a time cost reward mean that a single meandering path collecting many collectibles is sufficient to achieve a near-optimal solution for all weight vectors simultaneously. A context-independent policy can therefore perform comparably to a contextual one, so all CHMCTS algorithms achieve a similar EUM, although the contextual search policies find value sets with larger hypervolumes.
 
 
 
@@ -1130,7 +1129,7 @@
 
     \paragraph{Deep Sea Treasure Environments.}
 
-    \mccorrect{For the DST environments, CHVI \mbox{(Section \ref{sec:2-6-1-chvi})} and} CHVI with Prioritised Sweeping (CHVI(PS)) \mccorrect{are used as baseline algorithms}, where Prioritised Sweeping \cite{sutton} performs Bellman backups from timestep $t=H$ down to $t=0$. \mccorrect{To provide a fair comparison, the implementation of convex hull backups is shared between CHVI and the CHMCTS algorithms. Hence CHVI uses the same value of \mbox{$K_{\max}$} for the size pruning optimisation (Section \mbox{\ref{sec:5-3-6-optimisations}}) as the CHMCTS algorithms (Appendix \mbox{\ref{appsec:5:hypersearch}}), and so does not necessarily compute the exact convex hulls.} %under full hbox but no visible margin issues
+    For the DST environments, CHVI \mbox{(Section \ref{sec:2-6-1-chvi})} and CHVI with Prioritised Sweeping (CHVI(PS)) are used as baseline algorithms, where Prioritised Sweeping \cite{sutton} performs Bellman backups from timestep $t=H$ down to $t=0$. \mccorrect{To provide a fair comparison, the implementation of convex hull backups is shared between CHVI and the CHMCTS algorithms. Hence CHVI uses the same value of \mbox{$K_{\max}$} for the size pruning optimisation (Section \mbox{\ref{sec:5-3-6-optimisations}}) as the CHMCTS algorithms (Appendix \mbox{\ref{appsec:5:hypersearch}}), and so does not necessarily compute the exact convex hulls.} %under full hbox but no visible margin issues
 
     Results are given in Figures \ref{fig:5:dst_results} and \ref{fig:5:dst_backups}. On the deterministic environment $\DST(10,0)$, CH-BTS and CH-UCT performed best among the CHMCTS algorithms. On the stochastic environments, CH-BTS and P-CHMCTS performed better than the other CHMCTS algorithms.
 
@@ -1228,7 +1227,7 @@
 
     \begin{mccorrection}
     This exploitation is advantageous under EUM at large environment sizes with a limited compute budget. CZT settles on a policy that collects treasure near the starting state and then fills out the search tree around it, much as exploitation was beneficial in the stochastic FrozenLake experiments of Section \mbox{\ref{sec:4-4-3-1-gridworld_results}}. The larger hypervolumes found by the CHMCTS algorithms suggest that they do discover larger treasure values in the stochastic environments, but their search trees are not filled out for all of the stochastic outcomes, so the recommendation policy is more likely to leave the tree and fall back to acting uniformly at random (Equation \mbox{\eqref{eq:5:full_Recommend}}), which lowers their EUM. It should be noted, however, that no algorithm achieves an EUM that increases with the environment size, despite the best achievable EUM doing so. Even CZT, which performs best at the larger sizes, only maintains an EUM of between 10 and 20 throughout.
-    \end{mccorrection}
+    \end{mccorrection} %mrc
 
 
 
@@ -1259,7 +1258,7 @@
     This section revisits the consistent action selection problem of Section \ref{sec:5-1-1-consistent_tree_search} more precisely, and gives theoretical results for CHMCTS and MOMCTS. It is structured as follows:
     \begin{itemize}
         % \item Section \ref{sec:5-6-1-context_independent_policies} shows that context independent policies suffer linear contextual regret;
-        \item Section \ref{sec:5-6-1-notation} gives some additional notation needed to precisely discuss consistent action selection and to state and prove Theorem \ref{thm:per-step-linear}.
+        \item Section \ref{sec:5-6-1-notation} gives some additional notation needed to precisely discuss consistent action selection and to state and prove Theorem \ref{thm:per-step-linear};
         \item Section \ref{sec:5-6-2-linear_utility} discusses consistent action selection, and why the assumption of linear utilities is made throughout this thesis;
         \item Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that locally optimal action selection yields globally optimal policies if and only if the utility function is linear (Theorem \ref{thm:per-step-linear});
         \item Section \ref{sec:5-6-4-convergence_of_chmcts} outlines how the convergence of CHMCTS can be established.
@@ -1272,7 +1271,7 @@
 
     Because this thesis assumes a linear utility throughout, some additional notation is needed to discuss the problem of consistent action selection (Section \ref{sec:5-1-1-consistent_tree_search}) precisely.
 
-    The discussion in this section uses the \textit{Chebyshev utility} as an example, because it is non-linear, and commonly used as a utility where the undominated values recover can the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}. For reference, Equation \eqref{eq:2:cheby} (from Definition \ref{def:2:chebyshev_utility}) is repeated here:
+    The discussion in this section uses the \textit{Chebyshev utility} as an example, because it is non-linear, and commonly used as a utility where the undominated values can recover the Pareto front (Definition \ref{def:2:pareto_front}) \cite{moo_chebyshev}. For reference, Equation \eqref{eq:2:cheby} (from Definition \ref{def:2:chebyshev_utility}) is repeated here:
     %
     \begin{align}
         \ucheby(\bff{v};\bff{w},\bff{r}) = - \max_{i=1,\ldots,D} w_i |v_i - r_i|, \label{eq:5:cheby}
@@ -1293,7 +1292,7 @@
         \bfcl{Q}^*_u(s, a) &= \{\bff{Q}^{\pi}(s, a) \mid \pi \in U(s,\Pi;u)\}.
     \end{align}
     
-    Then a \textit{locally optimal policy} for weight $\bff{w}$, with respect to utility $u$, is:
+    Then a \textit{locally optimal policy} for weight $\bff{w}$, with respect to utility $u$, selects actions greedily at each timestep using the optimal Q-value sets:
     %
     \begin{align}
         \pi^{\bff{w}}_{\text{local},u}(s) \in \argmax_{a \in \cl{A}}\;
@@ -1301,10 +1300,10 @@
             \label{eq:5:locally_optimal_policy}
     \end{align}
 
-    And finally, a policy $\pi\in\Pi$ is said to be \textit{utility optimal} for weight $\bff{w}\in\Delta^D$ if
+    And finally, a policy $\pi\in\Pi$ is said to be \textit{utility-optimal} for weight $\bff{w}\in\Delta^D$ if
     %
     \begin{align}
-        u(\bff{V}^{\pi^{\bff{w}}}(s_0); \bff{w}) = \max_{\pi'\in\Pi} u(\bff{V}^{\pi'}(s_0); \bff{w}). \label{eq:5:utility_optimal}
+        u(\bff{V}^{\pi}(s_0); \bff{w}) = \max_{\pi'\in\Pi} u(\bff{V}^{\pi'}(s_0); \bff{w}). \label{eq:5:utility_optimal}
     \end{align}
 
 
@@ -1313,9 +1312,19 @@
 \subsection{Consistent Action Selection and the Linear Utility Assumption}
 \label{sec:5-6-2-linear_utility}
 
-    MCTS methods are built on the assumption that making decisions locally at each decision node can lead to a globally optimal solution. In particular, MCTS methods typically rely on two core components: each node stores a reward-to-go estimate, and actions are selected using those local estimates. As mentioned in Section \ref{sec:5-1-intro}, this is sound for single-objective problems.
+    MCTS methods are built on the assumption that making decisions locally at each decision node can lead to a globally optimal solution. In particular, they typically rely on two core components:
+    \begin{itemize}
+        \item each node stores a reward-to-go estimate;
+        \item actions are selected using those local estimates.
+    \end{itemize}
+    As mentioned in Section \ref{sec:5-1-intro}, this is sound for single-objective problems.
 
-    In MOMCTS the two components become: each node stores a set of vector-valued reward-to-go estimates, such as a convex hull value set in CHMCTS (Section \ref{sec:5-3-chmcts}); and actions are selected by maximising the utility over those estimates. However, for these to be sound, they require that $\pi^{\bff{w}}_{\text{local},u}$ is utility optimal for $\bff{w}$, which Theorem \ref{thm:per-step-linear} establishes is true for any MOMDP if and only if the utility $u$ is linear.
+    In MOMCTS the two components become: 
+    \begin{itemize}
+        \item each node stores a set of vector-valued reward-to-go estimates, such as a convex hull value set in CHMCTS (Section \ref{sec:5-3-chmcts}); 
+        \item actions are selected by maximising the utility over those estimates.
+    \end{itemize} 
+    However, for these to be sound, they require that $\pi^{\bff{w}}_{\text{local},u}$ is utility-optimal for $\bff{w}$. Theorem \ref{thm:per-step-linear} shows that this holds for every MOMDP if and only if the utility $u$ is linear.
 
     To see why, consider taking the maximum linear utility over the Q-value backup used in CHMCTS (Equation \eqref{eq:5:chmcts_q_backup}):
     %
@@ -1325,32 +1334,33 @@
             \frac{N(s')}{N(s_t,a_t)} \max \left\{ u_{\lin}(\bff{v};\bff{w})\ |\ \bff{v}\in \Valg(s') \right\}. \label{eq:5:linear_utility_distributes}
     \end{align}
 
-    The distributive property of the linear utility in Equation \eqref{eq:5:linear_utility_distributes} does not hold for a general utility. In other words, the second component above requires utilities to be linear for the algorithm to be sound. Theorem \ref{thm:per-step-linear} shows this more formally.
+    The distributive property of the linear utility in Equation \eqref{eq:5:linear_utility_distributes} does not hold for a general utility. The right-hand side maximises over each successor's value set independently, which is what allows actions to be selected locally; under a non-linear utility the values chosen at different successors may instead have to be coordinated. In other words, the second component above (selecting actions by maximising the utility locally) requires utilities to be linear for the algorithm to be sound. Theorem \ref{thm:per-step-linear} shows this more formally.
 
     \end{mccorrection}
     \begin{figure}
         \centering
         \includegraphics[width=0.8\textwidth]{figures/ch5/proof.pdf}
-        \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{\mccorrect{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.}}
+        \caption[A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities.]{\mccorrect{A stochastic MOMDP where making locally optimal decisions does not yield globally optimal policies for \textit{Chebyshev} utilities. At the first (black) chance node from \mbox{$s_0$} there is a \mbox{$\frac{1}{2}$} probability of each of the outcomes \mbox{$\sss{1}$} and \mbox{$\sss{2}$}.}}
         \label{fig:5:momdp_proof}
     \end{figure}
     \begin{mccorrection}
 
-    Figure \ref{fig:5:momdp_proof} gives a concrete example, and is the MOMDP used to prove the ``only if'' direction of Theorem \ref{thm:per-step-linear}. Under the Chebyshev utility, locally optimal actions in this MOMDP do not yield a globally optimal policy. The Pareto front consists of the points $\{(1,3.5),(2.5,2.5),(3.5,1)\}$, where the value of $(2.5,2.5)$ requires the rewards of $(5,0)$ and $(0,5)$ to be selected from the states $\sss{1}$ and $\sss{2}$ respectively. Although it is not shown here --- because it is stronger than what the proof of Theorem \ref{thm:per-step-linear} requires --- there is no choice of $\bff{w}$ and $\bff{r}$ for which $\pi^{\bff{w}}_{\text{local},\ucheby}$ achieves the value $(2.5,2.5)$.
+    Figure \ref{fig:5:momdp_proof} gives a concrete example of how this breaks down: under the Chebyshev utility, locally optimal actions in this MOMDP do not yield a globally optimal policy. It is also the MOMDP used to prove the ``only if'' direction of Theorem \ref{thm:per-step-linear}. The Pareto front at $s_0$ consists of the points $\{(1,3.5),(2.5,2.5),(3.5,1)\}$. Achieving the value $(2.5,2.5)$ requires the rewards $(5,0)$ and $(0,5)$ to be selected from the states $\sss{1}$ and $\sss{2}$ respectively.
+    
+    The locally optimal policy using the Chebyshev utility with $\bff{w}=(0.5,0.5)$ and $\bff{r}=(6,6)$ will always achieve a value of $(2,2)$, which is not utility-optimal, as it is dominated by the value of $(2.5,2.5)$. The rewards $(5,0)$ and $(0,5)$ prioritise opposite objectives, so neither can be chosen in isolation: the agent must commit to a target value at the initial state, and then select actions consistently with that commitment.
     \end{mccorrection} % under full \vbox error, but no visual issues
 
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{figures/ch5/cheby_contours.pdf}
-        \caption[Pareto fronts for the MOMDP from Figure \ref{fig:5:momdp_proof} with contours of the Chebyshev utility.]{\mccorrect{Pareto fronts for the MOMDP from Figure \mbox{\ref{fig:5:momdp_proof}} with contours of the Chebyshev utility. The left plot shows the Pareto front at the initial state \mbox{$s_0$}, with the problematic point of \mbox{$(2.5,2.5)$} highlighted in blue. The middle and right plots show the Pareto fronts from \mbox{$\sss{1}$} and \mbox{$\sss{2}$} simultaneously: the circles form the Pareto front at \mbox{$\sss{1}$}, and blue points form the Pareto front at \mbox{$\sss{2}$}. The middle plot shows the pyramid like contours of the Chebyshev utility (Equation \mbox{\ref{eq:5:cheby}}) with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$}, and the right plot with \mbox{$\bff{w}=(0.25,0.75)$} and \mbox{$\bff{r}=(6,6)$}. The dashed red lines run along the vector \mbox{$(1/w_1,1/w_2)$} and passes through the corner points of the contours. For the value of \mbox{$(2.5,2.5)$} to be achievable by a policy of the form of Equation \mbox{\eqref{eq:5:locally_optimal_policy}} that selects greedily with respect to the Chebyshev utility would require a value of \mbox{$\bff{w}$} and \mbox{$\bff{r}$} that assigns a higher value to the blue triangle and white circle than the blue circle, which geometrically is not possible.}}
+        \caption[Pareto fronts for the MOMDP from Figure \ref{fig:5:momdp_proof} with contours of the Chebyshev utility.]{\mccorrect{Pareto fronts for the MOMDP from Figure \mbox{\ref{fig:5:momdp_proof}} with contours of the Chebyshev utility. The left plot shows the Pareto front at the initial state \mbox{$s_0$}, with the problematic point of \mbox{$(2.5,2.5)$} highlighted in blue. The middle and right plots show the Pareto fronts from \mbox{$\sss{1}$} and \mbox{$\sss{2}$} simultaneously: the circles form the Pareto front at \mbox{$\sss{1}$}, and blue points form the Pareto front at \mbox{$\sss{2}$}. The middle plot shows the pyramid-like contours of the Chebyshev utility (Equation \mbox{\ref{eq:5:cheby}}) with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$}, and the right plot with \mbox{$\bff{w}=(0.25,0.75)$} and \mbox{$\bff{r}=(6,6)$}. The dashed red lines run along the vector \mbox{$(1/w_1,1/w_2)$} and pass through the corner points of the contours. For the value of \mbox{$(2.5,2.5)$} to be achievable by a policy of the form of Equation \mbox{\eqref{eq:5:locally_optimal_policy}} that selects greedily with respect to the Chebyshev utility would require a value of \mbox{$\bff{w}$} and \mbox{$\bff{r}$} that assigns a higher value to the blue triangle and white circle than the blue circle, which geometrically is not possible.}}
         \label{fig:5:momdp_proof_pareto_fronts}
     \end{figure}
     \begin{mccorrection}
 
-    The Pareto fronts at the states $s_0, \sss{1}$ and $\sss{2}$ are depicted in Figure \ref{fig:5:momdp_proof_pareto_fronts}, along with contours of the Chebyshev utility to highlight that the Chebyshev utility is not able to simultaneously assign a higher utility to the points $(5,0)$ and $(0,5)$ than $(2,2)$ to achieve the value of $(2.5,2.5)$. 
-
-    In particular, the locally optimal policy using the Chebyshev utility with $\bff{w}=(0.5,0.5)$ and $\bff{r}=(6,6)$ will always achieve a value of $(2,2)$, which is not utility optimal, as it is dominated by the value of $(2.5,2.5)$.
-
+    The Pareto fronts at the states $s_0$, $\sss{1}$ and $\sss{2}$ are depicted in Figure \ref{fig:5:momdp_proof_pareto_fronts}, along with contours of the Chebyshev utility, to highlight that it cannot simultaneously assign a higher utility to $(5,0)$ and $(0,5)$ than to $(2,2)$, which would be needed to achieve the value of $(2.5,2.5)$. 
+    
+    In fact, there is no choice of $\bff{w}$ and $\bff{r}$ for which $\pi^{\bff{w}}_{\text{local},\ucheby}$ achieves the value $(2.5,2.5)$. This is not shown here, as it is stronger than what the proof of Theorem \ref{thm:per-step-linear} requires.
 
 
 
@@ -1373,18 +1383,18 @@
 
     % The distributive property of the linear utility in Equation \eqref{eq:5:linear_utility_distributes} does not hold for a general utility. In other words, the second component above requires utilities to be linear for the algorithm to be sound. Theorem \ref{thm:per-step-linear} shows this more formally.
     
-\subsubsection{Non-Linear Utilities}
+\subsubsection{Multi-Objective Monte Carlo Tree Search with Non-Linear Utilities}
 \label{sec:5-6-2-1-non_linear_utilities}
 
     While Theorem \ref{thm:per-step-linear} rules out any guarantee for MOMCTS algorithms that use the two components above on arbitrary MOMDPs, this does not mean that MCTS cannot be applied successfully when the utility is non-linear.
     
-    As the example MOMDP from Figure \ref{fig:5:momdp_proof} highlights, the best action at a state can depend on outcomes that did not occur: changing the rewards available at $\sss{2}$ cab change which action is optimal at $\sss{1}$. In terms of MCTS, a trial only ever samples one of the two branches, so the optimal action can depend on a branch that the trial never visits. A MOMCTS algorithm using non-linear utilities therefore needs to restrict the types of MOMDP it can soundly solve.
+    As the example MOMDP from Figure \ref{fig:5:momdp_proof} highlights, the best action at a state can depend on outcomes that did not occur: changing the rewards available at $\sss{2}$ can change which action is optimal at $\sss{1}$, as they are the two possible outcomes from the transition from the initial state. In terms of MCTS, a trial only ever samples one of the two branches, so the optimal action can depend on a branch that the trial never visits. Hence, to soundly use MOMCTS with Chebyshev utilities, the MOMDP must at least be assumed to be deterministic. More generally, an MOMCTS algorithm using non-linear utilities needs to restrict the types of MOMDP it can soundly solve. 
 
     \end{mccorrection}
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{figures/ch5/non_linear_motivation.pdf}
-        \caption[The consistent action selection problem in a deterministic MOMDP with Chebyshev utilities.]{\mccorrect{The consistent action problem in a deterministic MOMDP with Chebyshev utilities. Left: A deterministic MOMDP to highlight that using Chebyshev utilities over Pareto fronts still exhibits a consistent action selection problem. Right: circles form the Pareto front at $s_0$ and triangles the local Pareto front at \mbox{$\sss{1}$}. The contours of the Chebyshev utility with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$} are also shown. The return of \mbox{$(4,4)$} is optimal for this utility and weight, but action \mbox{$\aaa{1}$} is preferred at state \mbox{$\sss{1}$} leading to a suboptimal return of \mbox{$(6,3)$}.}}
+        \caption[The consistent action selection problem in a deterministic MOMDP with Chebyshev utilities.]{\mccorrect{The consistent action selection problem in a deterministic MOMDP with Chebyshev utilities. Left: A deterministic MOMDP to highlight that using Chebyshev utilities over Pareto fronts still exhibits a consistent action selection problem. Right: circles form the Pareto front at $s_0$ and triangles the local Pareto front at \mbox{$\sss{1}$}. The contours of the Chebyshev utility with \mbox{$\bff{w}=(0.5,0.5)$} and \mbox{$\bff{r}=(6,6)$} are also shown. The return of \mbox{$(4,4)$} is optimal for this utility and weight, but action \mbox{$\aaa{1}$} is preferred at state \mbox{$\sss{1}$} leading to a suboptimal return of \mbox{$(6,3)$}.}}
         \label{fig:5:non_linear_motivation}
     \end{figure}
     \begin{mccorrection}
@@ -1393,9 +1403,9 @@
 
     In this case, actions can be selected consistently by instead making decisions over the value set $\bff{R}_{:t-1} + \Qalg(s_t,a_t)$, where $\bff{R}_{:t-1} = \sum_{i=0}^{t-1} \bff{R}(s_i,a_i)$ is the reward accrued so far in the trial. The accrued reward is needed because a non-linear utility depends on the entire return, and the utility does not distribute over the sum of cumulative returns. 
     
-    This adaptation changes the second of the two components above: the accrued reward is tracked through the trial, making the decision \textit{non-local}\footnote{\mccorrect{Alternatively the accrued reward could also be stored in the node (changing the other component), but would not be compatible with transposition tables (Section \mbox{\ref{sec:2-4-2-thts}}).}}. 
+    This adaptation changes the second of the two components above: the accrued reward is tracked through the trial, making the decision \textit{non-local}\footnote{\mccorrect{Alternatively, the accrued reward could be stored in the node (changing the other component), but would not be compatible with transposition tables (Section \mbox{\ref{sec:2-4-2-thts}}), as the accrued reward depends on the path taken to reach the node.}}. 
 
-    Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives a MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
+    \citet{dmcts,dmcts_long} change the first component in a different way, storing a distribution over returns at each node rather than a value set. This gives an MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
 
     Finally, Theorem \ref{thm:per-step-linear} rules out a guarantee rather than good performance. The MOMDP of Figure \ref{fig:5:momdp_proof} is constructed specifically to break local decision-making, however non-linear utilities such as the Chebyshev utility have been used successfully in practice. Using MOMCTS with a non-linear utility may therefore still be effective, but it comes without the guarantees of the linear case.
 
@@ -1417,7 +1427,7 @@
     
     % This adaptation changes one of the components: either the accrued reward is also stored at the node or the accrued reward is tracked through the trial making the decision \textit{non-local}. 
 
-    % Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives a MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
+    % Changing the first component in a different way, \citet{dmcts,dmcts_long} store a distribution over returns at each node rather than a value set. This gives an MOMCTS algorithm for the expected scalarised returns criterion (Section \ref{sec:3-4-morl}), where the utility is applied to the return of a single execution rather than to the expected return.
 
     % Finally, Theorem \ref{thm:per-step-linear} rules out a guarantee rather than good performance. The MOMDP of Figure \ref{fig:5:momdp_proof} is constructed specifically to break local decision-making, however non-linear utilities such as the Chebyshev utility have been used successfully in practice. Using MOMCTS with a non-linear utility may therefore still be effective, but it comes without the guarantees of the linear case.
 
@@ -1570,7 +1580,7 @@
         By contradiction: if $M^m(a)$ remained bounded while every other action's count grew, the $b\sqrt{\log(m)/M^m(a)}$ term would diverge and force $a$ to be selected, contradicting boundedness of $M^m(a)$.
     \end{proofoutline}
 
-    Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} and Theorem \ref{thrm:5:chmcts} it follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear}, any CHMCTS algorithm $\alg$ satisfies $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$, \mccorrect{mirroring Theorem \mbox{\ref{thrm:4:bts}} for BTS in the single-objective case. CH-BTS also admits analogues of Theorems \mbox{\ref{thrm:4:bts_decay}} and \mbox{\ref{thrm:4:bts_exp}}, again by using Lemma \mbox{\ref{lem:inf_often_action_select}} and Theorems \mbox{\ref{thrm:5:chmcts}} and \mbox{\ref{thm:per-step-linear}}.}
+    Given Lemmas \ref{lem:inf_often_action_select} and \ref{lem:inf_often_action_select_uct} and Theorem \ref{thrm:5:chmcts} it follows that for all CHMCTS algorithms defined in Section \ref{sec:5-3-chmcts} the convex hull value sets converge to the optimal value sets. Hence, by Theorem \ref{thm:per-step-linear}, any CHMCTS algorithm $\alg$ satisfies $\bb{E}\left[\ctxsreg(s,\psi_{\alg})\right] \rightarrow 0$ as the number of trials $n\rightarrow\infty$, mirroring Theorem \mbox{\ref{thrm:4:bts}} for BTS in the single-objective case. CH-BTS also admits analogues of Theorems \mbox{\ref{thrm:4:bts_decay}} and \mbox{\ref{thrm:4:bts_exp}}, again by using Lemma \mbox{\ref{lem:inf_often_action_select}} and Theorems \mbox{\ref{thrm:5:chmcts}} and \mbox{\ref{thm:per-step-linear}}.
 
 
 
@@ -1616,7 +1626,7 @@
     The consistent action selection problem was identified 
     as a fundamental challenge in MOMCTS (Section 
     \ref{sec:5-1-intro}): actions taken within a trial 
-    should be consistent with each other (or all actions consistent with a single weight vector), 
+    should be consistent with each other (that is, all consistent with a single weight vector),
     otherwise the search policy optimises for no 
     particular objective. Contextual tree search was 
     proposed as a solution \mccorrect{during the planning phase}, where a weight vector 
@@ -1626,7 +1636,7 @@
     that locally optimal action selection yields globally 
     optimal policies if and only if the utility function 
     is linear, confirming that the assumption of linear utility is 
-    necessary for a MOMCTS algorithm to guarantee 
+    necessary for an MOMCTS algorithm to guarantee 
     convergence, at least for stochastic environments, addressing \stochq\ewe theoretically.
 
     \textit{Contextual Zooming for Trees} (CZT) was 
@@ -1653,13 +1663,13 @@
     run within a fixed time budget and limiting 
     performance. CZT avoids this issue but exhibits the 
     exploitation bias of UCT-style algorithms, converging 
-    to locally optimal solutions. Leaving \stochq\ewe to be unsatisfactorily addressed empirically. However, \moscalabilityq\ewe is addressed in part by the scalability results in Section \ref{sec:5-5-4-scalability}.
+    to locally optimal solutions. This leaves \stochq\ewe unsatisfactorily addressed empirically. However, \moscalabilityq\ewe is addressed in part by the scalability results in Section \ref{sec:5-5-4-scalability}.
 
     Two limitations of the convex hull approach motivate 
     the work of Chapter \ref{ch:6-simplexmaps}. First, 
     convex hull value sets become computationally expensive in stochastic 
-    environments, suggesting that a hierarchical  
-    representation would may more scalable. Second, 
+    environments, suggesting that a hierarchical
+    representation may be more scalable. Second,
     convex hull value sets do not naturally support entropy-based exploration, making it difficult to utilise entropy as an exploration bonus. Both 
     limitations are addressed by the simplex map 
     approach introduced in Chapter 

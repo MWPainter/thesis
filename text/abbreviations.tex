@@ -100,7 +100,7 @@
     \item[$a_t$]
         The action at the $t$th timestep of a trajectory.
     \item[$D$]
-        The dimension of rewards in a MOMDP.
+        The dimension of rewards in an MOMDP.
     \item[$H$]
         The finite-horizon time bound of an MDP.
     \item[$\cl{M}$]
@@ -114,7 +114,7 @@
     \item[$R$] 
         The reward function of an MDP: $R(s,a)$ is the reward received from taking action $a$ at state $s$.
     \item[$\bff{R}$] 
-        The $D$ dimensional reward function of a MOMDP: $\bff{R}(s,a)\in\bb{R}^D$ is the vector of rewards received from taking action $a$ at state $s$.
+        The $D$ dimensional reward function of an MOMDP: $\bff{R}(s,a)\in\bb{R}^D$ is the vector of rewards received from taking action $a$ at state $s$.
     \item[$r_t$]
         The reward at the $t$th timestep of a trajectory.
     \item[$\cl{S}$]
@@ -293,7 +293,7 @@
     \item[$\cprune$] 
         An operation that takes an arbitrary set of vectors, and returns the subset that lie at the vertices of the geometric (partial) convex hull. 
     \item[$\Delta^D$] 
-        The $D-1$ simplex simplex (with $D$ dimensions), or, the set of possible weightings over the $D$ objectives of a MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}$.
+        The $(D-1)$-simplex (with $D$ dimensions), or the set of possible weightings over the $D$ objectives of an MOMDP. $\Delta^D = \{\bff{w}\in\bb{R}^D|w_i \geq 0, \sum_i w_i = 1\}$.
     \item[$\eum(\Psi)$]
         The \textnormal{expected utility metric} of a set of policies $\Psi$: $\eum(\Psi)=\bb{E}_{\bff{w}\sim U(\Delta^D)}[\max_{\psi\in\Psi}\bff{w}^\top\bff{V}^\psi(s_0)]$.
     \item[$\HV(\bfcl{V};\rref)$]
@@ -303,7 +303,7 @@
     \item[$\textnormal{PF}(\Pi)$]
         The Pareto front of the set of policies $\Pi$.
     \item[$\Pi$] 
-        The set of all possible policies in a MOMDP.
+        The set of all possible policies in an MOMDP.
     \item[$\bff{Q}^{\pi}$]
         The multi-objective Q-value function of a policy $\pi$. $\bff{Q}^{\pi}(s,a;t)$ denotes the expected cumulative vector reward that policy $\pi$ will obtain, starting from state $s_t=s$, starting by taking action $a_t=a$.
     \item[$U(\Pi;u)$] 
@@ -329,8 +329,8 @@
     % \item[{\parbox[t]{\textwidth}{
     %     \Large\textbf{Convex Hull Value Iteration \\(Section \ref{sec:2-6-1-chvi})}\hfill\hfill
     %   }}]
-    % \item[Q value set]
-    % \item[Scalar Q value]
+    % \item[Q-value set]
+    % \item[Scalar Q-value]
     % \item[V value set]
     % \item[pi chvi]
     % \item[v bot, reference point] 

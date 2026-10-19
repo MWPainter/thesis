@@ -38,15 +38,18 @@
 % This adds a "DRAFT" footer to every normal page.  (The first page of each chapter is not a "normal" page.)
 % \fancyfoot[C]{\emph{DRAFT Printed on \today}}  
 
-% This highlights (in blue) corrections marked with (for words) \mccorrect{blah} or (for whole
-% paragraphs) \begin{mccorrection} . . . \end{mccorrection}.  This can be useful for sending a PDF of
+% This highlights (in blue) corrections marked with (for words) \mcccorrect{blah} or (for whole
+% paragraphs) \begin{mcccorrection} . . . \end{mcccorrection}.  This can be useful for sending a PDF of
 % your corrected thesis to your examiners for review.  Turn it off, and the blue disappears.
 
-% MIKE COMMENT: because the \begin{mccorrection} ... \end{mccorrection} still makes some formatting changes, even with the below commented out. For final "camera-ready" going to find-and-replace:
-% \begin{mccorrection} <-> %\begin{mccorrection}
-% \end{mccorrection} <-> %\end{mccorrection}
+% MIKE COMMENT: because the \begin{mcccorrection} ... \end{mcccorrection} still makes some formatting changes, even with the below commented out. For final "camera-ready" going to find-and-replace:
+% \begin{mcccorrection} <-> %\begin{mcccorrection}
+% \end{mcccorrection} <-> %\end{mcccorrection}
 %
 % Because we always put those on new lines, it will be as if those environments didn't exist
+
+% FUTURE_MIKE_HEADER
+% each of the mcccorrection's above have an additional c to avoid finding and replacing these instances of them!
 
 \correctionstrue
 

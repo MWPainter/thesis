@@ -116,7 +116,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
 \section{Exponential Convergence Results}
 \label{appsec:exp}
 
-    This subsection provides the proofs of Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}. Similar to Section \ref{sec:4-5-theory}, the main results are shown first, providing forward references to the Lemma's used.
+    This subsection provides the proofs of Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp}. Similar to Section \ref{sec:4-5-theory}, the main results are shown first, providing forward references to the lemmas used.
 
     \thrmDENTSexp*
     \begin{proof}
@@ -143,7 +143,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
 
     \begin{defn}
         \label{def:subopt_gap}
-        The \textnormal{suboptimality gap} $\Delta_{\cl{M}}$ of an MDP $\cl{M}$ is smallest difference in optimal values between an optimal action and a suboptimal action, over the reachable states $\cl{S}_0$ (Definition \ref{def:2:reachable}). That is, let $a^*_s = \argmax_a Q^*(s,a)$. The suboptimality gap is then:
+        The \textnormal{suboptimality gap} $\Delta_{\cl{M}}$ of an MDP $\cl{M}$ is the smallest difference in optimal values between an optimal action and a suboptimal action, over the reachable states $\cl{S}_0$ (Definition \ref{def:2:reachable}). That is, let $a^*_s = \argmax_a Q^*(s,a)$. The suboptimality gap is then:
         \begin{align}
             \Delta_{\cl{M}} = \min_{s\in\cl{S}_0} \left( Q^*(s,a^*_s) - \max_{a\in\cl{A}-\{a^*_s\}} Q^*(s,a) \right).
         \end{align}
@@ -157,7 +157,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
 \subsection{Lemmas for Exponential Convergence Theorems}
 \label{appsec:exp-prelim}
 
-    Firstly, a standard consequence of the union bound is that intersections over exponentially likely events are also exponentially likely (and conversely for unions over exponentially unlikely events) will be useful, and is stated explicitly for reference.
+    Firstly, a standard consequence of the union bound will be useful: intersections over exponentially likely events are also exponentially likely (and conversely for unions over exponentially unlikely events). It is stated explicitly for reference.
     %
     \begin{lemma} 
     \label{lem:union_bound}
@@ -297,7 +297,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
                 \leq & C'\exp\left(-\frac{1}{2}k'\eta N^n(s_t) \right) + \one[\lnot E']. \label{local:d:31}
         \end{align}
 
-        Inequality \eqref{local:d:30} follows from the assumed Inequality \ref{eq:sa_to_s_assume_bound} and the trivial bound $\Pr\left( E\ |\ N^n(s_t,a_t) \right) \leq 1$. The final line follow by considering the when $E'$ is true or false. When $\one[E']=0$ the inequality is trivial. When $\one[E']=1$, the event $E'$ is true, so $N^n(s_t,a_t) \geq \frac{1}{2}\eta N^n(s_t)$, which gives $C'\exp\left(-k' N^n(s_t,a_t)\right) \leq C'\exp\left(-\frac{1}{2}k'\eta N^n(s_t) \right)$.
+        Inequality \eqref{local:d:30} follows from the assumed Inequality \ref{eq:sa_to_s_assume_bound} and the trivial bound $\Pr\left( E\ |\ N^n(s_t,a_t) \right) \leq 1$. The final line follows by considering when $E'$ is true or false. When $\one[E']=0$ the inequality is trivial. When $\one[E']=1$, the event $E'$ is true, so $N^n(s_t,a_t) \geq \frac{1}{2}\eta N^n(s_t)$, which gives $C'\exp\left(-k' N^n(s_t,a_t)\right) \leq C'\exp\left(-\frac{1}{2}k'\eta N^n(s_t) \right)$.
 
         Taking expectations conditional on $N^n(s_t)$, the left hand side \eqref{local:d:29} becomes $\Pr\left( E\ |\ N^n(s_t) \right)$ by the tower property, and $\bb{E}\left[\one[\lnot E']\ |\ N^n(s_t)\right]=\Pr\left(\lnot E'\ |\ N^n(s_t)\right)$, which is precisely the quantity bounded by (\ref{eq:bound_nsa}):
         \begin{align}
@@ -405,7 +405,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
                     + \varepsilon_1 \varepsilon_2.
         \end{align}
 
-        Following the similar reasoning but using the lower bounds on $\mVdents{N^n(s_{t+1})}(s_{t+1})$ and $N^n(s_{t+1})/N^n(s_t,a_t)$ gives:
+        Following similar reasoning but using the lower bounds on $\mVdents{N^n(s_{t+1})}(s_{t+1})$ and $N^n(s_{t+1})/N^n(s_t,a_t)$ gives:
         \begin{align}
             \mQdents{N^n(s_t,a_t)}(s_t,a_t)
                 &\geq Q^*(s_t,a_t)
@@ -474,7 +474,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
                 \label{local:ten}
         \end{align}
         
-        Let $a^*=\max_{a\in\cl{A}} Q^*(s_t,a)$. Using $\varepsilon_1 \leq \Delta_{\cl{M}}/2$ in (\ref{local:ten}), then for any $a\in\cl{A}-\{ a^*\}$:
+        Let $a^*=\argmax_{a\in\cl{A}} Q^*(s_t,a)$. Using $\varepsilon_1 \leq \Delta_{\cl{M}}/2$ in (\ref{local:ten}), then for any $a\in\cl{A}-\{ a^*\}$:
         \begin{align}
             \mQdents{N^n(s_t,a)}(s_t,a) \leq& Q^*(s_t,a) + \Delta_{\cl{M}}/2 \\
                 \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/2 \\
@@ -554,14 +554,14 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
             \Pr\left(\forall a_t\in\cl{A}. \left|\mQdents{N^n(s_t,a_t)}(s_t,a_t)-Q^*(s_t,a_t)\right|\leq \varepsilon_1\right) &> 1-C_1 \exp(-k_1 \varepsilon_1^2 N^n(s_t)).
         \end{align}
         
-        Setting $\varepsilon_1=\Delta_{\cl{M}}/2$ then gives with probability $1-C_1 \exp(-k_2N^n(s_t))$ (where $k_2=k_1\Delta_{\cl{M}}/2$) for all actions $a\in\cl{A}$ that:
+        Setting $\varepsilon_1=\Delta_{\cl{M}}/2$ then gives with probability $1-C_1 \exp(-k_2N^n(s_t))$ (where $k_2=k_1\Delta_{\cl{M}}^2/4$) for all actions $a\in\cl{A}$ that:
         \begin{align}
             Q^*(s_t,a) - \Delta_{\cl{M}}/2 \leq \mQdents{N^n(s_t,a)}(s_t,a) \leq Q^*(s_t,a) + \Delta_{\cl{M}}/2.
         \end{align}
         
         And hence, with probability $1-C_1 \exp(-k_2N^n(s_t))$, for all $a_t\in\cl{A}-\{a^*\}$ it must be that:
         \begin{align}
-            \mQdents{N^n(s_t,a)}(s_t,a_t)
+            \mQdents{N^n(s_t,a_t)}(s_t,a_t)
                 \leq& Q^*(s_t,a_t) + \Delta_{\cl{M}}/2 \\
                 \leq& Q^*(s_t,a^*) - \Delta_{\cl{M}}/2 \\
                 \leq& \mQdents{N^n(s_t,a^*)}(s_t,a^*). \label{local:eleven}
@@ -569,7 +569,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
         
         Negating the probability of (\ref{local:eleven}) then gives:
         \begin{align}
-            \Pr\left(\mQdents{N^n(s_t,a)}(s_t,a) > \mQdents{N^n(s_t,a^*)}(s_t,a^*)\right) \leq C_1 \exp(-k_2N^n(s_t))
+            \Pr\left(\mQdents{N^n(s_t,a_t)}(s_t,a_t) > \mQdents{N^n(s_t,a^*)}(s_t,a^*)\right) \leq C_1 \exp(-k_2N^n(s_t))
         \end{align}
         
         Finally, the bound on the expected immediate regret follows:
@@ -578,7 +578,7 @@ Note that Theorems \ref{thrm:4:bts_exp} and \ref{thrm:4:dents_exp} are not relat
                 =& \sum_{a\in\cl{A}-\{a^*\}} 
                     \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(\mpsidents{n}(s_t) =a \right) \\
                 =& \sum_{a\in\cl{A}-\{a^*\}} 
-                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQdents{N^n(s_t,a)}(s_t,a) \right) \\
+                    \left(V^*(s_t)-Q^*(s_t,a)\right) \Pr\left(a = \argmax_{a'} \mQdents{N^n(s_t,a')}(s_t,a') \right) \\
                 \leq& \sum_{a\in\cl{A}-\{a^*\}} 
                     \left(V^*(s_t)-Q^*(s_t,a)\right) 
                     \Pr\left(\mQdents{N^n(s_t,a)}(s_t,a) > \mQdents{N^n(s_t,a^*)}(s_t,a^*)  \right) \\

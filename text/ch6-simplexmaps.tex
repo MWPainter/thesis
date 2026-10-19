@@ -1,5 +1,4 @@
-
-% [ ] First Draft
+% [ ] First Draft % under full vbox but nothing visual
 % [ ] AI proofread/grammar check
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -50,7 +49,7 @@
 
 \minitoc
 
-    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, the number of stored values grows only where the weight space requires finer resolution, addressing \moscalabilityq\ewe and \stochq\ewe empirically. 
+    This chapter introduces \textit{simplex maps}, an adaptive data structure for maintaining value and entropy estimates as a function of the weight vector $\bff{w}\in\Delta^D$ over the unit simplex. Simplex maps address two limitations of the algorithms considered in Chapter \ref{ch:5-chmcts}: the computational cost of maintaining convex hull value sets in stochastic environments, and the inability to naturally support entropy-based exploration (Chapter \ref{ch:4-dents}). By partitioning the weight space into a hierarchical and adaptive triangulation, simplex maps provide a more scalable representation: values can be looked up faster, and the number of stored values grows only where the weight space requires finer resolution, addressing \moscalabilityq\ewe and \stochq\ewe empirically.
     Per-vertex entropy estimates allow entropy-based 
     exploration to be lifted to the multi-objective setting, addressing \contextq.
 
@@ -93,8 +92,7 @@
 
 \subsection{Limitations of CHMCTS and CZT}
 
-    The empirical results of Chapter \ref{ch:5-chmcts} 
-    \ref{sec:5-5-results} highlight a failure case for CHMCTS, where it is outperformed by CZT in the stochastic DST environment.
+    The empirical results of Chapter \ref{ch:5-chmcts} (Section \ref{sec:5-5-results}) highlight a failure case for CHMCTS, where it is outperformed by CZT in the stochastic DST environment.
 
     While convex hull value sets provide an accurate representation of achievable returns encountered during the search --- which is beneficial in the exploration setting --- they become computationally expensive in stochastic environments. The number of points in the intermediate convex hull value sets can grow rapidly, causing a significant increase in the computational cost of each backup and a corresponding reduction in the number of trials that can be run within a fixed time budget.
 
@@ -626,7 +624,7 @@
 
     This section presents the empirical results for this chapter. The experimental setup follows that of Section \ref{sec:5-5-results} in Chapter \ref{ch:5-chmcts}, so only the differences are given here:
     \begin{itemize}
-        \item \mccorrect{Section \mbox{\ref{sec:5-5-1-envs}} describes the MOMDP environments used in the experiments;}
+        \item \mccorrect{The MOMDP environments are the same as those described in Section \mbox{\ref{sec:5-5-1-envs}};}
         \item \mccorrect{Section \mbox{\ref{sec:6-4-0-eval_procedure}} gives additional details on the evaluation setup used;}
         \item Section \ref{sec:6-4-1-results_and_discussion}
             presents the results on those environments;
@@ -941,9 +939,9 @@
 
     On the heavily stochastic environment $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal EUM for environment sizes up to $W=20$ \mccorrect{(beyond which CHVI and CHVI(PS) degrade)}, continues to improve until around $W=40$, plateaus until $W=70$, and then degrades to performance comparable to CZT at $W=100$. This represents a substantial improvement over all CHMCTS algorithms, which are unable to run a sufficient number of trials to make progress in stochastic environments at these scales.
 
-    \begin{mccorrection}
+    % \begin{mccorrection}
     SM-BTS does not match this performance. Its temperature is tuned so low that the search policy is close to greedy, leaving the uniform exploration parameter, set to more than twice the value used by SM-DENTS (Table \ref{table:hyperparams_dst}), as its main source of exploration. SM-DENTS instead obtains exploration from the entropy bonus, which allows it to exploit more later in the search. As discussed in Section \ref{sec:4-4-3-1-gridworld_results}, exploitation is still necessary in these stochastic environments so that the recommendation policy does not leave the tree and fall back to acting uniformly at random (Equation \eqref{eq:5:full_Recommend}).
-    \end{mccorrection}
+    % \end{mccorrection}
 
     % FUTURE_MIKE_HEADER
     %

@@ -1,39 +1,39 @@
-CHECKS AFTER ALL CORRECTIONS AND UPDATES FINISHED:
-- section numbers correct
-- page references correct
-- figure references correct (we may have added figures after writing response)
-
 # Corrections Cover Letter
 
-Corrections are highlighted in blue throughout the thesis. This document is to outline how the thesis has been updated for each comment. I've tried to give references to easily look up the corresponding changes, such as page numbers or figure numbers.
+Corrections are highlighted in blue throughout the thesis. The purpose of this cover letter is to point to the changes made for each correction in a question and response format, and make the corresponding changes as easy as possible to look up.
 
-While proof reading the thesis for the corrections pass, I felt that the abstract and Chapter 1 could use significant revision beyond just the comments below, so I have also updated them. Hopefully they read a lot better now.
-
+Unless otherwise stated, the responses should read as "I agree, and here are the corrections I have made to the thesis".
 
 
 > Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
 
 - Appears twice in the abstract, updated in the first instance as suggested and updated second instance to just use "expected return"
-- Additionally updated in three places in Chapter 1 (pages 3, 4 and 6), and in two places in Chapter 7 (pages 167 and 169)
-- In Chapters 2 and 4, added some additional references back to the formal definitions:
-    - page 35 - where MENTS is introduced
-    - page 60 - where misalignment is defined
-    - page 63 - where BTS is introduced as using the standard objective
-    - page 90 - where the maximum entropy objective is recalled in the parameter sensitivity discussion
+- Additionally updated in three places in Chapter 1 (pages 3, 7 and 8), and in two places in Chapter 7 (pages 189 and 191)
+- After the formal definitions (Definitions 2.3.3 and 2.3.7), ensured that references back to the definition are included:
+    - page 40 - where MENTS is introduced
+    - pages 66 - in the introductory discussion Chapter 4
+    - page 70 - where misalignment (of standard/maximum entropy objectives) is defined
+    - page 74 - where BTS is introduced as using the standard objective
+    - page 105 - where the maximum entropy objective is recalled in the parameter sensitivity discussion
 
 
 
 > P2: Explain clearly the multi-objective setting, including what is known when, and how this interacts with on-line planning with MCTS methods. Consider using the unknown weights scenario instead of decision support as motivation.
 
-I agree that using the unknown weights scenario provides a better motivation for the thesis, so I have added following changes:
-- Added a new Section 1.2 to outline the scope of the thesis, being more specific about the multi-objective setting, including:
+- Added a new Section 1.2 to outline the scope of the thesis, being more specific about scope of the thesis upfront, including:
     - planning begins from a known initial state,
     - describing the unknown weights scenario, including what is known and when,
-    - clarifying that utilities are assumed to be linear, with forward references where it is discussed,
+    - clarifying that utilities are assumed to be linear, with forward references where it is discussed why the assumption is made,
     - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
     - explaining why MCTS methods might still be of interest instead of purely learning better prior policy/value functions
-- Updated prose throughout thesis for using the unknown weights scenario instead and to be consistent with scoping section:
-    - Many places throughout abstract and chapter 1, decision support scenario is updated to unknown weights along with related writing (e.g. avoiding referring to user's preferences)
+- Additionally updated prose throughout thesis for using the unknown weights scenario instead and to be consistent with scoping section:
+    - Twice in the abstract
+    - Section 1.1 (Page 2) - updates to avoid referring to a "user's" preferences
+
+
+
+
+------------------
     - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
     - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
     - Section 5.1 - restructured to improve clarity and relates back to unknown weights scenario
@@ -148,6 +148,8 @@ I have added the following changes to help clarify:
 - Added a paragraph at the end of Section 4.1.1 (page 66) that points the reader to the DeterministicGridWorld results, which more clearly show that UCT converges in practise to a suboptimal solution in some environments
 - The existing (now penultimate) paragraph of Section 4.1.1 (page 66) already contrasts UCT's asymptotic guarantee with its behaviour in practice, so this has been left unchanged
 - Added additional detail to the caption for Figure 4.2 to describe what it shows and why it is relevant/interesting 
+
+?page 3?
 
 
 

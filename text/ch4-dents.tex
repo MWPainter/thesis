@@ -1,4 +1,4 @@
-% [ ] First Draft
+% [ ] First Draft % under full vbox here??
 % [ ] AI proofread/grammar check
 % [ ] Spell check
 % [ ] Citations + Refs
@@ -194,7 +194,7 @@
         The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*_{\sft}(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}). The \textnormal{misalignment threshold} is the smallest temperature parameter at which the maximum entropy objective is misaligned.
     \end{defn}
 
-    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. \mccorrect{At intermediate temperatures (illustrated in blue), the agent still reaches the goal, but prioritises entropy enough that, with high probability, it takes a longer route than necessary.}
+    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. \mccorrect{At intermediate temperatures (illustrated in blue), the agent still reaches the goal, but prioritises entropy enough that, with high probability, it takes a longer route than necessary.} %mrc
 
     When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is at most $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex gridworlds where the misalignment threshold is low enough to significantly affect performance.
 
@@ -332,7 +332,7 @@
 
     \paragraph{Algorithm Definition}
 
-    The BTS algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function \mccorrect{\mbox{$\alphabts(x)\geq 0$}} for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
+    The BTS algorithm uses the variables $\Vbts$ and $\Qbts$ for value estimates, $N(s)$ and $N(s,a)$ for visit counts, and the function \mbox{$\alphabts(x)\geq 0$} for the search temperature. The temperature used at each decision node $s$ is computed with respect to the visit count $N(s)$ as $\alphabts(N(s))$.
 
     The BTS search policy uses the flag $\normalisedq$ to optionally normalise Q-values, and incorporates prior knowledge from $\Qinit$ weighted by $\Nqbts$ pseudo-visits:
     %
@@ -356,7 +356,7 @@
             \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right), \label{eq:4:lambda}
         \end{align} 
         %
-        where $\epsbts \in [0,\infty)$ is an exploration parameter, \mccorrect{and a temperature of \mbox{$\alphabts(N(s))=0$} is taken to mean that \mbox{$\rhobts$} selects greedily with respect to \mbox{$\Qbtsnorm$}.}
+        where $\epsbts \in [0,\infty)$ is an exploration parameter, and a temperature of \mbox{$\alphabts(N(s))=0$} is taken to mean that \mbox{$\rhobts$} selects greedily with respect to \mbox{$\Qbtsnorm$}.
     }
 
     For any new decision nodes $s$ added to the tree, the $\initv$ function initialises the visit count to $N(s)=0$ and the value estimate to $\Vbts(s)=\Vinit(s)$. For any new chance nodes $(s,a)$ added to the tree, the $\initq$ function initialises the visit count to $N(s,a)=0$ and the Q-value estimate to $\Qbts(s,a)=\Qinit(s,a)$.
@@ -454,7 +454,7 @@
 
     \textit{Decaying ENtropy Tree Search} (DENTS) extends the BTS algorithm by adding \textit{entropy estimates} as an exploration bonus. DENTS uses Bellman value estimates $\Vdents$ and $\Qdents$ similarly to BTS, but also uses entropy value estimates, $\HVdents$ and $\HQdents$, which are Monte Carlo estimates of the entropy of the search policy rooted from the relevant node. By keeping a separate estimate for entropy, DENTS is able to use entropy in its search policy, and discard it for recommendations.
 
-    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, \mccorrect{\mbox{$\alphadents(x)\geq 0$}} and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
+    DENTS uses parameters that correspond to the BTS parameters: $\normalisedq$, $\Nqdents$, $\Nvdents$, \mbox{$\alphadents(x)\geq 0$} and $\epsdents$. Additionally, the entropy terms are weighted by a non-negative function $\betadents(x)\geq 0$ during the selection phase. Typically, $\betadents$ is chosen such that $\betadents(x)\rightarrow 0$ as $x\rightarrow\infty$, so that the entropy weighting diminishes over time, allowing deeper parts of the tree to be explored\footnote{In practice, it is also advisable to choose $\betadents$ such that $\frac{\betadents(x)}{\alphadents(x)}\rightarrow 0$, so that the entropy weighting decays faster than the temperature. Otherwise, even as the temperature vanishes, the entropy bonus may still dominate the Q-values in the Boltzmann exponent, skewing the search policy away from the optimal action.}.
     
     The Q-values used during search are computed as follows:
     \begin{align}
@@ -478,7 +478,7 @@
             \lambda(s,\epsilon) &= \min\left(1, \frac{\epsilon}{\log(e+N(s))}\right).
         \end{align} % under full \hbox error, but no visual artifacts or margin issues
         %
-        \mccorrect{where \mbox{$\epsdents \in [0,\infty)$} is an exploration parameter, and a temperature of \mbox{$\alphadents(N(s))=0$} is taken to mean that \mbox{$\rhodents$} selects greedily with respect to \mbox{$\Qdentsnorm$}.}
+        where \mbox{$\epsdents \in [0,\infty)$} is an exploration parameter, and a temperature of \mbox{$\alphadents(N(s))=0$} is taken to mean that \mbox{$\rhodents$} selects greedily with respect to \mbox{$\Qdentsnorm$}.
     }
 
     The $\initv$ and $\initq$ functions are also similar to BTS, setting: $N(s)=0$, $N(s,a)=0$, $\Vdents(s)=\Vinit(s)$ and $\Qdents(s,a)=\Qinit(s,a)$. Additionally, the entropy value estimates are initialised to zero: $\HVdents(s)=0$ and $\HQdents(s,a)=0$.
@@ -1291,7 +1291,7 @@
 
     \mccorrect{Algorithm parameters} were tuned using round-robin tournaments on 9x9 Go boards, details are given in Appendix \ref{appsec:round_robin}.
 
-    The PUCT algorithm is used as a baseline, as described in Alpha Go Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions in this domain. The Alias method (Section \ref{sec:4-2-3-stoch_search_policies}) is used for all algorithms using stochastic search policies.
+    The PUCT algorithm is used as a baseline, as described in AlphaGo Zero \cite{alpha_go_zero}. For maximum entropy baselines, AR-MENTS, AR-RENTS and AR-TENTS (Appendix \ref{appsec:go_ar_ments}) are used. These are variants of MENTS, RENTS and TENTS using average return backups. It is experimentally shown in Appendix \ref{appsec:go_ar_vs_bellman} that the average returns algorithms decisively beat the Bellman versions in this domain. The Alias Method (Section \ref{sec:4-2-3-stoch_search_policies}) is used for all algorithms using stochastic search policies.
 
             
 
@@ -1403,11 +1403,11 @@
 
     As discussed in Section \ref{sec:4-1-intro}, UCT-based algorithms
     converge to a local optimum due to greater focus on exploitation,
-    which is visible across all map sizes. \mccorrect{UCT and MaxUCT both take many trials to find any solution on the larger maps. Two factors contribute: the high bias parameters selected (Table \mbox{\ref{table:gridworld_params}}), and that every action is tried once before any action is selected a second time (Section \mbox{\ref{sec:2-4-2-uct}}). The latter causes a broad initial search before exploiting, whereas a stochastic search policy such as that of BTS can reach the goal early by chance while exploring throughout its search. H-MCTS finds a solution and converges faster, with a smaller bias parameter.}
+    which is visible across all map sizes. UCT and MaxUCT both take many trials to find any solution on the larger maps. Two factors contribute: the high bias parameters selected (Table \mbox{\ref{table:gridworld_params}}), and the fact that every action is tried once before any action is selected a second time (Section \mbox{\ref{sec:2-4-2-uct}}). The latter causes a broad initial search before exploiting, whereas a stochastic search policy such as that of BTS can reach the goal early by chance while exploring throughout its search. H-MCTS finds a solution and converges faster, with a smaller bias parameter.
     
     The stochastic search policies all tend towards the optimal path across all map sizes. However, particularly in the larger maps, 8x24 and 8x32, the path recommended by BTS improves rapidly initially, but without the benefit of entropy exploration it is slower to converge to the optimal path.
 
-    The tuned temperature parameter $\alphaments$ is below the misalignment threshold for all maps \mccorrect{as it converges to an optimal policy}, however the 8x32 map contains some larger regions without any holes where MENTS can gather entropy rewards, leading to slow convergence. DENTS is able to improve on this by using a larger search temperature (i.e. $\alphadents(x)$) to MENTS, but with a lower entropy coefficient \mccorrect{(Table \mbox{\ref{table:gridworld_params}})}. This allows DENTS to converge to the optimal path faster than MENTS, particularly on the 8x32 map.
+    The tuned temperature parameter $\alphaments$ is below the misalignment threshold for all maps, as MENTS converges to an optimal policy, however the 8x32 map contains some larger regions without any holes where MENTS can gather entropy rewards, leading to slow convergence. DENTS is able to improve on this by using a larger search temperature (i.e. $\alphadents(x)$) than MENTS, but with a lower entropy coefficient (Table \mbox{\ref{table:gridworld_params}}). This allows DENTS to converge to the optimal path faster than MENTS, particularly on the 8x32 map.
 
     RENTS uses \textit{relative entropy} instead of Shannon entropy, which performs a KL regularization between the search policy at each timestep and the previous timestep, which in practice leads to sampling long sequences of the same action. This strategy is effective on smaller maps, but becomes less effective on larger maps where the optimal path is more complex.
 
@@ -1476,11 +1476,11 @@
 
     BTS and DENTS perform well across all map sizes in this experiment, demonstrating their ability to balance exploration and exploitation when necessary. In particular, TENTS was the only other algorithm able to effectively solve the 4x16 map.
 
-    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation. \mccorrect{UCT and H-MCTS performed similarly on every map and all three algorithms made little or no progress on the 4x16 map.}
+    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation. \mccorrect{UCT and H-MCTS performed similarly on every map, and all three UCT-based algorithms made little or no progress on the 4x16 map.}
 
-    \begin{mccorrection}
     Recall that parameters were optimised using the 4x4 map and reused for all maps. The temperature selected for MENTS was misaligned on the 4x12 and 4x16 maps. TENTS selected a similar temperature but was not misaligned, which suggests that the misalignment threshold is higher for Tsallis entropy than for Shannon entropy on these maps. RENTS selected a much lower temperature, and behaved as it did in the DGW environments, preferring long sequences of the same action. This was relatively successful until the 4x16 map, where RENTS made little or no progress, although its temperature may also have been above the misalignment threshold for that map.
 
+    \begin{mccorrection}
     The 4x12 map displays two non-monotonic trends, both of which are consistent across runs. Because the maps were randomly generated, this one happened to have the lowest ratio of holes to area, with one hole directly next to the goal and another to the north of it.
 
     The first trend is for MENTS, which makes some initial progress, because the map is open and the goal is easy to reach. Being open, the map also contains regions where a large entropy reward can be collected. Performance therefore dips once such a region has been explored enough for the entropy reward to accumulate, at which point MENTS prioritises that reward over reaching the goal. It converges to a misaligned, high-entropy policy that reaches the goal with lower probability than the optimal policy.
@@ -1571,9 +1571,9 @@
 
     An interesting asymmetry can be seen in the performance of RENTS between the 16x16 North map and the 8x16 South-East map. The wind transition probabilities are asymmetric (Figure \ref{fig:sailing_deets}), with transitions towards North being more likely. Because the agent must travel North-East to reach the goal, when the wind is North facing, the agent incurs less cost, and, specifically is less likely to penalise long sequences of North-East actions. In contrast, when the wind is initially South-East facing, the agent is more likely to encounter states where the actions need to adapt to the wind.
 
-    \begin{mccorrection}
+    % \begin{mccorrection}
     The temperatures used for MENTS and TENTS remained below the misalignment threshold on all of the maps, and both performed well, converging to the optimal policy. As in DGW, the TENTS search policy often made a slow start, behaving somewhat like a breadth-first search.
-    \end{mccorrection}
+    % \end{mccorrection}
 
     
 
@@ -1771,7 +1771,7 @@
         \label{table:go_results}
     \end{table}
 
-    Results of the round-robin are summarised in Table \ref{table:go_results}, where each algorithm played $50$ games as black and $50$ as white. AR-BTS ran the most trials per move and won all of its matches with the exception of AR-DENTS, with which it drew. The Alias method allowed the Boltzmann search algorithms to run significantly more trials per move than PUCT. BTS and DENTS were able to beat PUCT with results of 57--43 and 58--42 respectively. Using entropy did not seem to have much benefit in these experiments, as can be witnessed by MENTS only beating TENTS, and DENTS drawing 50--50 with BTS. This is likely because the additional exploration provided by entropy is vastly outweighed by utilising the information contained in the neural networks $\tilde{V}$ and $\tilde{\pi}$. Interestingly RENTS had the best performance out of the prior works, losing 43--57 to PUCT, and the use of relative entropy appears to take advantage of a heuristic for Go that the RAVE \cite{rave} algorithm used: the value of a move is typically unaffected by other moves 
+    Results of the round-robin are summarised in Table \ref{table:go_results}, where each algorithm played $50$ games as black and $50$ as white. AR-BTS ran the most trials per move and won all of its matches with the exception of AR-DENTS, with which it drew. The Alias Method allowed the Boltzmann search algorithms to run significantly more trials per move than PUCT. BTS and DENTS were able to beat PUCT with results of 57--43 and 58--42 respectively. Using entropy did not seem to have much benefit in these experiments, as can be witnessed by MENTS only beating TENTS, and DENTS drawing 50--50 with BTS. This is likely because the additional exploration provided by entropy is vastly outweighed by utilising the information contained in the neural networks $\tilde{V}$ and $\tilde{\pi}$. Interestingly RENTS had the best performance out of the prior works, losing 43--57 to PUCT, and the use of relative entropy appears to take advantage of a heuristic for Go that the RAVE \cite{rave} algorithm used: the value of a move is typically unaffected by other moves 
     on the board, so if a move is assigned high probability but 
     not selected at a given timestep, the relative entropy 
     biases the policy towards selecting it in subsequent 
@@ -1786,7 +1786,7 @@
     the same conditions for 50 games and lost 31--19, 
     confirming that emphasising more exploration within a fixed trial budget is outweighed by the information contained in the neural networks. In Go, the Boltzmann 
     search algorithms gain their advantage primarily through 
-    the Alias method and the ability to run more trials per 
+    the Alias Method and the ability to run more trials per 
     move. Note that the KataGo networks were not fine-tuned, 
     so the Boltzmann algorithms used networks originally 
     trained for PUCT with average returns.
@@ -1904,7 +1904,7 @@
 
     The following assumptions are made for this section, which do not affect the asymptotic behaviour of the algorithms but simplify the proofs and presentation:
     \begin{itemize}
-        \item \mccorrect{the unique optimal policy the unique state assumptions (Assumptions \mbox{\ref{ass:2:unique_optimal_policy}} and \mbox{\ref{ass:2:unique_state_assumption}}) remain};
+        \item \mccorrect{the unique optimal policy assumption and the unique state assumption remain (Assumptions \mbox{\ref{ass:2:unique_optimal_policy}} and \mbox{\ref{ass:2:unique_state_assumption}})};
         \item $\mctsmode$ is set to false and $\graphmode$ is set to false;
         \item heuristic values are set to zero, $\Vinit(s)=0$ and $\Qinit(s,a)=0$ for all $s\in\cl{S}$ and $a\in\cl{A}$;
         \item the length of all trajectories and the planning horizon $H_{\thtspp}$ are equal to the horizon $H$ of the MDP;
@@ -2124,7 +2124,7 @@
     \begin{figure}
         \centering
         \includegraphics[scale=0.6]{figures/ch4/dkw_diagram.pdf}
-        \caption[Intuition behind bounding the empirical transition probabilities to the true transition probabilities.]{Intuition behind bounding the empirical transition probabilities to the true transition probabilities. \mccorrect{The proof of Corollary \mbox{\ref{cor:4:bound_transition_distribution}} constructs cumulative distribution functions (CDFs) that can be used with Theorem \mbox{\ref{thrm:2:dkw_inequality}} (the DKW inequality). $g$ is a mapping from states to integers used by the construction. This figure depicts the CDF corresponding to the true transition probabilities (solid black line) and the CDF corresponding to the empirical transition probabilities (dashed green line) at the point $g(s_{t+1})$. It shows that if the two CDFs are within $\varepsilon$ of each other, then the probability mass of $p(s_{t+1}|s_t,a_t)$ and empirical probability mass of $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ must be within $2\varepsilon$ of each other.}}
+        \caption[Intuition behind bounding the empirical transition probabilities to the true transition probabilities.]{Intuition behind bounding the empirical transition probabilities to the true transition probabilities. \mccorrect{The proof of Corollary \mbox{\ref{cor:4:bound_transition_distribution}} constructs cumulative distribution functions (CDFs) that can be used with Theorem \mbox{\ref{thrm:2:dkw_inequality}} (the DKW inequality). $g$ is a mapping from states to integers used by the construction. This figure depicts the CDF corresponding to the true transition probabilities (solid black line) and the CDF corresponding to the empirical transition probabilities (dashed green line) at the point $g(s_{t+1})$. It shows that if the two CDFs are within $\varepsilon$ of each other, then $p(s_{t+1}|s_t,a_t)$ and the empirical probability $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)}$ must be within $2\varepsilon$ of each other.}}
         \label{fig:dkw_diag}
     \end{figure}
     %
@@ -2139,7 +2139,7 @@
     \end{corollary}
     %
     \begin{mccorrection}
-        Figure \ref{fig:dkw_diag} provides the intuition behind how the DKW inequality leads to this corollary bounding the true and empirical transition probabilities, and where the $2\varepsilon$ term comes from.
+        Figure \ref{fig:dkw_diag} gives the intuition behind how the DKW inequality leads to this corollary, which bounds the true transition probabilities against the empirical ones. It also shows where the $2\varepsilon$ term comes from.
         %
         \begin{proof}
             Let $m=N^n(s_t,a_t)$ and let $g$ be an arbitrary bijection from $\cl{S}$ to \mbox{$\bb{N}_{\cl{S}}=\{1,2,3,\cdots,|\cl{S}|\}$}. Consider the following true and empirical probability mass functions for $i\in\bb{N}_{\cl{S}}$:
@@ -2152,7 +2152,7 @@
             with corresponding cumulative distribution functions $F$ and $F_m$ respectively. For any $0<\delta<1$ it is true that $f(i)=F(i+\delta)-F(i-\delta)$ and $f_m(i)=F_m(i+\delta)-F_m(i-\delta)$ by construction, so by the triangle inequality:
             %
             \begin{align}
-                \left| f(i)-f_m(i) \right| \leq \left| F(i+\delta) - F_m(i+\delta) \right| + \left| F(i-\delta) - F_m(i-\delta) \right|,
+                \left| f(i)-f_m(i) \right| \leq \left| F(i+\delta) - F_m(i+\delta) \right| + \left| F(i-\delta) - F_m(i-\delta) \right|.
             \end{align}
             %
             Hence the following implication holds (depicted at one point in Figure \ref{fig:dkw_diag}):
@@ -2170,7 +2170,7 @@
                             > 2 \varepsilon \right) \\
                     = & \Pr\left( \sup_{i\in\bb{N}_{\cl{S}}} |f(i)-f_m(i)| > 2\varepsilon \right) \\
                     \leq & \Pr\left( \sup_{i\in\bb{N}_{\cl{S}}} |F(i)-F_m(i)| > \varepsilon \right) \\
-                    \leq & 2\exp\left(2\varepsilon^2m\right)
+                    \leq & 2\exp\left(-2\varepsilon^2m\right)
             \end{align}
         \end{proof}
     \end{mccorrection} % under full \vbox warning, but no margin issues
