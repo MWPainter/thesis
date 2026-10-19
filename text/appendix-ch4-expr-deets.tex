@@ -163,10 +163,10 @@
 
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \section[Parameter Details for Gridworld Experiments]{Parameter Details for DeterministicGridWorld, FrozenLake and Sailing Experiments}
 \label{appsec:4:hps}
-\end{mccorrection} % under full vbox - believe this is because of the mccorrection around section heading, will not exist in final version
+%\end{mccorrection} % under full vbox - believe this is because of the mccorrection around section heading, will not exist in final version
 
     This section is organised as follows:
     \begin{itemize}
@@ -176,10 +176,10 @@
     \end{itemize}
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Parameter Summary}
 \label{appsec:4:hyperparams}
-\end{mccorrection}
+%\end{mccorrection}
 
     The following parameters were used in common by all algorithms considered in Section \ref{sec:4-4-results}:
     \begin{itemize}
@@ -218,10 +218,10 @@
     These functions are chosen so that the entropy weighting becomes negligible, and more specifically so that $\frac{\beta(x)}{\alpha(x)}$ tends to zero as $x$ tends to infinity.
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Integration of Common Parameters into Prior Algorithms}
 \label{appsec:4:bias_term_integration}
-\end{mccorrection}
+%\end{mccorrection}
 
     Consider an algorithm with value estimates $\bar{V}(s)$ and $\bar{Q}(s,a)$. To use the $\Nq$ and $\normalisedq$ parameters, the biased Q-values $\Qnorm(s,a)$ used in the search policy are given by:
     %
@@ -312,10 +312,10 @@
 
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Parameter Optimisation}
 \label{appsec:4:hypersearch}
-\end{mccorrection}
+%\end{mccorrection}
 
     The parameters shared between all algorithms were set manually to the following values for all environments:
     \begin{itemize}
@@ -334,13 +334,13 @@
     %
     % I think this is an unnecessary level of detail
     %
-    % \begin{mccorrection}
+    % %\begin{mccorrection}
     % BayesOpt assumes that the value for each set of parameters is correct, with some noise.
     % Noise was set to varying values with each environment... 
     % For each set of parameters, the algorithm was run multiple times, for 50000 trials each time, until the standard error of the value estimate for the parameters was below the threshold, at which point it is given to BayesOpt
     % Early stopping (for running the algorithm multiple times) was used, using 95\% confidence intervals. At least 10 repeats were run for each set of parameters, after that if the average value estimate plus 95\% conf interval was less than best average value estimate minus its 95\% confidence interval, then the repeats were stopped early. (This gives an error rate of less than 1\% for incorrectly stopping early)
     % Each value estimate uses 1024 trials to evaluate the policy from Equation \eqref{eq:4:full_recommend}. 
-    % \end{mccorrection}
+    % %\end{mccorrection}
     
     Table \ref{table:gridworld_hps_space} gives the space searched over for each parameter, and if parameters were sampled using a linear or logarithmic scale.
 
@@ -370,9 +370,9 @@
 
     The selected \mccorrect{algorithm parameters} for DeterministicGridWorld, FrozenLake, Sailing(North) and Sailing(South-East) are given in Tables \ref{table:gridworld_params}, \ref{table:frozenlake_params}, \ref{table:sailing_north_params} and \ref{table:sailing_south_east_params} respectively. 
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     The parameter optimisation does make a significant difference in the performance of the algorithm. For example consider Figures \ref{fig:4:dgw_param_sens} and \ref{fig:4:fl_param_sens} where the bias and temperature parameters are varied and have a significant effect on performance. It is additionally worth noting that because all parameters were tuned simultaneously that parameters that have relatively little effect on performance were set to somewhat arbitrary values. For example, the value of $\alphadecay$ for BTS in Table \ref{table:gridworld_params:b} has little effect on the performance of BTS, because the value of $\alpha_0$ is set to a small value $\sci{1.00}{-5}$, which already causes the Boltzmann term in the search policy to be nearly greedy (Equation \eqref{eq:4:bts_value_policy}).
-    \end{mccorrection}
+    %\end{mccorrection}
 
     %
     % DeterministicGridWorld
@@ -637,10 +637,10 @@
 
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Go Round Robin Algorithm Parameter Selection}
 \label{appsec:round_robin}
-\end{mccorrection}
+%\end{mccorrection}
 
     The following parameters were tuned for the BTS, DENTS, MENTS, RENTS and TENTS algorithms:
     \begin{itemize}

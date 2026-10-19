@@ -58,7 +58,7 @@
     %An earlier proposal in this direction is given by \cite{tolpin2012mcts}.
 
     \paragraph{Maximum-entropy MCTS.}
-    \citet{ments} introduce Maximum ENtropy Tree Search (MENTS), which uses the soft Bellman backup and Boltzmann action selection of maximum entropy RL in MCTS (Section \ref{sec:2-4-4-ments}). MENTS is the basis for the Boltzmann tree search algorithms developed in Chapter \ref{ch:4-dents}. \citet{rentsmytents} subsequently generalise MENTS by replacing the Shannon entropy regulariser \mccorrect{with} other entropy regularisers. RENTS is derived by using relative entropy (KL divergence) regulariser. TENTS is derived by using a Tsallis entropy regulariser similar to that of \citet{tsallis_rl}, and results in a sparsemax search policy. %mrc
+    \citet{ments} introduce Maximum ENtropy Tree Search (MENTS), which uses the soft Bellman backup and Boltzmann action selection of maximum entropy RL in MCTS (Section \ref{sec:2-4-4-ments}). MENTS is the basis for the Boltzmann tree search algorithms developed in Chapter \ref{ch:4-dents}. \citet{rentsmytents} subsequently generalise MENTS by replacing the Shannon entropy regulariser \mccorrect{with} other entropy regularisers. RENTS is derived by using relative entropy (KL divergence) regulariser. TENTS is derived by using a Tsallis entropy regulariser similar to that of \citet{tsallis_rl}, and results in a sparsemax search policy.
 
 
 
@@ -70,7 +70,7 @@
     Multi-objective optimisation is concerned with computing the Pareto front of a vector-valued objective. \citet{moo_chebyshev} reduces the problem to minimising the maximum weighted deviation from a utopian reference point, often referred to as the \textit{Chebyshev scalarisation} or utility. Varying the weight vector traces out the entire Pareto front, including its non-convex regions. In the evolutionary setting, NSGA-II \cite{nsga_ii} is a fast genetic algorithm that combines non-dominated sorting with a crowding distance heuristic to maintain diversity along the front. The crowding distance estimator is used in Chapter \ref{ch:5-chmcts} to prune points from convex hull value sets. In the multi-agent setting, \citet{cccs} introduce algorithms for computing the convex coverage set (CCS) of a multi-objective coordination graph. These include a variable-elimination procedure and an outer-loop linear-support method. 
 
     \paragraph{Optimisation criteria.}
-    In Section \ref{sec:2-6-morl} the utility function is applied after taking the expectation of the return, which is referred to as the \textit{scalarised expected returns} (SER) criterion. \citet{survey_mo_seq_dec_make} explain that this is appropriate when the agent is evaluated over many independent executions of the policy, and when the agent is evaluated on a single execution it is more appropriate to use the \textit{expected scalarised returns} (ESR): \mccorrect{\mbox{$\max_\pi \bb{E}_\pi[u(\bff{G})]$}}, where $\bff{G}$ is the return of the policy. The two criteria coincide when $u$ is linear, which is the setting considered in this thesis, but in general the two criteria yield different optimal policies.  The majority of MORL algorithms in the literature target the SER criterion. %mrc
+    In Section \ref{sec:2-6-morl} the utility function is applied after taking the expectation of the return, which is referred to as the \textit{scalarised expected returns} (SER) criterion. \citet{survey_mo_seq_dec_make} explain that this is appropriate when the agent is evaluated over many independent executions of the policy, and when the agent is evaluated on a single execution it is more appropriate to use the \textit{expected scalarised returns} (ESR): \mbox{$\max_\pi \bb{E}_\pi[u(\bff{G})]$}, where $\bff{G}$ is the return of the policy. The two criteria coincide when $u$ is linear, which is the setting considered in this thesis, but in general the two criteria yield different optimal policies.  The majority of MORL algorithms in the literature target the SER criterion. 
 
     \paragraph{Planning algorithms.}
     Planning approaches to MOMDPs predate the reinforcement learning literature. \citet{white_momdp} adapts dynamic programming to find Pareto-optimal policies for infinite-horizon discounted MOMDPs, but the resulting policies are non-stationary. \citet{con_modp} subsequently address this with the CON-MODP algorithm, which uses a consistency operator to enforce stationarity. Convex Hull Value Iteration \cite{chvi} extends Bellman's value iteration by storing a convex hull value set at each state-action pair. CHVI is covered in more detail in Section \ref{sec:2-6-1-chvi}. \citet{lizotte_spline_2d,lizotte_spline_nd} extend this approach by representing the value function in weight space rather than reward space, which gives piecewise-linear representations that scale more favourably with the number of states. The three-objective treatment of \citet{lizotte_spline_nd} relies on triangulation primitives from computational geometry, and the approach has been demonstrated mainly in two and three objectives.
@@ -95,19 +95,19 @@
 
     \citet{og_momcts} present the first extension of MCTS to Multi-Objective MCTS (MOMCTS). A global \textit{Pareto archive} is maintained, with each tree node storing a point estimate of the vector-valued return. Action selection consists of perturbing value estimates at each node by a UCB-style confidence bound and selecting the perturbed point that leads to the largest hypervolume when combined with the Pareto archive. \citet{hv_momcts_1,hv_momcts_2,hv_momcts_3} develop and refine hypervolume-based MOMCTS by instead storing a Pareto front at each node, and using the hypervolume indicator directly in a UCB-style search policy.
 
-    % \begin{mccorrection}
+    % %\begin{mccorrection}
     \citet{pareto_momcts} apply the Pareto-UCB rule \cite{pareto_ucb} (Section \ref{sec:3-1-mab}) for selecting actions, and, like \citet{og_momcts}, store a point estimate of the vector-valued return at each node, constructing a Pareto front over the actions. \mccorrect{Section \mbox{\ref{sec:3-5-1-point_estimates}} discusses why storing a point estimate at each node is insufficient to reconstruct an optimal solution set.}
-    % \end{mccorrection}
+    % %\end{mccorrection}
 
-    % \begin{mccorrection}
+    % %\begin{mccorrection}
     \citet{chebyshev_momcts} take a different approach, using the Chebyshev scalarisation of \citet{moo_chebyshev} to select actions during both planning and execution. The motivation is that the Chebyshev function, unlike linear scalarisation, can recover Pareto-optimal solutions in non-convex regions of the front. However, Sections \ref{sec:5-6-2-linear_utility} and \ref{sec:5-6-3-fundamental_assumption_of_momcts} show that selecting actions locally under a Chebyshev utility is not guaranteed to yield a globally optimal policy, which is why this thesis assumes linear utilities.
-    % \end{mccorrection}
+    % %\end{mccorrection}
 
     All of the above MOMCTS algorithms target the SER criterion. \citet{dmcts,dmcts_long} instead address the ESR criterion, and propose Distributional MCTS. At each chance node, Distributional MCTS maintains an approximate posterior distribution over the utility of the returns rather than an expectation, and uses Thompson sampling for action selection. 
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     The MOMCTS algorithms discussed in this section are motivated by scenarios similar to that of Section \mbox{\ref{sec:1-2-scope}}: search is run as an offline planning phase, and a single policy is extracted at execution time, either in the \textit{unknown weights scenario} (Section \mbox{\ref{sec:2-6-morl}}) or a close variant. In contrast to this thesis, they take a Pareto rather than a utility approach, aiming to compute Pareto fronts, and assume deterministic environments. They are also motivated largely empirically, rather than grounded in theory. Distributional MCTS is the exception: it targets the ESR criterion under a known utility, and so considers the known weights scenario.
-    \end{mccorrection}
+    %\end{mccorrection}
 
     % FUTURE_MIKE_HEADER
     %
@@ -116,10 +116,10 @@
 
 
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
 \subsection{Multi-Objective Monte Carlo Tree Search with Point Estimates}
 \label{sec:3-5-1-point_estimates}
-    \end{mccorrection}
+    %\end{mccorrection}
 
     \begin{figure}
         \centering\includegraphics[width=0.8\textwidth]{figures/ch3/counterexample.pdf} 
@@ -127,11 +127,11 @@
         \label{fig:3:counterexample}
     \end{figure}
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     Some prior work stores a point estimate (a single vector) at each node \cite{og_momcts,pareto_momcts}. To see why this is insufficient, consider the MOMDP in Figure \ref{fig:3:counterexample}. The optimal Pareto front at the initial state $s_0$ is $\{(6,0),(0,6)\}$, and both values are obtained by taking $\aaa{3}$. If each decision node stores a single vector, computed as a sample average, then the Q-values for $\aaa{1}$, $\aaa{2}$ and $\aaa{3}$ are $(0,4)$, $(4,0)$ and $(6\lambda,6(1-\lambda))$ respectively, for some $\lambda\in[0,1]$. The computed Pareto front at the root is therefore drawn from $\{(0,4), (4,0), (6\lambda,6(1-\lambda))\}$, and whatever the value of $\lambda$, one of $(0,4)$ or $(4,0)$ remains undominated. The computed front is thus incorrect, and $\aaa{1}$ or $\aaa{2}$ may be taken at execution time. Note that $\aaa{3}$ is optimal at $s_0$ for every weight vector, so the failure arises because a single vector cannot represent both of the values achievable from $\sss{3}$.
 
     This counterexample relies on the values being updated by sample averages. More generally, and informally, a single vector cannot carry the information held by the set of values achievable under an undominated set of policies (Definition \ref{def:2:undominated_set}). No matter how the vector is computed, there will be some MOMDP in which the Pareto front or convex hull obtained from it is suboptimal.
-    \end{mccorrection}
+    %\end{mccorrection}
 
 
 

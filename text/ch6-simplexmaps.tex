@@ -637,7 +637,7 @@
 
     Results for CZT, CH-BTS and CH-UCT are repeated from Section \ref{sec:5-5-results} as baselines for SM-BTS and SM-DENTS.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
 
 \subsection{Evaluation Procedure} 
 \label{sec:6-4-0-eval_procedure}
@@ -652,7 +652,7 @@
     %
     where $\NSM(\bff{w})$ is the number of times that the value estimate at the vertex $\bff{w}$ of the simplex map has been updated.
 
-    \end{mccorrection}
+    %\end{mccorrection}
 
     % No time to fix this, and wasn't asked to
     %
@@ -742,9 +742,9 @@
 
     Results on the MO-Gymnasium environments are given in Figure \ref{fig:6:gridworld_results}. SM-BTS and SM-DENTS perform comparably to the CHMCTS algorithms across all four environments, though generally converging slightly more slowly. On Fruit-Tree-7, the hypervolume curves for the simplex map algorithms are higher than those of the CHMCTS algorithms. This is because size pruning limits each convex hull value set to $K_{\max}=15$ points (Section \mbox{\ref{sec:5-3-6-optimisations}}), which limits the hypervolume that the CHMCTS algorithms can achieve, whereas simplex maps are not subject to such a constraint.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     The results for CZT, CH-BTS and CH-UCT are repeated from Figure \ref{fig:5:gridworld_results}, so the non-monotonic trends in their hypervolume curves are explained in Section \ref{sec:5-5-3-results_and_discussion}.
-    \end{mccorrection}
+    %\end{mccorrection}
 
 
 
@@ -925,23 +925,23 @@
         \label{fig:6:dst_scaling}
     \end{figure}
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     Figure \ref{fig:6:dst_scaling} repeats the scalability experiment of Section \ref{sec:5-5-4-scalability} with the simplex map algorithms added. The experimental setup, use of normalised hypervolume (NHV), and the trends in the CHVI, CZT and CHMCTS curves 
     % --- the increase in best achievable EUM with environment size, the constant normalised hypervolume of around $0.8$, and the non-monotonicity arising from the random generation of the environments --- 
     are as described there.
-    \end{mccorrection}
+    %\end{mccorrection}
 
     On the deterministic environment $\DST(W,0)$, the simplex map algorithms perform similarly to the CHMCTS algorithms, though slightly below them on both EUM and NHV across all environment sizes.
 
-    \begin{mccorrection}
-    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM in the stochastic environments as the environment size increases, before declining once the fixed planning budget becomes the limiting factor. On the mildly stochastic environment $\DST(W,\frac{1}{40})$, both maintain good performance up to $W=40$.
-    \end{mccorrection}
+    %\begin{mccorrection}
+    In contrast to Figure \ref{fig:5:dst_scaling}, SM-BTS and SM-DENTS improve in EUM in the stochastic environments as the environment size increases, before declining once the fixed planning budget versus environment size becomes the limiting factor. On the mildly stochastic environment $\DST(W,\frac{1}{40})$, both maintain good performance up to $W=40$.
+    %\end{mccorrection}
 
     On the heavily stochastic environment $\DST(W,\frac{1}{5})$, SM-DENTS achieves near-optimal EUM for environment sizes up to $W=20$ \mccorrect{(beyond which CHVI and CHVI(PS) degrade)}, continues to improve until around $W=40$, plateaus until $W=70$, and then degrades to performance comparable to CZT at $W=100$. This represents a substantial improvement over all CHMCTS algorithms, which are unable to run a sufficient number of trials to make progress in stochastic environments at these scales.
 
-    % \begin{mccorrection}
+    % %\begin{mccorrection}
     SM-BTS does not match this performance. Its temperature is tuned so low that the search policy is close to greedy, leaving the uniform exploration parameter, set to more than twice the value used by SM-DENTS (Table \ref{table:hyperparams_dst}), as its main source of exploration. SM-DENTS instead obtains exploration from the entropy bonus, which allows it to exploit more later in the search. As discussed in Section \ref{sec:4-4-3-1-gridworld_results}, exploitation is still necessary in these stochastic environments so that the recommendation policy does not leave the tree and fall back to acting uniformly at random (Equation \eqref{eq:5:full_Recommend}).
-    % \end{mccorrection}
+    % %\end{mccorrection}
 
     % FUTURE_MIKE_HEADER
     %

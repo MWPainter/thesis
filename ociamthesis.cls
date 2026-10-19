@@ -468,6 +468,18 @@
 % share a paragraph with the body text that follows, so \raggedright would
 % leak out and unjustify that text. \chapter is handled by quotchap, not
 % \@startsection, so it is unaffected.
+%
+% The same patch also stops a heading being left stranded at the foot of a
+% page with no body text under it. \mc@headingspace is the room a heading
+% needs: enough for the heading itself plus a couple of lines of text. If
+% that much space is not left on the page, the heading moves to the next one.
+% \Needspace* is the variant intended for documents using \flushbottom (as
+% this one does); plain \needspace can leave pages short instead. Levels above
+% 3 are excluded for the same reason as above: run-in headings share a
+% paragraph with the text that follows, so they cannot be orphaned anyway.
+% Raise \mc@headingspace to demand more text under a heading.
+\RequirePackage{needspace}
+\newcommand{\mc@headingspace}{4\baselineskip}
 \makeatletter
 \let\mc@startsection\@startsection
 \def\@startsection#1#2#3#4#5#6{%
@@ -475,6 +487,7 @@
     \def\mc@secstyle{#6}%
   \else
     \def\mc@secstyle{#6\raggedright\hyphenpenalty\@M\exhyphenpenalty\@M}%
+    \par\Needspace*{\mc@headingspace}%
   \fi
   \mc@startsection{#1}{#2}{#3}{#4}{#5}{\mc@secstyle}}
 \makeatother

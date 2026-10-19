@@ -1,0 +1,30 @@
+% Styling for the corrections cover letter PDF (used via pandoc --include-in-header).
+% The point of this file is to make the examiners' quoted comments unmistakable:
+% markdown blockquotes render as bare indentation by default, which reads as
+% ordinary emphasis rather than as someone else's words.
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+\definecolor{quoteback}{HTML}{F2F2F2}
+\definecolor{quoterule}{HTML}{555555}
+
+% Grey panel with a heavy left rule. Deliberately not blue: blue means "my
+% correction" in the thesis itself, so reusing it here would be misleading.
+\newmdenv[
+  backgroundcolor=quoteback,
+  linecolor=quoterule,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  linewidth=3pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=7pt, innerbottommargin=7pt,
+  skipabove=10pt, skipbelow=10pt,
+  nobreak=false
+]{examinerquote}
+
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}{\begin{examinerquote}}{\end{examinerquote}}
+
+% Tighten the tables a little so the "Change" column has more room.
+\usepackage{array}
+\renewcommand{\arraystretch}{1.15}

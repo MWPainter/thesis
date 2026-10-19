@@ -1,207 +1,239 @@
 # Corrections Cover Letter
 
-Corrections are highlighted in blue throughout the thesis. The purpose of this cover letter is to point to the changes made for each correction in a question and response format, and make the corresponding changes as easy as possible to look up.
+Corrections are highlighted in blue throughout the thesis in `Oxford_Thesis_corrections.pdf.`
 
-Unless otherwise stated, the responses should read as "I agree, and here are the corrections I have made to the thesis".
+In this document each of the suggested corrections/questions are indicated as a quote. The purpose of this cover letter is to point to the changes made for each correction in a question and response format, to make the corresponding changes (in `Oxford_Thesis_corrections.pdf`) as easy as possible to look up.
 
 
-> Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
+> Abstract: Refers to “the standard objective” which could mean multiple things, suggest e.g. “standard objective of maximising expected return”.
 
-- Appears twice in the abstract, updated in the first instance as suggested and updated second instance to just use "expected return"
-- Additionally updated in three places in Chapter 1 (pages 3, 7 and 8), and in two places in Chapter 7 (pages 189 and 191)
-- After the formal definitions (Definitions 2.3.3 and 2.3.7), ensured that references back to the definition are included:
-    - page 40 - where MENTS is introduced
-    - pages 66 - in the introductory discussion Chapter 4
-    - page 70 - where misalignment (of standard/maximum entropy objectives) is defined
-    - page 74 - where BTS is introduced as using the standard objective
-    - page 105 - where the maximum entropy objective is recalled in the parameter sensitivity discussion
+The phrase is now spelled out as suggested where the objective is first referred to: 
+
+| Location | Change |
+|------------|------------------------------------|
+| Abstract | Spelled out in the first instance; shortened to "expected return" in the second |
+| Chapter 1 (pp. 3, 7, 8) | Three instances spelled out |
+| Chapter 7 (pp. 189, 191) | Two instances spelled out |
+
+The formal definitions (Definitions 2.3.3 and 2.3.7) are referenced wherever the objectives are discussed later:
+
+| Location | Change |
+|------------|------------------------------------|
+| p. 40 | Reference to the definition where MENTS is introduced |
+| p. 66 | Reference in the introductory discussion of Chapter 4 |
+| p. 70 | Reference just prior to where misalignment of the maximum entropy objective is defined |
+| p. 74 | Reference where BTS is introduced as using the standard objective |
+| p. 105 | Reference where the maximum entropy objective is recalled, in the parameter sensitivity discussion |
 
 
 
 > P2: Explain clearly the multi-objective setting, including what is known when, and how this interacts with on-line planning with MCTS methods. Consider using the unknown weights scenario instead of decision support as motivation.
 
-- Added a new Section 1.2 to outline the scope of the thesis, being more specific about scope of the thesis upfront, including:
-    - planning begins from a known initial state,
-    - describing the unknown weights scenario, including what is known and when,
-    - clarifying that utilities are assumed to be linear, with forward references where it is discussed why the assumption is made,
-    - clarify that the algorithms are evaluated as offline planners, and indicated that, for example, that in the unknown weights scenario any online planning reduces to a single-objective problem,
-    - explaining why MCTS methods might still be of interest instead of purely learning better prior policy/value functions
-- Additionally updated prose throughout thesis for using the unknown weights scenario instead and to be consistent with scoping section:
-    - Twice in the abstract
-    - Section 1.1 (Page 2) - updates to avoid referring to a "user's" preferences
+**Agreed on both points.** A new Section 1.2 (p. 4) sets out the scope of the thesis up front, stating that:
 
+- planning begins from a known initial state;
+- the unknown weights scenario is used, including what is known and when;
+- utilities are assumed to be linear, with forward references to where that assumption is justified;
+- the algorithms are evaluated as offline planners, so that in the unknown weights scenario any online planning reduces to a single-objective problem;
+- MCTS methods remain of interest even given the alternative of learning better prior policy and value functions.
 
+The prose elsewhere was then updated to use the unknown weights scenario and to stay consistent with that scoping:
 
-
-------------------
-    - Section 2.6 - added an additional introductory paragraph to define the unknown weights scenario instead, and updated Figure 2.10
-    - Chapter 5 introduction (page 120) - updated decision support -> unknown weights scenario
-    - Section 5.1 - restructured to improve clarity and relates back to unknown weights scenario
-    - Section 5.4.2 - updated first paragraph to motivate the use of the two reported metrics using the unknown weights scenario
+| Location | Change |
+|------------|------------------------------------|
+| Abstract | Two instances updated |
+| Section 1.1 (p. 2) | Avoids referring to a "user's" preferences |
+| Section 2.6 (p. 44) | Introductory paragraph now defines the unknown weights scenario rather than decision support |
+| Figure 2.10 (p. 43) | Redrawn for the unknown weights scenario |
+| Chapter 5 introduction (p. 128) | Decision support → unknown weights scenario |
+| Section 5.1 | Restructured for correction CH5b, and written consistently with the scenario change |
+| Section 5.4.2 (p. 147) | Updated for correction P132; refers back to the scope and scenario, and motivates the focus on EUM using the unknown weights scenario |
 
 
 
 > P3: either here or elsewhere justify the choice of linear utility function and discuss whether any of the work could be applied to decision support scenarios where the utilities are non-linear or better expressed as preference functions
 
-Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it and references pointing towards it were lacking. I have made the following changes to address this:
-- restructured Section 5.5, and included a new subsection 5.5.2 to more appropriately give an explanation and an example of why only linear utilities are considered
-- also added subsection 5.5.2.1 to explain how the work could be adapted to a non-linear (Chebyshev) utility
-- added forward references to Section 5.5 to highlight that the choice is addressed later, specifically:
-    - Section 1.2 (page TODO) - the scoping section added for the correction above
-    - Section 2.6 (page 45) - where the linear utility function is defined
-    - TODO: is bringing up Section 5.1 relevant here?
+Theorem 5.5.1 was intended to answer this question theoretically, but the discussion around it, and the references pointing towards it, were lacking. Section 5.5 has therefore been restructured:
 
+| Location | Change |
+|------------|------------------------------------|
+| Section 5.5.1 (p. 156) | Additional notation and definitions that do not assume a linear utility |
+| Section 5.5.2 (p. 157) | An informal explanation of why a linear utility is assumed, with an example of how MCTS goes wrong under a non-linear (Chebyshev) utility |
+| Section 5.5.2.1 (p. 159) | How MOMCTS can be applied under a non-linear (Chebyshev) utility, and in which cases (deterministic MOMDPs) |
+| Section 5.5.3 (p. 162) | Now houses the pre-existing theoretical argument |
+| Section 5.5.4 (p. 163) | Now houses the outline of convergence proofs for CHMCTS algorithms |
+
+Forward references to Section 5.5 were added to flag that the assumption is addressed later:
+
+| Location | Change |
+|------------|------------------------------------|
+| Section 1.2 (p. 5) | In the scoping section added for correction P2 |
+| Section 2.6 (p. 46) | Next to the definition of the linear utility function, noting that Chapters 5 and 6 assume a linear utility |
+| Section 2.6.2 (p. 53) | In the section added for correction P39 |
+| Section 5.1.1 (p. 130) | Updated for correction CH5b; points towards the theoretical discussion |
 
 
 > P12: Explain which of these bounds is better and why. Give some intuition about simple regret bounds, what constitutes a good bound, etc.
 
-Added an couple sentences at the end of the section to explain (page 12).
+**Section 2.1.2 (p. 16).**
+
+Added a couple of sentences at the end of the section, explaining that simple regret measures how suboptimal a recommendation is, and that a bound decaying to zero faster in the number of rounds is therefore stronger.
 
 
 
 > P13: “States are sampled according to a transition distribution that depends **only** on the current state and current action being taken (the Markov assumption).”
 
-Updated (page 13).
+**Section 2.2 (p. 18).** Updated as suggested.
 
 
 
 > P15: In a finite-horizon MDP, the policy needs to condition on the timestep (as do the value functions defined later).
 
-Agreed, and corrected. Policies now condition on the timestep throughout Chapter 2, up to the point at which the timestep parameter is explicitly dropped:
+Policies now condition on the timestep throughout Chapter 2, up to the point at which the timestep parameter is explicitly dropped. Definition 2.2.5 (p. 19) now defines a policy conditioning on the timestep, and the preceding paragraph explains the conditioning explicitly. The notation was then updated to match throughout the chapter:
 
-- Definition 2.2.5 now defines a policy conditioning on the timestep, and the corresponding notation is updated. The preceding paragraph is also updated to explicitly explain the conditioning.
-- Updated notation to correctly condition on the timestep throughout the chapter:
-    - Definition 2.2.6 (trajectory)
-    - Equation 2.32 (Shannon entropy)
-    - Definition 2.3.5 / Equation 2.33 (definition of a soft value)
-    - Definition 2.3.8 / Equation 2.39 (definition of the optimal soft policy)
-    - Definition 2.6.2 (multi-objective trajectory)
-    - Equation 2.84 (Extracting a policy from CHVI given a weight $\mathbf{w}$)
-- Made the unique state assumption more explicit in an assumption clause (Assumption 2.4.1), to highlight the explanation that this assumption is made to drop the timestep parameter for the remainder of the thesis (with the exception off Section 2.6)
+| Location | Change |
+|------------|------------------------------------|
+| Definition 2.2.5 (p. 19) | Policy definition and notation |
+| Definition 2.2.6 (p. 20) | Updated in trajectory definition |
+| Equation 2.32 (p. 24) | Updated in Shannon entropy definition |
+| Definition 2.3.5 / Equation 2.33 (pp. 24–25) | Soft value definition |
+| Definition 2.3.8 / Equation 2.39 (p. 26) | Optimal soft policy definition |
+| Definition 2.6.2 (p. 45) | Multi-objective trajectory |
+| Equation 2.85 (p. 52) | Extracting a policy from CHVI given a weight $\mathbf{w}$ |
+| Assumption 2.4.1 (p. 29) | The unique state assumption, now stated explicitly, which is what allows the timestep parameter to be dropped for the remainder of the thesis (except Section 2.6) |
 
 
 
 > P17: It’s confusing to include RL here. You’re just doing sample-based on-line planning.
 
-The definition I was implicitly using is that planning uses the transition distribution directly, while RL uses experience. So I settled on the best way to resolve this is to say that MCTS lies in the intersection of the two, so I have made the following changes to Section 2.3:
-- Updated section headers "Reinforcement Learning -> Planning and Reinforcement Learning", across sections 2.3 and 2.6
-- Added a roadmap paragraph at the start of Section 2.3 (page 21), to indicate that the section is more about giving definitions than methods that are relevant to both planning and RL, and to hopefully be more clear what the section covers and that no RL methods are covered
-- Added Section 2.3.2 to be highlight on the difference between planning and reinforcement learning, clarifying that MCTS sits between the two and to clarify that the thesis does not consider learning of function approximations in the typical machine learning sense
+The definition I was implicitly using is that planning uses the transition distribution directly, whereas reinforcement learning uses experience. On that reading MCTS sits between the two, which the chapter now says explicitly rather than leaving implicit:
+
+| Location | Change |
+|------------|------------------------------------|
+| Sections 2.3 and 2.6 | Headings renamed from "Reinforcement Learning" to "Planning and Reinforcement Learning" |
+| Section 2.3 (p. 21) | Roadmap paragraph added, making clear that the section is definitional and covers no reinforcement learning algorithms |
+| Section 2.3.2 (p. 26) | New section stating the distinction above, that MCTS sits between the two, and that the thesis does not consider learning function approximations in the usual machine learning sense |
 
 
 
 > P18: “The optimal policy is the policy that maximises the objective function J, and can be shown to be deterministic.” There can be multiple optimal policies, some of which may be stochastic though there always exists at least one deterministic optimal policy.
 
-Updated Definition 2.3.4.
-
-Sorry I often use the case where each state has a unique optimal action to simplify notation and maths, and I let it slip into the thesis. I have made the following changes to correct this in the thesis:
-- updated Definition 2.3.4 to be correct
-- added Assumption 2.3.1 to state that the theory in the thesis assumes that every state has a unique optimal action, and that it is not a necessary assumption
-    - I realised that the many of the theorems have statements about sequences of policies of the form $\pi_n \rightarrow \pi^*$, which also implicitly assumes a unique optimal policy
-    - Rather than add additional and unnecessary complexity to the theory I felt that it was better to just make the assumption explicit
-- added an additional item in the list of assumptions on page 93 as a reminder 
+| Location | Change |
+|------------|------------------------------------|
+| Definition 2.3.4 (p. 23) | No longer assumes a unique optimal policy |
+| Assumption 2.3.1 (p. 23) | States that the theory in the thesis assumes a unique deterministic optimal policy, and why: it simplifies the proofs and allows statements about a converging sequence of policies, such as $\pi_n \rightarrow \pi^*$, which implicitly assumes uniqueness |
+| Section 4.5 (p. 108) | Added to the list of assumptions made for the proofs in Chapter 4 |
 
 
 
 > P39: discuss implications of assuming linear scalarisation
 
-Added Section 2.6.2 to discuss this explicitly and added a forward reference where this was suggested (now page 46).
+**Section 2.6.2 (p. 52); forward reference on p. 46.**
+
+Added a new section discussing the implications explicitly, with a forward reference to it where the suggestion was made.
 
 
 
 > P41: the MCCS or a MCCS?
 
-Updated caption of Fig 2.12 (b) to be more precise about the sets of values/policies and account for the fact that there may not be a unique minimal convex coverage set.
+**Figure 2.12(b) (p. 48).**
+
+Updated the caption to be more precise about the sets of values and policies, and to be more precise that there may not be a unique minimal convex coverage set (as using "the" would suggest).
 
 
-> “replacing the Shannon entropy regulariser **with** other entropy regularisers” 
+> CH3: “replacing the Shannon entropy regulariser **with** other entropy regularisers” 
 
-Updated (page 50).
+**Section 3.3 (p. 58).** Updated as suggested.
 
 
 
 > P53: Reiterate here the motivation for online MO planning.
 
-Most of the prior work in MOMCTS is also used in either the unknown weights scenario or similar, they are used for offline planning and a policy is extracted at execution time. The exception is Distributional MCTS, which considers the ESR criterion, and uses a known utility (i.e. the known weights scenario). 
+**Section 3.5 (p. 62).**
 
-To address motivation for MO planning in Section 3.6, I have added an additional paragraph (now page 60) at the end explaining the above, referencing back to the new scoping section (from P2 correction) and where unknown weights scenario is defined in Section 2.6.
-
+Most prior work in MOMCTS targets the unknown weights scenario or a close variant: search is run offline and a policy is extracted at execution time. The exception is Distributional MCTS, which targets the ESR criterion under a known utility, and so the known weights scenario. A paragraph saying this has been added, pointing back to the scoping section (Section 1.2) and the unknown weights scenario (Section 2.6) introduced for correction P2.
 
 
 > P56: “In maximum entropy reinforcement learning (Section 2.3.1), entropy is added directly to the objective function rather than used as a constraint to remove ambiguity between multiple optimal policies, as in inverse reinforcement learning.” What’s the difference if the constraint will be turned into a penalty with a Lagrangian?
 
-Updated introductory paragraphs to Chapter 4 in line with the following answer to the question.
+**Section 4.1 introduction (p. 66).**
 
-In maximum entropy reinforcement learning, the objective function is regularised by the entropy term that doesn't correspond to a constraint.
+On reflection the point was unnecessary and caused more confusion than it resolved. I was trying to argue that maximum entropy is used in two different ways:
 
-When a policy is learned in maximum entropy inverse reinforcement learning the objective is to imitate the expert policy via the trajectories provided. So the objective optimised does include a Lagrangian corresponding to the constraint used to match the learned policy to the expert policy. For example if the expert policy $\pi_{\text{expert}}$ was known the objective could be $\mathcal{H}(\pi) - \lambda \left\Vert\pi - \pi_{\text{expert}} \right\Vert_2$.
+- in maximum entropy inverse reinforcement learning, entropy resolves an ill-posed problem: many policies could match an expert's trajectories, and entropy disambiguates between them;
+- in maximum entropy reinforcement learning, entropy changes the problem being solved.
+
+Either way, the passage mostly existed to lead into the misalignment of the maximum entropy objective, so it has been replaced with a simpler sentence connecting the surrounding paragraphs.
 
 
 
 > P59: Again, isn’t UCT’s “exploitation” in effect good local exploration?
 
-Yes it often does, I would say that it is problem dependent. Here I'm trying to essentially give a simple example that begins to demonstrate the failure mode of UCT, which is an overcommitment to suboptimal actions when the value estimates of optimal actions are initially poor, and remain poor throughout UCTs initial exploration phase. While in theory UCT is guaranteed to converge to optimal values (and recommend an optimal policy) in these failure modes this will never happen in practise.
+Yes, it often is, and I would say it is problem dependent. The intention here was to give a simple example that begins to demonstrate UCT's failure mode in practise: overcommitting to suboptimal actions when the value estimates of optimal actions start poor and stay poor throughout the initial exploration. UCT is guaranteed to converge to the optimal values in theory, but in these cases that will not happen in practice. The section now makes these points explicitly:
 
-I have added the following changes to help clarify:
-- Added a sentence at the start of Section 4.1 (page 63) to highlight that UCT is a successful algorithm, and this section intends to highlight a failure mode and is not claiming that UCT is inherently bad
-- Added a paragraph at the start of Section 4.1.1 (page 65) that agrees with the comment: it explains that UCT's exploitation does act as effective local exploration when rewards are dense and informative, and that the failure mode arises when the optimal action instead retains a poor value estimate throughout the initial exploration. Sparse or uninformative rewards, and a misleading learned heuristic, are given as two examples
-- Added a paragraph at the end of Section 4.1.1 (page 66) that points the reader to the DeterministicGridWorld results, which more clearly show that UCT converges in practise to a suboptimal solution in some environments
-- The existing (now penultimate) paragraph of Section 4.1.1 (page 66) already contrasts UCT's asymptotic guarantee with its behaviour in practice, so this has been left unchanged
-- Added additional detail to the caption for Figure 4.2 to describe what it shows and why it is relevant/interesting 
+| Location | Change |
+|------------|------------------------------------|
+| Section 4.1 (p. 67) | Sentence noting that UCT is a successful algorithm, and that the section aims to highlight a failure mode rather than claiming UCT is inherently bad |
+| Section 4.1.1 (p. 69) | Paragraph agreeing with the comment: UCT's exploitation does act as effective local exploration when rewards are dense and informative, and the failure mode arises only when the optimal action retains a poor estimate throughout the initial exploration. Sparse or uninformative rewards, and a misleading learned heuristic, are given as examples |
+| Section 4.1.1 (p. 70) | Paragraph pointing to the DeterministicGridWorld results, which show the failure mode without artificially limiting the number of trials: UCT converges in practice to a suboptimal solution in some environments |
+| Figure 4.3 caption | Additional detail on what the plots show and why it is of interest |
 
-?page 3?
+The existing penultimate paragraph of Section 4.1.1 (p. 70) already contrasts UCT's asymptotic guarantee with its behaviour in practice, so it has been left unchanged.
+
+
 
 
 
 
 > P62: which of these are not satisfied by UCT or MENTS? Why exploit if we care about simple regret?
 
-I have added a few paragraphs to address these questions, after the bullet point list of design aims in Section 4.2 (now page 69). 
+Four paragraphs were added after the list of design aims in Section 4.2 (p. 74), addressing both questions:
 
-The first is to clarify that the design aims are motivated by the exploration setting of reinforcement learning in practise (with a finite planning budget).
 
-The second is to clarify that simple regret is used to give theoretical guarantees about the asymptotic performance of the algorithms. Originally I did use simple regret as a motivating reason for the algorithms. I could only find one place where this still existed, which was shortly before this, so I have also updated that "Simple regret is used *to motivate and analyse*..." -> "Simple regret is used *to analyse*..." (Section 4.1.3, page 67)
+| Location | Change |
+|------------|------------------------------------|
+| Section 4.2 (p. 74), 1st added paragraph | The design aims are motivated by the exploration setting of reinforcement learning in practice, with a finite planning budget |
+| Section 4.2 (p. 74), 2nd added paragraph | Simple regret is used to give theoretical guarantees about asymptotic performance, not to motivate the design |
+| Section 4.2 (p. 74), 3rd and 4th added paragraphs | Each design aim in turn: whether UCT or MENTS satisfies it, and why it matters in the exploration setting |
+| Section 4.1.3 (p. 72) | Simple regret was still described as motivating the algorithms in one remaining place: "used *to motivate and analyse*" → "used *to analyse*" |
+| Section 4.4.3.1 (p. 100) | The FrozenLake results show where exploitation was useful, referring back to Equation 4.36 (p. 96) to explain that it avoids falling back to the uniform policy |
 
-The third and fourth paragraphs goes through each of the design aims, if they are satisfied by UCT or MENTS, and why they are relevant in the exploration setting of reinforcement learning
 
-The gridworld results in Section 4.4.3.1 also explain some of this where relevant, particularly where exploitation was useful in the FrozenLake experiments, and reference back to Equation 4.36, which describes the policy used for evaluation, to point out that exploitation is useful to avoid falling back to the uniform policy.
-
-TODO: add description of relevant changes made to results discussion when handled that todo
-- small terminology change (make it inline with the "fall back" terminology)
 
 
 
 > P63: “Uses a Boltzmann search policy with decayed temperature similar to [8], but includes an additional uniform exploration term similar to MENTS” Why? Very procedural with no motivation, which of the above problems are you solving? Why do we need two exploration terms?
 
-Added reasoning to the beginning of Section 4.2.1 (now page 70) to explain. The two terms provide exploration that is centred on the current estimates and uniformly randomly, so provide different types of exploration. 
+**Section 4.2.1 (p. 75).**
 
-Boltzmann is largely used to focus the search around the currently competitive value estimates, while the uniform exploration is primarily retained to provide a convergence guarantee when the Boltzmann temperature is decayed to zero, causing the Boltzmann policy to become greedy.
-
-
+Added reasoning at the start of the section. The two terms explore in different ways: Boltzmann exploration is centred on the current value estimates, so focuses the search on actions that are currently competitive, whereas uniform exploration continues to sample actions those estimates rate poorly. The uniform term is retained because it provides the convergence guarantee even if the Boltzmann temperature is decayed close zero and the Boltzmann policy becomes greedy.
 
 
-> Why do we need this approach based on ball? Why not learn separate values for each objective and dot-product them with the weights?
+> CH5a: Why do we need this approach based on ball? Why not learn separate values for each objective and dot-product them with the weights?
 
-I will address both separately.
+Taking the two questions separately.
 
-Why not learn separate values for each objective?
-- If I understand the suggestion, it is to use a vector value estimate at each node, and use that to obtain utilities as necessary
-    - Some of the prior works use this, and I have an example in the CHMCTS paper that I didn't include in the thesis why the approach is flawed
-    - I have updated Section 3.5 on related work in MOMCTS to include the argument why the point estimates used in some prior work is flawed
-    - I have also generalised the argument informally for why using a single vector 
+**Why not learn separate values for each objective?** As I understand the suggestion, this means storing a vector value estimate at each node and taking utilities from it as needed. Some prior work does exactly this, and the CHMCTS paper contains an example of why it is flawed that was not carried into the thesis. The argument from the CHMCTS paper is now included, along with a more informal generalisation of why a single vector is insufficient in general:
 
-Why do we need the approach based on balls?
-- Section 5.1.2 poses MOMCTS as a contextual problem, so CZT is introduced for two reasons:
-    - To ask whether a contextual bandit algorithm can be run at each node, in place of UCB in UCT. The balls are Contextual Zooming's representation of the context space, rather than a design choice made for its own sake
-    - To provide a contextual baseline for MOMCTS, where none currently exists
-- I have added a sentence at the start of Section 5.2 (page 128) making this framing more explicit
-- The section already states that CZT also serves as a baseline where none exists, at the end of the third paragraph of Section 5.2 (also page 128), so no update was needed for that
+| Location | Change |
+|------------|------------------------------------|
+| Section 3.5.1 (p. 63) | New subsection in the related work on MOMCTS, giving the counterexample and the informal generalisation |
+
+**Why the approach based on balls?** The balls are not a design choice made for their own sake: they are Contextual Zooming's representation of the context space. The contextual multi-armed bandit problem is defined in Section 2.1.3. Because Section 5.1.2 poses MOMCTS as a contextual problem, CZT exists largely to answer pre-emptively whether a contextual bandit algorithm can be run at each node in place of UCB in UCT. A secondary reason is to provide a UCT-like baseline for MOMCTS, where none previously existed.
+
+| Location | Change |
+|------------|------------------------------------|
+| Section 5.2 (p. 132) | Sentence added at the start of the section making this framing explicit |
+
+The third paragraph of Section 5.2 (p. 132) already states that CZT serves as a baseline where none exists, so no change was needed there.
 
 
 
-> Again, be clear about the motivation here, and consider switching to unknown weights scenario.
+> CH5b: Again, be clear about the motivation here, and consider switching to unknown weights scenario.
 
-I believe that this is generally related to chapter 5, and hopefully this is addressed by the changes discussed in the correction for P2.
+**Section 5.1 (from p. 129).**
+
+The switch to the unknown weights scenario is covered under correction P2. In addition, the introduction and motivation of Chapter 5 have been reorganised and rewritten to be consistent with that change: Section 5.1.1 now sets out the consistent action selection problem, and Section 5.1.2 motivates contextual tree search as the response to it.
 
 
 
@@ -209,76 +241,71 @@ I believe that this is generally related to chapter 5, and hopefully this is add
 > 
 > and
 > 
-> P132: “A more efficient online approach is therefore to run the multi-objective tree search from the initial state, and subsequently follow a single-objective MCTS algorithm in the scalarised MDP with reward R(s,a; w) = w⊤R(s,a), where w is inferred from the choice made at the root node.” The choice may not disambiguate w, which is another reason why unknown weights would give a cleaner motivation. Also, explain why building an MCTS tree is a good way to use the offline planning budget, compared to just learning better prior policies and value functions that apply in any state. Finally, if this only makes sense assuming a deterministic initial state, that needs to be stated clearly up front.
+> P132: “A more efficient online approach is therefore to run the multi-objective tree search from the initial state, and subsequently follow a single-objective MCTS algorithm in the scalarised MDP with reward R(s,a; w) = w$^\top$R(s,a), where w is inferred from the choice made at the root node.” The choice may not disambiguate w, which is another reason why unknown weights would give a cleaner motivation. Also, explain why building an MCTS tree is a good way to use the offline planning budget, compared to just learning better prior policies and value functions that apply in any state. Finally, if this only makes sense assuming a deterministic initial state, that needs to be stated clearly up front.
 
-- The new scoping section (from P2) addresses these comments up front: 
-    - planning is run from a known initial state
-    - algorithms are evaluated as offline planners 
-    - the unknown weights scenario is used where the weight is revealed after planning
-    - gives the reduction to single-objective MCTS for online planning at evaluation time in the unknown weights scenario
-    - justifying why considering multi-objective MCTS methods can still be relevant beyond just learning function approximators
-- The issue about user choice not disambiguating the weight vector is addressed by moving to the unknown weights scenario as suggested
-- The opening of Section 5.4.2 (now page 141) is now written consistently with the rest of the changes from P2 (and refers back to Sections 1.2 and 2.6). The scoping of running the algorithms during the planning phase of the unknown weights scenario is used to  being clear that metrics computed at the initial state are most relevant
+The new scoping section added for correction P2 states all of this up front, so the claim no longer rests on the passage quoted:
+
+| Location | Change |
+|------------|------------------------------------|
+| Section 1.2 (p. 4) | Planning is run from a known initial state; the algorithms are evaluated as offline planners; the unknown weights scenario is used, with the weight revealed after planning; online planning at evaluation time therefore reduces to single-objective MCTS; and MCTS methods remain relevant beyond simply learning function approximators |
+| Section 5.4.2 (p. 147) | Opening rewritten consistently with those changes, referring back to Sections 1.2 and 2.6. Because the algorithms are run during the planning phase of the unknown weights scenario, metrics computed at the initial state are the relevant ones |
+
+Moving to the unknown weights scenario, as suggested, also removes the problem of a user's choice not disambiguating the weight vector: the weight is revealed directly rather than inferred.
 
 
 > P134: Why is improvement not monotonic? (later plots as well)
 
-There are a two reasons for the non-monotonic trends in Figures 5.4:
-- In CZT, the hypervolume is estimated using a set of vectors that sample averages that may vary throughout the algorithms runtime, and the relevant set of balls is used to approximate the hypervolume, which will also change throughout the runtime
-- In CHMCTS algorithms, the convex hull value sets are pruned to maintain a maximum size (Section 5.3.6 and Equation 5.41), where the pruning breaks the monotonicity of convex hull backups with respect to hypervolume
+There are two reasons for the non-monotonic trends in Figure 5.4 (p. 150). For CZT, the hypervolume is estimated from a set of vectors that are sample averages, which may vary over the algorithm's runtime, and from the relevant set of balls, which also changes over the runtime. For the CHMCTS algorithms, the convex hull value sets are pruned to a maximum size (Section 5.3.6 and Equation 5.40), and that pruning breaks the monotonicity of convex hull backups with respect to hypervolume.
 
-The only reason there was a non-monotonic trend in Figure 5.5 was due to a mistake:
-- the non-monotonic trend in the EUM for CZT in Figure 5.5a was due to accidentally using an old (incorrect) version of the recommendation policy (Equation 5.14), where the maximum was taken over all balls rather than just the relevant balls
-    - corrected and plot in updated thesis now shows a monotonic improvement in EUM
+The non-monotonic trend in Figure 5.5 (p. 152) had a different cause, which was a mistake: the EUM for CZT in Figure 5.5a used an old, incorrect version of the recommendation policy (Equation 5.13), taking the maximum over all balls rather than only the relevant ones. This has been corrected, and the plot now shows a monotonic improvement in EUM.
 
-I have added the following additional explanations to the main text in Chapter 5:
-- added more specificity to how the hypervolume is approximated for CZT and giving details of some parameters upfront (rather than leaving them all to appendix TODO) where they are relevant to the discussion later (TODO: add section 5.5.2.1, reference it here, add page reference for new writing)
-- added a paragraph at the end of the gymnasium section of Section 5.5.3, to explain the reasons for the non-monotonic trends for Figure 5.4 given above (page 144)
+The explanations were added to the main text as follows:
 
-And I have made the following corresponding changes to Chapter 6:
-- added more specificity to how the hypervolume is computed for simplex map algorithms and specifying some of the algorithms parameters (TODO: add the updated section reference and page reference when do below subpoint)
-    - updated the structure of Section 6.4 to parallel the results sections of Chapters 4 and 5, with information about environments and evaluation referring back to Chapter 5, and providing a place to add this new information as a diff from Chapter 5
-- Added a reference from Section 6.4.1 on (page TODO) back to the explanation of non-monotonic results, as some of the non-monotonic CZT and CHMCTS results are repeated in Figure 6.7
-
-
-TODO: also talk about updating the non-monotonic trends in ch4
-TODO: (from ch5 todo) "Update P134 correction, get claude to proof read"
+| Location | Change |
+|------------|------------------------------------|
+| Equation 5.44 (p. 148) | States explicitly how the hypervolume is approximated for CZT, referenced where the non-monotonicity is discussed on p. 149 |
+| Section 5.4.3 (p. 149) | Paragraph at the start of the MO-Gymnasium results giving the two reasons above for Figure 5.4 |
+| Equation 6.25 (p. 182) | States explicitly how the hypervolume is computed for simplex maps |
+| Section 6.4.2 (p. 184) | Paragraph referring back to the explanation above, since the non-monotonic CZT and CHMCTS results in Figure 6.7 (p. 183) are repeated from Figure 5.4 |
 
 
 > P148: concave -> convex
 
-Updated (page 148).
+**Section 6.1 (p. 170).** Updated as suggested.
 
 
 
 > P163: correct x-axis on figure size to env size/width, not search time.  Also ensure Fig 6.10 is discussed in the text, and the non-monotic trends and fully explained.  (also applies to Fig 5.7 on page 138)
 
-- Corrected x-axis for plots in Figures 6.10 and 5.7 to correctly display "Environment Size" rather than search time
-- Added a description of the non-monotonic trends seen in Figure 5.7 and why they occur at the beginning of Section 5.4.4 (page 148)
-- Added a paragraph at the start of Section 6.4.2 (page 178) to refer back to the explanation in Section 5.4.4 for the repeated algorithms
-- Added a paragraph in Section 6.4.2 (3rd paragraph of section, also page 178) to describe the additional non-monotonic trends in the EUM plots seen in Figure 6.10 for SM-BTS and SM-DENTS
-
+| Location | Change |
+|------------|------------------------------------|
+| Figures 5.7 (p. 154) and 6.10 (p. 186) | x-axis corrected to show "Environment Size" rather than search time |
+| Section 5.4.4 (p. 153) | Description added at the start of the section of the non-monotonic trends in Figure 5.7, and why they occur |
+| Section 6.4.3 (p. 185) | Paragraph at the start of the section referring back to the explanation in Section 5.4.4, for the algorithms repeated from Chapter 5 |
+| Section 6.4.3 (3rd paragraph, p. 186) | Paragraph describing the additional non-monotonic trends in the EUM plots of Figure 6.10, for SM-BTS and SM-DENTS |
 
 
 > P208 -Fig D.1 - is this really a CDF? Not in the conventional sense?  Suggest to explain more or reword
 
-I would like to apologise for the state that Appendix D was in at the time of submission. Fig D.1 was erroneously a duplicate of Fig 4.18, and the corresponding corollary was duplicated between Chapter 4 and Appendix D. I have removed the duplicate from Appendix D and applied corrections in Chapter 4:
-- Replaced proof outline of Corollary 4.5.1 with a proof, making the constructed pmf/cdf explicit
-- Updated Fig 4.18 to be consistent with the construction used, and updated caption with reference to the construction used in the proof
-
+I would like to apologise for the state that Appendix D was in at the time of submission. Figure D.1 was erroneously a duplicate of Figure 4.18, and the corresponding corollary was duplicated between Chapter 4 and Appendix D. I have removed the duplicate from Appendix D and applied corrections in Chapter 4:
+| Location | Change |
+|------------|------------------------------------|
+| Corollary 4.5.1 (pp. 112–113) | Proof outline replaced with a full proof, making the constructed probability mass and cumulative distribution functions explicit |
+| Figure 4.18 (p. 112) | Redrawn to match the construction used, with the caption now referring to it |
+| Appendix D | Duplicate corollary and figure removed |
 
 
 > Fix broken cross-refs - a search for ‘??’ found 10 of them.
 
-I believe that these were all in Appendix D, and I would like to apologise again that Appendix D was submitted in an unclean state. I double checked that no missing cross-refs and citations exist in the corrected thesis.
+These were all in Appendix D, and I apologise again that it was submitted in an unclean state. Appendix D has been cleaned up, and the thesis now builds with no undefined references or citations, so no "??" remain anywhere.
 
 
 
 > BayesOpt is one of many possible parameter / hyper-parameter packages - say a bit more about why this was chosen (convenience of C++ implementation etc) and whether the parameter tuning generally made much of a difference. Also consider whether these are parameters or hyper-parameters (arguably these are just parameters).
 
-- Added a comment about why BayesOpt was used in Appendix B (page 183)
-- Added a paragraph explaining that the tuning does make a significant difference, and remarking that some parameters which have little effect on performance get set to somewhat arbitrary values due to the optimisation (pages 184+185)
-- Agreed that hyperparameter is not the correct term, I have updated any instances of "hyperparameters" to either just "parameters" or the more specific "algorithm parameters". Because this appeared in many places, I wont list the location of all changes (although they are all marked as corrections in the pdf)
-    - I used "algorithm parameters" where the extra specificity is helpful, and just "parameter" where the more specific term would read awkwardly, or where the context already makes it clear
-    - Double checked all instances are updated by searching for "hyperparameter" and "hyper-parameter" and confirming no mentions remain
-    - All corrected instances can be found by searching for "parameter"
+| Location | Change |
+|------------|------------------------------------|
+| Appendix B (p. 208) | Notes why BayesOpt was chosen: it provides a C++ interface, which integrated easily with the C++ implementation of THTS++ used throughout |
+| Appendix B (p. 209) | Paragraph explaining that the tuning does make a significant difference, and noting that parameters with little effect on performance end up set to somewhat arbitrary values by the optimisation |
+
+I agree that "hyper-parameter" is not the right term. Every instance has been changed to either "parameter" or the more specific "algorithm parameter", using the latter by default and the former where the fuller term reads awkwardly or the context already makes it clear. There are too many to list individually, but all are marked as corrections, and can be found by searching the PDF for "parameter". I have confirmed that no instance of "hyperparameter" or "hyper-parameter" remains.

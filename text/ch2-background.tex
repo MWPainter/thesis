@@ -211,9 +211,9 @@
 
     When the uniform exploration strategy is used instead, and $\psi^m_{\eba}$ is computed similarly using $\sigma_{\uniform}$, then $\sreg_{\emab}(\psi^m_{\eba}) = O(e^{-k_{\uniform}m})$ for an appropriate constant $k_{\uniform}>0$. 
     
-    \begin{mccorrection}
+    %\begin{mccorrection}
     Simple regret quantifies how suboptimal the recommendation strategy is in expectation, so a simple regret of zero corresponds to recommending only optimal arms. Bounds that decay to zero more quickly in $m$ are better: the exponential bound for uniform exploration is stronger than the polynomial bound obtained under UCB exploration.
-    \end{mccorrection}
+    %\end{mccorrection}
 
 
 
@@ -311,7 +311,7 @@
 
     \textit{Markov decision processes} (MDPs) provide a mathematical description of sequential decision-making problems \cite{kolobov}. This section provides definitions and notation related to MDPs used throughout this thesis.
     
-    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends \mccorrect{only} on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action. %mrc
+    MDPs are used throughout this thesis to describe the environments in which agents act. An MDP contains, among other things, a set of states and actions. States are sampled according to a transition distribution that depends \mccorrect{only} on the current state and current action being taken (the Markov assumption). Whenever an action is taken, the agent receives a reward according to a reward function that depends on the current state and action.
 
     In this thesis, unless otherwise stated, MDPs are assumed to have finite state and action spaces, and \textit{trajectories} (sequences of states, actions and rewards) are of finite length.
 
@@ -357,7 +357,7 @@
 
     \begin{defn}
         \label{def:2:policy}
-        \begin{mccorrection}
+        %\begin{mccorrection}
         A \textnormal{(stochastic) policy} $\pi:\cl{S}\times\{0,\ldots,H-1\}\rightarrow (\cl{A} \rightarrow [0,1])$ is a mapping from states and timesteps to a probability distribution over actions. $\pi(a|s;t)$ is the probability of sampling action $a$ at state $s$ at timestep $t$. The policy $\pi$ must satisfy: $\sum_{a\in\cl{A}} \pi(a|s;t) = 1$ and $\pi(a|s;t)\geq 0$ for all $s\in\cl{S}$, $a\in\cl{A}$ and $t\in\{0,\ldots,H-1\}$.
 
         Additionally, a \textnormal{deterministic policy} is defined as a one-hot policy, that is, the policy $\pi$ is deterministic if, for every state $s$ and timestep $t$, it can be written as $\pi(a|s;t)=\one[a=a']$ for some $a'\in\cl{A}$.
@@ -369,7 +369,7 @@
             \item $\pi(s;t)=a'$ is shorthand to define the deterministic policy $\pi(a|s;t)=\one[a=a']$;
             \item $\pi(s;t)$ denotes the action $a'$ of the deterministic policy $\pi(a|s;t)=\one[a=a']$.
         \end{itemize}
-        \end{mccorrection}
+        %\end{mccorrection}
     \end{defn}
     
     Given an MDP $\cl{M}$ and a policy $\pi$, a \textit{trajectory} is a sampled sequence of states, actions and rewards, where the policy is used to sample actions and the MDP is used to sample the next state. A trajectory simulates one possible sequence that could occur if an agent follows policy $\pi$ in $\cl{M}$.
@@ -411,10 +411,10 @@
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\begin{mccorrection}
+%\begin{mccorrection}
 \section{Planning and Reinforcement Learning}
 \label{sec:2-3-rl}
-\end{mccorrection}
+%\end{mccorrection}
 
     \begin{figure}
         \centering\includegraphics[width=0.75\textwidth]{figures/ch2/rl_overview.pdf} 
@@ -424,9 +424,9 @@
 
     This section provides a brief introduction to the fundamental concepts and definitions of \mccorrect{planning and} reinforcement learning.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     It begins by motivating the alternative lens on reinforcement learning taken in this thesis, in which the agent plans in a simulator before recommending how to act. Following on from Section \ref{sec:2-2-mdps}, it then defines \textit{value functions} and the objectives of planning and reinforcement learning, and covers \textit{Value Iteration}, a tabular dynamic programming approach for planning. Section \ref{sec:2-3-1-merl} covers \textit{maximum entropy} planning and reinforcement learning, and Section \ref{sec:2-3-2-planning_vs_rl} discusses what distinguishes planning from reinforcement learning, and where the methods of this thesis sit.
-    \end{mccorrection}
+    %\end{mccorrection}
     
     Typically reinforcement learning is presented as a sequence of agent-environment interactions, where the agent takes actions in an environment and receives \textit{observations} and \textit{rewards} for those actions \cite{sutton}. The objective of the agent is to maximise the rewards that it receives.
 
@@ -474,7 +474,7 @@
         The objective of (standard) reinforcement learning can then be stated as finding $\max_{\pi} J(\pi)$\mccorrect{; that is, the \textit{standard objective} is to maximise the expected return obtained from the initial state $s_0$}.
     \end{defn}
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     An \textit{optimal policy} is any policy that maximises the objective function $J$:
     \begin{defn}
         \label{def:2:opt_policy}
@@ -491,9 +491,9 @@
     To simplify the notation used for theory in this thesis, it is assumed that there is a \textit{unique optimal policy} for each MDP considered:
     \begin{assumption}
         \label{ass:2:unique_optimal_policy} 
-        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique optimal policy. This assumption is not necessary; it is made purely to avoid unnecessary complexity in the proofs in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\ldots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
+        The \textnormal{unique optimal policy assumption} is that each MDP $\cl{M}$ has a unique deterministic optimal policy. This assumption is not necessary; it is made purely to avoid unnecessary complexity in the proofs in this thesis. For example, when reasoning about a sequence of policies $\pi_1,\pi_2,\ldots$ it allows the statement $\pi_n \rightarrow \pi^*$ to make sense. Statements about convergence to the unique optimal policy generalise to convergence to one of the optimal policies when this assumption is not made.
     \end{assumption}
-    \end{mccorrection}
+    %\end{mccorrection}
 
     It can be shown that the optimal (Q-)value functions satisfy the \textit{Bellman equations} \cite{dp,kolobov}:
     \begin{align}
@@ -536,23 +536,23 @@
     In \textit{maximum-entropy reinforcement learning}, the objective function is altered by the addition of an entropy term. This is motivated by the desire to learn stochastic behaviours that better explore large state spaces and are more robust under uncertainty by learning multiple solutions rather than a single deterministic solution \cite{deep_energy_policies}. 
     
     Let $\cl{H}$ denote the (Shannon) entropy function \cite{entropy}:
-    \begin{mccorrection}
+    %\begin{mccorrection}
     \begin{align}
         \cl{H}(\pi(\cdot|s;t)) = -\bb{E}_{a\sim\pi(\cdot|s;t)}[\log \pi(a|s;t)] = -\sum_{a\in\cl{A}} \pi(a|s;t) \log \pi(a|s;t). \label{eq:2:shannon_entropy_def}
     \end{align}
-    \end{mccorrection}
+    %\end{mccorrection}
 
-    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective} (Definition \mbox{\ref{def:2:soft_rl_obj_fn}} below). Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts. %mrc
+    In the maximum entropy objective, the relative weighting of entropy terms is included using a coefficient $\alpha$, called the \textit{temperature}. In the maximum entropy objective, analogues of the value functions can be defined, which are typically referred to as \textit{soft (Q-)values}, and similarly the maximum entropy objective is often referred to as the \textit{soft objective} (Definition \mbox{\ref{def:2:soft_rl_obj_fn}} below). Where disambiguation is necessary, the \textit{standard (Q-)value} (Definition \ref{def:2:q_value}) and \textit{standard objective} (Definition \ref{def:2:rl_obj_fn}) will be used to refer to the standard reinforcement learning counterparts. 
 
     \begin{defn}
         \label{def:2:sft_value}
         \label{def:2:sft_q_value}
         The \textnormal{soft value} of a policy $\pi$ from state $s$ \mccorrect{at time $t$} is:
-        \begin{mccorrection}
+        %\begin{mccorrection}
         \begin{align}
             V_{\sft}^{\pi}(s;t) = \bb{E}_{\tau\sim\pi}\left[\sum_{i=t}^{H-1} r_i + \alpha\cl{H}(\pi(\cdot|s_i;i)) \Bigg| s_t=s \right]. \label{eq:2:sft_value_fn_def}
         \end{align}
-        \end{mccorrection}
+        %\end{mccorrection}
 
         The \textnormal{soft Q-value} of a policy $\pi$, from state $s$, with action $a$, at time $t$ is:
         \begin{align}
@@ -590,11 +590,11 @@
             \pi_{\sft}^* = \argmax_\pi J_{\sft}(\pi). \label{eq:2:opt_sft_policy_def}
         \end{align}
         Given $V_{\sft}^*$ and $Q_{\sft}^*$ the optimal soft policy is known to take the form \cite{deep_energy_policies}:
-        \begin{mccorrection}
+        %\begin{mccorrection}
         \begin{align}
             \pi_{\sft}^*(a|s;t) = \exp\left(\left(Q_{\sft}^*(s,a;t) - V_{\sft}^*(s;t)\right) / \alpha \right). \label{eq:2:opt_sft_policy_from_opt_value_fns}
         \end{align}
-        \end{mccorrection}
+        %\end{mccorrection}
     \end{defn}
 
     The \textit{soft Bellman equations} are the maximum entropy analogues of the Bellman equations. These equations differ from equations (\ref{eq:2:bellman_opt_v}) and (\ref{eq:2:bellman_opt_q}) by the replacement of the $\max$ operation with a \textit{softmax} or \textit{log-sum-exp} operation, which is why the maximum entropy analogues are referred to as the \textit{soft} versions of their standard reinforcement learning counterparts. The \textit{soft Bellman equations} are \cite{deep_energy_policies}:
@@ -611,7 +611,7 @@
 
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Planning Versus Reinforcement Learning}
 \label{sec:2-3-2-planning_vs_rl}
     The objective of both planning and reinforcement learning is typically to compute an optimal policy for an MDP $\cl{M}$. The difference lies in what each has access to: planning methods compute a policy from the transition distribution $p$, whereas reinforcement learning methods learn from experience gathered in the environment \cite{sutton}. Value iteration \cite{dp,kolobov} is therefore a planning method, because it uses $p$ to compute the expectation in Equation \ref{eq:2:value_iter_q_backup}, whereas Q-learning \cite{qlearning} is an example of a pure reinforcement learning method.
@@ -619,7 +619,7 @@
     MCTS algorithms may fall on either side of this distinction, depending on how they handle the transition distribution: an algorithm that queries $p$ directly is planning, whereas one that samples from a simulator is learning. Technically, the methods in this thesis are model-based reinforcement learning methods \cite{mbrl}, as rather than using $p$ directly they form maximum likelihood estimates of the transition probabilities from the \textit{visit counts} at each node. Corollary \ref{cor:4:bound_transition_distribution} shows that these estimates are tightly bounded around the true transition probabilities. They are nonetheless often thought of as planning methods, because the tree search does plan, in the everyday sense of the word, over the estimated transition probabilities and values.
 
     Because MCTS sits at the intersection of the two, the terms are used somewhat interchangeably in this thesis, with \textit{planning} tending to refer to tree search and \textit{reinforcement learning} to the wider literature. To be clear, throughout this thesis neither term is used in the sense of training a function approximation, such as a neural network, which is not considered here.
-\end{mccorrection}
+%\end{mccorrection}
 
         
 
@@ -693,7 +693,7 @@
 \label{sec:2-4-1-notation}
     To simplify notation in the presentation and analysis of $\thtspp$ algorithms, this thesis assumes a \textit{unique state assumption}, that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. %This \textit{unique state assumption} is purely to simplify notation for a clean presentation, and any results discussed in this thesis generalise to settings where this assumption does not hold.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     \begin{assumption}
         \label{ass:2:unique_state_assumption}
         The \textnormal{unique state assumption} is that each state $s$ in an MDP $\cl{M}$ has a unique path to reach it from the initial state. This implies that states and state-action pairs have a one-to-one correspondence with nodes in the search tree. 
@@ -702,7 +702,7 @@
 
         Specifically, this assumption allows the notation for value functions and policies to avoid explicitly writing the timestep parameter, because under this assumption the timestep \mbox{$t$} at which a state \mbox{$s$} is visited is uniquely determined by \mbox{$s$} itself. For example, $V^{\pi}(s)$ can be written instead of $V^{\pi}(s;t)$, and \mbox{$\pi(a|s)$} can be written instead of \mbox{$\pi(a|s;t)$}. With the exception of Section \ref{sec:2-6-morl}, the explicit timestep parameter is dropped for the remainder of this thesis.
     \end{assumption}
-    \end{mccorrection}
+    %\end{mccorrection}
 
     \begin{figure}
         \centering\includegraphics[width=0.2\textwidth]{figures/ch2/tree_notation.pdf} 
@@ -750,7 +750,7 @@
 
     \begin{figure}
         \centering\includegraphics[width=1.0\textwidth]{figures/ch2/thts_trial.pdf} 
-        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). \mccorrect{The loop illustrates that if \mbox{\mctsmode} is False (orange) the trial returns to the selection phase after the heuristic step, unless a terminal state or the planning horizon has been reached, in which case it proceeds to the backup phase. When \mbox{\mctsmode} is True (blue) the trial instead leaves the loop as soon as a new decision node is added to the tree, and proceeds to the backup phase.}} %mrc % (TWO) under full \hbox warning, but it renders fine with no margin problems
+        \caption[Overview of one trial of \thtspp.]{Overview of one trial of \thtspp. Blue shows an example when \mbox{\mctsmode} is True, and orange shows an example when \mbox{\mctsmode} is False. From left to right: first a context is sampled, which stores any necessary per-trial state (not depicted), and the search tree at the beginning of the trial is shown; second shows the selection phase, where a trajectory is sampled and dashed lines indicate any new nodes to be added; third shows new nodes being initialised using the heuristic function $\Vinit$ (written as $\hat{V}_h$ for short); and finally on the right, the backup phase, where the arrows are reversed to show information propagating back up the tree to update the values in the nodes (triangles). The loop illustrates that if \mbox{\mctsmode} is False (orange) the trial returns to the selection phase after the heuristic step, unless a terminal state or the planning horizon has been reached, in which case it proceeds to the backup phase. When \mbox{\mctsmode} is True (blue) the trial instead leaves the loop as soon as a new decision node is added to the tree, and proceeds to the backup phase.}  % (TWO) under full \hbox warning, but it renders fine with no margin problems
         \label{fig:2:thts}
     \end{figure}
 
@@ -1014,7 +1014,7 @@ def backup_phase($\tau_{:h}$, ctx)
 \subsection{Maximum Entropy Tree Search}
 \label{sec:2-4-4-ments}
 
-    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, $\mctsmode$ is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by: %mrc
+    Maximum ENtropy Tree Search (MENTS) \cite{ments}, in contrast to UCT, focuses on the maximum-entropy objective \mccorrect{(Definition \mbox{\ref{def:2:soft_rl_obj_fn}})}, and uses soft Bellman backups to update its value estimates. In its original presentation, $\mctsmode$ is set to True, and it uses the soft value estimates $\Vments$ and $\Qments$. The MENTS search policy is given by: 
     \begin{align}
         \piments(a|s) &= 
             (1-\lambdaments)\rhoments(a|s) + \frac{\lambdaments}{|\cl{A}|} \label{eq:2:ments_policy} \\
@@ -1159,10 +1159,10 @@ def backup_phase($\tau_{:h}$, ctx)
 % [ ] Proofread
 % [ ] Nick comments
 % [ ] Final revision
-\begin{mccorrection}
+%\begin{mccorrection}
 \section{Multi-Objective Planning and Reinforcement Learning}
 \label{sec:2-6-morl}
-\end{mccorrection}
+%\end{mccorrection}
 
 This section defines the multi-objective counterparts to various definitions given in Sections \ref{sec:2-2-mdps} and \ref{sec:2-3-rl}. Outside of this section, the prefix ``multi-objective'' may be dropped where it should be clear from context; however, bold typeface will consistently be used to denote any vector variables or functions. In Section \ref{sec:2-6-1-chvi}, a multi-objective extension of Value Iteration is given.
 
@@ -1247,7 +1247,7 @@ At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value fu
     A \textnormal{utility function} (or \textnormal{scalarisation function}) $u:\bb{R}^D\times\Delta^D \rightarrow \bb{R}$ is used to map from a multi-objective value $\bff{v}\in\bb{R}^D$ and a weighting over the objectives $\bff{w}\in\Delta^D$ to a scalar value. That is, according to the utility function $u(\cdot;\bff{w})$ the multi-objective value $\bff{v}$ is mapped to the scalar value $u(\bff{v};\bff{w})$.
 \end{defn}
 
-\mccorrect{A common choice of utility} is the \textit{linear utility function}, where the scalar value takes the form of a dot product:
+A common choice of utility is the \textit{linear utility function}, where the scalar value takes the form of a dot product:
 \begin{defn}
     \label{def:2:linear_utility_fn}
     \label{def:2:linear_scalarisation_fn}
@@ -1257,9 +1257,9 @@ At the corresponding point in Section \ref{sec:2-3-rl}, the optimal (Q-)value fu
     \end{align}
 \end{defn}
 
-\begin{mccorrection}
+%\begin{mccorrection}
 The algorithms in Chapters \ref{ch:5-chmcts} and \ref{ch:6-simplexmaps} assume a linear utility function. Section \ref{sec:2-6-2-linear_utility_implications} discusses the implications of this assumption, and Section \ref{sec:5-6-2-linear_utility} discusses why it is a difficult assumption to avoid in an MOMCTS algorithm.
-\end{mccorrection}
+%\end{mccorrection}
 
 Equipped with a utility function and a weight vector, any set of multi-objective values can be mapped to scalars and ordered. A policy is \textit{possibly optimal}, or \textit{undominated}, with respect to utility function $u$ if it achieves a maximal utility for some weight $\bff{w}\in\Delta^D$. In contrast, a policy is \textit{dominated} if for every weight there is another policy that achieves a better utility. 
 
@@ -1301,7 +1301,7 @@ A convex coverage set may contain redundant policies and is not necessarily mini
 
 \begin{figure}
     \centering\includegraphics[width=1.0\textwidth]{figures/ch2/ch_geometry.pdf} 
-    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(\textnormal{CH}(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $\textnormal{MCCS}(\Pi')$, so form the set of values $\valset(\textnormal{MCCS}(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, and shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$, which are weights for which the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.} %mrc
+    \caption[The geometry of convex coverage sets.]{The geometry of convex coverage sets, shown with $D=2$. In each image the points depicted correspond to a value set $\valset(\Pi')$, for some set of policies $\Pi'$. (a) demonstrates that values ($\bff{u}_2$,$\bff{u}_3$,$\bff{u}_4$) obtaining the same utility lie on a hyperplane. Moving in the direction of the weight vector increases the utility ($\bff{u}_5$) and likewise moving in the opposite direction decreases utility ($\bff{u}_1$); (b) \mccorrect{circles correspond to values that are in the convex hull value set, so form the set $\valset(\textnormal{CH}(\Pi'))$, whereas triangles correspond to values not in the convex hull value set. The blue circles correspond to a minimal convex coverage set $\textnormal{MCCS}(\Pi')$, so form the set of values $\valset(\textnormal{MCCS}(\Pi'))$. The unfilled circles and triangles are values that would be pruned by a \mbox{\cprune} operation on $\valset(\Pi')$ (Equation \mbox{(\ref{eq:2:cprune_def})})}; (c) shows a magnification of (b) with additional labels, and shows that the value $\bff{v}_2$ is redundant because one of $\bff{v}_1$ or $\bff{v}_3$ will achieve an equal or greater utility. Additionally, it shows $\bff{w}_2$ and $\bff{w}_4$, which are weights for which the values $\bff{v}_1$ and $\bff{v}_3$ uniquely maximise the utility within $\valset(\Pi')$.} 
     \label{fig:2:convex_hull_geometry} 
 \end{figure}
 
@@ -1349,9 +1349,9 @@ Whilst this thesis focuses on the linear utility setting, another commonly used 
     \end{align}
 \end{defn}
 
-The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function, \mccorrect{which recovers the Pareto front if the utopian point $\ruto$ is appropriately set \mbox{\cite{moo_chebyshev}}:} %mrc
+The Pareto front can be related to the previously defined solution sets in two ways. The first is via the \textit{Chebyshev utility} function, which recovers the Pareto front if the utopian point $\ruto$ is appropriately set \mbox{\cite{moo_chebyshev}}:
 %
-\begin{mccorrection}
+% %\begin{mccorrection}
 \begin{defn}
     \label{def:2:chebyshev_utility}
     Let $\bff{v},\ruto\in\bb{R}^D$ and $\bff{w}\in\Delta^D$. The \textnormal{Chebyshev utility} of $\bff{v}$ with respect to the weight vector $\bff{w}$ and utopian point $\ruto$ is:
@@ -1359,7 +1359,7 @@ The Pareto front can be related to the previously defined solution sets in two w
         \ucheby(\bff{v};\bff{w},\ruto) = - \max_{i=1,\ldots,D} w_i |v_i - \rutocomp_i|. \label{eq:2:cheby}
     \end{align}
 \end{defn}
-\end{mccorrection} %mrc
+% %\end{mccorrection} 
 
 The second is if \textit{mixture policies} are allowed, where a mixture policy between $\pi$ and $\pi'$ will follow each policy with some probability\footnote{Mixture policies are only appropriate when a policy is run many times and the aggregated return is of main concern, as under the scalarised expected returns criterion used in this thesis (Section \ref{sec:1-2-scope}).}. Specifically, if $\Pi$ is closed with respect to mixture policies, then the Pareto front is a convex coverage set.
 
@@ -1446,7 +1446,7 @@ randomly drawn weight vector.
     
     This again parallels the Bellman backups used in single-objective Value Iteration, where the max operation is replaced by the $\cprune$ operation over the set of achievable values from the current state $s$.
     
-    \begin{mccorrection}
+    %\begin{mccorrection}
     Once the algorithm has terminated and a weight $\bff{w}$ is provided, a policy can be extracted by computing scalar Q-values from the CHVSs \cite{chvi}:
     \begin{align}
         Q^{\bff{w}}_{\chvi}(s,a;t) = \max \{\bff{w}^\top \bff{q} | \bff{q}\in\Qchvi(s,a;t) \}, \label{eq:2:chvi_scalar_q_fn} \\
@@ -1454,7 +1454,7 @@ randomly drawn weight vector.
     \end{align}
     
     Note that if a policy is extracted for every weight vector $\bff{w}\in\Delta^D$, the resulting set of policies forms a convex coverage set.
-    \end{mccorrection}
+    %\end{mccorrection}
     
     % \begin{figure}
     %     \centering\includegraphics[width=0.5\textwidth]{figures/ch2/ch_extract_policy_weight.pdf} 
@@ -1474,7 +1474,7 @@ randomly drawn weight vector.
 
     % and then follow $\pichvi(s;t,\bff{w})$ as defined in Equation (\ref{eq:2:chvi_policy}).
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \subsection{Implications of Assuming a Linear Utility}
 \label{sec:2-6-2-linear_utility_implications}
 
@@ -1491,7 +1491,7 @@ randomly drawn weight vector.
         \item Scalarising the rewards by $\bff{w}$ reduces the MOMDP to an MDP, so a stationary deterministic optimal policy exists for each weight vector. When a non-linear utility is used, the optimal policy may be non-stationary, depending on the current timestep or the reward accrued so far \cite{white_momdp}. MCTS is able to represent such policies, so this is not in itself a restriction here.
         \item The scalarised expected returns and expected scalarised returns criteria coincide (Section \ref{sec:1-2-scope}), so the algorithms in this thesis can be applied under either criterion.
     \end{itemize}
-\end{mccorrection} % overfull vbox warning, but seems to render fine and no margin problems
+%\end{mccorrection} % overfull vbox warning, but seems to render fine and no margin problems
 
 
 

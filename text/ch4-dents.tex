@@ -61,11 +61,16 @@
 
     This chapter considers MCTS algorithms for planning in single-objective environments, with the optional use of entropy as a second objective for exploration. The discussion focuses on the exploration setting for reinforcement learning (see Section \ref{sec:2-3-rl} and Figure \ref{fig:4:rl_overview}), where the agent is assessed purely on the recommendations it makes, rather than what actions it explored in simulation. 
 
-    \begin{mccorrection}
-    In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the preceding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
+    % %\begin{mccorrection}
+    % In maximum entropy reinforcement learning (Section \ref{sec:2-3-1-merl}), entropy is added directly to the expected return, resulting in a regularised objective function. In contrast, the preceding work in maximum entropy inverse reinforcement learning --- which aims to learn a reward function or imitate a policy from a dataset of trajectories sampled from an expert --- uses the principle of maximum entropy to disambiguate between multiple reward functions and policies that could replicate the expert trajectories \cite{max_ent_irl,max_ent_irl_thesis}. 
+    % %\end{mccorrection}
 
-    While the maximum entropy objective (Definition \ref{def:2:soft_rl_obj_fn}) yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective (Definition \ref{def:2:rl_obj_fn}) for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it is further demonstrated that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}.
-    \end{mccorrection}
+    % FUTURE_MIKE_HEADER
+    %
+    % Think this max entropy inverse RL just confuses things to be honest
+    % Feel like there is some argument to say that 
+
+    \mccorrect{In maximum entropy reinforcement learning (Section \mbox{\ref{sec:2-3-1-merl}}), one of the motivations for adding entropy to the objective function is to encourage exploration}. While the maximum entropy objective \mccorrect{\mbox{(Definition \ref{def:2:soft_rl_obj_fn})}} yields a unique optimal policy, it is only guaranteed to be optimal for the standard objective \mccorrect{\mbox{(Definition \ref{def:2:rl_obj_fn})}} for a sufficiently small temperature parameter $\alpha$ \cite{deep_energy_policies,dents}. This motivates the investigation of \entropyq\ewe in this chapter, where it is further demonstrated that the temperature parameter may have to be set to a prohibitively small value for the objectives to align, negating the benefit of entropy-based exploration. Additionally, this chapter lays the foundations for \contextq\ewe in Chapter \ref{ch:6-simplexmaps}. %overfull hbox but no margin issues
     
 
 
@@ -118,7 +123,7 @@
 
     \mccorrect{UCT has been used with great success, but there are environments in which it performs poorly.} This section considers a gridworld shortest path problem, which is used to discuss the behaviour of UCT and MENTS in the exploration setting, and highlight some limitations of these algorithms. 
 
-    In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}. \mccorrect{For reference, a uniformly random policy achieves a value of \mbox{$-35.1$}}.
+    In this gridworld, the agent starts at the origin $(0,0)$, and must reach the goal state at $(6,6)$. Each timestep, the agent may move deterministically in any cardinal direction, $\{\texttt{UP},\texttt{RIGHT},\texttt{DOWN},\texttt{LEFT}\}$, as long as it remains in the grid. Each action incurs a cost of 1 (or a reward of -1), so the cumulative cost of a path is equal to its length. The time horizon is chosen to be 36 (six times the width of the grid) so that the horizon is long enough for exploration. The optimal policy will always select from the actions \texttt{UP} and \texttt{RIGHT}. The problem, with example paths, is illustrated in Figure \ref{fig:4:shortest_path_intro}. For reference, a uniformly random policy achieves a value of \mbox{$-35.1$}.
 
     While UCT and MENTS can easily solve this problem given enough trials and appropriately set parameters, it is used with a limited number of trials to illustrate the behaviour of the algorithms in the exploration setting. In Section \ref{sec:4-3-toyenvs}, MDPs are constructed adversarially to expose limitations of UCT and MENTS, and Section \ref{sec:4-4-results} considers more complex gridworlds --- including terminal states, sparse rewards and stochastic transition distributions --- that are harder to solve in practice. 
 
@@ -157,9 +162,9 @@
 
     The UCT algorithm (Section \ref{sec:2-4-2-uct}) is designed in the traditional reinforcement learning setting described in Section \ref{sec:2-3-rl}, where the UCT agent aims to minimise the cumulative regret. Thus UCT makes a trade-off between exploration and exploitation during its trials, and frequently chooses the same action to exploit, which can result in it getting stuck in local optima, particularly when rewards are sparse or not informative. 
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     In many domains UCT does provide a good trade-off between exploration and exploitation. These tend to be domains where rewards are dense and informative, so that the best action acquires the best value estimate early in the search. Exploiting that estimate is then effective local exploration, concentrating trials on the later timesteps of the paths that currently look most promising. UCT struggles when the optimal action instead retains a worse value estimate throughout the initial exploration, because it then overcommits to a suboptimal action. Sparse or uninformative rewards are one such case, where the optimal action may appear worse by chance early on. A heuristic learned by function approximation that assigns a low value to the optimal action is another. The remainder of this section considers the sparse and uninformative case.
-    \end{mccorrection}
+    %\end{mccorrection}
 
     A \textit{sparse reward} is where the reward signal is infrequent, that is, most actions give a reward of zero. In the shortest path example, the reward is dense but uninformative, as the immediate cost of taking any action is the same. 
 
@@ -167,9 +172,9 @@
 
     In theory, UCT selects every action infinitely often (that is, $N(s,a)\rightarrow \infty$ for all reachable $s,a$) and will converge to the optimal values and policy. In practice, UCT shifts its focus from exploration to exploitation throughout the search, which is determined by the confidence intervals and the bias parameter $\buct$ from Equation (\ref{eq:2:uct_policy}). This is illustrated in Figure \ref{fig:4:shortest_path_intro_results}, where for small bias parameters UCT quickly exploits a suboptimal solution and for large bias parameters UCT is still exploring and its value estimates have not yet converged.
 
-    \begin{mccorrection}
-    Although UCT had to be limited to a small number of trials in this initial example, the same behaviour is visible at scale in the empirical results of Section \ref{sec:4-4-results}. The results on DeterministicGridWorld in Figure \ref{fig:4:dgw_results} show UCT settling on a suboptimal path across all map sizes, with its performance flattening after the initial trials rather than continuing to improve. Its concentration of trials therefore acts as local search around an early estimate, and does not recover the optimal path within the planning budget.
-    \end{mccorrection}
+    %\begin{mccorrection}
+    Although UCT had to be artificially limited to a small number of trials in this initial example, the same behaviour is visible at scale in the empirical results of Section \ref{sec:4-4-results}. The results on DeterministicGridWorld in Figure \ref{fig:4:dgw_results} show UCT settling on a suboptimal path across all map sizes, with its performance flattening after the initial trials rather than continuing to improve. Its concentration of trials therefore acts as local search around an early estimate, and does not recover the optimal path within the planning budget.
+    %\end{mccorrection}
 
     
     
@@ -194,7 +199,7 @@
         The policy induced by the optimal soft Q-values is $\psi^*_{\sft}(s) = \argmax_{a'} Q^*_{\sft}(s,a')$. The maximum entropy objective is \textnormal{misaligned} when the policy $\psi^*_{\sft}(s) \neq \pi^*(s)$, where $\pi^*$ is the optimal standard policy (Definition \ref{def:2:opt_policy}). The \textnormal{misalignment threshold} is the smallest temperature parameter at which the maximum entropy objective is misaligned.
     \end{defn}
 
-    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. \mccorrect{At intermediate temperatures (illustrated in blue), the agent still reaches the goal, but prioritises entropy enough that, with high probability, it takes a longer route than necessary.} %mrc
+    In Figure \ref{fig:4:shortest_path_intro_b}, the optimal soft policy for the maximum entropy objective is shown for varying temperature parameters. For small temperature values ($\alpha<1$, illustrated in red), the optimal soft policy is close to the optimal standard policy, and for large temperature values ($\alpha>100$, illustrated in green) the optimal soft policy is nearly uniform, except at states adjacent to the goal, where the agent will avoid reaching the goal to obtain more entropy ``reward''. At intermediate temperatures (illustrated in blue), the agent still reaches the goal, but prioritises entropy enough that, with high probability, it takes a longer route than necessary.
 
     When using the maximum entropy objective, the temperature parameter often needs to be carefully tuned, large enough to gain an exploration benefit, but small enough to avoid misalignment issues.  In this example problem, the misalignment threshold is at most $\alpha=10$, as can be seen in Figure \ref{fig:4:shortest_path_intro_results_a}. Moreover, because the entropy of a policy depends on the MDP, the temperature typically needs to be tuned for each MDP. In Section \ref{sec:4-3-toyenvs}, an MDP is constructed where the misalignment threshold is prohibitively small for the maximum entropy objective to be effective, and Section \ref{sec:4-4-results} considers more complex gridworlds where the misalignment threshold is low enough to significantly affect performance.
 
@@ -282,7 +287,7 @@
         \item to be consistent using parameters that do not depend on the MDP.
     \end{itemize}
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     These aims are motivated by the exploration setting of reinforcement learning in practice, that is, with a finite planning budget: the agent plans in a simulator, and is evaluated only on the recommendation it makes once that budget is exhausted (Section \mbox{\ref{sec:2-3-rl}} and Figure \mbox{\ref{fig:4:rl_overview}}). 
     
     Simple regret plays a different role: it is used to analyse the algorithms, not to motivate or design them. It gives theoretical guarantees about the behaviour of BTS and DENTS in the limit (Section \mbox{\ref{sec:4-5-theory}}), whereas an algorithm built solely to minimise simple regret need not perform well in practice.
@@ -292,7 +297,7 @@
     Exploitation is included as an aim for two reasons. First, it concentrates exploration on the later timesteps of each trial, which becomes important in larger environments. Second, in the offline planning setting considered in this thesis (Section \mbox{\ref{sec:1-2-scope}}), the recommended policy is read from the search tree (Equation \mbox{\eqref{eq:4:full_recommend}}), and any state outside the tree is handled by selecting actions uniformly at random. A broad but shallow tree therefore yields a policy that soon leaves the tree and acts uniformly, so in stochastic domains exploitation helps to ensure that the different outcomes of the same actions have been explored. 
     
     The FrozenLake environment (Section \ref{sec:4-4-1-1-frozenlake}) is an example of a stochastic environment, where exploitation is beneficial for performance in practice (Section \ref{sec:4-4-3-1-gridworld_results}).
-    \end{mccorrection}
+    %\end{mccorrection}
 
     In Section \ref{sec:4-2-1-bts} BTS is defined, which uses a Boltzmann search policy, similar to MENTS, but using the standard objective \mccorrect{(Definition \mbox{\ref{def:2:rl_obj_fn}})} and Bellman backups rather than the soft Bellman backups used in MENTS. Section \ref{sec:4-2-2-dents} defines DENTS which re-introduces entropy as an exploration bonus while maintaining consistency. Section \ref{sec:4-2-3-stoch_search_policies} discusses the use of stochastic search policies in MCTS further, highlighting that mixture policies can be used to incorporate prior knowledge from $\piinit$ (Section \ref{sec:4-2-3-1-mixture_policies}) and how the \textit{Alias Method} can be used to arrive at a more efficient MCTS algorithm addressing \complexityq\ewe (Section \ref{sec:4-2-3-2-alias_method}).
 
@@ -320,7 +325,7 @@
 
     Boltzmann search has been used previously in heuristic search algorithms such as RTDP \cite{rtdp} and THTS \cite{thts_thesis}. This section presents \textit{Boltzmann Tree Search} (BTS), which uses a Boltzmann search policy with decayed temperature similar to RTDP, but includes an additional uniform exploration term similar to MENTS \cite{ments}.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     BTS therefore has two exploration mechanisms: the Boltzmann search policy, controlled by the temperature $\alphabts$, and the uniform term, controlled by $\epsbts$. They explore in different ways. Boltzmann exploration is directed, in that it is centred on the current Q-value estimates and so favours actions that are currently competitive. Uniform exploration is undirected, and continues to sample actions that the current estimates rate poorly. Retaining both allows the balance between them to be tuned for the domain at hand.
 
     The Boltzmann temperature is typically decayed towards zero, so that the search policy can exploit and eventually select greedily (Theorem \mbox{\ref{thrm:4:bts_decay}}). There are two reasons for keeping the uniform exploration term from MENTS. The first is that it continues to sample all actions once the Boltzmann term has stopped exploring, which guarantees that an optimal policy is recommended in the limit (Theorem \mbox{\ref{thrm:4:bts}}). The second is that it makes \mbox{$\epsilon$-greedy} search policies available as a limiting case. 
@@ -328,7 +333,7 @@
     There are likewise two reasons for keeping the Boltzmann term. In practice, it is often useful to concentrate search on the actions that already appear competitive, rather than spreading trials evenly across all actions. In theory, holding the temperature above a positive lower bound gives a faster rate of convergence (Theorem \mbox{\ref{thrm:4:bts_exp}}).
 
     Both exploration methods are sufficient to guarantee that an optimal policy is eventually recommended. In the experimental Section \ref{sec:4-4-results} the Boltzmann temperature is decayed so that the search policy can tend towards a greedy policy for exploitation if necessary, and the uniform exploration is kept so that actions are still explored when the Boltzmann policy is greedy.
-    \end{mccorrection}
+    %\end{mccorrection}
 
     \paragraph{Algorithm Definition}
 
@@ -1470,23 +1475,23 @@
     \ref{fig:4:fl_results} for a range of map sizes. The heuristic 
     value functions $\Vinit$ and $\Qinit$ are again optimistically set to a constant value of one and the bias term $\Nq$ is set to one.
 
-    Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy (Equation~\ref{eq:4:full_recommend}) remains within 
+    \mccorrect{Because FrozenLake is a stochastic environment, there is a greater emphasis on exploitation in this experiment. Exploitation is necessary to ensure that the recommendation policy \mbox{(Equation~\ref{eq:4:full_recommend})} remains within 
     the search tree as much as possible, since states outside 
-    the tree \mccorrect{fall back to} a uniformly random policy.
+    the tree fall back to a uniformly random policy.}
 
     BTS and DENTS perform well across all map sizes in this experiment, demonstrating their ability to balance exploration and exploitation when necessary. In particular, TENTS was the only other algorithm able to effectively solve the 4x16 map.
 
-    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation. \mccorrect{UCT and H-MCTS performed similarly on every map, and all three UCT-based algorithms made little or no progress on the 4x16 map.}
+    UCT-based algorithms can still be seen to converge to a local optimum, with MaxUCT significantly outperforming UCT, likely because MaxUCT uses Bellman backups rather than average returns, which propagate value information more directly through the tree and allow for more focused exploration before committing to exploitation. UCT and H-MCTS performed similarly on every map, and all three UCT-based algorithms made little or no progress on the 4x16 map.
 
     Recall that parameters were optimised using the 4x4 map and reused for all maps. The temperature selected for MENTS was misaligned on the 4x12 and 4x16 maps. TENTS selected a similar temperature but was not misaligned, which suggests that the misalignment threshold is higher for Tsallis entropy than for Shannon entropy on these maps. RENTS selected a much lower temperature, and behaved as it did in the DGW environments, preferring long sequences of the same action. This was relatively successful until the 4x16 map, where RENTS made little or no progress, although its temperature may also have been above the misalignment threshold for that map.
 
-    \begin{mccorrection}
+    %\begin{mccorrection}
     The 4x12 map displays two non-monotonic trends, both of which are consistent across runs. Because the maps were randomly generated, this one happened to have the lowest ratio of holes to area, with one hole directly next to the goal and another to the north of it.
 
     The first trend is for MENTS, which makes some initial progress, because the map is open and the goal is easy to reach. Being open, the map also contains regions where a large entropy reward can be collected. Performance therefore dips once such a region has been explored enough for the entropy reward to accumulate, at which point MENTS prioritises that reward over reaching the goal. It converges to a misaligned, high-entropy policy that reaches the goal with lower probability than the optimal policy.
 
     The second trend is that the value of the recommendations from UCT and H-MCTS declines beyond $150{,}000$ trials. MaxUCT does not follow this trend, and differs from UCT only in its backups, so the cause must lie in estimating values with sample averages. At a state with one good action and several bad ones, the sample average remains low for a long time, so a state whose actions are all of moderate value may be preferred instead. The states next to the goal have exactly this structure, because of the adjacent holes. A likely explanation is therefore that before $150{,}000$ trials the recommendation policy leaves the tree and falls back to acting uniformly at random (Equation~\ref{eq:4:full_recommend}) before reaching the goal, and that beyond $150{,}000$ trials UCT instead commits to actions near the goal that perform worse than the uniformly random fallback they replace. Committing to a single action removes the chance of selecting the good action that acting at random retains. 
-    \end{mccorrection} %overfull vbox, but no visual error/margin problems
+    %\end{mccorrection} %overfull vbox, but no visual error/margin problems
     
 
 
@@ -1571,9 +1576,9 @@
 
     An interesting asymmetry can be seen in the performance of RENTS between the 16x16 North map and the 8x16 South-East map. The wind transition probabilities are asymmetric (Figure \ref{fig:sailing_deets}), with transitions towards North being more likely. Because the agent must travel North-East to reach the goal, when the wind is North facing, the agent incurs less cost, and, specifically is less likely to penalise long sequences of North-East actions. In contrast, when the wind is initially South-East facing, the agent is more likely to encounter states where the actions need to adapt to the wind.
 
-    % \begin{mccorrection}
+    % %\begin{mccorrection}
     The temperatures used for MENTS and TENTS remained below the misalignment threshold on all of the maps, and both performed well, converging to the optimal policy. As in DGW, the TENTS search policy often made a slow start, behaving somewhat like a breadth-first search.
-    % \end{mccorrection}
+    % %\end{mccorrection}
 
     
 
@@ -2138,7 +2143,7 @@
         as $N^n(s_t,a_t)\rightarrow\infty$. Consequently $\frac{N^n(s_{t+1})}{N^n(s_t,a_t)} \rap p(s_{t+1}|s_t,a_t)$ as $N^n(s_t,a_t)\rightarrow\infty$.
     \end{corollary}
     %
-    \begin{mccorrection}
+    %\begin{mccorrection}
         Figure \ref{fig:dkw_diag} gives the intuition behind how the DKW inequality leads to this corollary, which bounds the true transition probabilities against the empirical ones. It also shows where the $2\varepsilon$ term comes from.
         %
         \begin{proof}
@@ -2173,7 +2178,7 @@
                     \leq & 2\exp\left(-2\varepsilon^2m\right)
             \end{align}
         \end{proof}
-    \end{mccorrection} % under full \vbox warning, but no margin issues
+    %\end{mccorrection} % under full \vbox warning, but no margin issues
 
 
 

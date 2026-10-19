@@ -25,7 +25,7 @@
 
 
 
-\begin{mccorrection}
+%\begin{mccorrection}
 \section{Scope of the Thesis}
 \label{sec:1-2-scope}
 
@@ -39,14 +39,14 @@
 
     \paragraph{The Unknown Weights Scenario.} The multi-objective reinforcement learning literature establishes several scenarios, distinguished by what is known about preferences and when. This thesis considers the \textit{unknown weights scenario} \cite{survey_mo_seq_dec_make,morl_survey}. Preferences over the objectives are specified by a weight vector $\bff{w}$, and a utility function maps a weight vector and a vector-valued return to a scalar utility. The weight vector is unknown during the planning phase, so the agent must plan for all possible preferences. It is revealed during the \textit{weight selection phase}\footnote{\mccorrect{\mbox{\citet{morl_survey}} call this the selection phase. The word \textit{weight} is added to avoid confusion with the selection phase of an MCTS trial (Section \mbox{\ref{sec:2-4-2-thts}}).}}, after which the agent aims to maximise the utility for that weight vector during the execution phase. This setting arises whenever preferences are unavailable during planning, or vary between uses of a system.
 
-    \paragraph{The Linear Utility Assumption.} The utility function is assumed to be linear in the weight vector throughout this thesis. Section \ref{sec:5-6-2-linear_utility} discusses why this assumption is made and how the work could be adapted to non-linear utilities. Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that MOMCTS algorithms that choose actions using the expected reward-to-go at each node yield a utility-optimal policy if and only if the utility is linear.
+    \paragraph{The Linear Utility Assumption.} The utility function is assumed to be linear in the weight vector throughout this thesis. Section \ref{sec:5-6-2-linear_utility} discusses why this assumption is made, and Section \ref{sec:5-6-2-1-non_linear_utilities} how the work could be adapted to non-linear utilities. Section \ref{sec:5-6-3-fundamental_assumption_of_momcts} shows that MOMCTS algorithms that choose actions using the expected reward-to-go at each node yield a utility-optimal policy if and only if the utility is linear.
 
     \paragraph{Optimisation Criterion.} Two criteria are distinguished in the literature: the \textit{scalarised expected returns} (SER) criterion applies the utility to the expected return, whereas the \textit{expected scalarised returns} (ESR) criterion takes the expected utility of the return. SER is appropriate when a policy will be executed many times and average performance matters most, so some poor individual executions can be tolerated. ESR is more appropriate when a policy is executed only once; for example, a patient may have only one opportunity to follow a treatment plan \cite{morl_survey,survey_mo_seq_dec_make}. This thesis uses the more widely studied SER criterion, but under the linear utility assumed here the two coincide. 
 
     \paragraph{Evaluation.} The algorithms in this thesis are evaluated as offline planners, although the single-objective algorithms of Chapter \ref{ch:4-dents} can equally be used for online planning. In the multi-objective unknown weights scenario, each action yields a vector of rewards, denoted $\bff{R}(s,a)$, with one component per objective. Once the weight vector $\bff{w}$ is revealed, the problem reduces to a single-objective one with scalarised reward $R(s,a;\bff{w}) = \bff{w}^\top \bff{R}(s,a)$, so any further online planning can be carried out by a single-objective MCTS algorithm. Hence, in this scenario, it makes little sense to use an MOMCTS algorithm for online planning. It follows that the quality of the solution computed during planning matters most at the initial state, where execution begins.
 
     \paragraph{The Role of Planning.} An offline planning budget could instead be spent learning a policy or value function that generalises across states, using function approximators such as neural networks. Why plan at all? MCTS algorithms can be shown to be consistent: given enough trials, they recommend an optimal action. On small environments a feasible budget may therefore be enough to recover an optimal decision, whereas a learned approximation carries no such guarantee. On larger environments the two approaches can be complementary: AlphaZero \cite{alpha_zero} uses a learned prior policy and value function to guide its search, and the results of that search to improve them in turn. The search methods developed here provide the foundation for such a combination, which is proposed as future work in Section \ref{sec:7-2-futurework}. Planning also has an incidental benefit not pursued here: a search tree can be inspected once planning is complete, which may aid interpretability. 
-\end{mccorrection}
+%\end{mccorrection}
 
 
 
@@ -92,7 +92,7 @@
 
     Chapter \ref{ch:3-relatedwork} discusses related work in bandits, maximum entropy reinforcement learning, MCTS, and multi-objective sequential decision-making. The discussion is brief and focused on the references most relevant to the contributions of this thesis.
 
-    Chapter \ref{ch:4-dents} considers MCTS algorithms for single-objective environments, with the optional use of entropy as a second objective for exploration. The maximum entropy objective is shown to \mccorrect{not always align} with the \mccorrect{standard objective of maximising expected return}, and BTS and DENTS are introduced as alternative MCTS algorithms. The stochastic search policies of BTS and DENTS also enable the use of the Alias Method, which significantly reduces the per-trial computational cost.
+    Chapter \ref{ch:4-dents} considers MCTS algorithms for single-objective environments, with the optional use of entropy as a second objective for exploration. The maximum entropy objective is shown to not always align with the \mccorrect{standard objective of maximising expected return}, and BTS and DENTS are introduced as alternative MCTS algorithms. The stochastic search policies of BTS and DENTS also enable the use of the Alias Method, which significantly reduces the per-trial computational cost.
 
     Chapter \ref{ch:5-chmcts} extends the MCTS framework to the multi-objective \mccorrect{unknown weights scenario} with linear utilities, where the weight vector is unknown at the time of planning. CZT and CHMCTS are introduced as two approaches to contextual planning in MOMDPs. CHMCTS recovers prior MOMCTS algorithms as special cases of a common framework, and generalises them to stochastic environments.
 
